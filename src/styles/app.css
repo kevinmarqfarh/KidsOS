@@ -1,4 +1,13 @@
 @import "./desktop.css";
+@import "./apps/math.css";
+@import "./apps/svenska.css";
+@import "./apps/no.css";
+@import "./apps/space.css";
+@import "./apps/world.css";
+@import "./apps/wonder.css";
+@import "./apps/play.css";
+@import "./apps/platform.css";
+
 /* KidsOS – touch-först gränssnitt för barn 4–10 år.
    Layout: ett "operativsystem" med statusrad, hemskärm med appikoner och docka,
    och appfönster som växer fram ur ikonen. Allt interaktivt ≥ 56 px (≈1,1 cm på iPad),

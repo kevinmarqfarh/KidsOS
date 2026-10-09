@@ -8,6 +8,15 @@
   "licenseUrl": "",
   "source": "https://commons.wikimedia.org/wiki/File:The_Blue_Marble,_AS17-148-22727.jpg"
  },
+ "jupiter": {
+  "author": "NASA/STSCI (S.T.A.R.S)",
+  "credit": "https://hubblesite.org/contents/media/images/2024/009/01HPMN3ZGXFN1E0M1W5Y8AVCAM?news=true",
+  "file": "File:Jupiter_OPAL_2024.png",
+  "group": "space",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "source": "https://commons.wikimedia.org/wiki/File:Jupiter_OPAL_2024.png"
+ },
  "moon": {
   "author": "Gregory H. Revera",
   "credit": "Own work",
@@ -17,6 +26,15 @@
   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
   "source": "https://commons.wikimedia.org/wiki/File:FullMoon2010.jpg"
  },
+ "saturn": {
+  "author": "NASA / JPL-Caltech / SSI / color composite by Gordan Ugarkovic",
+  "credit": "https://www.planetary.org/space-images/saturn_globe_rings_open_ugodan",
+  "file": "File:Saturn_global_view_from_Cassini,_rings_open_Better_Colour.png",
+  "group": "space",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "source": "https://commons.wikimedia.org/wiki/File:Saturn_global_view_from_Cassini,_rings_open_Better_Colour.png"
+ },
  "sun": {
   "author": "Matúš Motlo",
   "credit": "Own work",
@@ -25,6 +43,15 @@
   "license": "CC BY-SA 4.0",
   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
   "source": "https://commons.wikimedia.org/wiki/File:The_Sun_in_white_light.jpg"
+ },
+ "uranus": {
+  "author": "Ardenau4",
+  "credit": "Own workalso published on Flickr: https://www.flickr.com/photos/197038812@N04/53449450202/",
+  "file": "File:Uranus_Voyager2_color_calibrated.png",
+  "group": "space",
+  "license": "CC0",
+  "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+  "source": "https://commons.wikimedia.org/wiki/File:Uranus_Voyager2_color_calibrated.png"
  },
  "venus": {
   "author": "NASA/JPL-Caltech",
