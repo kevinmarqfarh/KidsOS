@@ -14,7 +14,7 @@ function validate(q, ctx) {
   assert.ok(q && typeof q === 'object', `${ctx}: ingen fråga`);
   assert.ok(typeof q.prompt === 'string' && q.prompt.trim().length > 3, `${ctx}: tom prompt`);
   for (const k of ['prompt', 'say', 'hint', 'explain']) if (q[k]) assert.ok(!BAD_TEXT.test(q[k]), `${ctx}: ${k} innehåller skräp: ${q[k]}`);
-  if (q.visual) assert.ok(!/undefined|NaN/.test(q.visual), `${ctx}: visual innehåller undefined/NaN`);
+  if (q.visual) assert.ok(!/undefined|NaN/.test(q.visual.replace(/data:image\/[^;]+;base64,[A-Za-z0-9+/=]+/g, '')), `${ctx}: visual innehåller undefined/NaN`);
   switch (q.type) {
     case 'choice': {
       assert.ok(Array.isArray(q.options) && q.options.length >= 2, `${ctx}: för få alternativ`);

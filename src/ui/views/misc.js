@@ -2,7 +2,7 @@
 import { h, clear, onTap, wait } from '../dom.js';
 import { bodySvg, BODY_PARTS, ORGANS } from '../../apps/biology.js';
 import { STORIES } from '../../apps/svenska.js';
-import { WONDERS, WONDER_CATS, randomFact } from '../../apps/wonder.js';
+import { WONDERS, WONDER_CATS, randomFact, eligibleWonders, wonderAnswer } from '../../apps/wonder.js';
 import { DRAW_PROMPTS, DRAW_COLORS, DRAW_STAMPS } from '../../apps/draw.js';
 import { hasInSet } from '../../core/model.js';
 import { loadDrawings, saveDrawing, deleteDrawing, loadJSON } from '../../core/storage.js';
@@ -67,8 +67,8 @@ export function storiesView(el, { kos, app, level }) {
     const grid = h('div.story-grid');
     STORIES.forEach((s, i) => {
       const read = hasInSet(p, 'stories', s.id);
-      const tooHard = s.level > level + 1;
-      const b = h('button.story-card', { type: 'button', style: { '--i': i }, class: tooHard ? 'hard' : '' }, h('span.story-e', s.e), h('span.story-t', s.title), h('span.story-l', ['', '⭐ Lätt', '⭐⭐ Mellan', '⭐⭐⭐ Längre'][s.level]), read ? h('span.lv-ok', '✓') : null);
+      const tooHard = !p.settings.showAllModules && s.level > level;
+      const b = h('button.story-card', { type: 'button', disabled: tooHard, style: { '--i': i }, class: tooHard ? 'hard' : '' }, h('span.story-e', s.e), h('span.story-t', s.title), h('span.story-l', ['🔊 Lyssna tillsammans', '⭐ Börja läsa', '⭐⭐ Läs och förstå', '⭐⭐⭐ Läs och resonera', '🔎 Läs mellan raderna'][s.level]), read ? h('span.lv-ok', '✓') : tooHard ? h('span.lv-ok', '🔒') : null);
       onTap(b, () => open(s));
       grid.appendChild(b);
     });
@@ -118,10 +118,12 @@ export function storiesView(el, { kos, app, level }) {
       readBtn.textContent = '🔊 Läs för mig';
     });
     onTap(backBtn, () => {
+      reading = false;
       kos.stopSpeaking();
       list();
     });
     onTap(quizBtn, () => {
+      reading = false;
       kos.stopSpeaking();
       questions(s);
     });
@@ -138,6 +140,8 @@ export function storiesView(el, { kos, app, level }) {
       if (qi >= s.questions.length) return done();
       const q = s.questions[qi];
       let tries = 0;
+      let resolved = false;
+      const feedback = h('div.story-feedback', { 'aria-live': 'polite' });
       clear(box).append(
         h('p.sci-q', `${qi + 1}. ${q.q}`),
         h(
@@ -145,14 +149,16 @@ export function storiesView(el, { kos, app, level }) {
           rng.shuffle(q.o).map((o) => {
             const b = h('button.choice', { type: 'button' }, h('span.choice-label', o));
             onTap(b, () => {
+              if (resolved) return;
               if (o === q.a) {
+                resolved = true;
                 b.classList.add('right');
+                box.querySelectorAll('.choice').forEach(button => { button.disabled = true; });
                 if (tries === 0) right++;
                 kos.sfx('correct');
-                setTimeout(() => {
-                  qi++;
-                  ask();
-                }, 800);
+                const explanation = q.explain || `Svaret är ${q.a}.`;
+                clear(feedback).append(h('div.fb.fb-ok', h('div.fb-text', h('b', 'Rätt! '), explanation)), onTap(h('button.btn.btn-primary.story-next', { type: 'button' }, qi + 1 === s.questions.length ? 'Klar! 🎉' : 'Nästa fråga →'), () => { kos.stopSpeaking(); qi++; ask(); }));
+                kos.autoSay(`Rätt! ${explanation}`);
               } else {
                 tries++;
                 b.classList.add('wrong-shake');
@@ -165,6 +171,7 @@ export function storiesView(el, { kos, app, level }) {
           }),
         ),
       );
+      box.append(h('details.story-evidence', h('summary', '📖 Läs texten igen'), s.text.map(text => h('p', text))), feedback);
       kos.autoSay(`${q.q} ${q.o.join(', ')}?`);
     };
     const done = () => {
@@ -188,11 +195,12 @@ export function storiesView(el, { kos, app, level }) {
 /* ---------- Undra ---------- */
 const CAT_ICON = { Natur: '🌿', Kroppen: '🫀', Djur: '🐾', Rymden: '🪐', Vetenskap: '🔬', Teknik: '⚙️', Historia: '🏛️', Mat: '🍎', Språk: '💬', Känslor: '💛' };
 
-export function wonderView(el, { kos, app, opts }) {
+export function wonderView(el, { kos, app, opts, level }) {
   const p = kos.profile;
   const rng = createRng(Date.now());
   let cat = 'Alla';
-  const cats = ['Alla', ...WONDER_CATS.filter((c) => WONDERS.some((w) => w.cat === c))];
+  const available = eligibleWonders(level, p.settings.showAllModules);
+  const cats = ['Alla', ...WONDER_CATS.filter((c) => available.some((w) => w.cat === c))];
   const pickNew = (pool) => {
     const unseen = pool.filter((w) => !hasInSet(p, 'wonders', w.id));
     return rng.pick(unseen.length ? unseen : pool);
@@ -202,7 +210,7 @@ export function wonderView(el, { kos, app, opts }) {
     const text = h('span.wf-text', f.text);
     const card = h('div.wonder-fact', h('span.wf-e', f.e), h('div.wf-body', h('b', '💡 Visste du?'), text));
     onTap(card, () => {
-      const w = WONDERS.find((x) => x.id === f.id);
+      const w = available.find((x) => x.id === f.id);
       if (w) open(w);
     });
     return card;
@@ -214,19 +222,19 @@ export function wonderView(el, { kos, app, opts }) {
       list();
     })));
     const grid = h('div.wonder-grid');
-    const pool = WONDERS.filter((w) => cat === 'Alla' || w.cat === cat);
+    const pool = available.filter((w) => cat === 'Alla' || w.cat === cat);
     pool.forEach((w, i) => {
       const seen = hasInSet(p, 'wonders', w.id);
       const ph = photo(`w-${w.id}`, { alt: '' });
       grid.appendChild(onTap(h('button.wonder-tile', { type: 'button', class: `${seen ? 'seen' : ''} ${ph ? 'has-photo' : ''}`, style: { '--i': Math.min(i, 30) } }, ph ? h('span.wt-photo', { html: ph }) : null, h('span.wt-e', w.e), h('span.wt-q', w.q), seen ? h('span.lv-ok', '✓') : null), () => open(w)));
     });
-    const n = WONDERS.filter((w) => hasInSet(p, 'wonders', w.id)).length;
+    const n = available.filter((w) => hasInSet(p, 'wonders', w.id)).length;
     const surprise = onTap(h('button.btn.btn-primary.wonder-surprise', { type: 'button' }, '🎲 Ge mig en ny fråga'), () => open(pickNew(pool)));
-    el.append(h('div.wonder', h('p.muted', `Stora frågor om allt möjligt. Du har utforskat ${n} av ${WONDERS.length}.`), h('div.wonder-top', factCard(), surprise), chips, grid));
+    el.append(h('div.wonder', h('p.muted', `Stora frågor om allt möjligt. Du har utforskat ${n} av ${available.length}.`), h('div.wonder-top', factCard(), surprise), chips, grid));
   }
   function open(w) {
     clear(el);
-    const answer = h('div.wonder-answer', { hidden: true }, h('p', w.a), h('div.wonder-think', h('b', '🤔 Fundera vidare: '), w.think));
+    const answer = h('div.wonder-answer', { hidden: true }, h('p', wonderAnswer(w, level)), h('div.wonder-think', h('b', '🤔 Fundera vidare: '), w.think));
     const reveal = h('button.btn.btn-primary.btn-xl', { type: 'button' }, '💡 Visa svaret');
     const speak = onTap(h('button.icon-btn', { type: 'button', 'aria-label': 'läs upp frågan' }, '🔊'), () => kos.say(answer.hidden ? `${w.q} Vad tror du?` : `${w.a} Fundera vidare: ${w.think}`));
     el.append(
@@ -243,7 +251,7 @@ export function wonderView(el, { kos, app, opts }) {
           list();
         }), onTap(h('button.btn.btn-ghost', { type: 'button' }, '🎲 Ny fråga'), () => {
           kos.stopSpeaking();
-          open(pickNew(WONDERS.filter((x) => x.id !== w.id)));
+          open(pickNew(available.filter((x) => x.id !== w.id)));
         })),
       ),
     );
@@ -253,10 +261,10 @@ export function wonderView(el, { kos, app, opts }) {
       answer.hidden = false;
       const first = !hasInSet(p, 'wonders', w.id);
       kos.reward({ app: app.id, set: 'wonders', item: w.id, stars: first ? 1 : 0 });
-      kos.say(`${w.a} Fundera vidare: ${w.think}`);
+      kos.say(`${wonderAnswer(w, level)} Fundera vidare: ${w.think}`);
     });
   }
-  const focus = opts?.focus && WONDERS.find((w) => w.id === opts.focus);
+  const focus = opts?.focus && available.find((w) => w.id === opts.focus);
   if (focus) open(focus);
   else list();
 }

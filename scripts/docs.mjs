@@ -22,7 +22,7 @@ KidsOS har fem nivåer. Startnivån sätts av barnets ålder och anpassas sedan 
 |---|---|---|---|
 ${LEVELS.map((l, i) => `| ${l.emoji} ${l.short} | ${l.name} | ${l.school} | ${['4–5', '6–7', '8', '9', '10+'][i]} år |`).join('\n')}
 
-**Dina barn:** 5-åringen startar på Nivå 1 (allt fungerar med uppläsning och bilder), 7-åringen på Nivå 2 och 9-åringen på Nivå 4.
+**Nya profiler:** intervallen 4–5, 6–7, 8–9 och 10–12 år börjar på Nivå 1, 2, 3 respektive 5. En vuxen godkänner intervallet innan barnet fyller i profilen. Tidigare profiler behåller sina nivåer.
 
 ## Översikt
 

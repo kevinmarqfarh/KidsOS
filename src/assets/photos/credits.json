@@ -1,0 +1,162 @@
+{
+  "ekorre": {
+    "path": "src/assets/photos/ekorre.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File:Squirrel_posing.jpg",
+    "artist": "Peter Trimming",
+    "license": "CC BY 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+    "title": "Squirrel_posing.jpg"
+  },
+  "igelkott": {
+    "path": "src/assets/photos/igelkott.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File:Erinaceus_europaeus_LC0119.jpg",
+    "artist": "Jörg Hempel",
+    "license": "CC BY-SA 2.0 de",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0/de/deed.en",
+    "title": "Erinaceus_europaeus_LC0119.jpg"
+  },
+  "rav": {
+    "path": "src/assets/photos/rav.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File:Portrait_of_a_red_fox_in_Rautas_fj%C3%A4llurskog_%28cropped%29.jpg",
+    "artist": "ClaudiaTen",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "title": "Portrait_of_a_red_fox_in_Rautas_fjällurskog_(cropped).jpg"
+  },
+  "hare": {
+    "path": "src/assets/photos/hare.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File:Lepus_timidus_-_%D0%95%D0%B2%D0%B3%D0%B5%D0%BD%D0%B8%D0%B9_%D0%95%D0%B3%D0%BE%D1%80%D0%B5%D0%B9%D1%87%D0%B5%D0%BD%D0%BA%D0%BE%D0%B2_-_96446302.jpeg",
+    "artist": "Евгений Егорейченков",
+    "license": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+    "title": "Lepus_timidus_-_Евгений_Егорейченков_-_96446302.jpeg"
+  },
+  "bjorn": {
+    "path": "src/assets/photos/bjorn.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File:2010-kodiak-bear-1.jpg",
+    "artist": "Yathin S Krishnappa",
+    "license": "CC BY-SA 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+    "title": "2010-kodiak-bear-1.jpg"
+  },
+  "varg": {
+    "path": "src/assets/photos/varg.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File:Eurasian_wolf_2.jpg",
+    "artist": "User:Mas3cf",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "title": "Eurasian_wolf_2.jpg"
+  },
+  "uggla": {
+    "path": "src/assets/photos/uggla.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File:Strix_aluco_3_%28Martin_Mecnarowski%29.jpg",
+    "artist": "Martin Mecnarowski (http://www.photomecan.eu/)",
+    "license": "CC BY-SA 3.0",
+    "licenseUrl": "http://creativecommons.org/licenses/by-sa/3.0/",
+    "title": "Strix_aluco_3_(Martin_Mecnarowski).jpg"
+  },
+  "grasand": {
+    "path": "src/assets/photos/grasand.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File:Anas_platyrhynchos_male_female_quadrat.jpg",
+    "artist": "This picture was realized by Richard Bartz by using a Canon EF 70-300mm f/4-5.6 IS USM Lens",
+    "license": "CC BY-SA 2.5",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.5",
+    "title": "Anas_platyrhynchos_male_female_quadrat.jpg"
+  },
+  "orn": {
+    "path": "src/assets/photos/orn.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File:NZ7_5265_%2852812350718%29.jpg",
+    "artist": "Bengt Nyman from Vaxholm, Sweden",
+    "license": "CC BY-SA 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0",
+    "title": "NZ7_5265_(52812350718).jpg"
+  },
+  "nyckelpiga": {
+    "path": "src/assets/photos/nyckelpiga.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File:7-Spotted-Ladybug-Coccinella-septempunctata-sq1.jpg",
+    "artist": "Photographer: Dominik Stodulski   Graphic Processing: User:MathKnight",
+    "license": "CC BY-SA 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+    "title": "7-Spotted-Ladybug-Coccinella-septempunctata-sq1.jpg"
+  },
+  "myra": {
+    "path": "src/assets/photos/myra.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File:A_Formica_rufa_sideview.jpg",
+    "artist": "Richard Bartz, Munich Makro Freak",
+    "license": "CC BY-SA 2.5",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.5",
+    "title": "A_Formica_rufa_sideview.jpg"
+  },
+  "snigel": {
+    "path": "src/assets/photos/snigel.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File:Cepaea_nemoralis_edit.jpg",
+    "artist": "Cepaea_nemoralis_(Mad_Max).jpg: Mad Max\nderivative work: Papa Lima Whiskey 2",
+    "license": "CC BY-SA 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+    "title": "Cepaea_nemoralis_edit.jpg"
+  },
+  "daggmask": {
+    "path": "src/assets/photos/daggmask.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File:Regenwurm1.jpg",
+    "artist": "Michael Linnenbach",
+    "license": "CC BY-SA 3.0",
+    "licenseUrl": "http://creativecommons.org/licenses/by-sa/3.0/",
+    "title": "Regenwurm1.jpg"
+  },
+  "ek": {
+    "path": "src/assets/photos/ek.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File:Quercus_robur.jpg",
+    "artist": "MPF",
+    "license": "CC BY-SA 3.0",
+    "licenseUrl": "http://creativecommons.org/licenses/by-sa/3.0/",
+    "title": "Quercus_robur.jpg"
+  },
+  "mars": {
+    "path": "src/assets/photos/mars.png",
+    "source": "https://commons.wikimedia.org/wiki/File:Mars_-_August_30_2021_-_Flickr_-_Kevin_M._Gill.png",
+    "artist": "Kevin Gill from Los Angeles, CA, United States",
+    "license": "CC BY 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+    "title": "Mars_-_August_30_2021_-_Flickr_-_Kevin_M._Gill.png"
+  },
+  "merkurius": {
+    "path": "src/assets/photos/merkurius.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File:Mercury_in_true_color.jpg",
+    "artist": "NASA/Johns Hopkins University Applied Physics Laboratory/Arizona State University/Carnegie Institution of Washington",
+    "license": "Public domain",
+    "licenseUrl": "",
+    "title": "Mercury_in_true_color.jpg"
+  },
+  "venus": {
+    "path": "src/assets/photos/venus.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File:Venus_from_Mariner_10.jpg",
+    "artist": "NASA/JPL-Caltech",
+    "license": "Public domain",
+    "licenseUrl": "",
+    "title": "Venus_from_Mariner_10.jpg"
+  },
+  "jupiter": {
+    "path": "src/assets/photos/jupiter.png",
+    "source": "https://commons.wikimedia.org/wiki/File:Jupiter_OPAL_2024.png",
+    "artist": "NASA/STSCI (S.T.A.R.S)",
+    "license": "Public domain",
+    "licenseUrl": "",
+    "title": "Jupiter_OPAL_2024.png"
+  },
+  "neptunus": {
+    "path": "src/assets/photos/neptunus.png",
+    "source": "https://commons.wikimedia.org/wiki/File:Neptune_Voyager2_color_calibrated.png",
+    "artist": "NASA / Voyager 2 / PDS / OPUS / Ardenau4",
+    "license": "CC0",
+    "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+    "title": "Neptune_Voyager2_color_calibrated.png"
+  },
+  "solen": {
+    "path": "src/assets/photos/solen.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File:The_Sun_in_white_light.jpg",
+    "artist": "Matúš Motlo",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "title": "The_Sun_in_white_light.jpg"
+  }
+}

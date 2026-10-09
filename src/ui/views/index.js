@@ -1,3 +1,5 @@
+import { courseView } from './course.js';
+import { aiLabView } from './ai.js';
 import { traceView } from './trace.js';
 import { robotView, turtleView } from './code.js';
 import { floatView, magnetView, shadowView, waterView, seesawView, slideView, mixView } from './science.js';
@@ -10,6 +12,8 @@ import { SPACE_PHOTOS } from '../../apps/space.js';
 const spaceGalleryView = (el, ctx) => galleryView(el, { ...ctx, items: SPACE_PHOTOS, title: 'Riktiga bilder från rymden' });
 
 export const VIEWS = {
+  course: courseView,
+  aiLab: aiLabView,
   trace: traceView,
   robot: robotView,
   turtle: turtleView,

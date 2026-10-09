@@ -124,7 +124,7 @@ export function createDesktop(root, { osEl, confirmSwitch, showLock }) {
       if (old) old.replaceWith(clock);
       return;
     }
-    const w = wonderOfTheDay();
+    const w = wonderOfTheDay(new Date(), kos.level('wonder'), kos.profile.settings.showAllModules);
     const nt = nextTrophy(p);
     const rank = rankFor(p.stars);
     clear(widgetsEl).append(
