@@ -1,1 +1,198 @@
 /* Extra stilar för math */
+
+/* Siffra + prickar (bildsvar för förläsare) */
+.mp-num {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+.mp-num b {
+  font-family: var(--font-display);
+  font-size: clamp(34px, 6vw, 50px);
+  line-height: 1;
+}
+.mp-dots {
+  display: grid;
+  grid-template-columns: repeat(5, 11px);
+  gap: 4px;
+  justify-content: center;
+}
+.mp-dots i {
+  display: block;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: #ff6b5b;
+}
+
+/* Textuppgifter */
+.mp-story-pic {
+  font-size: clamp(54px, 10vw, 84px);
+  line-height: 1.1;
+}
+.mp-gone {
+  opacity: 0.28;
+  filter: grayscale(1);
+  position: relative;
+}
+
+/* Grupper (upprepad addition) */
+.mp-groups {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+}
+.mp-grp {
+  border: 3px dashed var(--app, #3d8bfd);
+  border-radius: 16px;
+  padding: 4px 8px;
+}
+.big-expr.sm {
+  font-size: clamp(28px, 5.5vw, 46px);
+}
+
+/* Mönster */
+.mp-shapepat span svg {
+  width: clamp(36px, 7.5vw, 60px);
+  height: auto;
+}
+.mp-growing {
+  width: min(100%, 520px);
+}
+
+/* Udda & jämna: par */
+.mp-pairs {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+}
+.mp-pair {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 3px solid #3fb67a;
+  border-radius: 999px;
+  padding: 4px 6px;
+  font-size: clamp(30px, 5.5vw, 46px);
+  line-height: 1.15;
+}
+.mp-pair.alone {
+  border-color: #ff6b5b;
+  border-style: dashed;
+}
+.mp-yn {
+  font-size: clamp(40px, 7vw, 56px);
+  line-height: 1;
+}
+
+/* Bråk */
+.mp-frac {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: var(--font-display);
+  font-weight: 800;
+  line-height: 1;
+  vertical-align: middle;
+  font-size: 1em;
+}
+.mp-frac span + span {
+  border-top: 3px solid currentColor;
+  padding-top: 2px;
+  margin-top: 2px;
+  min-width: 1.2em;
+  text-align: center;
+}
+.choice .mp-frac {
+  font-size: 30px;
+}
+.mp-fracsvg {
+  width: min(46vw, 190px);
+}
+.choice .mp-fracsvg {
+  width: 100%;
+  max-width: 120px;
+}
+.mp-fracrows {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.mp-fracrows > .emoji-group {
+  border: 2px dashed var(--ink-soft);
+  border-radius: 14px;
+  padding: 2px 8px;
+}
+.mp-pizzarow {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+}
+.mp-pizzarow .mp-fracsvg {
+  width: clamp(64px, 16vw, 110px);
+}
+
+/* Pengar */
+.mp-money {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  max-width: 560px;
+}
+.mp-coin {
+  width: clamp(48px, 10vw, 68px);
+  height: auto;
+}
+.mp-note {
+  width: clamp(92px, 20vw, 132px);
+  height: auto;
+}
+.choice .mp-money {
+  gap: 4px;
+}
+.choice .mp-coin {
+  width: 40px;
+}
+.choice .mp-note {
+  width: 76px;
+}
+.choice > .choice-html > .mp-coin {
+  width: 72px;
+}
+
+/* Uppställning */
+.mp-column {
+  border-collapse: collapse;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(36px, 7vw, 58px);
+  line-height: 1.15;
+  color: var(--ink);
+}
+.mp-column td {
+  width: 1.05em;
+  text-align: center;
+  padding: 0 2px;
+}
+.mp-column .mp-heads td {
+  font-size: 0.36em;
+  color: var(--ink-soft);
+}
+.mp-column .mp-sum td {
+  border-top: 4px solid var(--ink);
+  padding-top: 4px;
+}
+.mp-cell {
+  display: inline-block;
+  min-width: 0.9em;
+  border-radius: 8px;
+  background: var(--learn-bg);
+  color: var(--ink-soft);
+  font-size: 0.8em;
+}

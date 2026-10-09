@@ -3,7 +3,8 @@ import { h, clear, onTap } from './dom.js';
 import { kos } from './kos.js';
 import { APPS } from '../apps/registry.js';
 import { AVATARS, WALLPAPERS, LEVELS, schoolLabelForAge } from '../core/age.js';
-import { appStat, currentLevel, dateKey, secondsToday } from '../core/model.js';
+import { appStat, currentLevel, dateKey, secondsToday, learningSummary, relativeDay } from '../core/model.js';
+import { allCredits, creditLine, photo } from './img.js';
 import { curriculumFor, CURRICULUM } from '../core/curriculum.js';
 import { exportBackup, importBackup, wipeAll, deleteDrawingsFor, isPersistent } from '../core/storage.js';
 import { hasSwedishVoice } from '../core/speech.js';
@@ -58,9 +59,9 @@ export function renderSettings(el, { parentGate, profileWizard, showLock, goHome
         })), onTap(h('button.chip-btn', { type: 'button' }, '＋ Ny profil'), () => profileWizard({ onDone: () => render() }))),
       );
       if (kidP) {
-        wrap.append(reportSection(kidP), profileSection(kidP, render), levelSection(kidP, render), timeSection(kidP, render), appsSection(kidP, render));
+        wrap.append(learnedSection(kidP), reportSection(kidP), profileSection(kidP, render), levelSection(kidP, render), timeSection(kidP, render), appsSection(kidP, render));
       }
-      wrap.append(globalSection(render), backupSection(), aboutSection());
+      wrap.append(globalSection(render), backupSection(), photoCreditsSection(), aboutSection());
     };
     render();
   }
@@ -212,6 +213,90 @@ export function renderSettings(el, { parentGate, profileWizard, showLock, goHome
       h('p.muted', 'Områden som barnet har övat på i KidsOS. Det här är ett komplement till skolan – inte en bedömning.'),
       curr,
     );
+  }
+
+  /** Kort, lättläst översikt: vad har barnet gjort och lärt sig, per app. */
+  function learnedSection(kp) {
+    const rows = learningSummary(kp, APPS);
+    const coins = kp.coins || 0;
+    const summary = h(
+      'div.pf-learn-totals',
+      h('span.pf-pill', `⭐ ${kp.stars} stjärnor`),
+      h('span.pf-pill', `🪙 ${coins} mynt`),
+      h('span.pf-pill', `🔥 ${kp.streak?.count || 0} dagar i rad`),
+    );
+    const body = rows.length
+      ? h(
+          'ul.pf-learn',
+          rows.map((r) =>
+            h(
+              'li.pf-learn-row',
+              h('span.pf-learn-icon', { 'aria-hidden': 'true' }, r.icon),
+              h(
+                'div.pf-learn-main',
+                h('b', r.name),
+                h(
+                  'small',
+                  [
+                    r.level !== null ? `${LEVELS[r.level].emoji} ${LEVELS[r.level].short} (${LEVELS[r.level].school})` : 'Utforskat',
+                    r.correct ? `${r.correct} rätt direkt` : null,
+                    r.rounds ? `${r.rounds} ${r.rounds === 1 ? 'runda' : 'rundor'}` : null,
+                  ]
+                    .filter(Boolean)
+                    .join(' · '),
+                ),
+              ),
+              h('span.pf-learn-last', relativeDay(r.last)),
+            ),
+          ),
+        )
+      : h('p.muted', `${kp.name} har inte börjat i någon app än.`);
+    return h(
+      'section.set-section',
+      h('h3', `🌱 Vad har ${kp.name} lärt sig?`),
+      h('p.muted', 'Nivå, antal rätt på första försöket och när appen användes senast. Senast använda står först. Stjärnor visar vad barnet lärt sig, mynt kan användas i Lekstaden.'),
+      summary,
+      body,
+    );
+  }
+
+  /** Upphov och licens för alla foton (krav i CC BY/CC BY-SA). Listan byggs först när den öppnas. */
+  function photoCreditsSection() {
+    const credits = Object.entries(allCredits() || {}).sort(([a, x], [b, y]) => String(x.g || '').localeCompare(String(y.g || '')) || a.localeCompare(b));
+    const list = h('ul.pf-credits');
+    const det = h('details.pf-credits-wrap', h('summary', `Visa alla ${credits.length} bilder`), list);
+    det.addEventListener('toggle', () => {
+      if (!det.open || list.childElementCount) return;
+      list.append(
+        ...credits.map(([key, c]) =>
+          h(
+            'li.pf-credit',
+            h('span.pf-credit-thumb', { html: photo(key, { alt: '', cls: 'pf-credit-img', fallback: '🖼️' }) }),
+            h(
+              'div.pf-credit-text',
+              h('b', prettyKey(key)),
+              h('small', creditLine(key) || `${c.a || 'Okänd'} · ${c.l || 'okänd licens'}`),
+              safeUrl(c.u) ? h('a.pf-credit-link', { href: c.u, target: '_blank', rel: 'noopener noreferrer' }, 'Källa på Wikimedia Commons ↗') : null,
+            ),
+          ),
+        ),
+      );
+    });
+    return h(
+      'section.set-section',
+      h('h3', '📷 Om bilderna'),
+      h('p.muted', 'Fotona kommer från Wikimedia Commons och NASA och har fria licenser (public domain eller Creative Commons). Här står vem som tog varje bild och under vilken licens.'),
+      credits.length ? det : h('p.muted', 'Inga foton är inlagda än.'),
+    );
+  }
+
+  function prettyKey(key) {
+    const t = String(key).replace(/[_-]+/g, ' ').trim();
+    return t.charAt(0).toUpperCase() + t.slice(1);
+  }
+
+  function safeUrl(u) {
+    return typeof u === 'string' && /^https:\/\//i.test(u);
   }
 
   function moduleTouched(kp, appId, m) {

@@ -443,7 +443,8 @@ export function starsView(el, { kos, app }) {
     kos.reward({ app: app.id, set: 'constellations', item: c.id, stars: first ? 2 : 0 });
     kos.sfx('fanfare');
     clear(story).append(h('div.fb.fb-ok', h('span.fb-icon', '🌌'), h('div.fb-text', h('b', `${c.name} (${c.also}). `), c.story)));
-    kos.say(`${c.name}! ${c.story}`);
+    if (c.culture) story.append(h('div.sky-culture', h('span.fb-icon', '🌍'), h('div', h('b', 'Andra kulturer: '), c.culture)));
+    kos.say(`${c.name}! ${c.story}${c.culture ? ` ${c.culture}` : ''}`);
     renderChips();
   }
   function start() {

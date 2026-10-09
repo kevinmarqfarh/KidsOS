@@ -2,7 +2,7 @@
 import { h, clear, onTap, wait } from '../dom.js';
 import { bodySvg, BODY_PARTS, ORGANS } from '../../apps/biology.js';
 import { STORIES } from '../../apps/svenska.js';
-import { WONDERS } from '../../apps/wonder.js';
+import { WONDERS, WONDER_CATS, randomFact } from '../../apps/wonder.js';
 import { DRAW_PROMPTS, DRAW_COLORS, DRAW_STAMPS } from '../../apps/draw.js';
 import { hasInSet } from '../../core/model.js';
 import { loadDrawings, saveDrawing, deleteDrawing, loadJSON } from '../../core/storage.js';
@@ -186,44 +186,64 @@ export function storiesView(el, { kos, app, level }) {
 }
 
 /* ---------- Undra ---------- */
+const CAT_ICON = { Natur: '🌿', Kroppen: '🫀', Djur: '🐾', Rymden: '🪐', Vetenskap: '🔬', Teknik: '⚙️', Historia: '🏛️', Mat: '🍎', Språk: '💬', Känslor: '💛' };
+
 export function wonderView(el, { kos, app, opts }) {
   const p = kos.profile;
+  const rng = createRng(Date.now());
   let cat = 'Alla';
-  const cats = ['Alla', ...new Set(WONDERS.map((w) => w.cat))];
+  const cats = ['Alla', ...WONDER_CATS.filter((c) => WONDERS.some((w) => w.cat === c))];
+  const pickNew = (pool) => {
+    const unseen = pool.filter((w) => !hasInSet(p, 'wonders', w.id));
+    return rng.pick(unseen.length ? unseen : pool);
+  };
+  function factCard() {
+    const f = randomFact(rng);
+    const text = h('span.wf-text', f.text);
+    const card = h('div.wonder-fact', h('span.wf-e', f.e), h('div.wf-body', h('b', '💡 Visste du?'), text));
+    onTap(card, () => {
+      const w = WONDERS.find((x) => x.id === f.id);
+      if (w) open(w);
+    });
+    return card;
+  }
   function list() {
     clear(el);
-    const chips = h('div.chip-row', cats.map((c) => onTap(h('button.chip-btn', { type: 'button', class: c === cat ? 'on' : '' }, c), () => {
+    const chips = h('div.chip-row', cats.map((c) => onTap(h('button.chip-btn', { type: 'button', class: c === cat ? 'on' : '' }, c === 'Alla' ? c : `${CAT_ICON[c] || ''} ${c}`), () => {
       cat = c;
       list();
     })));
     const grid = h('div.wonder-grid');
-    WONDERS.filter((w) => cat === 'Alla' || w.cat === cat).forEach((w, i) => {
+    const pool = WONDERS.filter((w) => cat === 'Alla' || w.cat === cat);
+    pool.forEach((w, i) => {
       const seen = hasInSet(p, 'wonders', w.id);
       const ph = photo(`w-${w.id}`, { alt: '' });
-      grid.appendChild(onTap(h('button.wonder-tile', { type: 'button', class: `${seen ? 'seen' : ''} ${ph ? 'has-photo' : ''}`, style: { '--i': i } }, ph ? h('span.wt-photo', { html: ph }) : null, h('span.wt-e', w.e), h('span.wt-q', w.q), seen ? h('span.lv-ok', '✓') : null), () => open(w)));
+      grid.appendChild(onTap(h('button.wonder-tile', { type: 'button', class: `${seen ? 'seen' : ''} ${ph ? 'has-photo' : ''}`, style: { '--i': Math.min(i, 30) } }, ph ? h('span.wt-photo', { html: ph }) : null, h('span.wt-e', w.e), h('span.wt-q', w.q), seen ? h('span.lv-ok', '✓') : null), () => open(w)));
     });
     const n = WONDERS.filter((w) => hasInSet(p, 'wonders', w.id)).length;
-    el.append(h('div.wonder', h('p.muted', `Stora frågor om allt möjligt. Du har utforskat ${n} av ${WONDERS.length}.`), chips, grid));
+    const surprise = onTap(h('button.btn.btn-primary.wonder-surprise', { type: 'button' }, '🎲 Ge mig en ny fråga'), () => open(pickNew(pool)));
+    el.append(h('div.wonder', h('p.muted', `Stora frågor om allt möjligt. Du har utforskat ${n} av ${WONDERS.length}.`), h('div.wonder-top', factCard(), surprise), chips, grid));
   }
   function open(w) {
     clear(el);
     const answer = h('div.wonder-answer', { hidden: true }, h('p', w.a), h('div.wonder-think', h('b', '🤔 Fundera vidare: '), w.think));
     const reveal = h('button.btn.btn-primary.btn-xl', { type: 'button' }, '💡 Visa svaret');
+    const speak = onTap(h('button.icon-btn', { type: 'button', 'aria-label': 'läs upp frågan' }, '🔊'), () => kos.say(answer.hidden ? `${w.q} Vad tror du?` : `${w.a} Fundera vidare: ${w.think}`));
     el.append(
       h(
         'div.wonder-card-big',
         photo(`w-${w.id}`) ? h('figure.wcb-photo', h('span', { html: photo(`w-${w.id}`, { alt: w.q }) }), h('figcaption.credit', creditLine(`w-${w.id}`))) : h('span.wcb-e', w.e),
-        h('span.wcb-cat', w.cat),
-        h('h2', w.q),
+        h('span.wcb-cat', `${CAT_ICON[w.cat] || ''} ${w.cat}`),
+        h('h2', w.q, ' ', speak),
         h('p.wonder-guess', 'Vad tror du? Gissa först – säg det högt eller berätta för någon!'),
         reveal,
         answer,
         h('div.row-actions', onTap(h('button.btn.btn-ghost', { type: 'button' }, '☰ Alla frågor'), () => {
           kos.stopSpeaking();
           list();
-        }), onTap(h('button.btn.btn-ghost', { type: 'button' }, '🎲 Slumpa en fråga'), () => {
+        }), onTap(h('button.btn.btn-ghost', { type: 'button' }, '🎲 Ny fråga'), () => {
           kos.stopSpeaking();
-          open(WONDERS[Math.floor(Math.random() * WONDERS.length)]);
+          open(pickNew(WONDERS.filter((x) => x.id !== w.id)));
         })),
       ),
     );

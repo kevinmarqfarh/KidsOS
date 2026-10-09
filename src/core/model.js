@@ -41,6 +41,7 @@ export function newProfile({ name, age, avatar = '🦊', color = '#4aa8ff', wall
     sets: {},
     trophies: {},
     days: {},
+    activity: {}, // appId → ISO-tid för senaste aktivitet (för föräldravyn)
     streak: { count: 0, best: 0, last: null },
     levelOverride: {},
     settings: {
@@ -59,7 +60,7 @@ export function normalizeProfile(p) {
   const out = { ...base, ...p };
   out.settings = { ...base.settings, ...(p?.settings || {}) };
   out.streak = { ...base.streak, ...(p?.streak || {}) };
-  for (const k of ['stats', 'counters', 'sets', 'trophies', 'days', 'levelOverride']) {
+  for (const k of ['stats', 'counters', 'sets', 'trophies', 'days', 'levelOverride', 'activity']) {
     if (!out[k] || typeof out[k] !== 'object') out[k] = {};
   }
   if (!Array.isArray(out.settings.hiddenApps)) out.settings.hiddenApps = [];
@@ -116,6 +117,7 @@ export const ADAPT_DOWN_AFTER = 3; // missar i rad
  */
 export function recordAnswer(profile, appId, { firstTry }) {
   const s = appStat(profile, appId);
+  markActive(profile, appId);
   let change = null;
   if (firstTry) {
     s.correct++;
@@ -217,8 +219,54 @@ export function count(profile, key) {
   return profile.counters?.[key] || 0;
 }
 
+/** Noterar senaste aktivitet i en app (visas i föräldravyn). */
+export function markActive(profile, appId, when = new Date()) {
+  if (!appId) return;
+  if (!profile.activity || typeof profile.activity !== 'object') profile.activity = {};
+  profile.activity[appId] = (when instanceof Date ? when : new Date(when)).toISOString();
+}
+
+/**
+ * Sammanfattning per app för föräldravyn "Vad har barnet lärt sig?".
+ * Returnerar bara appar där barnet har gjort något, senast använda först.
+ */
+export function learningSummary(profile, apps) {
+  const rows = [];
+  for (const a of apps || []) {
+    const st = profile.stats?.[a.id];
+    const last = profile.activity?.[a.id] || null;
+    const tried = !!profile.sets?.appsTried?.[a.id];
+    if (!st && !last && !tried) continue;
+    rows.push({
+      appId: a.id,
+      name: a.name,
+      icon: a.icon,
+      level: st ? currentLevel(profile, a.id) : null,
+      correct: st?.correct || 0,
+      rounds: st?.rounds || 0,
+      last,
+    });
+  }
+  rows.sort((x, y) => (y.last || '').localeCompare(x.last || '') || y.correct - x.correct);
+  return rows;
+}
+
+/** "i dag", "i går", "för 3 dagar sedan" eller datum. */
+export function relativeDay(iso, now = new Date()) {
+  if (!iso) return '–';
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return '–';
+  const diff = dayDiff(dateKey(d), dateKey(now));
+  if (diff <= 0) return 'i dag';
+  if (diff === 1) return 'i går';
+  if (diff < 7) return `för ${diff} dagar sedan`;
+  return d.toLocaleDateString('sv-SE');
+}
+
 /** Lägger till i en samling. Returnerar true om objektet var nytt. */
 export function addToSet(profile, setKey, item) {
+  // appsTried uppdateras vid varje belöning och runda – ett bra ställe att notera senaste aktivitet.
+  if (setKey === 'appsTried') markActive(profile, item);
   if (!profile.sets[setKey]) profile.sets[setKey] = {};
   if (profile.sets[setKey][item]) return false;
   profile.sets[setKey][item] = 1;

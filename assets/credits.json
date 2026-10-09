@@ -1,4 +1,31 @@
 {
+ "astronaut": {
+  "author": "NASA",
+  "credit": "Description page (direct image link)",
+  "file": "File:Buzz_Aldrin.jpg",
+  "group": "space",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "source": "https://commons.wikimedia.org/wiki/File:Buzz_Aldrin.jpg"
+ },
+ "bigdipper": {
+  "author": "http://en.wikipedia.org/wiki/User:B00P & me (SAE1962 10:04, 2 April 2008 (UTC))",
+  "credit": "English Wikipedia, but modified it.",
+  "file": "File:Ursa_Major_constellation_detail_map.PNG",
+  "group": "space",
+  "license": "CC BY-SA 3.0",
+  "licenseUrl": "http://creativecommons.org/licenses/by-sa/3.0/",
+  "source": "https://commons.wikimedia.org/wiki/File:Ursa_Major_constellation_detail_map.PNG"
+ },
+ "citronfjaril": {
+  "author": "Thomas Bresson",
+  "credit": "Gonepteryx rhamni",
+  "file": "File:Gonepteryx_rhamni_-_Citron-1.jpg",
+  "group": "species",
+  "license": "CC BY 2.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Gonepteryx_rhamni_-_Citron-1.jpg"
+ },
  "earth": {
   "author": "Harrison Schmitt / Apollo 17",
   "credit": "https://tothemoon.im-ldi.com/gallery/Apollo/17/6#AS17-148-22727",
@@ -7,6 +34,87 @@
   "license": "Public domain",
   "licenseUrl": "",
   "source": "https://commons.wikimedia.org/wiki/File:The_Blue_Marble,_AS17-148-22727.jpg"
+ },
+ "earthrise": {
+  "author": "NASA/Bill Anders",
+  "credit": "http://www.hq.nasa.gov/office/pao/History/alsj/a410/AS8-14-2383HR.jpg",
+  "file": "File:NASA-Apollo8-Dec24-Earthrise.jpg",
+  "group": "space",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "source": "https://commons.wikimedia.org/wiki/File:NASA-Apollo8-Dec24-Earthrise.jpg"
+ },
+ "ek": {
+  "author": "Jorchr",
+  "credit": "Own work",
+  "file": "File:Svaneholm,_ek.jpg",
+  "group": "species",
+  "license": "CC BY-SA 3.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Svaneholm,_ek.jpg"
+ },
+ "ekorre": {
+  "author": "Toivo Toivanen & Tiina Toppila",
+  "credit": "http://www.777life.com/photos/animals/ekahau/Kurre5.jpg for unlimited free use – 777life contents were recently moved to http://deitti.kotisatama.net/suomi/phot",
+  "file": "File:Kurre5.jpg",
+  "group": "species",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "source": "https://commons.wikimedia.org/wiki/File:Kurre5.jpg"
+ },
+ "flugsvamp": {
+  "author": "Tim Bekaert",
+  "credit": "Uploaded by Tbc",
+  "file": "File:Amanita_muscaria_tyndrum.jpg",
+  "group": "species",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "source": "https://commons.wikimedia.org/wiki/File:Amanita_muscaria_tyndrum.jpg"
+ },
+ "grasand": {
+  "author": "This picture was realized by Richard Bartz by using a Canon EF 70-300mm f/4-5.6 IS USM Lens",
+  "credit": "Own work",
+  "file": "File:Anas_platyrhynchos_male_female_quadrat.jpg",
+  "group": "species",
+  "license": "CC BY-SA 2.5",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.5",
+  "source": "https://commons.wikimedia.org/wiki/File:Anas_platyrhynchos_male_female_quadrat.jpg"
+ },
+ "gravling": {
+  "author": "kallerna",
+  "credit": "Own work",
+  "file": "File:Mäyrä_Ähtäri_4.jpg",
+  "group": "species",
+  "license": "CC BY-SA 3.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:M%C3%A4yr%C3%A4_%C3%84ht%C3%A4ri_4.jpg"
+ },
+ "humla": {
+  "author": "Ivar Leidus",
+  "credit": "Own work",
+  "file": "File:Bombus_terrestris_-_Tilia_cordata_-_Keila-crop.jpg",
+  "group": "species",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Bombus_terrestris_-_Tilia_cordata_-_Keila-crop.jpg"
+ },
+ "igelkott": {
+  "author": "Jörg Hempel",
+  "credit": "Own work",
+  "file": "File:Erinaceus_europaeus_LC0119.jpg",
+  "group": "species",
+  "license": "CC BY-SA 2.0 de",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0/de/deed.en",
+  "source": "https://commons.wikimedia.org/wiki/File:Erinaceus_europaeus_LC0119.jpg"
+ },
+ "iss": {
+  "author": "NASA",
+  "credit": "https://www.flickr.com/photos/nasa2explore/51749924967/in/photostream/; see also https://images.nasa.gov/details-jsc2021e064211_alt",
+  "file": "File:The_station_pictured_from_the_SpaceX_Crew_Dragon_5.jpg",
+  "group": "space",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "source": "https://commons.wikimedia.org/wiki/File:The_station_pictured_from_the_SpaceX_Crew_Dragon_5.jpg"
  },
  "jupiter": {
   "author": "NASA/STSCI (S.T.A.R.S)",
@@ -17,6 +125,42 @@
   "licenseUrl": "",
   "source": "https://commons.wikimedia.org/wiki/File:Jupiter_OPAL_2024.png"
  },
+ "kanguru": {
+  "author": "Drs",
+  "credit": "Own work",
+  "file": "File:Kangur.rudy.drs.jpg",
+  "group": "world",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "source": "https://commons.wikimedia.org/wiki/File:Kangur.rudy.drs.jpg"
+ },
+ "lejon": {
+  "author": "Kevin Pluck",
+  "credit": "Flickr: The King.",
+  "file": "File:Lion_waiting_in_Namibia.jpg",
+  "group": "world",
+  "license": "CC BY 2.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Lion_waiting_in_Namibia.jpg"
+ },
+ "maskros": {
+  "author": "David Monniaux",
+  "credit": "Own work",
+  "file": "File:Taraxacum_officinalis_DSC02042.JPG",
+  "group": "species",
+  "license": "CC BY-SA 3.0",
+  "licenseUrl": "http://creativecommons.org/licenses/by-sa/3.0/",
+  "source": "https://commons.wikimedia.org/wiki/File:Taraxacum_officinalis_DSC02042.JPG"
+ },
+ "milkyway": {
+  "author": "ESO/Y. Beletsky",
+  "credit": "https://web.archive.org/web/20081121184421/http://www.eso.org/gallery/v/ESOPIA/Paranal/phot-33a-07.tif.html",
+  "file": "File:ESO-VLT-Laser-phot-33a-07.jpg",
+  "group": "space",
+  "license": "CC BY 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:ESO-VLT-Laser-phot-33a-07.jpg"
+ },
  "moon": {
   "author": "Gregory H. Revera",
   "credit": "Own work",
@@ -26,6 +170,78 @@
   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
   "source": "https://commons.wikimedia.org/wiki/File:FullMoon2010.jpg"
  },
+ "myra": {
+  "author": "Richard Bartz, Munich Makro Freak",
+  "credit": "Own work",
+  "file": "File:Formica_rufa_Quadrat.jpg",
+  "group": "species",
+  "license": "CC BY-SA 2.5",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.5",
+  "source": "https://commons.wikimedia.org/wiki/File:Formica_rufa_Quadrat.jpg"
+ },
+ "nyckelpiga": {
+  "author": "okänd",
+  "credit": "",
+  "file": "File:BIEDRONA.JPG",
+  "group": "species",
+  "license": "CC BY-SA 3.0",
+  "licenseUrl": "http://creativecommons.org/licenses/by-sa/3.0/",
+  "source": "https://commons.wikimedia.org/wiki/File:BIEDRONA.JPG"
+ },
+ "orion": {
+  "author": "IAU and Sky & Telescope magazine (Roger Sinnott & Rick Fienberg)",
+  "credit": "[1]",
+  "file": "File:Orion_IAU.svg",
+  "group": "space",
+  "license": "CC BY 3.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Orion_IAU.svg"
+ },
+ "panda": {
+  "author": "Aaron Logan",
+  "credit": "Lightmatter http://www.lightmatter.net/gallery/Animals/panda",
+  "file": "File:Lightmatter_panda.jpg",
+  "group": "world",
+  "license": "CC BY 1.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/1.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Lightmatter_panda.jpg"
+ },
+ "pillars": {
+  "author": "Credit: NASA, Jeff Hester, and Paul Scowen (Arizona State University)",
+  "credit": "http://hubblesite.org/newscenter/newsdesk/archive/releases/2003/34/image/a",
+  "file": "File:Eagle_nebula_pillars.jpg",
+  "group": "space",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "source": "https://commons.wikimedia.org/wiki/File:Eagle_nebula_pillars.jpg"
+ },
+ "radjur": {
+  "author": "okänd",
+  "credit": "",
+  "file": "File:Capreolus_capreolus_(Marek_Szczepanek).jpg",
+  "group": "species",
+  "license": "CC BY-SA 3.0",
+  "licenseUrl": "http://creativecommons.org/licenses/by-sa/3.0/",
+  "source": "https://commons.wikimedia.org/wiki/File:Capreolus_capreolus_(Marek_Szczepanek).jpg"
+ },
+ "rover": {
+  "author": "NASA/JPL-Caltech",
+  "credit": "https://mars.nasa.gov/resources/26253/perseverances-selfie-at-rochette/",
+  "file": "File:Perseverance-Selfie-at-Rochette-Horizontal-V2.gif",
+  "group": "space",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "source": "https://commons.wikimedia.org/wiki/File:Perseverance-Selfie-at-Rochette-Horizontal-V2.gif"
+ },
+ "sal": {
+  "author": "Andreas Trepte",
+  "credit": "Own work",
+  "file": "File:Halichoerus_grypus_male.jpg",
+  "group": "species",
+  "license": "CC BY-SA 2.5",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.5",
+  "source": "https://commons.wikimedia.org/wiki/File:Halichoerus_grypus_male.jpg"
+ },
  "saturn": {
   "author": "NASA / JPL-Caltech / SSI / color composite by Gordan Ugarkovic",
   "credit": "https://www.planetary.org/space-images/saturn_globe_rings_open_ugodan",
@@ -34,6 +250,24 @@
   "license": "Public domain",
   "licenseUrl": "",
   "source": "https://commons.wikimedia.org/wiki/File:Saturn_global_view_from_Cassini,_rings_open_Better_Colour.png"
+ },
+ "saturnv": {
+  "author": "NASA",
+  "credit": "http://grin.hq.nasa.gov/IMAGES/LARGE/GPN-2000-000630.jpg on the Wayback Machine at the Wayback Machine http://grin.hq.nasa.gov/ABSTRACTS/GPN-2000-000630.html on",
+  "file": "File:Apollo_11_Launch_-_GPN-2000-000630.jpg",
+  "group": "space",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "source": "https://commons.wikimedia.org/wiki/File:Apollo_11_Launch_-_GPN-2000-000630.jpg"
+ },
+ "spindel": {
+  "author": "krzysztofniewolny on Pixabay",
+  "credit": "https://pixabay.com/en/spider-arachnid-spider-s-web-insect-3305313/ archive copy at the Wayback Machine",
+  "file": "File:Araneus_diadematus_(Kakatu蜘蛛).jpg",
+  "group": "species",
+  "license": "CC0",
+  "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+  "source": "https://commons.wikimedia.org/wiki/File:Araneus_diadematus_(Kakatu%E8%9C%98%E8%9B%9B).jpg"
  },
  "sun": {
   "author": "Matúš Motlo",
@@ -52,6 +286,15 @@
   "license": "CC0",
   "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
   "source": "https://commons.wikimedia.org/wiki/File:Uranus_Voyager2_color_calibrated.png"
+ },
+ "varg": {
+  "author": "Gary Kramer",
+  "credit": "This image originates from the National Digital Library of the United States Fish and Wildlife Service at this page This tag does not indicate the copyright sta",
+  "file": "File:Front_view_of_a_resting_Canis_lupus_ssp.jpg",
+  "group": "species",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "source": "https://commons.wikimedia.org/wiki/File:Front_view_of_a_resting_Canis_lupus_ssp.jpg"
  },
  "venus": {
   "author": "NASA/JPL-Caltech",

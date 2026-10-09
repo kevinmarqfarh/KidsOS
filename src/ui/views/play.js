@@ -1,12 +1,16 @@
 // Lekstaden – öppen lekvärld med inbyggt lärande.
 import { h, clear, onTap } from '../dom.js';
 import { loadJSON, saveJSON } from '../../core/storage.js';
-import { spendCoins, addCoins, addToSet, hasInSet } from '../../core/model.js';
+import { spendCoins, addCoins, addToSet, dateKey } from '../../core/model.js';
 import {
-  SCENES, ITEMS, itemById, SHOP_CATS, coinsForLevel, fewestCoins, PLANTS, GROW_MINUTES, canGrow, growTick,
-  INGREDIENTS, RECIPES, matchRecipe, BASE_COLORS, MIXES, mixColors, TOOLS, PATIENTS, SECRETS,
-  SKIN, HAIR_COLORS, HAIR_STYLES, CLOTH_COLORS, newCharacter, emptyPlay,
+  SCENES, ITEMS, itemById, SHOP_CATS, shopItems, withArticle, payCoins, changeAllowed, payState, changeOptions, goalProgress, priceQuiz,
+  MONEY, fewestCoins, PLANTS, GROW_MINUTES, growTick, capEarn, pantryInfo,
+  INGREDIENTS, RECIPES, matchRecipe, bookRecipes, BASE_COLORS, MIXES, mixColors, TOOLS, PATIENTS, SECRETS, SECRET_TRIGGERS,
+  FARM_ANIMALS, FARM_FOODS, FARM_PRODUCTS, farmReaction, productReady, farmQuestion, BEACH_ITEMS, inSea,
+  SCHOOL_SUBJECTS, schoolTask, SCHOOL_PER_COIN, BOOKS, booksForLevel, BOOK_COINS,
+  SKIN, HAIR_COLORS, HAIR_STYLES, CLOTH_COLORS, newCharacter, normalizePlay,
 } from '../../apps/play.js';
+import { timeToSwedish } from '../visuals.js';
 import { WONDERS, wonderOfTheDay } from '../../apps/wonder.js';
 import { PLACES } from '../../apps/world.js';
 import { PLANETS } from '../../apps/space.js';
@@ -38,7 +42,7 @@ export function charSvg(c, mood = 'happy') {
   }[mood] || '';
   const w = c.wear || {};
   const em = (e, x, y, s) => (e ? `<text x="${x}" y="${y}" font-size="${s}" text-anchor="middle" dominant-baseline="central">${e}</text>` : '');
-  return `<svg class="char-svg" viewBox="0 0 100 160" aria-hidden="true">${behind}
+  return `<svg class="char-svg" viewBox="0 0 100 160" aria-hidden="true">${em(itemById(w.back)?.e, 50, 92, 64)}${behind}
     <rect x="34" y="112" width="13" height="36" rx="6" fill="${c.pants}"/><rect x="53" y="112" width="13" height="36" rx="6" fill="${c.pants}"/>
     <ellipse cx="40" cy="150" rx="11" ry="6" fill="#1f2937"/><ellipse cx="60" cy="150" rx="11" ry="6" fill="#1f2937"/>
     <rect x="16" y="76" width="12" height="34" rx="6" fill="${c.skin}" transform="rotate(14 22 78)"/><rect x="72" y="76" width="12" height="34" rx="6" fill="${c.skin}" transform="rotate(-14 78 78)"/>
@@ -68,14 +72,33 @@ const BG = {
   garden: () => `<svg viewBox="0 0 400 300" preserveAspectRatio="none"><rect width="400" height="300" fill="#bae6fd"/><circle cx="340" cy="50" r="28" fill="#fde047"/><rect y="150" width="400" height="150" fill="#86efac"/>
     <path d="M0 150 Q100 120 200 150 T400 150 V160 H0Z" fill="#4ade80"/>${Array.from({ length: 14 }, (_, i) => `<path d="M${i * 30 + 6} 150 l4 -14 l4 14" fill="#16a34a"/>`).join('')}<rect x="10" y="100" width="380" height="8" fill="#a16207" opacity=".7"/>${Array.from({ length: 12 }, (_, i) => `<rect x="${14 + i * 32}" y="86" width="8" height="40" fill="#a16207" opacity=".7"/>`).join('')}</svg>`,
   market: () => `<svg viewBox="0 0 400 300" preserveAspectRatio="none"><rect width="400" height="300" fill="#fef9c3"/>${Array.from({ length: 10 }, (_, i) => `<path d="M${i * 40} 0 h40 v34 q-20 14 -40 0z" fill="${i % 2 ? '#fde047' : '#f97316'}"/>`).join('')}<rect y="250" width="400" height="50" fill="#fcd34d"/></svg>`,
+  school: () => `<svg viewBox="0 0 400 300" preserveAspectRatio="none"><rect width="400" height="300" fill="#fef3c7"/><rect y="215" width="400" height="85" fill="#d6a76c"/>
+    <rect x="70" y="20" width="260" height="150" rx="8" fill="#14532d" stroke="#a16207" stroke-width="10"/><rect x="150" y="170" width="100" height="8" fill="#a16207"/><rect x="160" y="166" width="20" height="5" rx="2" fill="#fff"/>
+    <circle cx="370" cy="40" r="20" fill="#fff" stroke="#334155" stroke-width="4"/><line x1="370" y1="40" x2="370" y2="28" stroke="#334155" stroke-width="3"/><line x1="370" y1="40" x2="379" y2="44" stroke="#334155" stroke-width="3"/>
+    ${[40, 160, 280].map((x) => `<rect x="${x}" y="236" width="80" height="12" rx="3" fill="#92400e"/><rect x="${x + 8}" y="248" width="6" height="40" fill="#78350f"/><rect x="${x + 66}" y="248" width="6" height="40" fill="#78350f"/>`).join('')}</svg>`,
+  library: () => `<svg viewBox="0 0 400 300" preserveAspectRatio="none"><rect width="400" height="300" fill="#ede9fe"/><rect y="225" width="400" height="75" fill="#a78bfa" opacity=".5"/>
+    ${[0, 1, 2].map((r) => `<rect x="20" y="${30 + r * 62}" width="360" height="8" fill="#7c2d12"/>${Array.from({ length: 22 }, (_, i) => `<rect x="${26 + i * 16}" y="${30 + r * 62 - 40 + ((i * 7 + r * 3) % 9)}" width="13" height="${40 - ((i * 7 + r * 3) % 9)}" rx="2" fill="${['#ef4444', '#3b82f6', '#22c55e', '#facc15', '#a855f7', '#f97316'][(i + r) % 6]}"/>`).join('')}`).join('')}
+    <ellipse cx="200" cy="270" rx="130" ry="20" fill="#c4b5fd"/></svg>`,
+  farm: () => `<svg viewBox="0 0 400 300" preserveAspectRatio="none"><rect width="400" height="300" fill="#bfdbfe"/><circle cx="60" cy="40" r="22" fill="#fde047"/>
+    <path d="M0 120 Q120 90 240 118 T400 110 V300 H0Z" fill="#86efac"/><rect y="150" width="400" height="150" fill="#4ade80"/>
+    <rect x="290" y="50" width="90" height="90" fill="#dc2626"/><path d="M280 55 L335 15 L390 55Z" fill="#991b1b"/><rect x="318" y="90" width="34" height="50" fill="#fef3c7"/><path d="M318 90 L352 140 M352 90 L318 140" stroke="#dc2626" stroke-width="4"/>
+    ${Array.from({ length: 9 }, (_, i) => `<rect x="${8 + i * 30}" y="128" width="7" height="32" fill="#fef3c7"/>`).join('')}<rect x="4" y="136" width="270" height="6" fill="#fef3c7"/><rect x="4" y="150" width="270" height="6" fill="#fef3c7"/>
+    <ellipse cx="200" cy="262" rx="60" ry="14" fill="#7c4a1e" opacity=".55"/></svg>`,
+  beach: () => `<svg viewBox="0 0 400 300" preserveAspectRatio="none"><rect width="400" height="130" fill="#7dd3fc"/><circle cx="320" cy="40" r="24" fill="#fde047"/><ellipse cx="90" cy="45" rx="30" ry="10" fill="#fff"/>
+    <rect y="120" width="400" height="180" fill="#fde68a"/>
+    <path d="M160 126 L400 126 L400 300 L200 300Z" fill="#0ea5e9"/><path d="M200 300 L400 300 L400 220 Q300 230 240 300Z" fill="#0369a1" opacity=".55"/>
+    <path d="M160 126 Q170 140 166 150 Q178 170 174 186 Q186 210 182 230 Q196 260 200 300" stroke="#fff" stroke-width="4" fill="none" opacity=".7"/>
+    ${[0, 1, 2, 3].map((i) => `<path d="M${230 + i * 40} ${150 + i * 6} q10 -6 20 0" stroke="#e0f2fe" stroke-width="3" fill="none"/>`).join('')}</svg>`,
   wardrobe: () => `<svg viewBox="0 0 400 300" preserveAspectRatio="none"><rect width="400" height="300" fill="#fce7f3"/><rect y="230" width="400" height="70" fill="#f9a8d4"/><rect x="290" y="30" width="90" height="140" rx="10" fill="#fff" stroke="#f472b6" stroke-width="5"/><ellipse cx="335" cy="100" rx="30" ry="50" fill="#e0f2fe"/></svg>`,
 };
+
+const cap = (t) => t.charAt(0).toUpperCase() + t.slice(1);
 
 /* ---------------- Vyn ---------------- */
 export function playView(el, { kos }) {
   const p = kos.profile;
   const key = `play.${p.id}`;
-  const st = Object.assign(emptyPlay(), loadJSON(key, {}) || {});
+  const st = normalizePlay(loadJSON(key, {}));
   if (!st.chars.length) {
     const rng = createRng(Date.now()).next;
     st.chars.push(newCharacter(rng), newCharacter(rng));
@@ -108,12 +131,39 @@ export function playView(el, { kos }) {
     setTimeout(() => b.remove(), ms);
     if (speak) kos.say(text);
   }
-  function earn(n, why) {
+  const capWarned = new Set();
+  /** Ge mynt. Med capKey räknas de mot dagens tak för den sortens lek. Returnerar antal givna mynt. */
+  function earn(n, why, capKey) {
+    if (capKey) {
+      n = capEarn(st, capKey, n, dateKey());
+      save();
+      if (!n) {
+        if (!capWarned.has(capKey)) {
+          capWarned.add(capKey);
+          kos.toast('Dagens mynt här är slut. Lär dig något i de andra apparna för fler mynt!', { icon: '🪙', ms: 3200 });
+        }
+        return 0;
+      }
+    }
     addCoins(p, n);
     kos.save();
     kos.sfx('star');
     kos.toast(`+${n} 🪙 ${why}`, { icon: '🪙', ms: 2200 });
-    clear(bar.querySelector('.wallet') || h('span')).append(h('span.coin', '🪙'), h('b', String(p.coins)));
+    refreshWallet();
+    return n;
+  }
+  function refreshWallet() {
+    const w = bar.querySelector('.wallet');
+    if (w) clear(w).append(h('span.coin', '🪙'), h('b', String(p.coins || 0)));
+  }
+  /** Sparmålet som en liten banderoll (eller null). */
+  function goalBanner() {
+    const it = st.goal && itemById(st.goal);
+    if (!it) return null;
+    const g = goalProgress(p.coins || 0, it.price);
+    const text = g.done ? `Du har råd med ${withArticle(it)} nu! Gå till Marknaden.` : `Sparmål: ${withArticle(it)}. Du har ${g.have} av ${it.price}. Det fattas ${g.left}.`;
+    const b = h('button.goal-banner', { type: 'button', class: g.done ? 'done' : '' }, h('span.gb-e', it.e), h('span.gb-text', h('b', g.done ? '🎉 Klart!' : '🎯 Sparmål'), h('span.gb-bar', h('i', { style: { width: `${g.pct}%` } })), h('small', `${g.have} / ${it.price} 🪙`)));
+    return onTap(b, () => kos.say(text));
   }
   function clearTimers() {
     timers.forEach(clearInterval);
@@ -136,8 +186,9 @@ export function playView(el, { kos }) {
     });
     const found = Object.keys(st.secrets).length;
     body.append(
+      goalBanner() || h('span'),
       map,
-      h('div.town-info', h('span', `🔍 Hemligheter: ${found}`), h('span', `🧪 Färger: ${Object.keys(st.colors).length}/${MIXES.length}`), h('span', `🍳 Recept: ${Object.keys(st.recipes).length}/${RECIPES.length}`), h('span', `🏥 Patienter: ${st.patients}`)),
+      h('div.town-info', h('span', `🔍 Hemligheter: ${found}`), h('span', `🧪 Färger: ${Object.keys(st.colors).length}/${MIXES.length}`), h('span', `🍳 Recept: ${Object.keys(st.recipes).length}/${RECIPES.length}`), h('span', `📚 Böcker: ${Object.keys(st.books).length}/${BOOKS.length}`), h('span', `🏫 Uppgifter: ${st.school.solved}`), h('span', `🏥 Patienter: ${st.patients}`)),
       h('p.muted.town-tip', '🪙 Mynt tjänar du genom att lära dig i de andra apparna – varje stjärna ger ett mynt.'),
     );
     kos.autoSay('Välkommen till Lekstaden! Vart vill du gå?');
@@ -148,7 +199,7 @@ export function playView(el, { kos }) {
     const s = SCENES.find((x) => x.id === id);
     topbar(`${s.icon} ${s.name}`);
     clear(body);
-    ({ house, market, kitchen, vet, lab, garden, wardrobe })[id]();
+    ({ house, market, kitchen, school, library, farm, beach, vet, lab, garden, wardrobe })[id]();
   }
 
   /* ----- Scen-motor: fritt placerbara saker ----- */
@@ -159,10 +210,15 @@ export function playView(el, { kos }) {
     // hemligheter
     (SECRETS[sceneId] || []).forEach((sec, i) => {
       const sid = `${sceneId}-${i}`;
-      const spot = h('button.secret', { type: 'button', style: { left: `${sec.x}%`, top: `${sec.y}%` }, 'aria-label': 'hemlighet', class: st.secrets[sid] ? 'found' : '' }, st.secrets[sid] ? sec.e : '');
+      const cls = [st.secrets[sid] ? 'found' : '', sec.when ? `needs-${sec.when}` : ''].filter(Boolean).join(' ');
+      const spot = h('button.secret', { type: 'button', style: { left: `${sec.x}%`, top: `${sec.y}%` }, 'aria-label': 'hemlighet', class: cls }, st.secrets[sid] ? sec.e : '');
       onTap(spot, () => {
         if (st.secrets[sid]) {
           bubble(stage, sec.e, { speak: false, ms: 900 });
+          return;
+        }
+        if (sec.when === 'dark' && !stage.classList.contains('dark')) {
+          bubble(stage, `🤫 ${SECRET_TRIGGERS.dark.hint}`, { ms: 1600 });
           return;
         }
         st.secrets[sid] = 1;
@@ -237,11 +293,26 @@ export function playView(el, { kos }) {
       draggable(node, stage, {
         onDrop: (q) => {
           st.charPos[sceneId][c.id] = q;
-          // lägg sig i sängen?
-          const bed = hitAt(stage, q, '.prop[data-item="bed"], .prop[data-item="sofa"]');
-          if (bed) {
+          // lägg sig i sängen, bada, sitta eller åka rutschkana?
+          const spot = hitAt(stage, q, '.prop[data-rest]');
+          const rest = spot?.dataset.rest;
+          node.classList.remove('sliding');
+          if (rest === 'sleep') {
             node.innerHTML = charSvg(c, 'sleep');
             bubble(node, 'Zzz … God natt!', { ms: 1800 });
+          } else if (rest === 'bath') {
+            node.innerHTML = charSvg(c, 'yum');
+            kos.sfx('whoosh');
+            bubble(node, 'Plask! Vad skönt med ett bad.', { ms: 1800 });
+          } else if (rest === 'slide') {
+            node.innerHTML = charSvg(c, 'yum');
+            node.classList.add('sliding');
+            kos.sfx('whoosh');
+            bubble(node, 'Wiii!', { ms: 1400 });
+            setTimeout(() => node.classList.remove('sliding'), 1100);
+          } else if (rest === 'sit') {
+            node.innerHTML = charSvg(c);
+            bubble(node, 'Skönt att sitta en stund.', { ms: 1600 });
           } else node.innerHTML = charSvg(c);
           save();
         },
@@ -277,9 +348,13 @@ export function playView(el, { kos }) {
     body.append(stage, h('p.tray-title', '🧺 Mina saker – dra in i rummet'), tray);
     function propNode(pl) {
       const it = itemById(pl.item);
-      const node = h('div.prop', { style: { left: `${pl.x}%`, top: `${pl.y}%` }, dataset: { item: pl.item, uid: pl.uid } }, it.e);
+      const data = { item: pl.item, uid: pl.uid };
+      if (it.rest) data.rest = it.rest;
+      const node = h('div.prop', { style: { left: `${pl.x}%`, top: `${pl.y}%` }, dataset: data, class: it.dream ? 'dream' : '' }, it.e);
       draggable(node, stage, {
         onDrop: (q) => {
+          const ch = it.food && hitAt(stage, q, '.char');
+          if (ch) feed(ch, { n: it.n, healthy: false });
           if (q.y > 93) {
             // tillbaka till korgen
             placed.splice(placed.indexOf(pl), 1);
@@ -385,6 +460,46 @@ export function playView(el, { kos }) {
         kos.sfx('fanfare');
         setTimeout(() => stage.classList.remove('disco'), 3000);
         break;
+      case 'mirror':
+        bubble(node, '🪞 I en spegel blir allt omvänt – höger ser ut som vänster!', { ms: 4000 });
+        break;
+      case 'clock': {
+        const d = new Date();
+        let hh = d.getHours();
+        let mm = Math.round(d.getMinutes() / 5) * 5;
+        if (mm === 60) {
+          mm = 0;
+          hh++;
+        }
+        const exact = mm === d.getMinutes();
+        bubble(node, `🕰️ Klockan är ${exact ? '' : 'ungefär '}${timeToSwedish(hh, mm).replace(/^klockan /, '')}.`, { ms: 4000 });
+        break;
+      }
+      case 'drum':
+        try {
+          sfx.boom();
+        } catch {}
+        node.classList.add('jump');
+        setTimeout(() => node.classList.remove('jump'), 600);
+        bubble(node, 'Bom bom!', { speak: false, ms: 900 });
+        break;
+      case 'spin':
+        node.classList.add('spin');
+        kos.sfx('fanfare');
+        setTimeout(() => node.classList.remove('spin'), 1300);
+        bubble(node, 'Snurr snurr!', { speak: false, ms: 1200 });
+        break;
+      case 'castle':
+        bubble(node, '🏰 Välkommen till slottet! Riktiga slott byggdes med tjocka stenmurar för att vara starka.', { ms: 5000 });
+        break;
+      case 'rocket': {
+        node.classList.add('launch');
+        kos.sfx('whoosh');
+        setTimeout(() => node.classList.remove('launch'), 1800);
+        const pl = rng.pick(PLANETS);
+        bubble(stage, `🚀 Vi flyger till ${pl.name}! ${pl.facts[0]}`, { ms: 6000 });
+        break;
+      }
       case 'pet':
         node.classList.add('jump');
         setTimeout(() => node.classList.remove('jump'), 600);
@@ -397,31 +512,45 @@ export function playView(el, { kos }) {
   }
 
   /* ======================= Marknaden ======================= */
+  /** Pris som prickar (nivå 0): tiotal som staplar, ental som prickar. */
+  function priceDots(price) {
+    const tens = Math.floor(price / 10);
+    const ones = price % 10;
+    return h('div.price-dots', [...Array.from({ length: tens }, () => h('i.ten')), ...Array.from({ length: ones }, () => h('i'))]);
+  }
   function market() {
     let cat = SHOP_CATS[0].id;
     const wrap = h('div.market');
     body.append(h('div.stage-strip', { html: BG.market() }), wrap);
     function render() {
       clear(wrap);
-      wrap.append(h('div.chip-row', SHOP_CATS.map((c) => onTap(h('button.chip-btn', { type: 'button', class: c.id === cat ? 'on' : '' }, `${c.e} ${c.n}`), () => {
-        cat = c.id;
-        render();
-      }))));
+      wrap.append(
+        goalBanner() || h('span'),
+        h('div.chip-row', SHOP_CATS.map((c) => onTap(h('button.chip-btn', { type: 'button', class: c.id === cat ? 'on' : '' }, `${c.e} ${c.n}`), () => {
+          cat = c.id;
+          render();
+        }))),
+        h('div.row-actions.left', onTap(h('button.btn.btn-ghost.big-touch', { type: 'button' }, '🔎 Prisjakten'), () => quiz())),
+      );
+      if (cat === 'dröm') wrap.appendChild(h('p.dream-tip', '✨ Drömköp är dyra. Välj ett sparmål och lär dig i apparna – varje stjärna ger ett mynt!'));
       const grid = h('div.shop-grid');
-      ITEMS.filter((i) => i.cat === cat).forEach((it) => {
+      shopItems(cat).forEach((it) => {
         const have = st.inv[it.id] || 0;
-        const card = h('button.shop-item', { type: 'button', class: (p.coins || 0) < it.price ? 'poor' : '' }, h('span.si-e', it.e), h('span.si-n', it.n), h('span.price', `${it.price} 🪙`), have ? h('small.have', `Har ${have}`) : null);
+        const card = h('button.shop-item', { type: 'button', class: [(p.coins || 0) < it.price ? 'poor' : '', it.dream ? 'dream' : '', st.goal === it.id ? 'goal' : ''].filter(Boolean).join(' ') }, h('span.si-e', it.e), h('span.si-n', it.n), h('span.price', `${it.price} 🪙`), have ? h('small.have', `Har ${have}`) : null, st.goal === it.id ? h('small.goal-tag', '🎯 Sparmål') : null);
         onTap(card, () => buy(it));
         grid.appendChild(card);
       });
       wrap.appendChild(grid);
-      const harvest = Object.entries(st.pantry).filter(([, n]) => n > 0);
+      const harvest = Object.entries(st.pantry).filter(([k, n]) => n > 0 && pantryInfo(k));
       if (harvest.length) {
-        wrap.append(h('h4', '🧺 Sälj från trädgården (1 🪙 st)'), h('div.chip-row', harvest.map(([k, n]) => {
-          const ing = INGREDIENTS.find((i) => i.id === k) || { e: '🌻', n: 'solrosfrön' };
-          return onTap(h('button.chip-btn', { type: 'button' }, `${ing.e} ${ing.n} × ${n}`), () => {
+        wrap.append(h('h4', '🧺 Sälj från trädgården och bondgården (1 🪙 st)'), h('div.chip-row', harvest.map(([k, n]) => {
+          const info = pantryInfo(k);
+          return onTap(h('button.chip-btn', { type: 'button' }, `${info.e} ${info.n} × ${n}`), () => {
+            if (!earn(1, `Sålde ${info.n}`, 'sell')) {
+              kos.say('Marknaden har köpt nog för i dag. Kom tillbaka i morgon!');
+              return;
+            }
             st.pantry[k]--;
-            earn(1, `Sålde ${ing.n}`);
             save();
             render();
           });
@@ -430,49 +559,86 @@ export function playView(el, { kos }) {
     }
     function buy(it) {
       if ((p.coins || 0) < it.price) {
-        kos.say(`${it.n} kostar ${it.price} mynt. Du har ${p.coins || 0}. Lär dig något nytt i apparna så tjänar du fler mynt!`);
-        kos.toast(`Du behöver ${it.price - (p.coins || 0)} mynt till. Spela i Matte, Svenska eller någon annan app!`, { icon: '🪙', ms: 3800 });
+        notEnough(it);
         return;
       }
       pay(it, () => {
         st.inv[it.id] = (st.inv[it.id] || 0) + 1;
         st.bought++;
+        if (st.goal === it.id) st.goal = null;
         addToSet(p, 'playBought', it.id);
+        if (it.dream) addToSet(p, 'playDreams', it.id);
         save();
         kos.sfx('fanfare');
-        kos.confetti(50);
-        kos.say(`Tack för köpet! Du köpte ${it.n}.`);
+        kos.confetti(it.dream ? 120 : 50);
+        kos.say(`Tack för köpet! Du köpte ${withArticle(it)}.`);
         render();
       });
     }
+    function notEnough(it) {
+      const g = goalProgress(p.coins || 0, it.price);
+      const dlg = h(
+        'div.pay',
+        h('div.pay-head', h('span.si-e', it.e), h('div', h('b', it.n), h('div.price.big', `${it.price} 🪙`))),
+        h('p.big-text', `Du har ${g.have} mynt. Det fattas ${g.left}.`),
+        h('div.goal-bar', h('i', { style: { width: `${g.pct}%` } })),
+        h('p.muted', 'Mynt tjänar du genom att lära dig i apparna – varje stjärna ger ett mynt.'),
+        h('div.row-actions', onTap(h('button.btn.btn-ghost', { type: 'button' }, 'Stäng'), () => dlg.remove()), st.goal === it.id ? null : onTap(h('button.btn.btn-primary', { type: 'button' }, '🎯 Spara till den!'), () => {
+          st.goal = it.id;
+          save();
+          kos.sfx('pop');
+          kos.say(`Nu sparar du till ${withArticle(it)}. Det fattas ${g.left} mynt.`);
+          dlg.remove();
+          render();
+        })),
+      );
+      el.querySelector('.play').appendChild(dlg);
+      kos.say(`${cap(withArticle(it))} kostar ${it.price} mynt. Du har ${g.have}. Det fattas ${g.left}.`);
+    }
     function pay(it, done) {
-      const coins = coinsForLevel(level);
+      const coins = payCoins(level, it.price);
+      const allowChange = changeAllowed(level);
       let put = [];
       const sumEl = h('div.pay-sum');
       const counter = h('div.pay-counter');
       const msg = h('p.pay-msg');
-      const payBtn = h('button.btn.btn-primary', { type: 'button', disabled: true }, 'Betala ✓');
-      const sum = () => put.reduce((a, b) => a + b, 0);
+      const payBtn = h('button.btn.btn-primary.big-touch', { type: 'button', disabled: true }, 'Betala ✓');
+      const state = () => payState(put, it.price, { allowChange });
       const render2 = () => {
-        clear(counter).append(...put.map((c, i) => onTap(h('button.coin-chip', { type: 'button', class: `v${c}` }, String(c)), () => {
+        const s = state();
+        clear(counter).append(...put.map((c, i) => onTap(h('button.coin-chip', { type: 'button', class: `v${c}${c >= 20 ? ' note' : ''}` }, String(c)), () => {
           put.splice(i, 1);
           render2();
         })));
-        sumEl.textContent = `${sum()} av ${it.price} 🪙`;
-        payBtn.disabled = sum() !== it.price;
-        msg.textContent = sum() > it.price ? 'Det blev för mycket! Ta bort ett mynt.' : sum() === it.price ? 'Precis rätt!' : `Det fattas ${it.price - sum()}.`;
-        msg.className = `pay-msg ${sum() > it.price ? 'try' : sum() === it.price ? 'ok' : ''}`;
+        sumEl.textContent = `${s.sum} av ${it.price} 🪙`;
+        payBtn.disabled = !(s.status === 'exact' || s.status === 'change');
+        msg.textContent = {
+          short: `Det fattas ${s.missing}.`,
+          exact: 'Precis rätt!',
+          change: `Du lägger ${s.sum}. Då får du växel tillbaka!`,
+          over: allowChange ? 'Ett mynt är onödigt. Ta bort det!' : 'Det blev för mycket! Ta bort ett mynt.',
+        }[s.status];
+        msg.className = `pay-msg ${s.status === 'over' ? 'try' : s.status === 'short' ? '' : 'ok'}`;
       };
       const dlg = h(
         'div.pay',
         h('div.pay-head', h('span.si-e', it.e), h('div', h('b', `${it.n}`), h('div.price.big', `${it.price} 🪙`))),
-        level === 0 ? h('div.price-dots', Array.from({ length: it.price }, () => h('i'))) : null,
-        h('p', level === 0 ? 'Lägg ett mynt för varje prick!' : 'Lägg mynt på disken tills det blir rätt summa.'),
+        level === 0 ? priceDots(it.price) : null,
+        h('p', level === 0 ? (it.price > 10 ? 'Lägg en tia för varje stapel och en etta för varje prick!' : 'Lägg ett mynt för varje prick!') : allowChange ? 'Betala exakt – eller med en större sedel och få växel tillbaka.' : 'Lägg mynt på disken tills det blir rätt summa.'),
         counter,
         sumEl,
         msg,
-        h('div.coin-row', coins.map((c) => onTap(h('button.coin-chip.big', { type: 'button', class: `v${c}` }, String(c)), () => {
-          if (sum() >= it.price + 10) return;
+        h('div.coin-row', coins.map((c) => onTap(h('button.coin-chip.big', { type: 'button', class: `v${c}${c >= 20 ? ' note' : ''}` }, String(c)), () => {
+          const s = state();
+          if (allowChange && s.sum >= it.price) {
+            msg.textContent = 'Det räcker redan!';
+            return;
+          }
+          if (allowChange && s.sum + c > Math.max(p.coins || 0, it.price)) {
+            msg.textContent = 'Så mycket pengar har du inte. Prova mindre mynt!';
+            return;
+          }
+          if (s.sum >= it.price + 10) return;
           put.push(c);
           kos.sfx('click');
           render2();
@@ -480,18 +646,107 @@ export function playView(el, { kos }) {
         h('div.row-actions', onTap(h('button.btn.btn-ghost', { type: 'button' }, 'Avbryt'), () => dlg.remove()), payBtn),
       );
       onTap(payBtn, () => {
-        if (sum() !== it.price || !spendCoins(p, it.price)) return;
+        const s = state();
+        if (s.status === 'change') return askChange(s);
+        if (s.status !== 'exact' || !spendCoins(p, it.price)) return;
         const best = fewestCoins(it.price, coins);
         const efficient = best && put.length === best.length && level >= 2;
         kos.save();
         dlg.remove();
         done();
-        if (efficient) earn(1, 'Smart! Så få mynt som möjligt.');
-        else clear(bar.querySelector('.wallet')).append(h('span.coin', '🪙'), h('b', String(p.coins)));
+        if (efficient) earn(1, 'Smart! Så få mynt som möjligt.', 'change');
+        else refreshWallet();
       });
+      function askChange(s) {
+        const rng = createRng(Date.now());
+        let tries = 0;
+        clear(dlg).append(
+          h('div.pay-head', h('span.si-e', it.e), h('div', h('b', it.n), h('div.price.big', `${it.price} 🪙`))),
+          h('p.big-text', `Du betalar ${s.sum}. ${cap(it.d)} kostar ${it.price}.`),
+          h('p.big-text', h('b', 'Hur mycket får du tillbaka?')),
+          h('div.answer-row', changeOptions(s.change, rng).map((v) => {
+            const b = h('button.answer-btn', { type: 'button' }, String(v));
+            return onTap(b, () => {
+              if (v !== s.change) {
+                tries++;
+                b.disabled = true;
+                b.classList.add('wrong');
+                kos.sfx('wrong');
+                kos.say(`Inte riktigt. Räkna upp från ${it.price} till ${s.sum}.`);
+                return;
+              }
+              if (!spendCoins(p, it.price)) return;
+              kos.save();
+              kos.sfx('correct');
+              const back = fewestCoins(s.change, MONEY) || [];
+              clear(dlg).append(
+                h('p.big-text', h('b', `Rätt! ${s.sum} − ${it.price} = ${s.change}.`)),
+                h('p', 'Här är din växel:'),
+                h('div.coin-row', back.map((c) => h('span.coin-chip', { class: `v${c}${c >= 20 ? ' note' : ''}` }, String(c)))),
+                h('div.row-actions', onTap(h('button.btn.btn-primary.big-touch', { type: 'button' }, 'Tack! ✓'), () => {
+                  dlg.remove();
+                  done();
+                  if (!tries) earn(1, 'Rätt växel!', 'change');
+                  else refreshWallet();
+                })),
+              );
+              kos.say(`Rätt! Du får ${s.change} tillbaka.`);
+            });
+          })),
+          h('div.row-actions', onTap(h('button.btn.btn-ghost', { type: 'button' }, 'Avbryt'), () => dlg.remove())),
+        );
+        kos.say(`Du betalar ${s.sum}. Det kostar ${it.price}. Hur mycket får du tillbaka?`);
+      }
       el.querySelector('.play').appendChild(dlg);
       render2();
-      kos.say(`${it.n} kostar ${it.price} mynt. ${level === 0 ? 'Lägg ett mynt för varje prick.' : 'Lägg rätt summa på disken.'}`);
+      kos.say(`${cap(withArticle(it))} kostar ${it.price} mynt. ${level === 0 ? 'Lägg ett mynt för varje prick.' : 'Lägg rätt summa på disken.'}`);
+    }
+    /** Prisjakten – jämför priser. */
+    function quiz() {
+      const rng = createRng(Date.now());
+      const dlg = h('div.pay');
+      el.querySelector('.play').appendChild(dlg);
+      function next() {
+        const q = priceQuiz(level, rng);
+        let tries = 0;
+        const answered = (ok, b) => {
+          if (!ok) {
+            tries++;
+            b.disabled = true;
+            b.classList.add('wrong');
+            kos.sfx('wrong');
+            kos.say(q.ask === 'cheap' ? 'Inte den. Titta på priserna – vilket tal är minst?' : q.ask === 'dear' ? 'Inte den. Vilket tal är störst?' : 'Inte riktigt. Prova igen!');
+            return;
+          }
+          kos.sfx('correct');
+          st.quiz.right++;
+          addToSet(p, 'playQuiz', `${q.ask}`);
+          save();
+          if (!tries) earn(1, 'Prisjägare!', 'quiz');
+          clear(feedback).append(h('p.pay-msg.ok', q.explain), onTap(h('button.btn.btn-primary.big-touch', { type: 'button' }, 'Nästa ➜'), next));
+          kos.say(q.explain);
+        };
+        const feedback = h('div');
+        const itemCard = (it, asButton) => {
+          const inner = [h('span.si-e', it.e), h('span.si-n', it.n), level === 0 ? priceDots(it.price) : null, h('span.price', `${it.price} 🪙`)];
+          if (!asButton) return h('div.shop-item.static', inner);
+          const b = h('button.shop-item', { type: 'button' }, inner);
+          return onTap(b, () => answered(it.id === q.answer, b));
+        };
+        clear(dlg).append(
+          h('h3', '🔎 Prisjakten'),
+          h('p.big-text', h('b', q.text)),
+          h('div.shop-grid', q.items.map((it) => itemCard(it, q.kind === 'pick'))),
+          q.kind === 'num' ? h('div.answer-row', q.options.map((v) => {
+            const b = h('button.answer-btn', { type: 'button' }, String(v));
+            return onTap(b, () => answered(v === q.answer, b));
+          })) : null,
+          feedback,
+          h('div.row-actions', onTap(h('button.btn.btn-ghost', { type: 'button' }, 'Stäng'), () => dlg.remove())),
+        );
+        kos.say(q.say);
+      }
+      next();
     }
     render();
     kos.autoSay('Marknaden! Här kan du köpa saker med dina mynt.');
@@ -562,7 +817,7 @@ export function playView(el, { kos }) {
       Object.keys(bowl).forEach((k) => delete bowl[k]);
       renderBowl();
       renderShelf();
-      const dish = r ? { e: r.e, n: r.n.toLowerCase(), healthy: r.id !== 'cake' } : { e: '🫕', n: 'mystisk sörja', healthy: true };
+      const dish = r ? { e: r.e, n: r.n.toLowerCase(), healthy: !r.sweet } : { e: '🫕', n: 'mystisk sörja', healthy: true };
       const node = h('div.prop.dish', { style: { left: `${45 + Math.random() * 10}%`, top: '58%' } }, dish.e);
       draggable(node, stage, {
         onDrop: (q) => {
@@ -580,8 +835,8 @@ export function playView(el, { kos }) {
         const first = !st.recipes[r.id];
         st.recipes[r.id] = (st.recipes[r.id] || 0) + 1;
         addToSet(p, 'playRecipes', r.id);
-        bubble(bowlEl, `${r.e} ${r.n}! ${r.fact}`, { ms: 5000 });
-        if (first) earn(3, `Nytt recept: ${r.n}`);
+        bubble(bowlEl, `${r.secret && first ? '🤫 Hemligt recept! ' : ''}${r.e} ${r.n}! ${r.fact}`, { ms: 5000 });
+        if (first) earn(r.secret ? 4 : 3, `${r.secret ? 'Hemligt' : 'Nytt'} recept: ${r.n}`);
         kos.confetti(40);
       } else bubble(bowlEl, 'Hihi – det blev en mystisk sörja! Prova ett recept.', { ms: 3000 });
       save();
@@ -595,7 +850,9 @@ export function playView(el, { kos }) {
       onTap(h('button.btn.btn-primary', { type: 'button' }, '🔥 Laga!'), cook),
     );
     function openBook() {
-      const list = RECIPES.filter((r) => r.minLevel <= level + 1);
+      const list = bookRecipes(level);
+      const secretsFound = RECIPES.filter((r) => r.secret && st.recipes[r.id]);
+      const secretsLeft = RECIPES.filter((r) => r.secret).length - secretsFound.length;
       const dlg = h(
         'div.pay',
         h('h3', '📖 Receptbok'),
@@ -605,6 +862,8 @@ export function playView(el, { kos }) {
           renderRecipe();
           kos.say(`${r.n}. Du behöver ${recipeText(r)}.`);
         }))),
+        h('p.muted', secretsLeft ? `🤫 Det finns ${secretsLeft} hemliga recept till. Experimentera i skålen!` : '🤫 Du har hittat alla hemliga recept!'),
+        secretsFound.length ? h('div.chip-row', secretsFound.map((r) => h('span.chip-btn.static.done', `${r.e} ${r.n}`))) : null,
         h('div.row-actions', onTap(h('button.btn.btn-ghost', { type: 'button' }, 'Stäng'), () => dlg.remove())),
       );
       el.querySelector('.play').appendChild(dlg);
@@ -612,6 +871,435 @@ export function playView(el, { kos }) {
     renderShelf();
     renderBowl();
     kos.autoSay('Köket! Välj ett recept i receptboken, eller hitta på något eget.');
+  }
+
+  /** Dra en kopia från en bricka in i scenen. Utan rörelse räknas det som ett tryck. */
+  function ghostDrag(e, stage, content, { onDrop, onTap: tap }) {
+    e.preventDefault();
+    const start = { x: e.clientX, y: e.clientY };
+    let ghost = null;
+    const move = (ev) => {
+      if (!ghost && Math.hypot(ev.clientX - start.x, ev.clientY - start.y) < 10) return;
+      if (!ghost) {
+        ghost = h('div.prop.lift.ghost', content);
+        stage.appendChild(ghost);
+      }
+      const q = pct(stage, ev);
+      ghost.style.left = `${q.x}%`;
+      ghost.style.top = `${q.y}%`;
+    };
+    const up = (ev) => {
+      window.removeEventListener('pointermove', move);
+      window.removeEventListener('pointerup', up);
+      window.removeEventListener('pointercancel', up);
+      if (!ghost) return tap?.();
+      ghost.remove();
+      const r = stage.getBoundingClientRect();
+      if (ev.clientY > r.bottom || ev.clientY < r.top || ev.clientX < r.left || ev.clientX > r.right) return;
+      onDrop?.(pct(stage, ev));
+    };
+    window.addEventListener('pointermove', move);
+    window.addEventListener('pointerup', up);
+    window.addEventListener('pointercancel', up);
+  }
+
+  /* ---------- Små bilder för skoltavlan ---------- */
+  function shapeSvg(id, size = 70) {
+    const c = '#fde68a';
+    const sw = 'stroke="#fff" stroke-width="4"';
+    const poly = (n) => Array.from({ length: n }, (_, i) => {
+      const a = -Math.PI / 2 + (i / n) * Math.PI * 2;
+      return `${50 + 40 * Math.cos(a)},${52 + 40 * Math.sin(a)}`;
+    }).join(' ');
+    const inner = {
+      circle: `<circle cx="50" cy="50" r="40" fill="${c}" ${sw}/>`,
+      triangle: `<polygon points="50,8 92,90 8,90" fill="${c}" ${sw}/>`,
+      square: `<rect x="12" y="12" width="76" height="76" fill="${c}" ${sw}/>`,
+      rect: `<rect x="4" y="26" width="92" height="48" fill="${c}" ${sw}/>`,
+      pentagon: `<polygon points="${poly(5)}" fill="${c}" ${sw}/>`,
+      hexagon: `<polygon points="${poly(6)}" fill="${c}" ${sw}/>`,
+    }[id] || '';
+    return `<svg viewBox="0 0 100 100" width="${size}" height="${size}" aria-hidden="true">${inner}</svg>`;
+  }
+  function rulerSvg(len) {
+    const u = 30;
+    const ticks = Array.from({ length: 13 }, (_, i) => `<line x1="${10 + i * u}" y1="70" x2="${10 + i * u}" y2="${i % 5 === 0 ? 50 : 58}" stroke="#1f2937" stroke-width="2"/><text x="${10 + i * u}" y="90" font-size="14" text-anchor="middle" fill="#1f2937">${i}</text>`).join('');
+    return `<svg viewBox="0 0 390 100" class="ruler" aria-hidden="true"><rect x="10" y="12" width="${len * u - 12}" height="22" rx="4" fill="#facc15"/><polygon points="${10 + len * u - 12},12 ${10 + len * u},23 ${10 + len * u - 12},34" fill="#f5c6a0"/><rect x="10" y="12" width="14" height="22" fill="#f472b6"/><rect x="2" y="44" width="386" height="54" rx="6" fill="#fef3c7" stroke="#a16207" stroke-width="2"/>${ticks}</svg>`;
+  }
+
+  /* ======================= Skolan ======================= */
+  function school() {
+    const stage = makeStage('school', BG.school());
+    const board = h('div.board');
+    stage.appendChild(board);
+    placeChars(stage, 'school', [{ x: 20, y: 74 }, { x: 50, y: 74 }, { x: 80, y: 74 }]);
+    const bell = h('div.prop.bell', { style: { left: '92%', top: '30%' } }, '🔔');
+    draggable(bell, stage, {
+      onTap: () => {
+        kos.sfx('fanfare');
+        stage.querySelectorAll('.char').forEach((n, i) => setTimeout(() => {
+          n.classList.add('hop');
+          setTimeout(() => n.classList.remove('hop'), 600);
+        }, i * 120));
+        bubble(stage, '🔔 Rast! Alla ut och leka!', { ms: 2000 });
+      },
+    });
+    stage.appendChild(bell);
+    let subject = 'mix';
+    const chips = h('div.chip-row');
+    const opts = h('div.answer-row.school-opts');
+    const stars = h('div.chalk-stars');
+    body.append(chips, stage, opts, stars);
+    let task;
+    let tries = 0;
+    function renderChips() {
+      clear(chips).append(...[{ id: 'mix', n: 'Blandat', e: '🎲' }, ...SCHOOL_SUBJECTS].map((sb) => onTap(h('button.chip-btn', { type: 'button', class: subject === sb.id ? 'on' : '' }, `${sb.e} ${sb.n}`), () => {
+        subject = sb.id;
+        renderChips();
+        next();
+      })));
+    }
+    function renderStars() {
+      const n = st.school.streak % SCHOOL_PER_COIN;
+      clear(stars).append(h('span', 'Nästa mynt: '), ...Array.from({ length: SCHOOL_PER_COIN }, (_, i) => h('span.cs', { class: i < n ? 'on' : '' }, i < n ? '⭐' : '☆')), h('small.muted', ` Lösta uppgifter: ${st.school.solved}`));
+    }
+    function showVisual(show) {
+      if (!show) return null;
+      if (typeof show === 'string') return h('div.board-show', show);
+      if (show.shape) return h('div.board-show', { html: shapeSvg(show.shape, 110) });
+      if (show.ruler) return h('div.board-show.wide', { html: rulerSvg(show.ruler) });
+      return null;
+    }
+    function optContent(o) {
+      if (o.shape) return h('span', { html: shapeSvg(o.shape) });
+      if (o.bar) return h('span.stick', { style: { width: `${o.bar * 10}%` } });
+      if (o.pic) return h('span.pic', o.label);
+      return h('span', o.label);
+    }
+    function next() {
+      const rng = createRng(Date.now());
+      task = schoolTask(level, rng, subject === 'mix' ? undefined : subject);
+      tries = 0;
+      clear(board).append(h('div.board-text', task.text), showVisual(task.show) || h('span'));
+      clear(opts).append(...task.options.map((o) => {
+        const b = h('button.answer-btn', { type: 'button', class: o.bar ? 'bar-btn' : o.pic || o.shape ? 'pic-btn' : '' }, optContent(o));
+        return onTap(b, () => answer(o, b));
+      }));
+      kos.say(task.say);
+    }
+    function answer(o, b) {
+      if (o.value !== task.answer) {
+        tries++;
+        b.disabled = true;
+        b.classList.add('wrong');
+        kos.sfx('wrong');
+        bubble(board, 'Nästan! Prova igen.', { ms: 1400 });
+        return;
+      }
+      kos.sfx('correct');
+      b.classList.add('right');
+      st.school.solved++;
+      addToSet(p, 'playSchool', task.subject);
+      if (!tries) {
+        st.school.streak++;
+        if (st.school.streak % SCHOOL_PER_COIN === 0) earn(1, 'Duktigt i skolan!', 'school');
+      }
+      save();
+      renderStars();
+      opts.querySelectorAll('button').forEach((x) => (x.disabled = true));
+      clear(board).append(h('div.board-text.small', `✔ ${task.explain}`));
+      kos.say(task.explain);
+      setTimeout(() => alive && board.isConnected && next(), 3200);
+    }
+    renderChips();
+    renderStars();
+    next();
+  }
+
+  /* ======================= Biblioteket ======================= */
+  function library() {
+    const stage = makeStage('library', BG.library());
+    placeChars(stage, 'library', [{ x: 30, y: 82 }, { x: 70, y: 82 }]);
+    const shelf = h('div.book-shelf');
+    body.append(stage, h('p.tray-title', '📚 Välj en bok att läsa'), shelf);
+    function renderShelf() {
+      clear(shelf);
+      booksForLevel(level).forEach((b) => shelf.appendChild(onTap(h('button.book-btn', { type: 'button', class: st.books[b.id] ? 'read' : '' }, h('span.bk-e', b.e), h('span.bk-t', b.title), st.books[b.id] ? h('small.have', '✓ läst') : h('small', '📖 ny')), () => openBook(b))));
+    }
+    function openBook(b) {
+      let page = 0;
+      const dlg = h('div.pay.reader');
+      el.querySelector('.play').appendChild(dlg);
+      const close = () => dlg.remove();
+      function words(text) {
+        return h('p.reader-text', text.split(' ').map((w) => onTap(h('span.word', { tabindex: '0' }, w), () => kos.say(w.replace(/[.,!?–]/g, '')), { guardMs: 150 })).flatMap((n, i) => (i ? [' ', n] : [n])));
+      }
+      function renderPage() {
+        const [e, text] = b.pages[page];
+        clear(dlg).append(
+          h('div.reader-head', h('b', `${b.e} ${b.title}`), h('small', `${page + 1} / ${b.pages.length}`)),
+          h('div.reader-pic', e),
+          words(text),
+          h('div.row-actions',
+            onTap(h('button.btn.btn-ghost.big-touch', { type: 'button', 'aria-label': 'stäng' }, '✕'), close),
+            onTap(h('button.btn.btn-ghost.big-touch', { type: 'button', disabled: page === 0 }, '◀'), () => {
+              page = Math.max(0, page - 1);
+              renderPage();
+            }),
+            onTap(h('button.btn.btn-ghost.big-touch', { type: 'button' }, '🔊 Läs upp'), () => kos.say(text)),
+            onTap(h('button.btn.btn-primary.big-touch', { type: 'button' }, page < b.pages.length - 1 ? '▶' : 'Klar ✓'), () => {
+              if (page < b.pages.length - 1) {
+                page++;
+                renderPage();
+              } else question();
+            })),
+          h('p.muted.reader-tip', 'Tryck på ett ord för att höra det.'),
+        );
+        if (level <= 1 || kos.shouldAutoSpeak()) kos.say(text);
+      }
+      function question() {
+        let tries = 0;
+        clear(dlg).append(
+          h('div.reader-head', h('b', `${b.e} ${b.title}`)),
+          h('p.big-text', h('b', b.q.text)),
+          h('div.answer-row', b.q.options.map(([label, e]) => {
+            const btn = h('button.answer-btn.book-ans', { type: 'button' }, h('span.pic', e), h('span', label));
+            return onTap(btn, () => {
+              if (label !== b.q.answer) {
+                tries++;
+                btn.disabled = true;
+                btn.classList.add('wrong');
+                kos.sfx('wrong');
+                kos.say('Inte riktigt. Vill du titta i boken igen?');
+                return;
+              }
+              kos.sfx('correct');
+              const first = !st.books[b.id];
+              st.books[b.id] = 1;
+              addToSet(p, 'playBooks', b.id);
+              save();
+              clear(dlg).append(
+                h('div.reader-pic', '🌟'),
+                h('p.big-text', h('b', 'Rätt!'), ` ${b.q.explain}`),
+                h('div.row-actions', onTap(h('button.btn.btn-ghost.big-touch', { type: 'button' }, '📖 Läs igen'), () => {
+                  page = 0;
+                  renderPage();
+                }), onTap(h('button.btn.btn-primary.big-touch', { type: 'button' }, 'Till hyllan'), () => {
+                  close();
+                  renderShelf();
+                })),
+              );
+              kos.say(`Rätt! ${b.q.explain}`);
+              if (first) earn(tries ? 1 : BOOK_COINS, `Du läste ${b.title}!`, 'library');
+            });
+          })),
+          h('div.row-actions', onTap(h('button.btn.btn-ghost.big-touch', { type: 'button' }, '◀ Tillbaka till boken'), () => {
+            page = 0;
+            renderPage();
+          })),
+        );
+        kos.say(`${b.q.text} ${b.q.options.map(([l]) => l).join(', eller ')}?`);
+      }
+      renderPage();
+    }
+    renderShelf();
+    kos.autoSay('Biblioteket! Välj en bok. Tryck på ett ord för att höra det.');
+  }
+
+  /* ======================= Bondgården ======================= */
+  function farm() {
+    const stage = makeStage('farm', BG.farm());
+    const spots = [[14, 58], [34, 52], [54, 58], [76, 60], [20, 82], [42, 80], [64, 84], [86, 82], [8, 34]];
+    const animalEls = {};
+    FARM_ANIMALS.forEach((a, i) => {
+      const [x, y] = spots[i % spots.length];
+      const node = h('div.prop.animal', { style: { left: `${x}%`, top: `${y}%` }, dataset: { id: a.id }, 'aria-label': a.n }, a.e);
+      draggable(node, stage, { onTap: () => tapAnimal(a, node) });
+      stage.appendChild(node);
+      animalEls[a.id] = node;
+    });
+    let selected = null;
+    const tray = h('div.tray');
+    const info = h('p.pay-msg');
+    body.append(stage, info, h('p.tray-title', '🧺 Dra maten till ett djur – eller tryck på maten och sedan på djuret'), tray, h('div.row-actions.left', onTap(h('button.btn.btn-ghost.big-touch', { type: 'button' }, '🧑‍🌾 Bondens fråga'), () => question())));
+    function renderTray() {
+      clear(tray);
+      FARM_FOODS.forEach((f) => {
+        const b = h('button.tray-item', { type: 'button', class: selected === f.id ? 'sel' : '', 'aria-label': f.n }, f.e);
+        b.addEventListener('pointerdown', (e) => ghostDrag(e, stage, f.e, {
+          onDrop: (q) => {
+            const hit = hitAt(stage, q, '.animal');
+            if (hit) give(FARM_ANIMALS.find((a) => a.id === hit.dataset.id), f, hit);
+          },
+          onTap: () => {
+            selected = selected === f.id ? null : f.id;
+            renderTray();
+            kos.say(f.n);
+          },
+        }));
+        tray.appendChild(b);
+      });
+    }
+    function tapAnimal(a, node) {
+      if (selected) return give(a, FARM_FOODS.find((f) => f.id === selected), node);
+      node.classList.add('jump');
+      setTimeout(() => node.classList.remove('jump'), 600);
+      bubble(node, `${a.sound} ${a.fact}`, { ms: 5000 });
+    }
+    function give(a, f, node) {
+      const r = farmReaction(a.id, f.id);
+      if (r.ok) {
+        node.classList.add('jump');
+        setTimeout(() => node.classList.remove('jump'), 600);
+        kos.sfx('correct');
+        bubble(node, r.text, { ms: 2400 });
+        st.farm.fed[a.id] = (st.farm.fed[a.id] || 0) + 1;
+        if (addToSet(p, 'playFarm', a.id)) earn(1, `Du gav ${a.n} rätt mat!`, 'farm');
+        if (productReady(a, st.farm.lastProduct[a.id])) dropProduct(a, node);
+        info.textContent = `${a.e} ${a.n.charAt(0).toUpperCase() + a.n.slice(1)} är ${a.diet}.`;
+      } else {
+        node.classList.add('shake');
+        setTimeout(() => node.classList.remove('shake'), 500);
+        if (r.no) kos.sfx('wrong');
+        bubble(node, r.text, { ms: 3600 });
+      }
+      save();
+    }
+    function dropProduct(a, node) {
+      st.farm.lastProduct[a.id] = Date.now();
+      const pr = FARM_PRODUCTS[a.product];
+      const x = Math.min(95, parseFloat(node.style.left) + 8);
+      const y = Math.min(93, parseFloat(node.style.top) + 6);
+      const prod = h('button.prop.product', { type: 'button', style: { left: `${x}%`, top: `${y}%` }, 'aria-label': pr.n }, pr.e);
+      onTap(prod, () => {
+        prod.remove();
+        st.pantry[a.product] = (st.pantry[a.product] || 0) + 1;
+        kos.sfx('pop');
+        kos.toast(`${pr.e} Du samlade ${pr.n}! Sälj på Marknaden.`, { icon: pr.e, ms: 2200 });
+        save();
+      });
+      stage.appendChild(prod);
+    }
+    function question() {
+      const rng = createRng(Date.now());
+      const q = farmQuestion(level, rng);
+      let tries = 0;
+      const dlg = h('div.pay');
+      clear(dlg).append(
+        h('h3', '🧑‍🌾 Bondens fråga'),
+        h('p.big-text', h('b', q.text)),
+        h('div.answer-row', q.options.map((o) => {
+          const b = h('button.answer-btn.book-ans', { type: 'button' }, h('span.pic', o.e), h('span', o.label));
+          return onTap(b, () => {
+            if (o.id !== q.answer) {
+              tries++;
+              b.disabled = true;
+              b.classList.add('wrong');
+              kos.sfx('wrong');
+              kos.say('Inte riktigt. Prova igen!');
+              return;
+            }
+            kos.sfx('correct');
+            dlg.querySelectorAll('.answer-btn').forEach((x) => (x.disabled = true));
+            b.classList.add('right');
+            dlg.insertBefore(h('p.pay-msg.ok', q.explain), dlg.lastChild);
+            kos.say(q.explain);
+            if (!tries) earn(1, 'Rätt svar, bonde!', 'farm');
+          });
+        })),
+        h('div.row-actions', onTap(h('button.btn.btn-ghost', { type: 'button' }, 'Stäng'), () => dlg.remove()), onTap(h('button.btn.btn-primary.big-touch', { type: 'button' }, 'Ny fråga ➜'), () => {
+          dlg.remove();
+          question();
+        })),
+      );
+      el.querySelector('.play').appendChild(dlg);
+      kos.say(q.say);
+    }
+    renderTray();
+    kos.autoSay('Bondgården! Vad vill djuren äta? Dra maten till dem.');
+  }
+
+  /* ======================= Stranden ======================= */
+  function beach() {
+    const stage = makeStage('beach', BG.beach());
+    placeChars(stage, 'beach', [{ x: 14, y: 66 }, { x: 28, y: 76 }]);
+    let castle = 0;
+    const sand = h('button.prop.sandcastle', { type: 'button', style: { left: '22%', top: '88%' }, 'aria-label': 'sandslott' });
+    const drawCastle = () => {
+      sand.innerHTML = castle ? `<svg viewBox="0 0 120 80" aria-hidden="true"><rect x="10" y="50" width="100" height="28" fill="#d6a85a"/>${Array.from({ length: castle }, (_, i) => `<rect x="${12 + i * 26}" y="${22 - (i % 2) * 8}" width="18" height="${30 + (i % 2) * 8}" fill="#e9c27a"/><polygon points="${12 + i * 26},${22 - (i % 2) * 8} ${21 + i * 26},${8 - (i % 2) * 8} ${30 + i * 26},${22 - (i % 2) * 8}" fill="#ef4444"/>`).join('')}</svg>` : '🪣';
+    };
+    drawCastle();
+    onTap(sand, () => {
+      if (castle >= 4) {
+        castle = 0;
+        kos.sfx('whoosh');
+        bubble(stage, '🌊 En våg sköljde bort sandslottet! Bygg ett nytt.', { ms: 2600 });
+      } else {
+        castle++;
+        kos.sfx('pop');
+        if (castle === 4) bubble(sand, 'Ett helt sandslott! 🏰', { ms: 1800 });
+      }
+      drawCastle();
+    });
+    stage.appendChild(sand);
+    let guess = null;
+    const tray = h('div.tray');
+    const info = h('p.pay-msg');
+    const guessRow = h('div.answer-row.guess-row');
+    const tested = () => BEACH_ITEMS.filter((b) => st.beach[b.id]).length;
+    body.append(stage, info, level >= 1 ? guessRow : h('span'), h('p.tray-title', '🌊 Dra en sak ut i havet – flyter den eller sjunker den?'), tray);
+    function renderGuess() {
+      clear(guessRow).append(h('span.set-label', 'Jag gissar:'), ...[['float', '🛟 Flyter'], ['sink', '⚓ Sjunker']].map(([id, label]) => onTap(h('button.answer-btn', { type: 'button', class: guess === id ? 'on' : '' }, label), () => {
+        guess = guess === id ? null : id;
+        renderGuess();
+        kos.say(guess ? `Du gissar att den ${guess === 'float' ? 'flyter' : 'sjunker'}.` : 'Ingen gissning.');
+      })));
+    }
+    function renderTray() {
+      clear(tray);
+      BEACH_ITEMS.forEach((it) => {
+        const b = h('button.tray-item', { type: 'button', class: st.beach[it.id] ? 'done' : '', 'aria-label': it.n }, it.e);
+        b.addEventListener('pointerdown', (e) => ghostDrag(e, stage, it.e, {
+          onDrop: (q) => drop(it, q),
+          onTap: () => drop(it, { x: 70, y: 60 }),
+        }));
+        tray.appendChild(b);
+      });
+      tray.appendChild(h('small.muted', ` Testat: ${tested()}/${BEACH_ITEMS.length}`));
+    }
+    function drop(it, q) {
+      stage.querySelector(`.floaty[data-id="${it.id}"]`)?.remove();
+      const node = h('div.prop.floaty', { style: { left: `${q.x}%`, top: `${q.y}%` }, dataset: { id: it.id } }, it.e);
+      stage.appendChild(node);
+      if (!inSea(q.x, q.y)) {
+        kos.sfx('pop');
+        bubble(node, 'Den ligger på sanden. Dra den ut i vattnet!', { ms: 1800 });
+        return;
+      }
+      kos.sfx('whoosh');
+      requestAnimationFrame(() => {
+        node.style.top = it.floats ? '47%' : '91%';
+        node.style.left = `${Math.max(q.x, 52)}%`;
+        node.classList.add(it.floats ? 'floating' : 'sunk');
+      });
+      const right = guess && (guess === 'float') === it.floats;
+      const first = !st.beach[it.id];
+      st.beach[it.id] = 1;
+      addToSet(p, 'playBeach', it.id);
+      info.textContent = `${it.e} ${it.n.charAt(0).toUpperCase() + it.n.slice(1)} ${it.floats ? 'flyter' : 'sjunker'}! ${it.why}`;
+      kos.say(`${it.n} ${it.floats ? 'flyter' : 'sjunker'}! ${it.why}`);
+      if (guess) {
+        setTimeout(() => bubble(stage, right ? '🎉 Du gissade rätt!' : '🤔 Oj! Det trodde du inte. Nu vet du!', { speak: false, ms: 2000 }), 900);
+        if (right && first) earn(1, 'Bra gissat!', 'beach');
+      }
+      guess = null;
+      if (level >= 1) renderGuess();
+      save();
+      renderTray();
+    }
+    if (level >= 1) renderGuess();
+    renderTray();
+    kos.autoSay('Stranden! Dra saker ut i havet. Flyter de eller sjunker de? Gissa först!');
   }
 
   /* ======================= Djurkliniken ======================= */
@@ -647,7 +1335,7 @@ export function playView(el, { kos }) {
           st.patients++;
           addToSet(p, 'playVet', `${pt.animal}${pt.steps.join()}`);
           const coins = st.patients <= 15 ? 2 : 1;
-          earn(coins, 'Du hjälpte ett djur!');
+          earn(coins, 'Du hjälpte ett djur!', 'vet');
           bubble(stage, `🎉 Tack! ${pt.fact}`, { ms: 6000 });
           save();
           pt = null;

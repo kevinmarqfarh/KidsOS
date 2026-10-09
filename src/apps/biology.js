@@ -1,4 +1,19 @@
-import { photo } from '../ui/img.js';
+import { photo, hasPhoto } from '../ui/img.js';
+
+const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
+const pic = (e, cls = 'pic sm') => `<span class="${cls}">${e}</span>`;
+/** Ja/nej- eller textfråga med fasta alternativ (första = rätt om inget annat anges). */
+function textChoice(rng, item, extra = {}) {
+  return {
+    type: 'choice',
+    prompt: item.q,
+    options: rng.shuffle(item.o).map((o) => ({ id: o, label: o })),
+    answer: item.a,
+    hint: item.hint || extra.hint || 'Tänk efter – vad vet du om det här?',
+    explain: item.ex,
+    ...extra.more,
+  };
+}
 
 // Biologi-appen: kroppen, sinnen, livscykler, näringskedjor, årstider, djurgrupper,
 // svenska arter (samlarkort) och hälsa.
@@ -75,7 +90,27 @@ export function bodySvg({ organs = false, highlight = null } = {}) {
   return s;
 }
 
+// Organ och skelett: översiktlig funktion (Lgr22: "Några av människans organ, deras namn och översiktliga funktion").
+export const ORGAN_QUIZ = [
+  { lv: 2, q: 'Vilket organ pumpar runt blodet i kroppen?', a: 'hjärtat', o: ['hjärtat', 'lungorna', 'magsäcken'], ex: 'Hjärtat är en stark muskel som pumpar blodet runt i hela kroppen. Blodet bär med sig syre och näring.' },
+  { lv: 2, q: 'Vilket organ tar in syre när du andas?', a: 'lungorna', o: ['lungorna', 'hjärtat', 'tarmarna'], ex: 'När du andas in fylls lungorna med luft. Syret går över till blodet.' },
+  { lv: 2, q: 'Vilket organ tänker, minns och styr kroppen?', a: 'hjärnan', o: ['hjärnan', 'magsäcken', 'lungorna'], ex: 'Hjärnan skickar signaler genom nerverna till hela kroppen – också när du sover.' },
+  { lv: 2, q: 'Var blandas maten med magsaft?', a: 'i magsäcken', o: ['i magsäcken', 'i lungorna', 'i hjärtat'], ex: 'I magsäcken blandas maten med magsaft och börjar brytas ner.' },
+  { lv: 3, q: 'Var tar kroppen upp näringen från maten?', a: 'i tarmarna', o: ['i tarmarna', 'i hjärnan', 'i lungorna'], ex: 'Tunntarmen tar upp näringen och skickar den vidare med blodet. Tunntarmen är flera meter lång!' },
+  { lv: 3, q: 'Vad skyddar hjärnan?', a: 'skallen', o: ['skallen', 'revbenen', 'knäskålen'], ex: 'Skallen är som en hård hjälm av ben runt hjärnan.' },
+  { lv: 3, q: 'Vad skyddar hjärtat och lungorna?', a: 'revbenen', o: ['revbenen', 'skallen', 'tårna'], ex: 'Revbenen bildar en bur – bröstkorgen – runt hjärtat och lungorna.' },
+  { lv: 3, q: 'Vad händer med hjärtat när du springer?', a: 'det slår snabbare', o: ['det slår snabbare', 'det stannar', 'det slår långsammare'], ex: 'Musklerna behöver mer syre när du springer, så hjärtat pumpar snabbare. Känn efter på pulsen!' },
+  { lv: 3, q: 'Hur kan du känna att hjärtat slår?', a: 'känna pulsen på handleden', o: ['känna pulsen på handleden', 'titta i spegeln', 'lyssna på magen'], ex: 'Lägg två fingrar på insidan av handleden eller på halsen – där känner du pulsen, hjärtats slag.' },
+  { lv: 4, q: 'Ungefär hur många ben har en vuxen människa?', a: 'ungefär 206', o: ['ungefär 206', 'ungefär 26', 'ungefär 2 000'], ex: 'En vuxen har ungefär 206 ben. En bebis har fler, men en del växer ihop när man växer.' },
+  { lv: 4, q: 'Vilket är kroppens största organ?', a: 'huden', o: ['huden', 'hjärtat', 'hjärnan'], ex: 'Huden täcker hela kroppen. Den skyddar mot bakterier, känner värme och beröring och hjälper oss att hålla rätt temperatur.' },
+  { lv: 4, q: 'Hur kan musklerna röra på kroppen?', a: 'de drar i skelettets ben', o: ['de drar i skelettets ben', 'de blåser upp sig med luft', 'de blir varma'], ex: 'Musklerna sitter fast i skelettet. När en muskel drar ihop sig drar den i benet så att du rör dig.' },
+  { lv: 4, q: 'Var sitter kroppens minsta ben?', a: 'i örat', o: ['i örat', 'i lilltån', 'i näsan'], ex: 'Stigbygeln inne i örat är kroppens minsta ben – mindre än ett riskorn! Den hjälper dig att höra.' },
+];
+
 export function genBodyTap(level, rng) {
+  if (level >= 2 && rng.chance(0.35)) {
+    return textChoice(rng, rng.pick(ORGAN_QUIZ.filter((x) => x.lv <= level)), { hint: 'Tänk på vad organet gör i kroppen.' });
+  }
   const useOrgans = level >= 2 && rng.chance(0.5);
   const pool = (useOrgans ? ORGANS : BODY_PARTS).filter((p) => p.minLevel <= level);
   const target = rng.pick(pool);
@@ -102,8 +137,21 @@ export const SENSE_QUESTIONS = [
   ['Du smakar på en citron 🍋', 'smak'], ['Du klappar en mjuk katt 🐈', 'kansel'], ['Du hör en fågel sjunga 🐦', 'horsel'],
   ['Du känner att vattnet är kallt 💧', 'kansel'], ['Du ser att trafikljuset är rött 🚦', 'syn'], ['Du känner att det luktar nybakat 🥐', 'lukt'],
   ['Du märker att glassen är söt 🍦', 'smak'], ['Du hör åskan mullra ⛈️', 'horsel'], ['Du känner att stenen är hård 🪨', 'kansel'],
+  ['Du hör en bil tuta 🚗', 'horsel'], ['Du känner att teet är för varmt ☕', 'kansel'], ['Du ser en regnbåge 🌈', 'syn'],
+  ['Du smakar saltet på popcornen 🍿', 'smak'], ['Det luktar rök från en brasa 🔥', 'lukt'], ['Du känner att kaktusen sticks 🌵', 'kansel'],
+  ['Du luktar på en sur strumpa 🧦', 'lukt'], ['Du hör att det knackar på dörren 🚪', 'horsel'], ['Du ser blixten på himlen ⚡', 'syn'],
+  ['Du smakar att citronen är sur 🍋', 'smak'], ['Du känner att snön är kall ❄️', 'kansel'], ['Du ser att löven är gula 🍂', 'syn'],
+];
+export const SENSE_FACTS = [
+  { lv: 3, q: 'Varför smakar maten mindre när du är förkyld?', a: 'näsan är täppt – och lukten hjälper smaken', o: ['näsan är täppt – och lukten hjälper smaken', 'tungan har somnat', 'maten blir kall'], ex: 'Mycket av det vi tror är smak är egentligen lukt. Håll för näsan när du äter ett äpple – smakar det lika mycket?' },
+  { lv: 3, q: 'Vilka smaker kan tungan känna?', a: 'sött, surt, salt, beskt och umami', o: ['sött, surt, salt, beskt och umami', 'bara sött', 'rött, grönt och blått'], ex: 'Tungan har tusentals smaklökar. Umami är en mustig smak som finns i till exempel buljong och ost.' },
+  { lv: 3, q: 'Varför ska man aldrig titta rakt mot solen?', a: 'ljuset är så starkt att det kan skada ögonen', o: ['ljuset är så starkt att det kan skada ögonen', 'solen blir arg', 'man blir trött'], ex: 'Solljuset är så starkt att det kan skada ögat för alltid – även med solglasögon.' },
+  { lv: 3, q: 'Varför är det bra att ha två öron?', a: 'man hör varifrån ljudet kommer', o: ['man hör varifrån ljudet kommer', 'det ser fint ut', 'man hör dubbelt så många ord'], ex: 'Ljudet kommer fram till örat som är närmast lite tidigare och lite starkare. Hjärnan räknar ut riktningen!' },
+  { lv: 4, q: 'Vad gör pupillen, det svarta hålet i ögat, när det blir mörkt?', a: 'den blir större', o: ['den blir större', 'den blir mindre', 'den blir röd'], ex: 'I mörker blir pupillen större så att mer ljus kommer in. Titta på någons ögon när ni släcker lampan!' },
+  { lv: 4, q: 'Vilket sinne varnar dig om något är varmt eller kallt?', a: 'känseln i huden', o: ['känseln i huden', 'hörseln', 'luktsinnet'], ex: 'Huden har små känselkroppar som känner värme, kyla, tryck och smärta.' },
 ];
 export function genSenses(level, rng) {
+  if (level >= 3 && rng.chance(0.35)) return textChoice(rng, rng.pick(SENSE_FACTS.filter((x) => x.lv <= level)), { hint: 'Vilken del av kroppen hjälper till?' });
   const [q, ans] = rng.pick(SENSE_QUESTIONS);
   const opts = level === 0 ? rng.sample(SENSES.filter((s) => s.id !== ans), 2).concat(SENSES.find((s) => s.id === ans)) : SENSES;
   return {
