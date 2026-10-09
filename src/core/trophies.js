@@ -9,7 +9,7 @@ import { EXPERIMENT_IDS } from '../apps/science.js';
 import { STORIES } from '../apps/svenska.js';
 import { WONDERS } from '../apps/wonder.js';
 
-export const LEARNING_APPS = ['math', 'svenska', 'write', 'science', 'biology', 'space', 'code', 'draw', 'wonder'];
+export const LEARNING_APPS = ['math', 'svenska', 'write', 'science', 'biology', 'space', 'ai', 'code', 'draw', 'wonder'];
 
 const rounds = (app, mod) => (p) => count(p, mod ? `rounds:${app}:${mod}` : `rounds:${app}`);
 const perfect = (app, mod) => (p) => count(p, `perfect:${app}:${mod}`);
@@ -23,14 +23,15 @@ export const CATEGORIES = [
   { id: 'science', name: 'Vetenskap', icon: '🔬' },
   { id: 'biology', name: 'Biologi', icon: '🌿' },
   { id: 'space', name: 'Rymden', icon: '🚀' },
-  { id: 'code', name: 'Kod', icon: '🤖' },
+  { id: 'ai', name: 'AI', icon: '🧠' },
+  { id: 'code', name: 'Kodning', icon: '🤖' },
   { id: 'create', name: 'Skapa & undra', icon: '🎨' },
 ];
 
 export const TROPHIES = [
   // Äventyret
   { id: 'first-round', cat: 'start', icon: '🌟', name: 'Första stjärnan', desc: 'Gör klart din första runda.', target: 1, value: (p) => count(p, 'rounds') },
-  { id: 'explorer', cat: 'start', icon: '🗺️', name: 'Upptäcktsresande', desc: 'Prova alla nio appar.', target: LEARNING_APPS.length, value: sz('appsTried') },
+  { id: 'explorer', cat: 'start', icon: '🗺️', name: 'Upptäcktsresande', desc: 'Prova alla tio appar.', target: LEARNING_APPS.length, value: sz('appsTried') },
   { id: 'stars-50', cat: 'start', icon: '⭐', name: 'Stjärnsamlare', desc: 'Samla 50 stjärnor.', target: 50, value: (p) => p.stars },
   { id: 'stars-200', cat: 'start', icon: '💫', name: 'Stjärnregn', desc: 'Samla 200 stjärnor.', target: 200, value: (p) => p.stars },
   { id: 'stars-500', cat: 'start', icon: '🌠', name: 'Stjärnhimmel', desc: 'Samla 500 stjärnor.', target: 500, value: (p) => p.stars },
@@ -83,6 +84,10 @@ export const TROPHIES = [
   { id: 'moon', cat: 'space', icon: '🌕', name: 'Månskådare', desc: 'Hitta nymåne, halvmåne och fullmåne.', target: 3, value: sz('moonPhases') },
   { id: 'constellations', cat: 'space', icon: '✨', name: 'Stjärnskådare', desc: 'Rita alla stjärnbilder.', target: CONSTELLATIONS.length, value: sz('constellations') },
   { id: 'daynight', cat: 'space', icon: '🌍', name: 'Jordsnurrare', desc: 'Gör natt och dag i Göteborg.', target: 2, value: sz('daynight') },
+
+  // AI: övningsrundor, inte enbart lästa texter.
+  { id: 'ai-start', cat: 'ai', icon: '🧠', name: 'AI-upptäckare', desc: 'Gör klart tre AI-övningsrundor.', target: 3, value: rounds('ai') },
+  { id: 'ai-practice', cat: 'ai', icon: '🔎', name: 'Nyfiken granskare', desc: 'Gör klart tio AI-övningsrundor.', target: 10, value: rounds('ai') },
 
   // Kod
   { id: 'robot-5', cat: 'code', icon: '🤖', name: 'Robotförare', desc: 'Klara 5 robotbanor.', target: 5, value: sz('robotLevels') },

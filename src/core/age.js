@@ -60,3 +60,20 @@ export const WALLPAPERS = [
   { id: 'space', name: 'Rymd', emoji: '🌌' },
   { id: 'candy', name: 'Godis', emoji: '🍭' },
 ];
+
+// Åldersintervall för nya profiler. Exakt ålder behålls för äldre profiler.
+export const AGE_BANDS = [
+  { id: '4-5', label: '4–5 år', age: 5, level: 0, icon: '🌱', title: 'Lyssna och upptäck', support: 'Bilder, uppläsning och fem frågor åt gången.', content: 'Räkna små antal, hitta bokstavsljud och prova enkla instruktioner.' },
+  { id: '6-7', label: '6–7 år', age: 7, level: 1, icon: '🌿', title: 'Prova och förstå', support: 'Uppläsning, korta texter och sex frågor åt gången.', content: 'Tal upp till 20, första läsningen och enkla kodmönster.' },
+  { id: '8-9', label: '8–9 år', age: 8, level: 2, icon: '🪴', title: 'Lös och undersök', support: 'Korta förklaringar och åtta frågor åt gången.', content: 'Tal upp till 100, läsförståelse, kodvillkor och AI-experiment.' },
+  { id: '10-12', label: '10–12 år', age: 10, level: 4, icon: '🌳', title: 'Skapa och fördjupa', support: 'Mer självständiga uppgifter och åtta frågor åt gången.', content: 'Problemlösning, variabler, funktioner och granskning av AI.' },
+];
+export function ageBandFor(profile) {
+  return AGE_BANDS.find(band => band.id === profile?.ageBand) || AGE_BANDS.find(band => Number(profile?.age) <= Number(band.id.split('-')[1])) || AGE_BANDS[3];
+}
+export function profileAgeLabel(profile) {
+  return ageBandFor(profile).label;
+}
+export function startLevelForProfile(profile) {
+  return profile?.ageBand ? ageBandFor(profile).level : startLevelForAge(profile?.age);
+}

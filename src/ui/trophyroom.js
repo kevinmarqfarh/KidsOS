@@ -1,3 +1,4 @@
+import { photoImage, photoCredits } from './photos.js';
 // Troférummet: titel, statistik, troféer och samlingar.
 import { h, clear, onTap } from './dom.js';
 import { kos } from './kos.js';
@@ -68,10 +69,11 @@ export function renderTrophyRoom(el) {
       }
     } else {
       body.append(
-        collection('🃏 Artkort', SPECIES, (s) => hasInSet(p, 'species', s.id), (s) => s.e, (s) => s.n, (s) => s.fact, 'Spela Artkort i Biologi för att samla fler!'),
-        collection('🪐 Planeter', PLANETS, (x) => hasInSet(p, 'planets', x.id), () => '●', (x) => x.name, (x) => x.facts[0], 'Besök planeterna i Rymden → Solsystemet.', (x) => x.color),
+        collection('🃏 Artkort', SPECIES, (s) => hasInSet(p, 'species', s.id), (s) => photoImage(s.id, s.n, true) ? h('span', { html: photoImage(s.id, s.n, true) }) : s.e, (s) => s.n, (s) => s.fact, 'Spela Artkort i Biologi för att samla fler!'),
+        collection('🪐 Planeter', PLANETS, (x) => hasInSet(p, 'planets', x.id), (x) => photoImage(x.id, x.name, true) ? h('span', { html: photoImage(x.id, x.name, true) }) : '●', (x) => x.name, (x) => x.facts[0], 'Besök planeterna i Rymden → Solsystemet.', (x) => x.color),
         collection('✨ Stjärnbilder', CONSTELLATIONS, (x) => hasInSet(p, 'constellations', x.id), () => '✨', (x) => x.name, (x) => x.story, 'Rita stjärnbilder i Rymden.'),
         collection('✏️ Skrivna bokstäver', UPPER, (x) => hasInSet(p, 'traced:upper', x), (x) => x, (x) => x, () => '', 'Skriv bokstäver i Skriv ABC.'),
+        h('div', { html: photoCredits() }),
       );
     }
   }

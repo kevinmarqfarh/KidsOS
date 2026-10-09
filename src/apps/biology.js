@@ -1,3 +1,4 @@
+import { photoFigure, photoImage } from '../ui/photos.js';
 // Biologi-appen: kroppen, sinnen, livscykler, näringskedjor, årstider, djurgrupper,
 // svenska arter (samlarkort) och hälsa.
 
@@ -171,7 +172,7 @@ export function genFoodChain(level, rng) {
   return {
     type: 'order',
     prompt: 'Bygg en näringskedja! Börja med växten som får energi från solen ☀️.',
-    items: rng.shuffle(chain).map((x) => ({ id: x.id, html: `<span class="pic sm">${x.e}</span><span class="lbl">${x.n}</span>`, say: x.n })),
+    items: rng.shuffle(chain).map((x) => ({ id: x.id, html: `<span class="pic sm">${photoImage(x.id, x.n, true) || x.e}</span><span class="lbl">${x.n}</span>`, say: x.n })),
     answerOrder: chain.map((x) => x.id),
     joiner: '→',
     hint: 'Växterna kommer först. Sen den som äter växten, och sist den som äter djuret.',
@@ -264,7 +265,7 @@ export function genAnimalGroups(level, rng) {
     type: 'sort',
     prompt: 'Sortera djuren i rätt grupp!',
     bins: bins.map((b) => ({ id: b.id, label: b.label, html: b.html })),
-    items: items.map((a) => ({ id: a.id, html: `<span class="pic sm">${a.e}</span><span class="lbl">${a.n}</span>`, bin: a.g, say: a.n })),
+    items: items.map((a) => ({ id: a.id, html: `<span class="pic sm">${photoImage(a.id, a.n, true) || a.e}</span><span class="lbl">${a.n}</span>`, bin: a.g, say: a.n })),
     hint: bins.map((b) => b.fact).join(' '),
     explain: bins.map((b) => b.fact).join(' '),
   };
@@ -289,7 +290,7 @@ export const SPECIES = [
   { id: 'humla', n: 'humla', e: '🐝', g: 'Insekter', fact: 'Humlor pollinerar blommor och kan flyga även när det är kallt.' },
   { id: 'citronfjaril', n: 'citronfjäril', e: '🦋', g: 'Insekter', fact: 'Citronfjärilen är ofta den första fjärilen man ser på våren.' },
   { id: 'myra', n: 'stackmyra', e: '🐜', g: 'Insekter', fact: 'Stackmyror bygger stora stackar av barr – där kan det bo hundratusentals myror.' },
-  { id: 'snigel', n: 'snigel', e: '🐌', g: 'Blötdjur', fact: 'Snigeln bär sitt hus på ryggen och glider fram på slem.' },
+  { id: 'snigel', n: 'snäcka', e: '🐌', g: 'Blötdjur', fact: 'Snäckan bär sitt skal på ryggen och glider fram på slem. Sniglar har inget synligt skal.' },
   { id: 'daggmask', n: 'daggmask', e: '🪱', g: 'Maskar', fact: 'Daggmasken gör jorden bra för växter genom att gräva gångar och äta döda löv.' },
   { id: 'spindel', n: 'korsspindel', e: '🕷️', g: 'Spindeldjur', fact: 'Spindlar är inga insekter – de har åtta ben! Korsspindeln spinner fina hjulnät.' },
   { id: 'blabar', n: 'blåbär', e: '🫐', g: 'Växter', fact: 'Blåbär växer i skogen och mognar i juli och augusti.' },
@@ -307,7 +308,7 @@ export function genSpecies(level, rng, ctx = {}) {
   return {
     type: 'choice',
     prompt: 'Vad heter den här arten?',
-    visual: `<div class="pic-big">${target.e}</div>`,
+    visual: photoFigure(target.id) || `<div class="pic-big">${target.e}</div>`,
     options: rng.shuffle([target, ...others]).map((s) => ({ id: s.id, label: s.n })),
     answer: target.id,
     hint: `Det är ${target.g.toLowerCase()}.`,

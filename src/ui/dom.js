@@ -76,7 +76,7 @@ export function esc(s) {
  * ignorerar "holdovers" (dubbeltryck inom 350 ms) enligt Anthony m.fl. (2019).
  */
 export function onTap(el, fn, { guardMs = 350 } = {}) {
-  let last = 0;
+  let last = -Infinity; // Första trycket ska fungera även direkt efter start.
   el.addEventListener('click', (e) => {
     const now = performance.now();
     if (now - last < guardMs) return;

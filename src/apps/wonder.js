@@ -36,6 +36,27 @@ export const WONDERS = [
   { id: 'eld', e: '🔥', cat: 'Vetenskap', q: 'Vad behöver en eld för att brinna?', a: 'Eld behöver tre saker: något som kan brinna, värme och syre från luften. Tar man bort en av dem slocknar elden. Därför kvävs elden under en brandfilt.', think: 'Varför ska man aldrig leka med eld utan en vuxen?' },
 ];
 
+// Nya kort: kort svar för yngre och fördjupning för äldre. Källor i docs/CONTENT-ENRICHMENT.md.
+export const NEW_WONDERS = [
+  { id: 'blinkande-stjarnor', e: '✨', cat: 'Rymden', minLevel: 0, q: 'Varför blinkar stjärnor?', simple: 'Luften mellan oss och stjärnan rör sig. Den böjer ljuset lite, så stjärnan ser ut att blinka.', a: 'Stjärnljuset passerar genom jordens luft. Luftens rörelser ändrar hur ljuset böjs på vägen till våra ögon. Då verkar ljusstyrkan ändras.', deep: 'Nära horisonten går ljuset genom mer luft än rakt ovanför oss. Därför kan stjärnor nära horisonten se ut att blinka mer. Att något verkar ändras behöver inte betyda att själva stjärnan ändras.', think: 'Titta tillsammans med en vuxen på en stjärna högt upp och en nära horisonten. Vad lägger ni märke till?' },
+  { id: 'dagmanen', e: '🌔', cat: 'Rymden', minLevel: 0, q: 'Kan månen synas på dagen?', simple: 'Ja! Månen kan vara över oss även på dagen. Vi kan se solljus som studsar från den.', a: 'Månen finns inte bara på natthimlen. När den är över horisonten och tillräckligt tydlig mot den ljusa himlen kan vi se den på dagen.', deep: 'Var månen syns beror på dess läge runt jorden och på var vi är. Dagsljuset gör inte att månen försvinner; det gör vissa svagare himmelsobjekt svåra att se.', think: 'Se om du kan hitta månen på en dagspromenad med en vuxen. Titta aldrig direkt på solen.' },
+  { id: 'glasets-droppar', e: '🥛', cat: 'Vetenskap', minLevel: 0, q: 'Varifrån kommer dropparna utanpå ett kallt glas?', simple: 'Luften innehåller vatten som vi inte ser. Vid det kalla glaset kan det bli små vattendroppar.', a: 'Vattenånga i luften kyls nära glaset och kan bli flytande droppar. Det kallas kondensation. Vattnet behöver inte ha läckt genom glaset.', deep: 'Kondensation är övergång från gas till vätska. Ett kallt glas med torr utsida kan hjälpa oss undersöka processen. Vi behöver skilja det vi ser, droppar, från vår förklaring till dem.', think: 'Torka utsidan på ett kallt glas. Titta igen efter en stund. Vad ser du, och vad tror du att det betyder?' },
+  { id: 'polen-krymper', e: '💧', cat: 'Natur', minLevel: 1, q: 'Vart tar vattnet i en pöl vägen när den torkar?', simple: 'En del vatten blir vattenånga och blandas med luften. En del kan också sugas ner i marken.', a: 'Vatten kan avdunsta från pölens yta och bli vattenånga i luften. På genomsläpplig mark kan vatten också tränga ner i marken.', deep: 'Vilken process som betyder mest beror bland annat på underlaget och vädret. Att pölen krymper är en observation. Att allt vatten har avdunstat är en slutsats som behöver mer stöd.', think: 'Hur skulle du jämföra en pöl på asfalt med en på jord utan att ändra flera saker samtidigt?' },
+  { id: 'satellitbana', e: '🛰️', cat: 'Rymden', minLevel: 2, q: 'Varför faller inte en satellit rakt ner?', simple: 'Jorden drar i satelliten, men den rör sig också snabbt åt sidan. Då kan den fortsätta runt jorden.', a: 'Tyngdkraften drar satelliten mot jorden samtidigt som den rör sig åt sidan. Vid en lämplig fart och höjd blir rörelsen en bana runt jorden.', deep: 'En satellit i omloppsbana kan beskrivas som att den hela tiden faller runt jorden. Det finns tyngdkraft där. Luftmotstånd och andra krafter kan påverka banan, så den är inte oföränderlig.', think: 'Rita en jord och en pil åt sidan bredvid den. Vilken annan pil behövs för att visa jordens dragning?' },
+  { id: 'testa-flera', e: '🔎', cat: 'Vetenskap', minLevel: 1, q: 'Räcker ett lyckat försök för att veta att något alltid fungerar?', simple: 'Ett försök visar vad som hände just då. Prova flera gånger och jämför.', a: 'Ett lyckat försök ger en ledtråd, men det visar inte att samma sak händer varje gång. Upprepa och testa också andra relevanta fall.', deep: 'Om en pappersbro bar en kloss i ett test vet vi vad den klarade då. Vi vet ännu inte hur den klarar andra placeringar eller material. Skriv vad testet faktiskt visar och vad som fortfarande är okänt.', think: 'En bro av papper klarade en kloss. Vad vill du testa nästa gång? Ändra en sak i taget.' },
+  { id: 'modell-verklighet', e: '🗺️', cat: 'Teknik', minLevel: 0, q: 'Är en karta samma sak som platsen den visar?', simple: 'Nej. En karta visar några saker om en plats. Den är inte själva platsen.', a: 'En karta är en modell: den visar utvalda delar av verkligheten. En enkel karta kan visa vägen men inte alla träd, färger eller ljud.', deep: 'En modell är användbar för ett visst syfte och förenklar annat. En solsystemsbild kan visa planeternas ordning utan att visa rätt avstånd. Fråga alltid vad modellen visar och vad den lämnar bort.', think: 'Rita en karta över ditt rum. Vilka saker behövs för att någon ska hitta dörren? Vad kan du lämna bort?' },
+  { id: 'forskarens-vetinte', e: '🤔', cat: 'Vetenskap', minLevel: 0, q: 'Får en forskare säga ”jag vet inte än”?', simple: 'Ja! Då kan man ställa frågor, undersöka och lära sig mer.', a: 'Att säga vad man inte vet är en del av att undersöka noggrant. En gissning kan hjälpa oss välja ett test, men är inte samma sak som ett resultat.', deep: 'Skilj mellan observation, möjlig förklaring och osäkerhet. Flera förklaringar kan passa samma observation. Då behöver vi ett test som hjälper oss skilja dem åt.', think: 'En växt ser slokande ut. Vilka olika förklaringar kan du komma på, och vad skulle du behöva veta mer?' },
+];
+WONDERS.push(...NEW_WONDERS);
+
+export function eligibleWonders(level = 4, showAll = false) {
+  return WONDERS.filter(item => showAll || (item.minLevel ?? 0) <= level);
+}
+export function wonderAnswer(item, level = 4) {
+  const main = level <= 1 && item.simple ? item.simple : item.a;
+  return level >= 3 && item.deep ? `${main} ${item.deep}` : main;
+}
+
 export const wonderApp = {
   id: 'wonder',
   name: 'Undra',
@@ -46,8 +67,9 @@ export const wonderApp = {
 };
 
 /** Dagens fråga – samma för hela dagen, olika per dag. */
-export function wonderOfTheDay(date = new Date()) {
+export function wonderOfTheDay(date = new Date(), level = 4, showAll = false) {
   const start = Date.UTC(2024, 0, 1);
   const day = Math.floor((Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()) - start) / 86400000);
-  return WONDERS[((day % WONDERS.length) + WONDERS.length) % WONDERS.length];
+  const pool = eligibleWonders(level, showAll);
+  return pool[((day % pool.length) + pool.length) % pool.length];
 }

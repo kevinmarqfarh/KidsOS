@@ -1,8 +1,8 @@
 # KidsOS
 
-**Ett lärande "operativsystem" för barn 4–10 år – byggt för iPad och mobil.**
+**Ett lärande "operativsystem" för barn 4–12 år – byggt för iPad och mobil.**
 
-KidsOS ser ut och känns som ett eget operativsystem: varje barn har en egen profil på låsskärmen, en hemskärm med appar och en docka, och appar som öppnas i egna fönster. Varje app är ett ämne att fördjupa sig i. Allt är byggt för att väcka **nyfikenhet**, **kreativitet** och **lärande** – och följer Skolverkets läroplan (Lgr22) för förskoleklass och årskurs 1–3.
+KidsOS ser ut och känns som ett eget operativsystem: varje barn har en egen profil på låsskärmen, en hemskärm med appar och en docka, och appar som öppnas i egna fönster. Varje app är ett ämne att fördjupa sig i. Allt är byggt för att väcka **nyfikenhet**, **kreativitet** och **lärande** – med grundläggande innehåll kopplat till Skolverkets läroplan (Lgr22) för förskoleklass och årskurs 1–3. AI och fördjupad kodning kompletterar dessa färdigheter.
 
 | Hemskärm | Frågerunda | Robotbanan | Skriv ABC |
 |---|---|---|---|
@@ -12,16 +12,17 @@ KidsOS ser ut och känns som ett eget operativsystem: varje barn har en egen pro
 
 | App | Vad barnet gör |
 |---|---|
-| 🔢 **Matte** | 15 moduler: räkna, störst/minst, mönster, former (2D och 3D), tiokompisar, plus/minus med tioramar, talföljder, klockan (läsa *och* ställa in visarna), hemliga talet (likhetstecknet), dubbelt/hälften, mäta med linjal, diagram, tiotal/ental med tiobasmaterial, gånger/delat, chans (sannolikhet). |
-| 📖 **Svenska** | Bokstavsljud, rimma, klappa stavelser på en trumma, första ljudet, stor/liten bokstav, bygga ord, läsa och välja bild, ABC-ordning, bygga meningar och skiljetecken, motsatser/synonymer, och 6 berättelser som kan läsas upp ord för ord – med frågor om innehållet. |
+| 🔢 **Matte** | 17 moduler: räkna, störst/minst, mönster, former (2D och 3D), tiokompisar, plus/minus med tioramar, talföljder, klockan (läsa *och* ställa in visarna), hemliga talet (likhetstecknet), dubbelt/hälften, mäta med linjal, diagram, tiotal/ental med tiobasmaterial, gånger/delat, chans (sannolikhet), vardagsproblem samt lika delar och bråk. |
+| 📖 **Svenska** | Bokstavsljud, rimma, klappa stavelser på en trumma, första ljudet, stor/liten bokstav, bygga ord, läsa och välja bild, ABC-ordning, bygga meningar och skiljetecken, motsatser/synonymer, Ord i vardagen, Textens ledtrådar och 14 originalberättelser från lyssnande till läsning mellan raderna – med textstöd och förklaringar. |
 | ✏️ **Skriv ABC** | Spåra stora och små bokstäver (alla 29), siffror, ord och *sitt eget namn* med fingret. Startpunkter, riktningspilar och en animerad "Visa hur". Bedömningen tål darriga barnhänder men inte klotter. |
-| 🔬 **Vetenskap** | Experiment med arbetsgången Fråga → Gissa → Testa → Förklara: flyter/sjunker, magneten, ljus & skugga, vattnets former (smälta, koka, kondensera, frysa), gungbrädan (jämvikt), rutschkanan (friktion), blanda & separera (filtrera/avdunsta) och källsortering med pant. Resultaten sparas i ett protokoll. |
+| 🔬 **Vetenskap** | Experiment med arbetsgången Fråga → Gissa → Testa → Förklara: flyter/sjunker, magneten, ljus & skugga, vattnets former (smälta, koka, kondensera, frysa), gungbrädan (jämvikt), rutschkanan (friktion), blanda & separera (filtrera/avdunsta) och källsortering med pant. Resultaten sparas i ett protokoll. Tre övningar med 30 scenarier tränar observationer, krafter och att ta vara på saker. |
 | 🌿 **Biologi** | Utforska kroppen (utsida och organ), "var är …?", sinnena, årstider, livscykler, 25 svenska artkort att samla, djurgrupper, näringskedjor och må bra (sömn, hygien, mat, vänner). |
 | 🚀 **Rymden** | Ett levande solsystem att trycka på, bygg och räkna ner en raket, dag & natt i Göteborg, månens faser, planetordning, stjärnbilder att rita (med gamla berättelser), varför vi har årstider, och ett rymdquiz. |
-| 🤖 **Kod** | 20 robotbanor i tre kapitel (pilar → sväng & kör → loopar), följ koden, programmerade saker i vardagen, och rita med kod (sköldpaddsgrafik). |
+| 🧠 **AI** | 10 lektioner och 42 scenarier om AI, data, modeller, faktakontroll, rättvisa, tydliga instruktioner och privatliv. Träna en enkel modell med riktiga djurfoton och testa på andra djur. |
+| 🤖 **Kodning** | Sex lektioner och 30 frågor om instruktioner, felsökning, loopar, villkor, variabler och händelser/funktioner. Dessutom: 20 robotbanor i tre kapitel (pilar → sväng & kör → loopar), följ koden, programmerade saker i vardagen, och rita med kod (sköldpaddsgrafik). |
 | 🎨 **Rita** | Penslar, stämplar, spegelpensel (symmetri), ångra och ett eget galleri – plus ritidéer som väcker fantasin. |
-| 🤔 **Undra** | 32 stora frågor ("Varför är himlen blå?") där barnet gissar först, får ett svar och en följdfråga att fundera vidare på. En ny fråga varje dag på hemskärmen. |
-| 🏆 **Troféer** | 52 troféer, titlar från "Nyfiken nybörjare" till "Universumets mästare" och samlingar (artkort, planeter, stjärnbilder, bokstäver). |
+| 🤔 **Undra** | 40 stora frågor ("Varför är himlen blå?") där barnet gissar först, får ett svar och en följdfråga att fundera vidare på. En nivåanpassad fråga varje dag på hemskärmen. Nya kort har korta svar för yngre och fördjupning för äldre. |
+| 🏆 **Troféer** | 54 troféer, titlar från "Nyfiken nybörjare" till "Universumets mästare" och samlingar (artkort, planeter, stjärnbilder, bokstäver). |
 | ⚙️ **Inställningar** | Barnets egna val (figur, bakgrund, uppläsning) och en föräldradel bakom spärr: profiler, nivåer, skärmtid, synliga appar, föräldrakod, rapport mot läroplanen och säkerhetskopia. |
 
 Hela kopplingen till läroplanen, modul för modul, finns i [docs/LARANDE.md](docs/LARANDE.md). Forskningen bakom designen finns i [docs/RESEARCH.md](docs/RESEARCH.md). Föräldraguiden finns i [docs/FORALDRAR.md](docs/FORALDRAR.md).
@@ -116,3 +117,30 @@ Registrera den i appens `modules`-lista med `gen`, `minLevel` och `lgr` (läropl
 ## Licens
 
 Privat familjeprojekt.
+
+### Fotografier i lärmaterialet
+
+Artkort, djursortering, näringskedjor och solsystemets faktakort använder lokalt
+inbäddade referensfotografier där de finns i bildkatalogen. Övriga motiv behåller
+sina illustrationer. Fotografierna fungerar utan nätverk och visas utan beskärning.
+Källor och licenser finns i appens samlingar och i [bildförteckningen](docs/photo-credits.md).
+Efter ändringar av bilderna eller `src/assets/photos/credits.json`, kör
+`node scripts/embed-photos.mjs` före bygget.
+
+### AI och Kodning
+
+Kurserna kombinerar uppläsningsbara lektioner med övningar och sparade läsframsteg.
+Fördjupningar låses upp efter barnets nivå. Kodning behåller tidigare robotframsteg.
+AI-labbet använder en lokal närmaste-granne-modell med öppet redovisade egenskaper,
+inte bildtolkning. Barnen kan ändra träningsetiketter och jämföra svar på andra djur.
+Inga externa AI-konton eller tjänster behövs. AI-innehållet bygger på
+[UNICEF:s riktlinjer](https://www.unicef.org/innocenti/reports/policy-guidance-ai-children) och
+[NIST:s generativa AI-profil](https://nvlpubs.nist.gov/nistpubs/ai/NIST.AI.600-1.pdf).
+AI-fördjupningen kompletterar de grundläggande färdigheter som kopplas till läroplanen.
+
+### Enkel profilguide
+
+Föräldern öppnar spärren och godkänner ett av fyra åldersintervall: 4–5, 6–7,
+8–9 eller 10–12 år. Barnet gör sedan tre enkla steg: namn, figur och utseende.
+Intervallen styr startnivå, uppläsning och rundlängd; övningarna anpassas vidare
+när barnet lär sig. Bakgrundskorten visar samma skalbara landskap som hemskärmen.

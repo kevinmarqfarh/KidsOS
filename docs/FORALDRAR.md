@@ -3,18 +3,20 @@
 ## Första gången
 
 1. Öppna KidsOS på iPaden och lägg till det på hemskärmen (dela-knappen → **Lägg till på hemskärmen**).
-2. Välj **Snabbstart: tre syskon** eller skapa en profil per barn med **Skapa första profilen**. Ålder styr startnivån.
+2. Välj **Skapa första profilen** och öppna föräldraspärren. Välj ett åldersintervall och tryck **Godkänn och låt barnet fortsätta**. Barnet fyller sedan i namn eller smeknamn, väljer figur och avslutar med färg och bakgrund. Snabbstarten kräver också förälderns godkännande.
 3. Gå till **Inställningar → Föräldrainställningar**. Spärren frågar efter en multiplikation (t.ex. 7 × 8) tills du väljer en egen fyrsiffrig kod.
 4. Byt namn på profilerna och välj en föräldrakod under **Allmänt**.
 
-## Förslag på inställningar för era barn
+## Åldersintervall och innehåll
 
-| | 5 år | 7 år | 9 år |
-|---|---|---|---|
-| Startnivå | Nivå 1 (förskola) | Nivå 2 (F–åk 1) | Nivå 4 (åk 3) |
-| Uppläsning | Automatisk (allt läses upp) | Automatisk (allt läses upp) | Automatisk (tryck 🔊 vid behov) |
-| Bra att börja med | Rimma, Klappa stavelser, Räkna, Stora bokstäver, Flyter eller sjunker, Robotbanan 1–5, Solsystemet | Första ljudet, Bygg ordet, Plus & minus, Klockan, Mitt namn, Robotbanan 6–13, Magneten | Berättelser, Meningar, Gånger & delat, Diagram, Små bokstäver, Loopar i robotbanan, Rita med kod, Varför årstider? |
-| Skärmtid | 15–20 min | 20–30 min | 30–45 min |
+| Intervall | Start | Anpassning |
+|---|---|---|
+| 4–5 år | Nivå 1 | Bilder, automatisk uppläsning, fem frågor, små antal och enkla instruktioner. |
+| 6–7 år | Nivå 2 | Uppläsning, korta texter, sex frågor, första läsningen och enkla kodmönster. |
+| 8–9 år | Nivå 3 | Åtta frågor, korta förklaringar, läsförståelse, kodvillkor och AI-experiment. |
+| 10–12 år | Nivå 5 | Åtta frågor, självständigare problemlösning, variabler, funktioner och granskning av AI. |
+
+Intervallet är godkänt när barnet börjar fylla i sin profil och kan inte ändras i barnets guide. Ett nytt intervall väljs i föräldradelen. Vid byte återställs övningarnas svårighet och egna nivåval; intjänade stjärnor, samlingar och övningsresultat finns kvar. Äldre profiler behåller sina nivåer tills en förälder ändrar inställningarna.
 
 Nivån anpassas automatiskt, men du kan låsa den per app om ett barn behöver mer utmaning eller mer trygghet. **Visa alla moduler** låser upp allt för ett barn som vill utforska fritt.
 

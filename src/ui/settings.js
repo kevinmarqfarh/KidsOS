@@ -1,8 +1,9 @@
+import { wallpaperButton } from './wallpapers.js';
 // Inställningar: barnets egna val + föräldrapanel (bakom föräldraspärr).
 import { h, clear, onTap } from './dom.js';
 import { kos } from './kos.js';
 import { APPS } from '../apps/registry.js';
-import { AVATARS, WALLPAPERS, LEVELS, schoolLabelForAge } from '../core/age.js';
+import { AVATARS, WALLPAPERS, LEVELS, profileAgeLabel } from '../core/age.js';
 import { appStat, currentLevel, dateKey, secondsToday } from '../core/model.js';
 import { curriculumFor, CURRICULUM } from '../core/curriculum.js';
 import { exportBackup, importBackup, wipeAll, deleteDrawingsFor, isPersistent } from '../core/storage.js';
@@ -24,7 +25,7 @@ export function renderSettings(el, { parentGate, profileWizard, showLock, goHome
         kos.saveNow();
         renderKid();
       })))),
-      row('Bakgrund', h('div.pick-row', WALLPAPERS.map((w) => onTap(h('button.pick.pick-wp', { type: 'button', class: `${p.wallpaper === w.id ? 'on' : ''} wp-${w.id}` }, h('span', w.emoji), h('small', w.name)), () => {
+      row('Bakgrund', h('div.wallpaper-grid', WALLPAPERS.map(w => wallpaperButton(w, p.wallpaper === w.id, () => {
         p.wallpaper = w.id;
         kos.saveNow();
         renderKid();
@@ -69,10 +70,10 @@ export function renderSettings(el, { parentGate, profileWizard, showLock, goHome
     return h(
       'section.set-section',
       h('h3', `Profil: ${kp.name}`),
-      h('p.muted', `${kp.age} år · ${schoolLabelForAge(kp.age)} · skapad ${new Date(kp.createdAt).toLocaleDateString('sv-SE')}`),
+      h('p.muted', `${profileAgeLabel(kp)} · skapad ${new Date(kp.createdAt).toLocaleDateString('sv-SE')}`),
       h(
         'div.row-actions.left',
-        onTap(h('button.btn.btn-ghost', { type: 'button' }, '✏️ Redigera namn, ålder, figur'), () => profileWizard({ edit: kp, onDone: render })),
+        onTap(h('button.btn.btn-ghost', { type: 'button' }, '✏️ Redigera profil och åldersintervall'), () => profileWizard({ edit: kp, onDone: render })),
         onTap(h('button.btn.btn-danger', { type: 'button' }, '🗑️ Ta bort profil'), () =>
           modal(h('div', h('h2', `Ta bort ${kp.name}?`), h('p', 'Alla stjärnor, troféer och teckningar för profilen raderas. Det går inte att ångra.')), [
             ['Avbryt', 'ghost', () => true],

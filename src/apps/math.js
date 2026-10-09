@@ -536,6 +536,90 @@ export function genPlaceValue(level, rng) {
   };
 }
 
+/* ---------- Matte i vardagen: välj räknesätt från situationen ---------- */
+export function genEveryday(level, rng) {
+  const cap = [5, 10, 20, 100, 500][level];
+  const kind = rng.pick(level < 2 ? ['picnic', 'bus', 'build'] : ['picnic', 'bus', 'build', 'garden', 'shop']);
+  const a = rng.int(1, Math.floor(cap / 2));
+  const b = rng.int(1, Math.floor(cap / 2));
+  let prompt, answer, hint, explain, visual;
+  if (kind === 'picnic') {
+    prompt = `Du har ${a} äpplen. Du får ${b} till. Hur många har du nu?`;
+    answer = a + b;
+    hint = 'Börja med dina äpplen. Räkna sedan vidare för varje nytt äpple.';
+    explain = `${a} + ${b} = ${answer} äpplen.`;
+    visual = level <= 1 ? `<div class="addpics">${emojiGroup('🍎', a, { size: 's' })}<span class="op">+</span>${emojiGroup('🍎', b, { size: 's' })}</div>` : '';
+  } else if (kind === 'bus') {
+    const off = rng.int(1, a);
+    prompt = `${a} barn åker buss. ${off} går av. Hur många är kvar?`;
+    answer = a - off;
+    hint = 'Börja med alla barn. Räkna bakåt ett steg för varje barn som går av.';
+    explain = `${a} − ${off} = ${answer} barn kvar.`;
+    visual = level <= 1 ? emojiGroup('🧒', a, { size: 's' }) : '';
+  } else if (kind === 'build') {
+    const target = a + b;
+    prompt = `Du behöver ${target} klossar. Du har ${a}. Hur många fattas?`;
+    answer = b;
+    hint = 'Räkna steg från antalet du har till antalet du behöver.';
+    explain = `${a} + ${answer} = ${target}. Det fattas ${answer} klossar.`;
+    visual = level <= 1 ? emojiGroup('🧱', a, { size: 's' }) : '';
+  } else if (kind === 'garden') {
+    const rows = rng.int(2, level === 4 ? 9 : 5);
+    const each = rng.int(2, level === 4 ? 12 : 5);
+    prompt = `Du planterar ${rows} rader med ${each} blommor i varje. Hur många blommor blir det?`;
+    answer = rows * each;
+    hint = `Lägg ihop ${each} en gång för varje rad, eller använd gånger.`;
+    explain = `${rows} × ${each} = ${answer} blommor.`;
+    visual = level <= 3 ? dotArray(rows, each) : '';
+  } else {
+    const price = rng.int(2, level === 4 ? 30 : 10);
+    const count = rng.int(2, level === 4 ? 8 : 4);
+    const change = rng.int(1, level === 4 ? 50 : 10);
+    const paid = price * count + change;
+    prompt = `Du köper ${count} pennor för ${price} kronor styck och betalar ${paid} kronor. Hur många kronor får du tillbaka?`;
+    answer = change;
+    hint = 'Räkna först vad alla pennor kostar. Ta sedan betalt belopp minus kostnaden.';
+    explain = `Pennorna kostar ${count} × ${price} = ${price * count} kronor. ${paid} − ${price * count} = ${answer} kronor tillbaka.`;
+    visual = '';
+  }
+  return {
+    type: level <= 1 ? 'choice' : 'numpad', prompt, visual, hint, explain,
+    options: level <= 1 ? choice(rng, answer, 3, { min: 0, max: cap + 2, spread: 2 }) : undefined,
+    answer: level <= 1 ? String(answer) : answer,
+  };
+}
+
+/* ---------- Lika delar och bråk av ett antal ---------- */
+export function genSharing(level, rng) {
+  const parts = rng.pick(level <= 1 ? [2] : level === 2 ? [2, 4] : level === 3 ? [2, 3, 4] : [3, 4, 5, 6, 8, 10]);
+  const each = rng.int(1, level <= 1 ? 3 : level === 2 ? 5 : level === 3 ? 10 : 20);
+  const total = parts * each;
+  const kind = rng.pick(level <= 1 ? ['share'] : ['share', 'portion', 'left']);
+  const taken = level >= 3 ? rng.int(1, parts - 1) : 1;
+  let prompt, answer, hint, explain;
+  if (kind === 'share') {
+    prompt = `${total} jordgubbar delas lika mellan ${parts} barn. Hur många får varje barn?`;
+    answer = each;
+    hint = 'Ge ett bär i taget till varje barn. Alla ska få lika många.';
+    explain = `${parts} lika grupper med ${each} bär blir ${total}. Varje barn får ${each}.`;
+  } else {
+    const fraction = `${taken}/${parts}`;
+    prompt = kind === 'portion'
+      ? `Du har ${total} pärlor. Du använder ${fraction} av dem. Hur många pärlor använder du?`
+      : `Du har ${total} pärlor. Du använder ${fraction} av dem. Hur många pärlor har du kvar?`;
+    answer = kind === 'portion' ? taken * each : total - taken * each;
+    hint = `Dela först alla pärlor i ${parts} lika grupper. ${fraction} betyder ${taken} av de grupperna.${kind === 'left' ? ' Räkna sedan grupperna som är kvar.' : ''}`;
+    explain = `En grupp har ${total} ÷ ${parts} = ${each} pärlor. Du använder ${taken} × ${each} = ${taken * each}.${kind === 'left' ? ` Kvar blir ${total} − ${taken * each} = ${answer}.` : ''}`;
+  }
+  return {
+    type: level <= 1 ? 'choice' : 'numpad', prompt,
+    say: prompt.replace(/(\d+)\/(\d+)/g, '$1 av $2 lika delar'),
+    visual: total <= 30 ? emojiGroup(kind === 'share' ? '🍓' : '🔵', total, { perRow: each, size: 's' }) : '',
+    options: level <= 1 ? choice(rng, answer, 3, { min: 0, max: total + 2, spread: 2 }) : undefined,
+    answer: level <= 1 ? String(answer) : answer, hint, explain,
+  };
+}
+
 export const mathApp = {
   id: 'math',
   name: 'Matte',
@@ -557,6 +641,8 @@ export const mathApp = {
     { id: 'chart', name: 'Diagram', icon: '📊', minLevel: 1, gen: genChart, lgr: ['ma-diagram'] },
     { id: 'placevalue', name: 'Tiotal & ental', icon: '🧱', minLevel: 2, gen: genPlaceValue, lgr: ['ma-pos'] },
     { id: 'times', name: 'Gånger & delat', icon: '✖️', minLevel: 2, gen: genTimes, lgr: ['ma-rakna'] },
+    { id: 'everyday', name: 'Vardagsklur', icon: '🛒', minLevel: 0, gen: genEveryday, lgr: ['ma-rakna', 'ma-metod'] },
+    { id: 'sharing', name: 'Lika delar & bråk', icon: '🍓', minLevel: 2, gen: genSharing, lgr: ['ma-tal', 'ma-prop', 'ma-rakna'] },
     { id: 'chance', name: 'Chans', icon: '🎲', minLevel: 2, gen: genChance, lgr: ['ma-chans'] },
   ],
 };

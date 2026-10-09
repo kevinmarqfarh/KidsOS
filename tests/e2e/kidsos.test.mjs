@@ -1,3 +1,4 @@
+import { STORIES } from '../../src/apps/svenska.js';
 // End-to-end-tester av den byggda appen (dist/index.html) i Chromium med pekskärm.
 // Kör: npm run build && npm run test:e2e
 import { test, before, after } from 'node:test';
@@ -43,6 +44,7 @@ async function open(device = IPAD) {
 
 async function family(page, index) {
   await page.getByText('Snabbstart').click();
+  await approveGate(page);
   await page.waitForSelector('.who-bubble');
   await page.locator('.who-bubble').nth(index).click();
   try {
@@ -147,18 +149,29 @@ async function typeGate(page, digits) {
   }
 }
 
+async function approveGate(page) {
+  const prompt = await page.locator('.gate p').innerText();
+  const [, a, b] = /(\d+) × (\d+)/.exec(prompt);
+  await typeGate(page, Number(a) * Number(b));
+  await page.locator('.gate .np-key.ok').click();
+}
+
 test('första start: föräldern skapar en profil med guiden', async () => {
   const { page, ctx, errors } = await open();
   await page.screenshot({ path: join(SHOTS, 'ipad-valkommen.png') });
   await page.getByText('Skapa första profilen').click();
+  await approveGate(page);
+  await page.locator('.age-band-card[data-band="6-7"]').click();
+  await page.getByRole('button', { name: 'Godkänn och låt barnet fortsätta →' }).click();
   await page.fill('#profile-name', 'Testbarn');
-  await page.locator('.pick-age', { hasText: /^7$/ }).click();
+  await page.getByRole('button', { name: 'Nästa →', exact: true }).click();
   await page.locator('.pick-av').nth(3).click();
+  await page.getByRole('button', { name: 'Nästa →', exact: true }).click();
   await page.screenshot({ path: join(SHOTS, 'ipad-profilguide.png') });
   await page.getByRole('button', { name: 'Skapa ✨' }).click();
   await page.locator('.who-bubble', { hasText: 'Testbarn' }).click();
   await page.waitForSelector('.home');
-  assert.equal(await page.locator('.app-icon').count(), 9);
+  assert.equal(await page.locator('.app-icon').count(), 10);
   assert.match(await page.locator('.home-hello h1').innerText(), /Testbarn/);
   const s = await state(page);
   assert.equal(s.profiles[0].age, 7);
@@ -363,9 +376,11 @@ test('vetenskap: gissa och testa flyter/sjunker hela vägen till protokollet', a
 test('rymden, biologi och undra: interaktiva vyer ger samlingar', async () => {
   const { page, ctx, errors } = await open();
   await family(page, 2);
+  await page.route(/^https?:/, route => route.abort());
   await openModule(page, 'space', 'solar');
   await page.locator('.body[data-id="mars"]').click({ force: true });
   await page.waitForSelector('.pi-card');
+  await page.waitForFunction(() => { const img = document.querySelector('.pi-photo img'); return img?.complete && img.naturalWidth > 0; });
   await page.screenshot({ path: join(SHOTS, 'ipad-solsystemet.png') });
   await openModule(page, 'biology', 'bodyexplore');
   await page.locator('[data-hit="hand"]').click({ force: true });
@@ -517,5 +532,171 @@ test('framsteg sparas mellan sessioner och nattläget går att slå på', async 
   await page.locator('.dock-item', { hasText: 'Troféer' }).click();
   await page.waitForSelector('.troom');
   await page.screenshot({ path: join(SHOTS, 'ipad-trofeer.png') });
+  await ctx.close();
+});
+
+test('artfotografier fungerar offline på mobil', async () => {
+  const { page, ctx, errors } = await open(PHONE);
+  await family(page, 1);
+  await page.route(/^https?:/, route => route.abort());
+  for (let attempt = 0; attempt < 20; attempt++) {
+    await openModule(page, 'biology', 'species');
+    if (await page.locator('.q-visual .learning-photo').count()) break;
+  }
+  await page.waitForFunction(() => {
+    const img = document.querySelector('.q-visual .learning-photo');
+    return img?.complete && img.naturalWidth > 0;
+  });
+  assert.ok(await page.locator('.q-visual .learning-photo').evaluate(img => img.getBoundingClientRect().right <= innerWidth));
+  await page.screenshot({ path: join(SHOTS, 'mobil-artfoto.png') });
+  assert.deepEqual(errors, []);
+  await ctx.close();
+});
+
+test('AI och Kodning: läs lektioner, öva och spara framsteg på mobil', async () => {
+  const { page, ctx, errors } = await open(PHONE);
+  await family(page, 0);
+  await page.route(/^https?:/, route => route.abort());
+  for (const appId of ['ai', 'code']) {
+    await openModule(page, appId, 'course');
+    await page.locator('.course-lesson:not(:disabled)').first().click();
+    while ((await page.locator('.course-next').innerText()).includes('Nästa del')) await page.locator('.course-next').click();
+    await page.locator('.course-next').click();
+    assert.ok(await page.locator('.course-lesson').first().innerText().then(text => text.includes('Läst')));
+    assert.equal(await page.locator('.course-stage').evaluate(el => el.getBoundingClientRect().right <= innerWidth), true);
+    if (appId === 'ai') await page.screenshot({ path: join(SHOTS, 'mobil-ai-kurs.png') });
+    await page.locator('.course-practice').click();
+    await page.waitForSelector('.q-prompt');
+    await answerCurrent(page);
+    await page.waitForSelector('.fb-ok');
+    await openModule(page, appId, 'course');
+    assert.ok(await page.locator('.course-lesson').first().innerText().then(text => text.includes('Läst')));
+  }
+  await page.screenshot({ path: join(SHOTS, 'mobil-kodkurs.png') });
+  assert.ok(await page.locator('.course-lesson:disabled').count() >= 1);
+  assert.deepEqual(errors, []);
+  await ctx.close();
+});
+
+test('AI-labbet visar hur träningsdata påverkar nya svar utan internet', async () => {
+  const { page, ctx, errors } = await open();
+  await family(page, 1);
+  await page.route(/^https?:/, route => route.abort());
+  await openModule(page, 'ai', 'lab');
+  await page.waitForFunction(() => [...document.querySelectorAll('.ai-photo img')].every(img => img.complete && img.naturalWidth > 0));
+  const cards = page.locator('.ai-animal');
+  await cards.nth(0).getByRole('button', { name: '🐾 Däggdjur', exact: true }).click();
+  await page.getByRole('button', { name: 'Testa på två nya djur →', exact: true }).click();
+  assert.match(await page.locator('.ai-lab').innerText(), /1 av 2 testdjurs svar stämde/);
+  await page.getByRole('button', { name: '← Rätta etiketter eller lägg till exempel', exact: true }).click();
+  for (const [index, label] of [[1, '🐦 Fågel'], [2, '🐦 Fågel'], [3, '🐾 Däggdjur']]) await page.locator('.ai-animal').nth(index).getByRole('button', { name: label, exact: true }).click();
+  assert.match(await page.locator('.ai-training-count').innerText(), /4 exempel/);
+  await page.getByRole('button', { name: 'Testa på två nya djur →', exact: true }).click();
+  assert.match(await page.locator('.ai-lab').innerText(), /2 av 2 testdjurs svar stämde/);
+  await page.screenshot({ path: join(SHOTS, 'ipad-ai-labb.png') });
+  await page.getByRole('button', { name: 'Kontrollera etiketter och prova olika exempel', exact: true }).click();
+  assert.ok((await state(page)).profiles[1].sets.aiLab.classify);
+  const stars = (await state(page)).profiles[1].stars;
+  await page.getByRole('button', { name: 'Kontrollera etiketter och prova olika exempel', exact: true }).click();
+  assert.equal((await state(page)).profiles[1].stars, stars);
+  assert.deepEqual(errors, []);
+  await ctx.close();
+});
+
+test('profilguide: föräldern väljer intervall, barnet väljer själv och bakgrunder förhandsvisas', async () => {
+  const { page, ctx, errors } = await open(PHONE);
+  for (const [i, band] of ['4-5', '6-7', '8-9', '10-12'].entries()) {
+    if (i === 0) await page.getByText('Skapa första profilen').click();
+    else await page.locator('.who-add').click();
+    assert.equal(await page.locator('#profile-name').count(), 0);
+    await approveGate(page);
+    assert.equal(await page.locator('#profile-name').count(), 0);
+    assert.equal((await state(page)).profiles.length, i);
+    await page.locator(`.age-band-card[data-band="${band}"]`).click();
+    if (i === 0) await page.screenshot({ path: join(SHOTS, 'mobil-aldersintervall.png') });
+    await page.getByRole('button', { name: 'Godkänn och låt barnet fortsätta →' }).click();
+    assert.equal(await page.locator('.age-band-card').count(), 0);
+    await page.fill('#profile-name', `Barn${i}`);
+    await page.getByRole('button', { name: 'Nästa →', exact: true }).click();
+    await page.locator('.pick-av').nth(i).click();
+    await page.getByRole('button', { name: 'Nästa →', exact: true }).click();
+    await page.locator('.pick-wp[data-wallpaper="space"]').click();
+    assert.equal(await page.locator('.pick-wp[data-wallpaper="space"]').getAttribute('aria-pressed'), 'true');
+    assert.equal(await page.locator('.wizard').evaluate(el => el.scrollWidth <= el.clientWidth + 2), true);
+    if (i === 0) await page.screenshot({ path: join(SHOTS, 'mobil-profil-bakgrunder.png') });
+    await page.getByRole('button', { name: 'Skapa ✨', exact: true }).click();
+    await page.waitForSelector(`.who-bubble:has-text("Barn${i}")`);
+    const p = (await state(page)).profiles[i];
+    assert.equal(p.ageBand, band);
+    assert.equal(p.wallpaper, 'space');
+  }
+  await page.reload();
+  await page.waitForSelector('.lock');
+  assert.deepEqual((await state(page)).profiles.map(p => p.ageBand), ['4-5', '6-7', '8-9', '10-12']);
+  assert.deepEqual(errors, []);
+  await ctx.close();
+});
+
+
+test('nya övningar fungerar inom alla åldersintervall på mobil', async () => {
+  const { page, ctx, errors } = await open(PHONE);
+  await family(page, 2);
+  await page.route(/^https?:/, route => route.abort());
+  const modules = [['math', 'everyday', 0], ['math', 'sharing', 2], ['svenska', 'contextwords', 0], ['svenska', 'textclues', 0], ['science', 'investigate', 0], ['science', 'forces', 0], ['science', 'resources', 0]];
+  for (const level of [0, 1, 2, 4]) {
+    await page.evaluate(level => { window.kidsos.kos.profile.levelOverride = { math: level, svenska: level, science: level }; }, level);
+    for (const [app, mod, min] of modules) {
+      if (level < min) continue;
+      await openModule(page, app, mod);
+      assert.equal(await page.evaluate(() => window.kidsos.q.level), level);
+      await answerCurrent(page);
+      await page.waitForSelector('.fb-ok');
+      assert.equal(await page.locator('.win-content').evaluate(el => el.scrollWidth <= el.clientWidth + 2), true);
+      if (app === 'science' && mod === 'investigate' && level === 4) await page.screenshot({ path: join(SHOTS, 'mobil-vetenskap-resonemang.png') });
+    }
+  }
+  assert.deepEqual(errors, []);
+  await ctx.close();
+});
+
+test('nya berättelser visar textstöd och förklaringar innan nästa fråga', async () => {
+  const { page, ctx, errors } = await open();
+  await family(page, 0);
+  for (const storyId of ['bollhjalp', 'ryktet-om-parken']) {
+    const story = STORIES.find(item => item.id === storyId);
+    await page.evaluate(level => { window.kidsos.kos.profile.levelOverride.svenska = level; }, story.level);
+    await openModule(page, 'svenska', 'stories');
+    await page.locator('.story-card').filter({ hasText: story.title }).click();
+    await page.getByRole('button', { name: 'Jag har läst klart ➜', exact: true }).click();
+    for (const question of story.questions) {
+      await page.locator('.story-evidence summary').click();
+      assert.ok((await page.locator('.story-evidence').innerText()).includes(story.text[0]));
+      await page.getByRole('button', { name: question.a, exact: true }).click();
+      await page.waitForSelector('.story-feedback .fb-ok');
+      assert.match(await page.locator('.story-feedback').innerText(), /I berättelsen står det/);
+      if (storyId === 'ryktet-om-parken') await page.screenshot({ path: join(SHOTS, 'ipad-lasforstaelse.png') });
+      await page.locator('.story-next').click();
+    }
+    await page.waitForSelector('.summary');
+    assert.ok((await state(page)).profiles[0].sets.stories[storyId]);
+  }
+  assert.deepEqual(errors, []);
+  await ctx.close();
+});
+
+test('Undra anpassar svar och tillgängliga frågor efter barnets nivå', async () => {
+  const { page, ctx, errors } = await open(PHONE);
+  await family(page, 0);
+  for (const level of [0, 4]) {
+    await page.evaluate(level => { window.kidsos.kos.profile.levelOverride.wonder = level; }, level);
+    await openModule(page, 'wonder', 'cards');
+    assert.equal(await page.locator('.wonder-tile').filter({ hasText: 'Varför faller inte en satellit rakt ner?' }).count(), level === 0 ? 0 : 1);
+    await page.locator('.wonder-tile').filter({ hasText: 'Varför blinkar stjärnor?' }).click();
+    await page.getByRole('button', { name: '💡 Visa svaret', exact: true }).click();
+    const text = await page.locator('.wonder-answer').innerText();
+    assert.equal(text.includes('Nära horisonten'), level === 4);
+    assert.equal(await page.locator('.win-content').evaluate(el => el.scrollWidth <= el.clientWidth + 2), true);
+  }
+  assert.deepEqual(errors, []);
   await ctx.close();
 });

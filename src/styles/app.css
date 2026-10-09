@@ -3912,3 +3912,92 @@ small {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* Verkliga referensbilder: hela motivet syns utan beskärning. */
+.photo-figure { margin: 0 auto; width: min(100%, 420px); }
+.learning-photo { display: block; width: 100%; height: auto; max-height: 280px; object-fit: contain; border-radius: 18px; background: #edf2f4; }
+.photo-figure figcaption { font-size: 11px; line-height: 1.5; color: var(--muted, #4b5a78); margin-top: 6px; overflow-wrap: anywhere; }
+.photo-figure summary { cursor: pointer; padding: 5px 0; }
+.photo-figure a { color: inherit; text-decoration: underline; }
+.learning-photo.compact { width: 88px; height: 70px; border-radius: 10px; }
+.coll-icon:has(.learning-photo) { display: flex; justify-content: center; }
+.pi-photo { margin: 14px 0; }
+@media (max-width: 480px) { .learning-photo { max-height: 210px; } }
+
+/* Kurser: korta lektioner, tydlig koppling till praktiken. */
+.course { max-width: 1100px; margin: auto; padding: 18px; }
+.course-progress { color: #4b5a78; line-height: 1.6; }
+.course-layout { display: grid; grid-template-columns: minmax(200px, 290px) minmax(0, 1fr); gap: 22px; align-items: start; }
+.course-list { display: grid; gap: 10px; }
+.course-lesson { display: flex; gap: 12px; align-items: center; text-align: left; border: 2px solid #d7deeb; border-radius: 18px; padding: 15px; background: #fff; color: #23324a; font: inherit; cursor: pointer; }
+.course-lesson.on { border-color: var(--app, #6b6bff); background: #eef3ff; }
+.course-lesson > span { font-size: 24px; }
+.course-lesson small { display: block; font-size: 13px; margin-top: 4px; }
+.course-lesson:disabled { opacity: .6; cursor: default; }
+.course-stage { background: #fff; border-radius: 24px; padding: clamp(18px, 3vw, 32px); min-width: 0; box-shadow: 0 8px 24px #23324a0d; }
+.course-stage h2 { margin-top: 0; }
+.course-eyebrow { color: #4b5a78; font-size: 14px; }
+.course-text, .course-example p, .course-takeaway p { line-height: 1.7; font-size: clamp(18px, 2vw, 22px); overflow-wrap: anywhere; }
+.course-example, .course-takeaway { padding: 18px; border-radius: 16px; background: #eef4ff; margin: 18px 0; }
+.course-takeaway { background: #e9f8ef; }
+.course-stage .row-actions { margin-top: 22px; gap: 12px; flex-wrap: wrap; }
+.course-stage > .btn { margin: 8px 8px 0 0; }
+.course button:focus-visible { outline: 3px solid #3d8bfd; outline-offset: 3px; }
+@media (max-width: 700px) { .course-layout { grid-template-columns: 1fr; } .course { padding: 12px; } .course-list { grid-template-columns: repeat(2, minmax(0, 1fr)); } .course-lesson { padding: 12px; gap: 8px; } .course-lesson > span { font-size: 20px; } }
+@media (max-width: 380px) { .course-list { grid-template-columns: 1fr; } }
+
+.ai-lab { max-width: 1100px; margin: auto; }
+.ai-lab > p { line-height: 1.7; font-size: 18px; }
+.ai-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; margin: 22px 0; }
+.ai-animal { background: #fff; border: 2px solid #d7deeb; padding: 18px; border-radius: 22px; min-width: 0; }
+.ai-animal h3 { margin: 14px 0; }
+.ai-photo .learning-photo { max-height: 180px; }
+.ai-features { padding-left: 20px; line-height: 1.7; }
+.ai-animal .row-actions { flex-wrap: wrap; gap: 8px; }
+.ai-note { background: #eef3ff; border-radius: 16px; padding: 16px; }
+.ai-lab .btn { margin: 6px 6px 6px 0; }
+.ai-lab [aria-pressed="true"] { background: #e7e2ff; border-color: #7163d9; box-shadow: inset 0 0 0 2px #7163d9; }
+.ai-lab button:focus-visible { outline: 3px solid #7163d9; outline-offset: 3px; }
+@media (max-width: 620px) { .ai-grid { grid-template-columns: 1fr; } .ai-animal { padding: 14px; } }
+@media (max-width: 700px) { .course-stage { grid-row: 1; } .course-list { grid-row: 2; } }
+.course-stage, .ai-lab { scroll-margin-top: 130px; }
+.course-lesson > div { min-width: 0; overflow-wrap: anywhere; }
+
+/* Profilguiden: föräldern godkänner, barnet väljer ett steg i taget. */
+.wizard-progress { margin: 0; color: var(--ink-soft); font-size: 16px; line-height: 1.6; }
+.wizard-stage { display: grid; gap: 20px; }
+.wizard-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 12px; padding-top: 14px; border-top: 1px solid var(--line); }
+.age-band-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.age-band-card { text-align: left; display: grid; gap: 7px; background: var(--card); color: var(--ink); border: 2px solid var(--line); border-radius: 22px; padding: 20px; font: inherit; cursor: pointer; min-width: 0; }
+.age-band-card.on { border-color: #6b6bff; background: #f1f0ff; box-shadow: 0 0 0 2px #6b6bff; }
+.age-band-icon { font-size: 30px; }
+.age-band-card b { font-family: var(--font-display); font-size: 27px; }
+.age-band-card strong { font-size: 17px; }
+.age-band-card p { margin: 0; line-height: 1.5; font-size: 16px; }
+.age-band-card small { font-size: 14px; line-height: 1.5; color: var(--ink-soft); }
+.wizard-parent-note { font-size: 15px; color: var(--ink-soft); line-height: 1.6; margin: 0; }
+.wizard .wiz-preview { background: linear-gradient(120deg, #f1f5ff, #f7f4ed); padding: 18px; }
+.wizard button:focus-visible, .pick-wp:focus-visible { outline: 3px solid #6b6bff; outline-offset: 5px; }
+.wallpaper-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 14px; }
+.pick-wp { position: relative; overflow: hidden; width: 100%; height: auto; min-height: 144px; border-radius: 20px; background: var(--card); color: var(--ink); display: flex; gap: 0; padding: 5px; box-shadow: inset 0 0 0 2px var(--line); }
+.pick-wp.on { box-shadow: inset 0 0 0 3px #6b6bff, 0 5px 14px #6b6bff25; }
+.wp-preview { display: grid; width: 100%; height: 104px; padding: 12px; border-radius: 15px; background: var(--wp); box-sizing: border-box; align-content: start; gap: 15px; }
+.wp-mini-clock { font-size: 12px; font-weight: 800; color: #23324a; }
+.wp-space .wp-mini-clock { color: #fff; }
+.wp-mini-apps { display: grid; grid-template-columns: repeat(3, 18px); gap: 7px; justify-content: center; }
+.wp-mini-apps i { width: 18px; height: 18px; border: 1px solid #fff9; border-radius: 5px; background: #ffffffb0; box-shadow: 0 2px 4px #23324a10; }
+.wp-caption { width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 5px; padding: 10px 9px 7px; color: var(--ink); }
+.wp-caption b { font-family: var(--font-display); font-size: 17px; }
+.wp-check { font-size: 18px; color: #6b6bff; }
+/* Procentmått låter samma landskap fungera både på hemskärm och minikort. */
+.wp-sky { --wp: radial-gradient(ellipse 20% 9% at 16% 28%, #fff 60%, transparent 63%), radial-gradient(ellipse 24% 10% at 84% 16%, #fff 60%, transparent 63%), radial-gradient(ellipse 18% 8% at 62% 79%, #ffffffb0 60%, transparent 63%), linear-gradient(180deg, #94d5ff, #e4f4ff 65%, #fff5dd); }
+.wp-forest { --wp: radial-gradient(ellipse 66% 43% at 0% 104%, #50a879 60%, transparent 61%), radial-gradient(ellipse 63% 38% at 100% 105%, #32875f 60%, transparent 61%), radial-gradient(ellipse 50% 28% at 52% 103%, #8bcfa0 60%, transparent 61%), linear-gradient(180deg, #c5eeda, #eef7d9); }
+.wp-ocean { --wp: radial-gradient(ellipse 100% 18% at 15% 94%, #5cbdda 60%, transparent 62%), radial-gradient(ellipse 110% 15% at 95% 105%, #218fb9 60%, transparent 62%), linear-gradient(180deg, #c7efff, #91d9ef); }
+.wp-space { --wp: radial-gradient(circle at 85% 22%, #ffd9a5 0%, #eea56d 10%, transparent 10.5%), radial-gradient(ellipse 3% 3% at 20% 24%, #fff 35%, transparent 40%), radial-gradient(ellipse 2% 2% at 43% 66%, #fff 35%, transparent 40%), radial-gradient(ellipse 2% 2% at 76% 80%, #fff 35%, transparent 40%), radial-gradient(ellipse 2% 2% at 54% 17%, #fff 35%, transparent 40%), linear-gradient(145deg, #202d61, #544389); }
+.wp-candy { --wp: radial-gradient(ellipse 52% 64% at 10% 20%, #ffc0da 60%, transparent 62%), radial-gradient(ellipse 40% 52% at 90% 30%, #b9e5fa 60%, transparent 62%), radial-gradient(ellipse 55% 42% at 65% 95%, #ffe6a3 60%, transparent 62%), linear-gradient(150deg, #ffe5f0, #fff4d8); }
+@media (max-width: 480px) { .age-band-grid { grid-template-columns: 1fr; } .age-band-card { padding: 16px; } .wizard-actions .btn-primary { flex: 1 1 100%; } .wallpaper-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.story-card:disabled { opacity: .6; cursor: default; }
+.story-evidence { margin: 18px 0; padding: 14px; border-radius: 16px; background: var(--paper-2); line-height: 1.7; }
+.story-evidence summary { cursor: pointer; min-height: 44px; display: flex; align-items: center; font-weight: 700; }
+.story-feedback { margin-top: 18px; }
+.story-feedback .story-next { margin-top: 14px; }

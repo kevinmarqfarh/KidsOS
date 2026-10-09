@@ -1,3 +1,4 @@
+import { photoFigure } from '../photos.js';
 // Rymden – interaktiva vyer.
 import { h, clear, onTap, wait } from '../dom.js';
 import { PLANETS, SUN, CONSTELLATIONS, moonPhaseName, GBG_DAYLIGHT, MONTHS, seasonForMonth } from '../../apps/space.js';
@@ -88,6 +89,7 @@ export function solarView(el, { kos, app }) {
         'div.pi-card',
         { style: { '--c': body.color } },
         h('div.pi-head', h('span.pi-ball'), h('h3', body.name), isPlanet ? h('span.pi-order', `Planet nr ${PLANETS.indexOf(body) + 1} från solen`) : h('span.pi-order', 'Vår stjärna')),
+        h('div.pi-photo', { html: photoFigure(body.id, `Rymdbild av ${body.name}`) }),
         h('p.pi-fact', fact),
         isPlanet
           ? h(

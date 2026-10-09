@@ -239,6 +239,373 @@ export const STORIES = [
       { q: 'Vad byggde klassen åt insekterna?', a: 'ett insektshotell', o: ['ett insektshotell', 'ett fågelbo', 'en damm'] },
     ],
   },
+{
+  "id": "bollhjalp",
+  "title": "Bollen under stolen",
+  "e": "⚽",
+  "level": 0,
+  "text": [
+    "Liv har en boll.",
+    "Bollen rullar under en stol.",
+    "Liv böjer sig ner.",
+    "Hon tar fram bollen.",
+    "Nu kan hon leka igen."
+  ],
+  "questions": [
+    {
+      "q": "Vad har Liv?",
+      "a": "en boll",
+      "o": [
+        "en boll",
+        "en bok",
+        "en sko"
+      ],
+      "explain": "I berättelsen står det: Liv har en boll."
+    },
+    {
+      "q": "Var hamnar bollen?",
+      "a": "under en stol",
+      "o": [
+        "under en stol",
+        "i en väska",
+        "på ett bord"
+      ],
+      "explain": "I berättelsen står det: Bollen rullar under en stol."
+    },
+    {
+      "q": "Vad gör Liv för att nå bollen?",
+      "a": "böjer sig ner",
+      "o": [
+        "böjer sig ner",
+        "hoppar upp",
+        "somnar"
+      ],
+      "explain": "I berättelsen står det: Liv böjer sig ner."
+    }
+  ]
+},
+{
+  "id": "tva-koppar",
+  "title": "Två koppar",
+  "e": "☕",
+  "level": 0,
+  "text": [
+    "Bo dukar.",
+    "Han ställer fram två koppar.",
+    "En kopp är gul.",
+    "En kopp är blå.",
+    "Bo ger den blå koppen till Kim."
+  ],
+  "questions": [
+    {
+      "q": "Hur många koppar finns det?",
+      "a": "två",
+      "o": [
+        "två",
+        "en",
+        "tre"
+      ],
+      "explain": "I berättelsen står det: Han ställer fram två koppar."
+    },
+    {
+      "q": "Vilken kopp får Kim?",
+      "a": "den blå",
+      "o": [
+        "den blå",
+        "den gula",
+        "den röda"
+      ],
+      "explain": "I berättelsen står det: Bo ger den blå koppen till Kim."
+    },
+    {
+      "q": "Vad gör Bo?",
+      "a": "dukar",
+      "o": [
+        "dukar",
+        "badar",
+        "cyklar"
+      ],
+      "explain": "I berättelsen står det: Bo dukar."
+    }
+  ]
+},
+{
+  "id": "froraden",
+  "title": "Fröet i krukan",
+  "e": "🌱",
+  "level": 1,
+  "text": [
+    "Nora fyller en kruka med jord.",
+    "Hon lägger ner ett frö.",
+    "Hon vattnar lite och ställer krukan vid fönstret.",
+    "Nora tittar i krukan varje dag.",
+    "En morgon ser hon två små gröna blad."
+  ],
+  "questions": [
+    {
+      "q": "Vad lägger Nora i jorden?",
+      "a": "ett frö",
+      "o": [
+        "ett frö",
+        "en sten",
+        "en penna"
+      ],
+      "explain": "I berättelsen står det: Hon lägger ner ett frö."
+    },
+    {
+      "q": "Var står krukan?",
+      "a": "vid fönstret",
+      "o": [
+        "vid fönstret",
+        "i garderoben",
+        "under sängen"
+      ],
+      "explain": "I berättelsen står det: Hon vattnar lite och ställer krukan vid fönstret."
+    },
+    {
+      "q": "Vad ser Nora en morgon?",
+      "a": "två gröna blad",
+      "o": [
+        "två gröna blad",
+        "en röd boll",
+        "en blå kopp"
+      ],
+      "explain": "I berättelsen står det: En morgon ser hon två små gröna blad."
+    }
+  ]
+},
+{
+  "id": "bibliotekskort",
+  "title": "Boken som väntade",
+  "e": "📚",
+  "level": 1,
+  "text": [
+    "Eli går till biblioteket.",
+    "Hen vill läsa om havet.",
+    "Boken är redan utlånad.",
+    "Bibliotekarien skriver upp Eli i kön.",
+    "Nästa vecka får Eli ett meddelande: boken har kommit tillbaka!",
+    "Nu får Eli låna den."
+  ],
+  "questions": [
+    {
+      "q": "Vad vill Eli läsa om?",
+      "a": "havet",
+      "o": [
+        "havet",
+        "rymden",
+        "fotboll"
+      ],
+      "explain": "I berättelsen står det: Hen vill läsa om havet."
+    },
+    {
+      "q": "Varför kan Eli inte låna boken direkt?",
+      "a": "någon annan har lånat den",
+      "o": [
+        "någon annan har lånat den",
+        "boken saknar sidor",
+        "biblioteket är stängt"
+      ],
+      "explain": "I berättelsen står det: Boken är redan utlånad."
+    },
+    {
+      "q": "Vad betyder meddelandet nästa vecka?",
+      "a": "boken finns att låna",
+      "o": [
+        "boken finns att låna",
+        "boken har försvunnit",
+        "Eli behöver köpa boken"
+      ],
+      "explain": "I berättelsen står det: Nästa vecka får Eli ett meddelande: boken har kommit tillbaka!"
+    }
+  ]
+},
+{
+  "id": "pappersbron",
+  "title": "Bron som böjde sig",
+  "e": "🌉",
+  "level": 2,
+  "text": [
+    "Alva vill bygga en bro av papper mellan två böcker.",
+    "Det platta papperet böjer sig när hon lägger en leksaksbil på det.",
+    "Alva viker ett nytt, likadant papper fram och tillbaka som ett dragspel.",
+    "Hon lägger det mellan samma böcker och använder samma bil.",
+    "Den vikta bron håller bilen.",
+    "Alva ritar båda försöken i sin anteckningsbok."
+  ],
+  "questions": [
+    {
+      "q": "Vad ändrar Alva i andra försöket?",
+      "a": "papperets form",
+      "o": [
+        "papperets form",
+        "bilens storlek",
+        "böckernas avstånd"
+      ],
+      "explain": "I berättelsen står det: Alva viker ett nytt, likadant papper fram och tillbaka som ett dragspel."
+    },
+    {
+      "q": "Vad händer med den platta bron?",
+      "a": "den böjer sig",
+      "o": [
+        "den böjer sig",
+        "den flyger iväg",
+        "den blir våt"
+      ],
+      "explain": "I berättelsen står det: Det platta papperet böjer sig när hon lägger en leksaksbil på det."
+    },
+    {
+      "q": "Varför använder Alva samma bil igen?",
+      "a": "för att jämföra broarnas former",
+      "o": [
+        "för att jämföra broarnas former",
+        "för att bilen är snabbast",
+        "för att ändra två saker samtidigt"
+      ],
+      "explain": "I berättelsen står det: Hon lägger det mellan samma böcker och använder samma bil."
+    }
+  ]
+},
+{
+  "id": "spar-i-snon",
+  "title": "Spåren vid grinden",
+  "e": "🐾",
+  "level": 3,
+  "text": [
+    "Vid grinden ser Aziz små tasspår i snön.",
+    "Han tror först att grannens hund har varit där.",
+    "Spåren fortsätter under ett mycket lågt staket.",
+    "Aziz vet att den stora hunden inte kan komma under staketet.",
+    "Då ser han grannens katt krypa fram på samma ställe.",
+    "– Jag behöver fler ledtrådar innan jag bestämmer mig, säger han."
+  ],
+  "questions": [
+    {
+      "q": "Vad tror Aziz först?",
+      "a": "att hunden gjort spåren",
+      "o": [
+        "att hunden gjort spåren",
+        "att en fågel gjort spåren",
+        "att snön är målad"
+      ],
+      "explain": "I berättelsen står det: Han tror först att grannens hund har varit där."
+    },
+    {
+      "q": "Vilken ledtråd talar emot hunden?",
+      "a": "staketet är för lågt för hunden",
+      "o": [
+        "staketet är för lågt för hunden",
+        "hunden har tassar",
+        "det är vinter"
+      ],
+      "explain": "I berättelsen står det: Aziz vet att den stora hunden inte kan komma under staketet."
+    },
+    {
+      "q": "Vad gör Aziz när han får nya ledtrådar?",
+      "a": "ändrar sin första tanke",
+      "o": [
+        "ändrar sin första tanke",
+        "slutar titta på spåren",
+        "målar över spåren"
+      ],
+      "explain": "I berättelsen står det: – Jag behöver fler ledtrådar innan jag bestämmer mig, säger han."
+    }
+  ]
+},
+{
+  "id": "klassens-skylt",
+  "title": "Skylten med två betydelser",
+  "e": "🪧",
+  "level": 4,
+  "text": [
+    "Klassen ska ordna en bytesdag för böcker.",
+    "På skylten skriver de: Ta en bok!",
+    "När första besökaren kommer tar hon en bok och går.",
+    "Noel blir förvånad: – Vi menade att alla skulle lämna en bok också.",
+    "Amina pekar på skylten. Där står inget om att lämna något.",
+    "Klassen byter text till: Lämna en bok som du läst. Välj sedan en annan bok att ta hem.",
+    "Nästa besökare läser skylten, lämnar sin bok och väljer en ny."
+  ],
+  "questions": [
+    {
+      "q": "Varför missförstår den första besökaren?",
+      "a": "skylten säger bara att ta en bok",
+      "o": [
+        "skylten säger bara att ta en bok",
+        "hon kan inte läsa",
+        "hon har aldrig sett en bok"
+      ],
+      "explain": "I berättelsen står det: Amina pekar på skylten. Där står inget om att lämna något."
+    },
+    {
+      "q": "Vilken ändring gör skylten tydligare?",
+      "a": "båda stegen står i texten",
+      "o": [
+        "båda stegen står i texten",
+        "texten blir hemlig",
+        "skylten får bara en bild"
+      ],
+      "explain": "I berättelsen står det: Klassen byter text till: Lämna en bok som du läst. Välj sedan en annan bok att ta hem."
+    },
+    {
+      "q": "Vilken slutsats stöds av händelserna?",
+      "a": "tydliga instruktioner behöver ange viktiga steg",
+      "o": [
+        "tydliga instruktioner behöver ange viktiga steg",
+        "besökaren ville förstöra bytesdagen",
+        "alla besökare hade samma bok"
+      ],
+      "explain": "I berättelsen står det: Nästa besökare läser skylten, lämnar sin bok och väljer en ny."
+    }
+  ]
+},
+{
+  "id": "ryktet-om-parken",
+  "title": "Ryktet om parken",
+  "e": "🔎",
+  "level": 4,
+  "text": [
+    "I klassens chatt står det att parken ska stänga för alltid.",
+    "Meddelandet saknar avsändare och datum.",
+    "Maja går till parkens anslagstavla tillsammans med sin pappa.",
+    "På skylten står att lekplatsen är stängd måndag till onsdag för att laga en gunga. Resten av parken är öppen.",
+    "Skylten har kommunens namn och dagens datum.",
+    "Maja skriver ner vad skylten faktiskt säger.",
+    "Hon visar texten för sin pappa innan de delar rättelsen."
+  ],
+  "questions": [
+    {
+      "q": "Vad är stängt enligt skylten?",
+      "a": "lekplatsen måndag till onsdag",
+      "o": [
+        "lekplatsen måndag till onsdag",
+        "hela parken för alltid",
+        "biblioteket i en vecka"
+      ],
+      "explain": "I berättelsen står det: På skylten står att lekplatsen är stängd måndag till onsdag för att laga en gunga. Resten av parken är öppen."
+    },
+    {
+      "q": "Vilken uppgift saknas i chattmeddelandet?",
+      "a": "avsändare och datum",
+      "o": [
+        "avsändare och datum",
+        "ordet parken",
+        "ett påstående om stängning"
+      ],
+      "explain": "I berättelsen står det: Meddelandet saknar avsändare och datum."
+    },
+    {
+      "q": "Varför är skylten bättre stöd för rättelsen?",
+      "a": "den anger ansvarig avsändare, datum och vad som stängs",
+      "o": [
+        "den anger ansvarig avsändare, datum och vad som stängs",
+        "den är alltid sann för att den är tryckt",
+        "den använder färre bokstäver"
+      ],
+      "explain": "I berättelsen står det: Skylten har kommunens namn och dagens datum."
+    }
+  ]
+}
 ];
 
 const pictureOpt = (x) => ({ id: x.w, html: `<span class="pic">${x.e}</span>`, say: x.w });
@@ -466,6 +833,266 @@ export function genWords(level, rng) {
   };
 }
 
+
+// Originala mikrotexter: all information som behövs finns i själva situationen.
+export const CONTEXT_WORDS = [
+  [
+    0,
+    "Mio viskar. Rösten är mycket tyst.",
+    "Hur låter Mio?",
+    "tyst",
+    "högt",
+    "som en trumma"
+  ],
+  [
+    0,
+    "Koppen är tom. Det finns inget vatten i den.",
+    "Vad betyder tom?",
+    "utan vatten",
+    "full med vatten",
+    "trasig"
+  ],
+  [
+    0,
+    "Bollen är mjuk. Den går att trycka ihop.",
+    "Vilken boll är mjuk?",
+    "den som går att trycka ihop",
+    "den som är hård som sten",
+    "den som saknas"
+  ],
+  [
+    1,
+    "Lina skyndar sig. Hon går fort för att hinna till bussen.",
+    "Vad betyder skyndar sig?",
+    "gör något fort",
+    "sover länge",
+    "står still"
+  ],
+  [
+    1,
+    "Ali lånar en bok. Han ska lämna tillbaka den.",
+    "Vad betyder lånar här?",
+    "får använda en tid",
+    "köper för alltid",
+    "kastar bort"
+  ],
+  [
+    1,
+    "Sam delar päronet i två lika stora bitar.",
+    "Vad betyder lika stora?",
+    "samma storlek",
+    "olika färg",
+    "bara en bit"
+  ],
+  [
+    2,
+    "Fatima tvekar mellan två spel. Hon har ännu inte bestämt sig.",
+    "Vad betyder tvekar?",
+    "är osäker på valet",
+    "har redan valt",
+    "glömmer reglerna"
+  ],
+  [
+    2,
+    "Vägen är hal efter regnet. Skorna glider på den.",
+    "Vad betyder hal?",
+    "lätt att glida på",
+    "full av trappor",
+    "helt torr"
+  ],
+  [
+    2,
+    "Joel beskriver sin cykel: den är grön och har en korg.",
+    "Vad gör han när han beskriver?",
+    "berättar hur den är",
+    "gömmer den",
+    "byter bort den"
+  ],
+  [
+    3,
+    "Vera jämför två torn. Hon mäter höjden på båda.",
+    "Vad betyder jämför här?",
+    "undersöker likheter och skillnader",
+    "bygger bara ett torn",
+    "river båda utan att titta"
+  ],
+  [
+    3,
+    "Nils upptäcker ett mönster: röd, blå, röd, blå.",
+    "Vad är ett mönster här?",
+    "något som upprepas enligt en regel",
+    "bara slumpmässiga färger",
+    "en färg som saknas"
+  ],
+  [
+    3,
+    "När lampan slocknar föreslår Li att de först kontrollerar batteriet.",
+    "Vad gör Li när hon föreslår?",
+    "ger en idé om nästa steg",
+    "säger att allt är klart",
+    "lovar att lampan aldrig slocknar"
+  ],
+  [
+    4,
+    "Undersökningen omfattar bara klassens elever. Den säger inget om andra skolor.",
+    "Vad betyder omfattar här?",
+    "inkluderar",
+    "utesluter",
+    "avbryter"
+  ],
+  [
+    4,
+    "Författaren preciserar tiden: inte på kvällen utan klockan 18.",
+    "Vad betyder preciserar?",
+    "gör uppgiften mer exakt",
+    "tar bort tidsuppgiften",
+    "byter ämne"
+  ],
+  [
+    4,
+    "Resultatet är preliminärt. Gruppen ska kontrollera det igen innan den är färdig.",
+    "Vad betyder preliminärt?",
+    "ännu inte slutgiltigt",
+    "omöjligt att kontrollera",
+    "alltid fel"
+  ]
+];
+export const TEXT_CLUES = [
+  [
+    0,
+    "Det regnar. Isa tar ett paraply.",
+    "Vad vill Isa hålla borta?",
+    "regnet",
+    "solen i texten",
+    "sin bok"
+  ],
+  [
+    0,
+    "Olle gäspar och lägger huvudet på kudden.",
+    "Vad visar att Olle vill vila?",
+    "han lägger huvudet på kudden",
+    "han hoppar på ett ben",
+    "han springer ut"
+  ],
+  [
+    0,
+    "Minas händer är kalla. Hon tar på vantar.",
+    "Varför tar Mina vantar?",
+    "för att värma händerna",
+    "för att äta soppa",
+    "för att rita på papper"
+  ],
+  [
+    1,
+    "Pelle ska måla. Han täcker bordet med gammalt papper.",
+    "Varför täcker han bordet?",
+    "för att skydda det från färg",
+    "för att göra bordet högre",
+    "för att färgen ska ta slut"
+  ],
+  [
+    1,
+    "Nora ser att växtens jord är torr. Hon hämtar vattenkannan.",
+    "Vad tänker Nora göra?",
+    "vattna växten",
+    "måla krukan",
+    "lägga jord i sängen"
+  ],
+  [
+    1,
+    "Kim letar efter sin mössa. På hyllan ligger bara en halsduk.",
+    "Vad har Kim ännu inte hittat?",
+    "mössan",
+    "halsduken",
+    "hyllan"
+  ],
+  [
+    2,
+    "Ella sätter en lapp på sin matlåda: ELLA. Det finns flera likadana lådor.",
+    "Varför skriver hon sitt namn?",
+    "för att känna igen sin låda",
+    "för att maten ska bli varm",
+    "för att alla ska få samma namn"
+  ],
+  [
+    2,
+    "Båda skorna är leriga efter promenaden. Theo ställer dem på en bricka vid dörren.",
+    "Vilket skäl passar bäst?",
+    "att samla leran vid dörren",
+    "att skorna ska bli större",
+    "att brickan ska flyga"
+  ],
+  [
+    2,
+    "Gruppen ska bygga ett torn. En håller plattan, en staplar och en hämtar klossar.",
+    "Vad visar texten?",
+    "de hjälps åt med olika uppgifter",
+    "alla staplar samtidigt",
+    "ingen använder klossar"
+  ],
+  [
+    3,
+    "På lappen står: Träning torsdag kl. 17. På onsdagen väntar ingen vid planen.",
+    "Vad förklarar att ingen är där?",
+    "träningen är först nästa dag",
+    "träningen börjar på onsdag",
+    "planen nämns inte"
+  ],
+  [
+    3,
+    "Maja testar två pappersflygplan från samma plats. Hon kastar varje modell tre gånger.",
+    "Varför gör hon flera kast?",
+    "för att jämföra fler resultat",
+    "för att ändra startplatsen",
+    "för att slippa mäta"
+  ],
+  [
+    3,
+    "Först står det att Leo glömt sin nyckel. Sedan knackar han på och väntar.",
+    "Varför knackar Leo?",
+    "han kan inte låsa upp med sin nyckel",
+    "han har redan öppnat dörren",
+    "han vill måla dörren"
+  ],
+  [
+    4,
+    "En annons säger att alla gillar spelet. Undersökningen frågade bara fem av tillverkarens anställda.",
+    "Vilken invändning stöds av texten?",
+    "fem anställda visar inte vad alla tycker",
+    "ingen anställd har spelat",
+    "spelet saknar regler"
+  ],
+  [
+    4,
+    "Bussen kom sent samma dag som det regnade. Texten anger ingen orsak till förseningen.",
+    "Vad kan vi säkert säga?",
+    "regn och försening inträffade samma dag",
+    "regnet orsakade förseningen",
+    "bussen är alltid sen"
+  ],
+  [
+    4,
+    "Sara säger att uppgiften är enkel. Amir har försökt flera gånger och ber om en ledtråd.",
+    "Vilken slutsats stöds bäst?",
+    "samma uppgift kan upplevas olika",
+    "Amir vill aldrig lära sig",
+    "Sara har alltid rätt"
+  ]
+];
+
+function contextChoice(bank, level, rng, inference) {
+  const pool = bank.filter((row) => row[0] === Math.max(0, Math.min(4, level)));
+  const [, context, question, answer, ...wrong] = rng.pick(pool);
+  return {
+    type: 'choice', prompt: `${context} ${question}`, say: `${context} ${question}`,
+    options: rng.shuffle([answer, ...wrong]).map((label) => ({ id: label, label, say: label })),
+    answer, hint: inference ? 'Lyssna på texten igen. Vilken ledtråd hjälper dig?' : 'Lyssna på hela meningen. Den hjälper dig att förstå ordet.',
+    explain: `${answer}. ${context}`,
+  };
+}
+export function genContextWords(level, rng) { return contextChoice(CONTEXT_WORDS, level, rng, false); }
+export function genTextClues(level, rng) { return contextChoice(TEXT_CLUES, level, rng, true); }
+
 export const svenskaApp = {
   id: 'svenska',
   name: 'Svenska',
@@ -481,8 +1108,10 @@ export const svenskaApp = {
     { id: 'build', name: 'Bygg ordet', icon: '🧩', minLevel: 1, gen: genBuild, lgr: ['sv-skriva', 'sv-ljud'] },
     { id: 'readpick', name: 'Läs & välj', icon: '👀', minLevel: 1, gen: genReadPick, lgr: ['sv-avkoda'] },
     { id: 'alphabet', name: 'ABC-ordning', icon: '🔠', minLevel: 1, gen: genAlphabet, lgr: ['sv-alfabet'] },
-    { id: 'stories', name: 'Berättelser', icon: '📚', minLevel: 1, view: 'stories', lgr: ['sv-avkoda', 'sv-text'] },
+    { id: 'stories', name: 'Berättelser', icon: '📚', minLevel: 0, view: 'stories', lgr: ['sv-avkoda', 'sv-text'] },
     { id: 'sentence', name: 'Meningar', icon: '✍️', minLevel: 2, gen: genSentence, lgr: ['sv-regler', 'sv-skriva'] },
+    { id: 'contextwords', name: 'Ord i vardagen', icon: '💬', minLevel: 0, gen: genContextWords, lgr: ['sv-ord', 'sv-text'] },
+    { id: 'textclues', name: 'Textens ledtrådar', icon: '🔎', minLevel: 0, gen: genTextClues, lgr: ['sv-text'] },
     { id: 'words', name: 'Ordskatten', icon: '💎', minLevel: 2, gen: genWords, lgr: ['sv-ord'] },
   ],
 };

@@ -1,3 +1,5 @@
+import { courseView } from './course.js';
+import { aiLabView } from './ai.js';
 import { traceView } from './trace.js';
 import { robotView, turtleView } from './code.js';
 import { floatView, magnetView, shadowView, waterView, seesawView, slideView, mixView } from './science.js';
@@ -5,6 +7,8 @@ import { solarView, rocketView, dayNightView, moonView, starsView, orbitView } f
 import { bodyView, storiesView, wonderView, drawView } from './misc.js';
 
 export const VIEWS = {
+  course: courseView,
+  aiLab: aiLabView,
   trace: traceView,
   robot: robotView,
   turtle: turtleView,

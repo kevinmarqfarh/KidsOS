@@ -106,6 +106,56 @@ export const SEESAW_MISSIONS = [
   { text: 'Fri lek! Få jämvikt med minst fyra djur.', check: (L, R) => seesawTorque(L, R) === 0 && L.length + R.length >= 4 },
 ];
 
+// Scenarios use supplied observations, not instructions to perform experiments.
+// Level 0: 4–5 years; 1: 6–7; 2–3: 8–9; 4: 10–12.
+export const SCIENCE_SCENARIOS = {
+  investigate: [
+    [0, 'Du ser tre blad på bordet. Vad har du gjort?', 'Tittat och räknat', ['Gissat vad som finns i morgon', 'Ändrat bladen'], 'Tänk på vad du kan se nu.', 'En observation är något vi ser eller mäter. Här räknade du tre blad.'],
+    [0, 'Jag tror att bollen rullar. Vad är det?', 'En gissning före testet', ['Ett resultat efter testet', 'Ett foto'], 'Testet har inte hänt ännu.', 'En förutsägelse säger vad vi tror kommer att hända. Sedan kan vi undersöka.'],
+    [1, 'Du gissade att klossen flyter. Den sjönk i testet. Vad skriver du?', 'Klossen sjönk', ['Klossen flöt', 'Jag måste gömma resultatet'], 'Berätta vad du såg.', 'Vi skriver resultatet även när det skiljer sig från vår förutsägelse.'],
+    [1, 'En bil rullade till den blå linjen. Hur sparar du observationen?', 'Ritar bilen vid den blå linjen', ['Ritar var jag önskade att den stannade', 'Skriver bara att bilen var fin'], 'Visa var bilen faktiskt stannade.', 'En bild kan dokumentera ett resultat så att vi minns och kan jämföra.'],
+    [2, 'Vi jämför hur långt samma bil rullar på två underlag. Vad ska vara lika?', 'Bil och startplats', ['Bara färgen på våra tröjor', 'Vi byter både bil och startplats'], 'Vi vill undersöka underlaget.', 'När bara underlaget ändras blir jämförelsen lättare att tolka.'],
+    [2, 'Bilen rullade 20, 21 och 19 centimeter. Varför testa flera gånger?', 'För att se hur resultaten varierar', ['För att ett önskat svar ska vinna', 'För att slippa mäta'], 'Alla mätningar behöver inte bli identiska.', 'Upprepningar visar variation. Ett enda försök kan ge en ofullständig bild.'],
+    [3, 'Vilken fråga går att undersöka genom att mäta?', 'Hur långt rullar bilen på mattan?', ['Är bilen världens finaste?', 'Vilken färg är bäst för alla?'], 'En mätning kan ge ett avstånd.', 'En undersökningsbar fråga behöver kunna kopplas till observationer eller mätningar.'],
+    [3, 'Vi såg en fågel en gång. Vad kan vi säga säkert?', 'Vi såg en fågel vid det tillfället', ['Det finns alltid exakt en fågel', 'Det finns inga andra fåglar'], 'Skilj vad vi såg från vad vi inte vet.', 'En observation beskriver ett tillfälle. Fler tillfällen behövs för ett större mönster.'],
+    [4, 'Två växter får olika ljus och olika mycket vatten. Kan vi avgöra ljusets effekt?', 'Nej, båda sakerna ändrades', ['Ja, vatten spelar aldrig roll', 'Ja, två växter räcker alltid'], 'Vilka skillnader kan påverka resultatet?', 'Flera ändrade faktorer gör det svårt att skilja deras effekter. Jämför grupper med samma vatten men olika ljus.'],
+    [4, 'Två grupper får nästan samma mätresultat. Skillnaden är mindre än linjalens minsta steg. Vad är rimligt?', 'Skillnaden kan vara för liten för att avgöra med mätningen', ['Vi har bevisat en stor skillnad', 'Vi ska hitta på fler decimaler'], 'Tänk på hur noggrant vi kan mäta.', 'Mätverktyg har begränsad upplösning. Redovisa osäkerheten och använd fler eller noggrannare mätningar vid behov.'],
+  ],
+  forces: [
+    [0, 'Du skjuter en leksaksbil framåt. Vad använder du?', 'En knuff', ['En doft', 'En skugga'], 'Din hand trycker på bilen.', 'En kraft kan vara en knuff eller ett drag.'],
+    [0, 'Ett löst äpple faller från trädet. Vad drar det mot marken?', 'Tyngdkraften', ['Äpplets färg', 'Ljudet från trädet'], 'Jorden drar föremål mot sig.', 'Tyngdkraften drar äpplet mot jorden.'],
+    [1, 'Du drar en leksaksvagn mot dig. Vad gör kraften här?', 'Får vagnen att börja röra sig', ['Gör vagnen levande', 'Tar bort alla hjul'], 'Titta på vad som ändras.', 'En kraft kan ändra ett föremåls rörelse.'],
+    [1, 'En rullande boll bromsas av mattan. Vad kallas kraften mellan ytorna?', 'Friktion', ['Regn', 'Ljus'], 'Ytorna bromsar rörelsen.', 'Friktion mellan ytor kan motverka rörelse.'],
+    [2, 'Samma bil startar lika på två underlag. Den rullar kortare på matta än på slätt golv. Vad stöder testet?', 'Bilen bromsas mer på mattan i detta test', ['Alla mattor har exakt samma friktion', 'Bilens färg ändrade kraften'], 'Använd resultatet från just detta test.', 'Friktion beror på ytorna. Observationen jämför dessa underlag med denna bil.'],
+    [2, 'Två lika tunga figurer sitter lika långt från mitten på en gungbräda. Vad väntar vi oss?', 'Jämvikt', ['Att bara färgen avgör', 'Att båda sidorna blir tyngre'], 'Jämför vikt och avstånd på båda sidor.', 'Lika vikter på lika avstånd ger lika stora vridande effekter.'],
+    [3, 'En lätt figur ska balansera en tyngre på gungbrädan. Vad kan hjälpa?', 'Flytta den lätta längre från mitten', ['Flytta den lätta till mitten', 'Byta den lätta figurens färg'], 'Avståndet påverkar balansen.', 'Vridmoment beror på både tyngd och avstånd till mitten.'],
+    [3, 'Två lika stora pilar visar lika stora krafter åt motsatta håll på en stilla låda. Vad är summan?', 'Noll', ['Dubbelt åt höger', 'Alltid uppåt'], 'Krafterna motverkar varandra.', 'Lika stora motsatta krafter tar ut varandra. Den stilla lådan börjar inte röra sig av dessa krafter.'],
+    [4, 'En bil rullar längre efter att både rampen höjts och underlaget bytts. Vilken slutsats är stödd?', 'Vi vet inte vilken ändring som gav skillnaden', ['Höjden är säkert ensam orsak', 'Underlaget är säkert ensam orsak'], 'Två faktorer ändrades samtidigt.', 'För att jämföra rampens höjd behöver bil och underlag hållas lika medan höjden ändras.'],
+    [4, 'I modellen blir glidsträckan dubbelt så lång när höjden dubbleras. Kan vi lova samma sak i verkligheten?', 'Nej, modellen förenklar och behöver jämföras med mätningar', ['Ja, modeller är alltid exakt verkligheten', 'Ja, alla ytor är likadana'], 'Modellen använder antaganden.', 'En modell hjälper oss tänka, men verkliga ytor och andra krafter kan ge skillnader.'],
+  ],
+  resources: [
+    [0, 'En tom kartong blir ett leksakshus. Vad gör vi?', 'Använder kartongen igen', ['Tillverkar en ny kartong', 'Gör kartongen till vatten'], 'Samma kartong får en ny uppgift.', 'Att använda en sak igen kallas återanvändning.'],
+    [0, 'Du ritar på papperets tomma baksida. Vad sparar du?', 'Ett nytt papper', ['Alla träd på jorden', 'Ingenting alls'], 'Du använder det papper du har.', 'När båda sidor används kan färre nya papper behövas.'],
+    [1, 'Vad är skillnaden mellan återanvändning och återvinning?', 'Använda saken igen eller göra nytt material av den', ['Båda betyder att gömma saken', 'Återvinning gör inget med materialet'], 'Tänk på sak och material.', 'Återanvändning behåller saken. Vid återvinning bearbetas material för att kunna användas igen.'],
+    [1, 'En hel bok får en ny läsare. Behövs en ny bok för den läsningen?', 'Nej, samma bok används igen', ['Ja, boken försvinner vid läsning', 'Ja, varje läsning kräver nytt papper'], 'Boken finns redan.', 'Delning kan göra att fler får använda en sak som redan tillverkats.'],
+    [2, 'En trasig leksak lagas och fungerar igen. Vad kan det minska behovet av?', 'Att tillverka en ersättningsleksak', ['Att någon leker', 'Att någonsin sortera avfall'], 'Den lagade saken kan användas vidare.', 'Reparation kan förlänga användningen och minska behovet av nya saker och material.'],
+    [2, 'Gruppen har tio pappersark. Varje barn behöver två sidor. Vad ger flest skrivsidor?', 'Använda båda sidorna på alla ark', ['Använda bara framsidan', 'Kasta fem ark först'], 'Ett ark har två sidor.', 'Tio ark ger tjugo skrivsidor om båda sidor används.'],
+    [3, 'Skolan kastade 12 ark på måndagen och 7 på tisdagen. Vad vet vi?', 'Färre ark kastades på tisdagen', ['Alla veckor ger samma skillnad', 'Vi vet säkert varför det minskade'], 'Räkning visar vad, men inte alltid varför.', 'Mätningen visar en skillnad på fem ark. Den visar inte ensam orsaken eller ett långvarigt mönster.'],
+    [3, 'Varför kan återvinning spara råvaror?', 'Material från gamla saker kan användas i nya', ['Material försvinner för alltid', 'Alla nya saker blir helt utan material'], 'Nya produkter behöver material.', 'Återvunnet material kan ersätta en del nya råvaror. Alla material kan inte återvinnas hur många gånger som helst.'],
+    [4, 'Klass A kastar 20 ark med 20 barn. Klass B kastar 15 ark med 10 barn. Vilken jämförelse är rättvisare?', 'Jämföra ark per barn under samma tid', ['Bara jämföra totalen', 'Ignorera antalet barn'], 'Grupperna är olika stora.', 'A kastar ett ark per barn, B ett och ett halvt. Samma tidsperiod och liknande uppgifter behövs också.'],
+    [4, 'En klass delar böcker och får färre leveranser, men elevantalet minskar också. Vad behövs för att tolka resultatet?', 'Ta hänsyn till både elevantal och delning', ['Ge delning hela äran direkt', 'Räkna bara bokomslagens färger'], 'Fler än en faktor kan påverka behovet.', 'En minskning visar inte ensam delningens effekt. Jämför exempelvis böcker per elev med liknande behov före och efter.'],
+  ],
+};
+
+export function genScienceScenario(topic, level, rng) {
+  const rows = SCIENCE_SCENARIOS[topic];
+  const band = level === 3 ? 2 : level;
+  // Prefer age-band content; level 2 and 3 share a band.
+  const eligible = rows.filter(([min]) => (min === 3 ? 2 : min) === band);
+  const [, prompt, answer, distractors, hint, explain] = rng.pick(eligible);
+  return { type: 'choice', prompt, options: rng.shuffle([answer, ...distractors]).map(label => ({ id: label, label })), answer, hint, explain };
+}
+
 export const scienceApp = {
   id: 'science',
   name: 'Vetenskap',
@@ -113,6 +163,9 @@ export const scienceApp = {
   color: '#13a3a0',
   tagline: 'Experimentera och undersök',
   modules: [
+    { id: 'investigate', name: 'Tänk som en forskare', icon: '🔎', minLevel: 0, gen: (level, rng) => genScienceScenario('investigate', level, rng), lgr: ['no-metod'] },
+    { id: 'forces', name: 'Krafter i vardagen', icon: '↔️', minLevel: 0, gen: (level, rng) => genScienceScenario('forces', level, rng), lgr: ['no-friktion', 'no-balans', 'no-metod'] },
+    { id: 'resources', name: 'Ta vara på saker', icon: '🌱', minLevel: 0, gen: (level, rng) => genScienceScenario('resources', level, rng), lgr: ['no-sortera', 'no-metod'] },
     { id: 'float', name: 'Flyter eller sjunker?', icon: '🛁', minLevel: 0, view: 'float', lgr: ['no-material', 'no-metod'] },
     { id: 'magnet', name: 'Magneten', icon: '🧲', minLevel: 0, view: 'magnet', lgr: ['no-material', 'no-metod'] },
     { id: 'recycle', name: 'Källsortera', icon: '♻️', minLevel: 0, gen: genRecycle, lgr: ['no-sortera'] },

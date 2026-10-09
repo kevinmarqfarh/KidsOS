@@ -1,6 +1,6 @@
 // Ren datamodell för profiler, framsteg och statistik.
 // Alla funktioner här är fria från DOM och lagring så att de kan enhetstestas.
-import { startLevelForAge, clampLevel, MAX_LEVEL } from './age.js';
+import { startLevelForProfile, AGE_BANDS, clampLevel, MAX_LEVEL } from './age.js';
 
 export const STATE_VERSION = 1;
 
@@ -24,12 +24,14 @@ export function makeId(prefix = 'p') {
   return `${prefix}${Date.now().toString(36)}${idCounter.toString(36)}${Math.floor(Math.random() * 1e4).toString(36)}`;
 }
 
-export function newProfile({ name, age, avatar = '🦊', color = '#4aa8ff', wallpaper = 'sky' } = {}) {
+export function newProfile({ name, age, avatar = '🦊', color = '#4aa8ff', wallpaper = 'sky', ageBand } = {}) {
+  const band = AGE_BANDS.find(item => item.id === ageBand);
   const cleanName = String(name || '').trim().slice(0, 16) || 'Kompis';
   return {
     id: makeId('p'),
     name: cleanName,
-    age: Math.max(3, Math.min(12, Number(age) || 6)),
+    age: band?.age ?? Math.max(3, Math.min(12, Number(age) || 6)),
+    ...(band ? { ageBand: band.id } : {}),
     avatar,
     color,
     wallpaper,
@@ -53,8 +55,11 @@ export function newProfile({ name, age, avatar = '🦊', color = '#4aa8ff', wall
 
 /** Migrerar/lagar en profil som kan sakna fält (äldre version eller korrupt data). */
 export function normalizeProfile(p) {
-  const base = newProfile({ name: p?.name, age: p?.age, avatar: p?.avatar, color: p?.color, wallpaper: p?.wallpaper });
+  const base = newProfile({ name: p?.name, age: p?.age, avatar: p?.avatar, color: p?.color, wallpaper: p?.wallpaper, ageBand: p?.ageBand });
   const out = { ...base, ...p };
+  const band = AGE_BANDS.find(item => item.id === out.ageBand);
+  if (band) out.age = band.age;
+  else delete out.ageBand;
   out.settings = { ...base.settings, ...(p?.settings || {}) };
   out.streak = { ...base.streak, ...(p?.streak || {}) };
   for (const k of ['stats', 'counters', 'sets', 'trophies', 'days', 'levelOverride']) {
@@ -78,7 +83,7 @@ export function normalizeState(s) {
 export function appStat(profile, appId) {
   if (!profile.stats[appId]) {
     profile.stats[appId] = {
-      level: startLevelForAge(profile.age),
+      level: startLevelForProfile(profile),
       rounds: 0,
       correct: 0,
       wrong: 0,
@@ -249,4 +254,19 @@ export function minutesLeftToday(profile, key = dateKey()) {
 
 export function isOverDailyLimit(profile, key = dateKey()) {
   return minutesLeftToday(profile, key) <= 0;
+}
+
+/** Förälderns nya intervall ändrar svårighet, inte intjänade framsteg. */
+export function applyAgeBand(profile, bandId) {
+  const band = AGE_BANDS.find(item => item.id === bandId);
+  if (!band) return false;
+  profile.ageBand = band.id;
+  profile.age = band.age;
+  for (const stat of Object.values(profile.stats)) {
+    stat.level = band.level;
+    stat.runUp = 0;
+    stat.runDown = 0;
+  }
+  profile.levelOverride = {};
+  return true;
 }
