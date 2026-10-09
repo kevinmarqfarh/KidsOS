@@ -5,8 +5,9 @@ import { STORIES } from '../../apps/svenska.js';
 import { WONDERS, eligibleWonders, wonderAnswer } from '../../apps/wonder.js';
 import { DRAW_PROMPTS, DRAW_COLORS, DRAW_STAMPS } from '../../apps/draw.js';
 import { hasInSet } from '../../core/model.js';
-import { loadDrawings, saveDrawing, deleteDrawing } from '../../core/storage.js';
+import { loadDrawings, saveDrawing, deleteDrawing, loadJSON } from '../../core/storage.js';
 import { createRng } from '../../core/rng.js';
+import { photo, creditLine } from '../img.js';
 
 /* ---------- Utforska kroppen ---------- */
 export function bodyView(el, { kos, app, level }) {
@@ -206,7 +207,8 @@ export function wonderView(el, { kos, app, opts, level }) {
     const grid = h('div.wonder-grid');
     available.filter((w) => cat === 'Alla' || w.cat === cat).forEach((w, i) => {
       const seen = hasInSet(p, 'wonders', w.id);
-      grid.appendChild(onTap(h('button.wonder-tile', { type: 'button', class: seen ? 'seen' : '', style: { '--i': i } }, h('span.wt-e', w.e), h('span.wt-q', w.q), seen ? h('span.lv-ok', '✓') : null), () => open(w)));
+      const ph = photo(`w-${w.id}`, { alt: '' });
+      grid.appendChild(onTap(h('button.wonder-tile', { type: 'button', class: `${seen ? 'seen' : ''} ${ph ? 'has-photo' : ''}`, style: { '--i': i } }, ph ? h('span.wt-photo', { html: ph }) : null, h('span.wt-e', w.e), h('span.wt-q', w.q), seen ? h('span.lv-ok', '✓') : null), () => open(w)));
     });
     const n = available.filter((w) => hasInSet(p, 'wonders', w.id)).length;
     el.append(h('div.wonder', h('p.muted', `Stora frågor om allt möjligt. Du har utforskat ${n} av ${available.length}.`), chips, grid));
@@ -218,7 +220,7 @@ export function wonderView(el, { kos, app, opts, level }) {
     el.append(
       h(
         'div.wonder-card-big',
-        h('span.wcb-e', w.e),
+        photo(`w-${w.id}`) ? h('figure.wcb-photo', h('span', { html: photo(`w-${w.id}`, { alt: w.q }) }), h('figcaption.credit', creditLine(`w-${w.id}`))) : h('span.wcb-e', w.e),
         h('span.wcb-cat', w.cat),
         h('h2', w.q),
         h('p.wonder-guess', 'Vad tror du? Gissa först – säg det högt eller berätta för någon!'),
@@ -295,7 +297,9 @@ export function drawView(el, { kos, app }) {
   }
   function renderColors() {
     clear(colorsRow);
-    DRAW_COLORS.forEach((c) => colorsRow.appendChild(onTap(h('button.pick.pick-col', { type: 'button', class: c === color && tool === 'pen' ? 'on' : '', style: { background: c }, 'aria-label': 'färg' }), () => {
+    // Färger som barnet har upptäckt i Lekstadens färglabb finns också här.
+    const discovered = Object.values(loadJSON(`play.${p.id}`, {})?.colors || {});
+    [...DRAW_COLORS, ...discovered.filter((c) => !DRAW_COLORS.includes(c))].forEach((c) => colorsRow.appendChild(onTap(h('button.pick.pick-col', { type: 'button', class: c === color && tool === 'pen' ? 'on' : '', style: { background: c }, 'aria-label': 'färg' }), () => {
       color = c;
       tool = 'pen';
       renderColors();

@@ -4,6 +4,7 @@ import { h, clear, onTap, wait } from '../dom.js';
 import { PLANETS, SUN, CONSTELLATIONS, moonPhaseName, GBG_DAYLIGHT, MONTHS, seasonForMonth } from '../../apps/space.js';
 import { hasInSet } from '../../core/model.js';
 import { createRng } from '../../core/rng.js';
+import { photo, creditLine } from '../img.js';
 
 /* ---------- Solsystemet ---------- */
 export function solarView(el, { kos, app }) {
@@ -89,7 +90,7 @@ export function solarView(el, { kos, app }) {
         'div.pi-card',
         { style: { '--c': body.color } },
         h('div.pi-head', h('span.pi-ball'), h('h3', body.name), isPlanet ? h('span.pi-order', `Planet nr ${PLANETS.indexOf(body) + 1} från solen`) : h('span.pi-order', 'Vår stjärna')),
-        h('div.pi-photo', { html: photoFigure(body.id, `Rymdbild av ${body.name}`) }),
+        photoFigure(body.id, `Rymdbild av ${body.name}`) ? h('div.pi-photo', { html: photoFigure(body.id, `Rymdbild av ${body.name}`) }) : (body.img && photo(body.img) ? h('figure.pi-photo', h('span', { html: photo(body.img, { alt: body.name }) }), h('figcaption.credit', creditLine(body.img))) : null),
         h('p.pi-fact', fact),
         isPlanet
           ? h(

@@ -20,6 +20,8 @@ KidsOS ser ut och känns som ett eget operativsystem: varje barn har en egen pro
 | 🚀 **Rymden** | Ett levande solsystem att trycka på, bygg och räkna ner en raket, dag & natt i Göteborg, månens faser, planetordning, stjärnbilder att rita (med gamla berättelser), varför vi har årstider, och ett rymdquiz. |
 | 🧠 **AI** | 10 lektioner och 42 scenarier om AI, data, modeller, faktakontroll, rättvisa, tydliga instruktioner och privatliv. Träna en enkel modell med riktiga djurfoton och testa på andra djur. |
 | 🤖 **Kodning** | Sex lektioner och 30 frågor om instruktioner, felsökning, loopar, villkor, variabler och händelser/funktioner. Dessutom: 20 robotbanor i tre kapitel (pilar → sväng & kör → loopar), följ koden, programmerade saker i vardagen, och rita med kod (sköldpaddsgrafik). |
+| 🌍 **Världen** | Världsdelar, djur, platser, Sverigekartan, väderstreck, historia, högtider och barns rättigheter. |
+| 🏡 **Lekstaden** | Utforska en leksaksstad, bygg, blanda färger och använd mynt som tjänas genom lärandet. |
 | 🎨 **Rita** | Penslar, stämplar, spegelpensel (symmetri), ångra och ett eget galleri – plus ritidéer som väcker fantasin. |
 | 🤔 **Undra** | 40 stora frågor ("Varför är himlen blå?") där barnet gissar först, får ett svar och en följdfråga att fundera vidare på. En nivåanpassad fråga varje dag på hemskärmen. Nya kort har korta svar för yngre och fördjupning för äldre. |
 | 🏆 **Troféer** | 54 troféer, titlar från "Nyfiken nybörjare" till "Universumets mästare" och samlingar (artkort, planeter, stjärnbilder, bokstäver). |
@@ -144,3 +146,7 @@ Föräldern öppnar spärren och godkänner ett av fyra åldersintervall: 4–5,
 8–9 eller 10–12 år. Barnet gör sedan tre enkla steg: namn, figur och utseende.
 Intervallen styr startnivå, uppläsning och rundlängd; övningarna anpassas vidare
 när barnet lär sig. Bakgrundskorten visar samma skalbara landskap som hemskärmen.
+
+### Datorläge
+
+Det sammanslagna projektet har också datorläge för äldre barn, med skrivbord och flyttbara fönster. Föräldern kan välja surfplatta eller dator under profilens inställningar. Både kursapparna och profilguiden fungerar med dessa val.

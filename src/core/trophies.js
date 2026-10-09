@@ -8,8 +8,10 @@ import { ROBOT_LEVELS, TURTLE_CHALLENGES } from '../apps/code.js';
 import { EXPERIMENT_IDS } from '../apps/science.js';
 import { STORIES } from '../apps/svenska.js';
 import { WONDERS } from '../apps/wonder.js';
+import { CONTINENTS, PLACES, WORLD_ANIMALS } from '../apps/world.js';
+import { MIXES, SECRET_COUNT } from '../apps/play.js';
 
-export const LEARNING_APPS = ['math', 'svenska', 'write', 'science', 'biology', 'space', 'ai', 'code', 'draw', 'wonder'];
+export const LEARNING_APPS = ['math', 'svenska', 'write', 'science', 'biology', 'space', 'world', 'ai', 'code', 'draw', 'wonder'];
 
 const rounds = (app, mod) => (p) => count(p, mod ? `rounds:${app}:${mod}` : `rounds:${app}`);
 const perfect = (app, mod) => (p) => count(p, `perfect:${app}:${mod}`);
@@ -25,13 +27,15 @@ export const CATEGORIES = [
   { id: 'space', name: 'Rymden', icon: '🚀' },
   { id: 'ai', name: 'AI', icon: '🧠' },
   { id: 'code', name: 'Kodning', icon: '🤖' },
+  { id: 'world', name: 'Världen', icon: '🌍' },
+  { id: 'play', name: 'Lekstaden', icon: '🏡' },
   { id: 'create', name: 'Skapa & undra', icon: '🎨' },
 ];
 
 export const TROPHIES = [
   // Äventyret
   { id: 'first-round', cat: 'start', icon: '🌟', name: 'Första stjärnan', desc: 'Gör klart din första runda.', target: 1, value: (p) => count(p, 'rounds') },
-  { id: 'explorer', cat: 'start', icon: '🗺️', name: 'Upptäcktsresande', desc: 'Prova alla tio appar.', target: LEARNING_APPS.length, value: sz('appsTried') },
+  { id: 'explorer', cat: 'start', icon: '🗺️', name: 'Upptäcktsresande', desc: 'Prova alla elva lärappar.', target: LEARNING_APPS.length, value: (p) => LEARNING_APPS.filter(id => p.sets?.appsTried?.[id]).length },
   { id: 'stars-50', cat: 'start', icon: '⭐', name: 'Stjärnsamlare', desc: 'Samla 50 stjärnor.', target: 50, value: (p) => p.stars },
   { id: 'stars-200', cat: 'start', icon: '💫', name: 'Stjärnregn', desc: 'Samla 200 stjärnor.', target: 200, value: (p) => p.stars },
   { id: 'stars-500', cat: 'start', icon: '🌠', name: 'Stjärnhimmel', desc: 'Samla 500 stjärnor.', target: 500, value: (p) => p.stars },
@@ -96,7 +100,24 @@ export const TROPHIES = [
   { id: 'loop', cat: 'code', icon: '🔁', name: 'Loopig', desc: 'Klara en bana med en loop.', target: 1, value: (p) => count(p, 'loopWins') },
   { id: 'turtle', cat: 'code', icon: '🐢', name: 'Kodkonstnär', desc: 'Klara alla ritutmaningar med kod.', target: TURTLE_CHALLENGES.filter((t) => t.solution).length, value: sz('turtle') },
 
+  // Världen
+  { id: 'continents', cat: 'world', icon: '🗺️', name: 'Jordenruntresenär', desc: 'Upptäck alla sju världsdelar.', target: CONTINENTS.length, value: sz('continents') },
+  { id: 'places-10', cat: 'world', icon: '🗼', name: 'Världsresenär', desc: 'Upptäck 10 platser och djur i världen.', target: 10, value: sz('places') },
+  { id: 'places-all', cat: 'world', icon: '✈️', name: 'Globetrotter', desc: 'Upptäck alla platser och djur i världen.', target: PLACES.length + WORLD_ANIMALS.length, value: sz('places') },
+  { id: 'cities', cat: 'world', icon: '🇸🇪', name: 'Sverigekännare', desc: 'Hitta fem städer på Sverigekartan.', target: 5, value: sz('cities') },
+  { id: 'history', cat: 'world', icon: '⏳', name: 'Tidsresenär', desc: 'Gör 3 rundor Förr i tiden.', target: 3, value: rounds('world', 'history') },
+
+  // Lekstaden
+  { id: 'play-buy', cat: 'play', icon: '🛍️', name: 'Första köpet', desc: 'Köp något på Marknaden med dina mynt.', target: 1, value: sz('playBought') },
+  { id: 'play-secrets', cat: 'play', icon: '🔍', name: 'Hemlighetsjägare', desc: 'Hitta 5 hemligheter i Lekstaden.', target: 5, value: sz('playSecrets') },
+  { id: 'play-secrets-all', cat: 'play', icon: '🕵️', name: 'Mästerdetektiv', desc: 'Hitta alla hemligheter i Lekstaden.', target: SECRET_COUNT, value: sz('playSecrets') },
+  { id: 'play-chef', cat: 'play', icon: '👩‍🍳', name: 'Mästerkock', desc: 'Laga tre olika recept.', target: 3, value: sz('playRecipes') },
+  { id: 'play-colors', cat: 'play', icon: '🎨', name: 'Färgforskare', desc: 'Upptäck alla färger i färglabbet.', target: MIXES.length, value: sz('playColors') },
+  { id: 'play-vet', cat: 'play', icon: '🩺', name: 'Djurdoktor', desc: 'Hjälp fem olika djurpatienter.', target: 5, value: sz('playVet') },
+  { id: 'play-garden', cat: 'play', icon: '🧑‍🌾', name: 'Odlare', desc: 'Skörda tre olika växter.', target: 3, value: sz('playHarvest') },
+
   // Skapa & undra
+  { id: 'writer', cat: 'create', icon: '📝', name: 'Författare', desc: 'Skriv 100 ord i Anteckningar.', target: 100, value: (p) => count(p, 'wordsWritten') },
   { id: 'draw-1', cat: 'create', icon: '🖍️', name: 'Konstnär', desc: 'Spara din första teckning.', target: 1, value: (p) => count(p, 'drawings') },
   { id: 'draw-10', cat: 'create', icon: '🖼️', name: 'Utställning', desc: 'Spara 10 teckningar.', target: 10, value: (p) => count(p, 'drawings') },
   { id: 'symmetry', cat: 'create', icon: '🦋', name: 'Spegelkonstnär', desc: 'Spara en teckning med spegelpenseln.', target: 1, value: (p) => count(p, 'symmetryDrawings') },

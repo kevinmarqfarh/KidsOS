@@ -1,0 +1,43 @@
+{
+  "space": {
+    "sun": "en:Sun", "mercury": "en:Mercury (planet)", "venus": "en:Venus", "earth": "en:The Blue Marble",
+    "moon": "en:Moon", "mars": "en:Mars", "jupiter": "en:Jupiter", "saturn": "en:Saturn", "uranus": "en:Uranus",
+    "neptune": "en:Neptune", "iss": "en:International Space Station", "astronaut": "en:Buzz Aldrin",
+    "saturnv": "en:Saturn V", "rover": "en:Perseverance (rover)", "milkyway": "en:Milky Way",
+    "pillars": "en:Pillars of Creation", "eclipse": "en:Solar eclipse", "earthrise": "en:Earthrise",
+    "bigdipper": "en:Big Dipper", "orion": "en:Orion (constellation)"
+  },
+  "species": {
+    "ekorre": "sv:Ekorre", "igelkott": "sv:Igelkott", "rav": "sv:Rödräv", "hare": "sv:Skogshare",
+    "gravling": "sv:Grävling", "bjorn": "sv:Brunbjörn", "varg": "sv:Varg", "radjur": "sv:Rådjur",
+    "sal": "sv:Gråsäl", "uggla": "sv:Kattuggla", "svan": "sv:Knölsvan", "grasand": "sv:Gräsand",
+    "orn": "sv:Havsörn", "nyckelpiga": "sv:Sjuprickig nyckelpiga", "humla": "sv:Mörk jordhumla",
+    "citronfjaril": "sv:Citronfjäril", "myra": "sv:Röd skogsmyra", "snigel": "sv:Vinbergssnäcka",
+    "daggmask": "sv:Daggmask", "spindel": "sv:Korsspindel", "blabar": "sv:Blåbär",
+    "flugsvamp": "sv:Röd flugsvamp", "gran": "sv:Gran", "ek": "sv:Skogsek", "maskros": "sv:Maskrosor"
+  },
+  "world": {
+    "lejon": "sv:Lejon", "kanguru": "sv:Röd jättekänguru", "panda": "sv:Jättepanda", "isbjorn": "sv:Isbjörn",
+    "kejsarpingvin": "sv:Kejsarpingvin", "lama": "sv:Lama", "bison": "sv:Bisonoxe", "ren": "sv:Ren",
+    "jaguar": "sv:Jaguar", "koala": "sv:Koala", "elefant": "sv:Afrikansk savannelefant", "tiger": "sv:Tiger",
+    "eiffel": "sv:Eiffeltornet", "pyramider": "sv:Pyramiderna i Giza", "muren": "sv:Kinesiska muren",
+    "frihetsgudinnan": "sv:Frihetsgudinnan", "sydneyopera": "sv:Sydneyoperan", "machupicchu": "sv:Machu Picchu",
+    "colosseum": "sv:Colosseum", "tajmahal": "sv:Taj Mahal", "persepolis": "sv:Persepolis", "moai": "sv:Moai",
+    "sagrada": "sv:Sagrada Família", "vasa": "sv:Vasa (skepp)", "everest": "sv:Mount Everest", "kilimanjaro": "sv:Kilimanjaro",
+    "hallristning": "sv:Hällristningar i Tanum", "flintyxa": "en:Hand axe", "bronssvard": "en:Bronze Age sword",
+    "vikingaskepp": "sv:Osebergsskeppet", "runsten": "sv:Rökstenen", "visby": "sv:Visby ringmur",
+    "angmaskin": "en:Steam locomotive", "julgran": "sv:Julgran", "pasagg": "sv:Påskägg", "lucia": "sv:Lucia",
+    "midsommar": "sv:Midsommarstång", "menora": "sv:Chanukkia", "eid": "en:Eid al-Fitr", "nowruz": "en:Haft-sin",
+    "worldmap": "File:Continents vide couleurs.png", "sverigekarta": "File:Sweden location map.svg"
+  },
+  "wonder": {
+    "w-himmel": "en:Rayleigh scattering", "w-regnbage": "sv:Regnbåge", "w-aska": "sv:Blixt", "w-gaspa": "en:Yawn",
+    "w-gashud": "en:Goose bumps", "w-katt": "sv:Tamkatt", "w-zebra": "sv:Slättzebra", "w-flamingo": "sv:Större flamingo",
+    "w-myror": "sv:Myror", "w-fladdermus": "sv:Fladdermöss", "w-manen": "en:Lunar phase", "w-stjarnor": "en:Star",
+    "w-sol-varm": "en:Solar flare", "w-is-flyter": "sv:Isberg", "w-magnet": "sv:Magnet", "w-brod": "sv:Bröd",
+    "w-ekar": "en:Grand Canyon", "w-lov": "en:Autumn leaf color", "w-regn": "sv:Regn", "w-dinosaurier": "en:Tyrannosaurus",
+    "w-internet": "en:Data center", "w-flygplan": "sv:Flygplan", "w-robot": "en:Industrial robot", "w-hav-salt": "en:Seawater",
+    "w-vikingar": "en:Viking ship", "w-bin": "sv:Honungsbi", "w-eld": "sv:Eld", "w-drommar": "en:Sleep",
+    "w-hicka": "en:Thoracic diaphragm", "w-kittlas": "en:Tickling", "w-varfor-sova": "en:Sleep", "w-rymd-ljud": "en:Outer space"
+  }
+}

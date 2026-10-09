@@ -1,7 +1,9 @@
 // Rymden-appen: solsystemet, planeter, månen, dag/natt, årstider, stjärnbilder.
+import { photo, hasPhoto } from '../ui/img.js';
 
 export const SUN = {
-  id: 'solen', name: 'Solen', color: '#ffc93c',
+  id: 'solen',
+  img: 'sun', name: 'Solen', color: '#ffc93c',
   facts: [
     'Solen är en stjärna – ett gigantiskt klot av het gas.',
     'Ungefär 1,3 miljoner jordklot skulle få plats i solen.',
@@ -11,15 +13,57 @@ export const SUN = {
 
 // size = diameter jämfört med jorden, au = medelavstånd i astronomiska enheter.
 export const PLANETS = [
-  { id: 'merkurius', name: 'Merkurius', color: '#b5a99a', size: 0.38, au: 0.39, year: '88 dagar', moons: '0', facts: ['Merkurius är närmast solen och minst av alla planeter.', 'Ett år på Merkurius är bara 88 dagar långt.', 'Merkurius har ingen måne och nästan ingen luft.'] },
-  { id: 'venus', name: 'Venus', color: '#f2c879', size: 0.95, au: 0.72, year: '225 dagar', moons: '0', facts: ['Venus är den hetaste planeten – varmare än en pizzaugn!', 'Venus snurrar åt andra hållet jämfört med jorden.', 'Venus lyser så starkt att den kallas aftonstjärnan, fast den är en planet.'] },
-  { id: 'jorden', name: 'Jorden', color: '#3d8bfd', size: 1, au: 1, year: '365 dagar', moons: '1', facts: ['Jorden är den enda planeten där vi vet att det finns liv.', 'Ungefär sju tiondelar av jordens yta är täckt av vatten.', 'Jorden har en måne – Månen.'] },
-  { id: 'mars', name: 'Mars', color: '#e2603b', size: 0.53, au: 1.52, year: '687 dagar', moons: '2', facts: ['Mars kallas den röda planeten eftersom marken är full av rost.', 'Där finns Olympus Mons, den största vulkanen i hela solsystemet.', 'Robotbilar kör omkring på Mars och undersöker marken.'] },
-  { id: 'jupiter', name: 'Jupiter', color: '#d9a066', size: 11.2, au: 5.2, year: '12 år', moons: 'nästan 100', facts: ['Jupiter är störst – över 1 000 jordklot skulle få plats i den.', 'Den röda fläcken på Jupiter är en storm som är större än hela jorden.', 'Jupiter är en gasjätte – man kan inte stå på den.'] },
-  { id: 'saturnus', name: 'Saturnus', color: '#e8d08a', size: 9.45, au: 9.58, year: '29 år', moons: 'flest av alla planeter', facts: ['Saturnus har vackra ringar av is och sten.', 'Saturnus är så lätt för sin storlek att den skulle flyta i ett jättestort badkar.', 'Saturnus har flest kända månar av alla planeter.'] },
-  { id: 'uranus', name: 'Uranus', color: '#8fd8e0', size: 4.0, au: 19.2, year: '84 år', moons: 'ungefär 30', facts: ['Uranus ligger på sidan och rullar runt solen.', 'Uranus är en blågrön isjätte.', 'Det är väldigt kallt på Uranus, under minus 200 grader.'] },
-  { id: 'neptunus', name: 'Neptunus', color: '#4b6cf0', size: 3.88, au: 30.1, year: '165 år', moons: 'ungefär 16', facts: ['Neptunus är längst bort från solen.', 'På Neptunus blåser de starkaste vindarna i solsystemet.', 'Ett år på Neptunus är 165 jordår långt.'] },
+  { id: 'merkurius', img: 'mercury', name: 'Merkurius', color: '#b5a99a', size: 0.38, au: 0.39, year: '88 dagar', moons: '0', facts: ['Merkurius är närmast solen och minst av alla planeter.', 'Ett år på Merkurius är bara 88 dagar långt.', 'Merkurius har ingen måne och nästan ingen luft.'] },
+  { id: 'venus', img: 'venus', name: 'Venus', color: '#f2c879', size: 0.95, au: 0.72, year: '225 dagar', moons: '0', facts: ['Venus är den hetaste planeten – varmare än en pizzaugn!', 'Venus snurrar åt andra hållet jämfört med jorden.', 'Venus lyser så starkt att den kallas aftonstjärnan, fast den är en planet.'] },
+  { id: 'jorden', img: 'earth', name: 'Jorden', color: '#3d8bfd', size: 1, au: 1, year: '365 dagar', moons: '1', facts: ['Jorden är den enda planeten där vi vet att det finns liv.', 'Ungefär sju tiondelar av jordens yta är täckt av vatten.', 'Jorden har en måne – Månen.'] },
+  { id: 'mars', img: 'mars', name: 'Mars', color: '#e2603b', size: 0.53, au: 1.52, year: '687 dagar', moons: '2', facts: ['Mars kallas den röda planeten eftersom marken är full av rost.', 'Där finns Olympus Mons, den största vulkanen i hela solsystemet.', 'Robotbilar kör omkring på Mars och undersöker marken.'] },
+  { id: 'jupiter', img: 'jupiter', name: 'Jupiter', color: '#d9a066', size: 11.2, au: 5.2, year: '12 år', moons: 'nästan 100', facts: ['Jupiter är störst – över 1 000 jordklot skulle få plats i den.', 'Den röda fläcken på Jupiter är en storm som är större än hela jorden.', 'Jupiter är en gasjätte – man kan inte stå på den.'] },
+  { id: 'saturnus', img: 'saturn', name: 'Saturnus', color: '#e8d08a', size: 9.45, au: 9.58, year: '29 år', moons: 'flest av alla planeter', facts: ['Saturnus har vackra ringar av is och sten.', 'Saturnus är så lätt för sin storlek att den skulle flyta i ett jättestort badkar.', 'Saturnus har flest kända månar av alla planeter.'] },
+  { id: 'uranus', img: 'uranus', name: 'Uranus', color: '#8fd8e0', size: 4.0, au: 19.2, year: '84 år', moons: 'ungefär 30', facts: ['Uranus ligger på sidan och rullar runt solen.', 'Uranus är en blågrön isjätte.', 'Det är väldigt kallt på Uranus, under minus 200 grader.'] },
+  { id: 'neptunus', img: 'neptune', name: 'Neptunus', color: '#4b6cf0', size: 3.88, au: 30.1, year: '165 år', moons: 'ungefär 16', facts: ['Neptunus är längst bort från solen.', 'På Neptunus blåser de starkaste vindarna i solsystemet.', 'Ett år på Neptunus är 165 jordår långt.'] },
 ];
+
+// Riktiga rymdfoton (NASA m.fl.) – visas i galleriet, Utforskaren och bildquizet.
+export const SPACE_PHOTOS = [
+  { key: 'sun', file: 'solen', title: 'Solen', fact: 'Solen fotograferad av en satellit. De ljusa fläckarna är heta utbrott.' },
+  { key: 'earth', file: 'jorden-blue-marble', title: 'Jorden från rymden', fact: 'Bilden kallas "The Blue Marble" och togs av astronauterna i Apollo 17 år 1972.' },
+  { key: 'moon', file: 'fullmanen', title: 'Fullmånen', fact: 'De mörka fläckarna på månen är stora slätter av stelnad lava.' },
+  { key: 'earthrise', file: 'jorduppgang', title: 'Jorden går upp bakom månen', fact: 'Astronauterna i Apollo 8 såg jorden "gå upp" över månens horisont år 1968.' },
+  { key: 'astronaut', file: 'astronaut-pa-manen', title: 'Astronaut på månen', fact: 'Buzz Aldrin var den andra människan på månen, år 1969.' },
+  { key: 'saturnv', file: 'saturn-v', title: 'Saturn V-raketen', fact: 'Saturn V var raketen som tog människor till månen. Den var 110 meter hög!' },
+  { key: 'iss', file: 'rymdstationen', title: 'Den internationella rymdstationen', fact: 'Rymdstationen åker runt jorden ungefär 16 gånger per dygn. Astronauter bor där.' },
+  { key: 'rover', file: 'perseverance', title: 'Robotbilen Perseverance på Mars', fact: 'Perseverance letar efter spår av liv på Mars och har en liten helikopter med sig.' },
+  { key: 'milkyway', file: 'vintergatan', title: 'Vintergatan', fact: 'Vintergatan är vår galax – miljarder stjärnor. Vår sol är en av dem.' },
+  { key: 'pillars', file: 'skapelsens-pelare', title: 'Skapelsens pelare', fact: 'Moln av gas och stoft där nya stjärnor föds, fotograferat av ett rymdteleskop.' },
+  { key: 'eclipse', file: 'solformorkelse', title: 'Solförmörkelse', fact: 'När månen hamnar precis framför solen blir det mörkt mitt på dagen.' },
+  { key: 'bigdipper', file: 'karlavagnen', title: 'Karlavagnen', fact: 'Karlavagnen syns på himlen över Sverige hela året.' },
+  { key: 'orion', file: 'orion', title: 'Orion', fact: 'Stjärnbilden Orion ser ut som en jägare med ett bälte av tre stjärnor.' },
+  ...PLANETS.map((p) => ({ key: p.img, file: p.id, title: p.name, fact: p.facts[0] })),
+];
+
+/** Bildquiz: känn igen planeter och rymdföremål på riktiga foton. */
+export function genSpacePhoto(level, rng) {
+  const pool = PLANETS.filter((p) => hasPhoto(p.img));
+  if (pool.length < 3) return genSpaceQuiz(level, rng);
+  if (level >= 2 && rng.chance(0.35)) {
+    const extra = SPACE_PHOTOS.filter((s) => ['moon', 'sun', 'iss', 'astronaut', 'rover', 'saturnv', 'milkyway', 'earth'].includes(s.key) && hasPhoto(s.key));
+    if (extra.length >= 3) {
+      const t = rng.pick(extra);
+      return {
+        type: 'choice', prompt: 'Vad ser du på bilden?', visual: photo(t.key, { alt: '', cls: 'qphoto' }),
+        options: rng.shuffle([t, ...rng.sample(extra.filter((x) => x !== t), 2)]).map((x) => ({ id: x.key, label: x.title })), answer: t.key,
+        hint: 'Titta noga på färgerna och formen.', explain: t.fact,
+      };
+    }
+  }
+  const pl = rng.pick(level <= 0 ? pool.filter((p) => ['jorden', 'mars', 'saturnus', 'jupiter'].includes(p.id)) : pool);
+  const others = rng.sample(pool.filter((x) => x !== pl), level <= 1 ? 2 : 3);
+  return {
+    type: 'choice', prompt: 'Vilken planet är det här?', visual: photo(pl.img, { alt: '', cls: 'qphoto round' }),
+    options: rng.shuffle([pl, ...others]).map((x) => ({ id: x.id, label: x.name })), answer: pl.id,
+    hint: pl.id === 'saturnus' ? 'Titta på ringarna!' : pl.id === 'mars' ? 'Den är röd.' : `Ledtråd: ${pl.facts[0]}`, explain: pl.facts[0], collect: { set: 'planets', item: pl.id },
+  };
+}
 
 export const MNEMONIC = 'Mamma Vet Jag Måste Jobba Sent Under Natten';
 
@@ -129,9 +173,11 @@ export const spaceApp = {
   color: '#3b3f9e',
   tagline: 'Planeter, månen och stjärnor',
   modules: [
-    { id: 'solar', name: 'Solsystemet', icon: '🪐', minLevel: 0, view: 'solar', lgr: ['no-himmel'] },
+    { id: 'solar', name: 'Solsystemet', icon: '🪐', minLevel: 0, view: 'solar', lgr: ['no-himmel'], photo: () => photo('jupiter', { cls: 'tile-photo' }) },
     { id: 'rocket', name: 'Raketen', icon: '🚀', minLevel: 0, view: 'rocket', lgr: ['ma-tal'] },
     { id: 'quiz', name: 'Rymdquiz', icon: '❓', minLevel: 0, gen: genSpaceQuiz, lgr: ['no-himmel'] },
+    { id: 'photos', name: 'Rymdbilder', icon: '📸', minLevel: 0, gen: genSpacePhoto, lgr: ['no-himmel'], photo: () => photo('saturn', { cls: 'tile-photo' }) },
+    { id: 'gallery', name: 'Bildgalleri', icon: '🖼️', minLevel: 0, view: 'gallery', lgr: ['no-himmel', 'no-berattelse'], photo: () => photo('pillars', { cls: 'tile-photo' }) },
     { id: 'daynight', name: 'Dag & natt', icon: '🌗', minLevel: 0, view: 'daynight', lgr: ['no-himmel'] },
     { id: 'moon', name: 'Månens faser', icon: '🌙', minLevel: 1, view: 'moon', lgr: ['no-himmel'] },
     { id: 'order', name: 'Planetordning', icon: '🔢', minLevel: 1, gen: genPlanetOrder, lgr: ['no-himmel'] },

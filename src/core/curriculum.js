@@ -53,6 +53,16 @@ export const CURRICULUM = {
   'tk-prog': { subject: 'Teknik', area: 'Tekniska lösningar', text: 'Föremål i elevernas vardag som styrs med hjälp av programmering, till exempel hushållsmaskiner och smarta telefoner.' },
   'tk-styr': { subject: 'Teknik', area: 'Arbetsmetoder', text: 'Styrning av föremål med programmering.' },
 
+  // SO åk 1–3 (geografi, historia, religionskunskap, samhällskunskap)
+  'so-karta': { subject: 'SO', area: 'Att undersöka verkligheten', text: 'Jordgloben, analoga och digitala kartor samt storleksrelationer och väderstreck.' },
+  'so-varlden': { subject: 'SO', area: 'Att leva i världen', text: 'Rumsliga förutsättningar i natur och miljö för befolkning och bebyggelse, till exempel mark, vatten och klimat.' },
+  'so-platser': { subject: 'SO', area: 'Att leva i världen', text: 'Namn och läge på platser i närmiljön och andra platser som är betydelsefulla för eleven.' },
+  'so-forntid': { subject: 'SO', area: 'Att leva i världen', text: 'Människors levnadsvillkor under stenålder, bronsålder och järnålder.' },
+  'so-tid': { subject: 'SO', area: 'Att undersöka verkligheten', text: 'Tidslinjer och tidsbegreppen dåtid, nutid och framtid.' },
+  'so-hogtid': { subject: 'SO', area: 'Att leva i världen', text: 'Några högtider, symboler och berättelser inom kristendom, islam och judendom.' },
+  'so-rattigheter': { subject: 'SO', area: 'Att leva i världen', text: 'Mänskliga rättigheter inklusive alla människors lika värde och barnets rättigheter i enlighet med barnkonventionen.' },
+  'sv-digital': { subject: 'Svenska', area: 'Läsa och skriva', text: 'Handstil och att skriva med digitala verktyg.' },
+
   // Bild / skapande
   'bi-skapa': { subject: 'Bild', area: 'Bildframställning', text: 'Framställning av berättande bilder, till exempel sagobilder och serier. Teckning, måleri, modellering och konstruktion.' },
   'fsk-utforska': { subject: 'Förskoleklass', area: 'Natur, teknik och samhälle', text: 'Olika sätt att utforska företeelser och samband i natur, teknik och samhälle, genom observationer, mätningar och samtal.' },

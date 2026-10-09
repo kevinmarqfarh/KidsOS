@@ -46,6 +46,7 @@ async function family(page, index) {
   await page.getByText('Snabbstart').click();
   await approveGate(page);
   await page.waitForSelector('.who-bubble');
+  await page.evaluate(() => window.kidsos.kos.state.profiles.forEach(profile => { profile.settings.layout = 'tablet'; }));
   await page.locator('.who-bubble').nth(index).click();
   try {
     await page.waitForSelector('.home', { timeout: 8000 });
@@ -171,7 +172,7 @@ test('första start: föräldern skapar en profil med guiden', async () => {
   await page.getByRole('button', { name: 'Skapa ✨' }).click();
   await page.locator('.who-bubble', { hasText: 'Testbarn' }).click();
   await page.waitForSelector('.home');
-  assert.equal(await page.locator('.app-icon').count(), 10);
+  assert.equal(await page.locator('.app-icon').count(), 12);
   assert.match(await page.locator('.home-hello h1').innerText(), /Testbarn/);
   const s = await state(page);
   assert.equal(s.profiles[0].age, 7);
@@ -697,6 +698,30 @@ test('Undra anpassar svar och tillgängliga frågor efter barnets nivå', async 
     assert.equal(text.includes('Nära horisonten'), level === 4);
     assert.equal(await page.locator('.win-content').evaluate(el => el.scrollWidth <= el.clientWidth + 2), true);
   }
+  assert.deepEqual(errors, []);
+  await ctx.close();
+});
+
+test('sammanslagning: datorläge behåller kurser, Världen och Lekstaden', async () => {
+  const { page, ctx, errors } = await open();
+  await family(page, 2);
+  await page.evaluate(() => { window.kidsos.kos.profile.settings.layout = 'desktop'; window.kidsos.goHome(); });
+  await page.waitForSelector('.desktop-root:not([hidden]) .desk-icons');
+  assert.ok(await page.locator('.desk-icon[data-app="ai"]').count());
+  assert.ok(await page.locator('.desk-icon[data-app="world"]').count());
+  await openModule(page, 'ai', 'course');
+  await page.locator('.course-lesson:not(:disabled)').first().click();
+  while ((await page.locator('.course-next').innerText()).includes('Nästa del')) await page.locator('.course-next').click();
+  await page.locator('.course-next').click();
+  await page.locator('.course-practice').click();
+  await page.waitForSelector('.q-prompt');
+  await answerCurrent(page);
+  await page.waitForSelector('.fb-ok');
+  await openModule(page, 'world', 'compass');
+  await page.waitForSelector('.q-prompt');
+  await openModule(page, 'play', 'town');
+  await page.waitForSelector('.town');
+  await page.screenshot({ path: join(SHOTS, 'ipad-sammanslaget-skrivbord.png') });
   assert.deepEqual(errors, []);
   await ctx.close();
 });

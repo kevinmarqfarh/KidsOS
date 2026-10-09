@@ -5,6 +5,11 @@ import { robotView, turtleView } from './code.js';
 import { floatView, magnetView, shadowView, waterView, seesawView, slideView, mixView } from './science.js';
 import { solarView, rocketView, dayNightView, moonView, starsView, orbitView } from './space.js';
 import { bodyView, storiesView, wonderView, drawView } from './misc.js';
+import { continentsView, swedenView, galleryView } from './world.js';
+import { playView } from './play.js';
+import { SPACE_PHOTOS } from '../../apps/space.js';
+
+const spaceGalleryView = (el, ctx) => galleryView(el, { ...ctx, items: SPACE_PHOTOS, title: 'Riktiga bilder från rymden' });
 
 export const VIEWS = {
   course: courseView,
@@ -29,4 +34,8 @@ export const VIEWS = {
   stories: storiesView,
   wonder: wonderView,
   draw: drawView,
+  continents: continentsView,
+  sweden: swedenView,
+  gallery: spaceGalleryView,
+  play: playView,
 };

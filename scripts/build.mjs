@@ -2,6 +2,7 @@
 //   dist/index.html    – fristående sida (öppna lokalt, lägg på valfri webbserver, "Lägg till på hemskärmen")
 //   dist/artifact.html – samma innehåll utan <html>/<head>-skal (för publicering som Claude-artifact)
 import { build, context } from 'esbuild';
+import { generateImages } from './gen-images.mjs';
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -13,6 +14,8 @@ const FONTS = 'https://fonts.googleapis.com/css2?family=Andika:wght@400;700&fami
 const ICON = `data:image/svg+xml,${encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" rx="24" fill="#3d8bfd"/><text x="50" y="70" font-size="62" text-anchor="middle" font-family="Arial Rounded MT Bold,Arial" font-weight="900" fill="#fff">K</text><circle cx="78" cy="24" r="10" fill="#ffc93c"/></svg>')}`;
 
 async function bundle() {
+  const imgs = generateImages();
+  console.log(`✓ ${imgs.count} foton inbäddade (${imgs.kb} kB)`);
   const js = await build({ entryPoints: [join(root, 'src/main.js')], bundle: true, format: 'iife', minify: true, write: false, target: ['safari14', 'chrome90', 'firefox90'], legalComments: 'none' });
   const css = await build({ entryPoints: [join(root, 'src/styles/app.css')], bundle: true, minify: true, write: false, loader: { '.css': 'css' }, target: ['safari14'] });
   const jsText = js.outputFiles[0].text.replace(/<\/script/gi, '<\\/script');
@@ -54,7 +57,8 @@ await bundle();
 if (watch) {
   const { watch: fsWatch } = await import('node:fs');
   let t;
-  fsWatch(join(root, 'src'), { recursive: true }, () => {
+  fsWatch(join(root, 'src'), { recursive: true }, (ev, file) => {
+    if (String(file).includes('generated')) return;
     clearTimeout(t);
     t = setTimeout(() => bundle().catch((e) => console.error(e.message)), 120);
   });

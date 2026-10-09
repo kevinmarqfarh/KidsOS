@@ -1,4 +1,15 @@
 // Liten DOM-hjälpare: h('div.klass', {onClick}, barn...)
+
+// Villkorliga barn (t.ex. `cond ? h(...) : null`) ska aldrig skrivas ut som texten "null".
+if (typeof Element !== 'undefined' && !Element.prototype.__kidsosAppend) {
+  for (const proto of [Element.prototype, DocumentFragment.prototype]) {
+    const orig = proto.append;
+    proto.append = function (...nodes) {
+      return orig.apply(this, nodes.flat().filter((n) => n !== null && n !== undefined && n !== false));
+    };
+  }
+  Element.prototype.__kidsosAppend = true;
+}
 export function h(tag, attrs, ...children) {
   let id = null;
   let spec = String(tag);

@@ -7,18 +7,19 @@ import { AVATARS, PROFILE_COLORS, WALLPAPERS, LEVELS, AGE_BANDS, ageBandFor, pro
 import { rankFor } from '../core/progress.js';
 import { nextTrophy, TROPHIES } from '../core/trophies.js';
 import { wonderOfTheDay } from '../apps/wonder.js';
-import { moduleStat, addBonusMinutes, minutesLeftToday, dateKey, touchDay, applyAgeBand } from '../core/model.js';
-import { runQuiz, effectiveLevel } from './quiz.js';
-import { VIEWS } from './views/index.js';
-import { renderTrophyRoom } from './trophyroom.js';
-import { renderSettings } from './settings.js';
+import { addBonusMinutes, minutesLeftToday, dateKey, touchDay, applyAgeBand } from '../core/model.js';
 import { isPersistent } from '../core/storage.js';
+import { mountApp, appMeta } from './apphost.js';
+import { shellApi } from './system.js';
+import { createDesktop } from './desktop.js';
+import { layoutFor } from '../core/model.js';
 
 let osEl;
 let screenEl;
 let windowEl;
 let statusEl;
-let cleanup = null;
+let tabletApp = null;
+let desktop = null;
 let current = { screen: 'lock' };
 
 export function mountShell(root) {
@@ -26,9 +27,12 @@ export function mountShell(root) {
   screenEl = h('main.screen');
   windowEl = h('section.window', { 'aria-hidden': 'true' });
   const overlays = h('div.overlays');
-  osEl = h('div.os', statusEl, screenEl, windowEl, overlays);
+  const deskEl = h('div.desktop-root', { hidden: true });
+  osEl = h('div.os', statusEl, screenEl, windowEl, deskEl, overlays);
   kos.overlayRoot = overlays;
   clear(root).appendChild(osEl);
+  Object.assign(shellApi, { parentGate, profileWizard, showLock, goHome, modal, confirmSwitch });
+  desktop = createDesktop(deskEl, { osEl, confirmSwitch, showLock, modal });
   kos.on('stars', renderStatus);
   kos.on('tick', renderStatus);
   kos.on('limit', showLimit);
@@ -70,6 +74,7 @@ function renderStatus() {
 /* ---------------- Låsskärm / välj profil ---------------- */
 export function showLock() {
   closeWindow(true);
+  desktop?.hide();
   current = { screen: 'lock' };
   osEl.className = 'os wp-sky lockmode';
   renderStatus();
@@ -204,13 +209,25 @@ export function profileWizard({ first = false, edit = null, onDone } = {}) {
 }
 
 /* ---------------- Hemskärm ---------------- */
+export function isDesktop() {
+  return !!kos.profile && layoutFor(kos.profile) === 'desktop';
+}
+
 export function goHome() {
+  const p = kos.profile;
+  if (!p) return showLock();
+  if (isDesktop()) {
+    closeWindow(true);
+    current = { screen: 'desktop' };
+    osEl.className = `os desktop-mode wp-${p.wallpaper || 'sky'}`;
+    desktop.show();
+    return;
+  }
+  desktop.hide();
   closeWindow();
   current = { screen: 'home' };
   setWallpaper();
   renderStatus();
-  const p = kos.profile;
-  if (!p) return showLock();
   touchDay(p, dateKey(), 0);
   const rank = rankFor(p.stars);
   const hour = new Date().getHours();
@@ -253,12 +270,12 @@ export function goHome() {
     nt ? h('span.hc-bar', h('i', { style: { width: `${Math.round(nt.pr.ratio * 100)}%` } })) : null,
     nt ? h('span.hc-sub', `${nt.pr.value} / ${nt.pr.target} · ${nt.t.desc}`) : null,
   );
-  onTap(trophyCard, () => openSystem('trophies', trophyCard));
+  onTap(trophyCard, () => openApp('trophies', null, trophyCard));
 
   const dock = h('nav.dock');
   const dockItems = [
-    ['🏆', 'Troféer', () => openSystem('trophies')],
-    ['⚙️', 'Inställningar', () => openSystem('settings')],
+    ['🏆', 'Troféer', () => openApp('trophies')],
+    ['⚙️', 'Inställningar', () => openApp('settings')],
     ['👋', 'Byt', () => confirmSwitch()],
   ];
   for (const [ic, label, fn] of dockItems) {
@@ -276,6 +293,7 @@ export function goHome() {
       h(
         'div.home-head',
         h('div.home-hello', h('h1', `${greet} ${p.name}!`), h('p', 'Vad vill du upptäcka i dag?')),
+        h('button.wallet-chip', { type: 'button', onClick: () => openApp('play') }, h('span', '🪙'), h('b', String(p.coins || 0)), h('small', 'mynt')),
         h('div.rank', h('span.rank-emoji', rank.emoji), h('div.rank-text', h('b', rank.title), h('span.rank-bar', h('i', { style: { width: `${Math.round(rank.progress * 100)}%` } })), h('small', rank.next ? `${rank.toNext} ⭐ till ${rank.next.title}` : 'Högsta titeln!'))),
       ),
       h('div.home-cards', wonderCard, trophyCard),
@@ -289,28 +307,7 @@ export function goHome() {
   }
 }
 
-/* ---------------- Appfönster ---------------- */
-function windowFrame({ title, icon, color, onBack, levelChip = true, appId }) {
-  const home = h('button.win-home', { type: 'button', 'aria-label': 'Hem' }, h('span', '⌂'), h('small', 'Hem'));
-  onTap(home, () => {
-    kos.sfx('whoosh');
-    goHome();
-  });
-  const back = onBack ? onTap(h('button.win-back', { type: 'button', 'aria-label': 'Tillbaka' }, '‹'), onBack) : null;
-  const lvl = appId && levelChip ? kos.levelInfo(appId) : null;
-  const header = h(
-    'div.win-head',
-    home,
-    back,
-    h('div.win-title', h('span.win-icon', icon), h('span', title)),
-    lvl ? h('span.level-chip', { title: lvl.school }, `${lvl.emoji} ${lvl.short}`) : h('span'),
-  );
-  const content = h('div.win-content');
-  clear(windowEl).append(header, content);
-  windowEl.style.setProperty('--app', color);
-  return content;
-}
-
+/* ---------------- Appfönster (surfplatte-läget) ---------------- */
 function animateOpen(fromEl) {
   windowEl.classList.remove('closing');
   if (fromEl) {
@@ -327,11 +324,9 @@ function animateOpen(fromEl) {
 }
 
 export function closeWindow(instant) {
-  if (cleanup) {
-    try {
-      cleanup();
-    } catch {}
-    cleanup = null;
+  if (tabletApp) {
+    tabletApp.destroy();
+    tabletApp = null;
   }
   kos.stopSpeaking();
   if (!windowEl) return;
@@ -354,96 +349,52 @@ export function closeWindow(instant) {
   }
 }
 
+/** Ett helskärmsfönster för surfplatte-läget. */
+function tabletHost(meta) {
+  const home = h('button.win-home', { type: 'button', 'aria-label': 'Hem' }, h('span', '⌂'), h('small', 'Hem'));
+  onTap(home, () => {
+    kos.sfx('whoosh');
+    goHome();
+  });
+  const backSlot = h('span.back-slot');
+  const title = h('div.win-title');
+  const lvlSlot = h('span');
+  const header = h('div.win-head', home, backSlot, title, lvlSlot);
+  const content = h('div.win-content');
+  clear(windowEl).append(header, content);
+  windowEl.style.setProperty('--app', meta.color);
+  return {
+    content,
+    setHead({ title: t, icon, back, levelAppId }) {
+      clear(title).append(h('span.win-icon', icon), h('span', t));
+      clear(backSlot);
+      if (back) backSlot.appendChild(onTap(h('button.win-back', { type: 'button', 'aria-label': 'Tillbaka' }, '‹'), back));
+      clear(lvlSlot);
+      const lvl = levelAppId ? kos.levelInfo(levelAppId) : null;
+      if (lvl) lvlSlot.appendChild(h('span.level-chip', { title: lvl.school }, `${lvl.emoji} ${lvl.short}`));
+      content.scrollTop = 0;
+    },
+    close: () => goHome(),
+    openApp: (a, m) => openApp(a, m),
+    reload: () => openApp(meta.id),
+  };
+}
+
 export function openApp(appId, moduleId, fromEl, opts = {}) {
-  const app = appById(appId);
-  if (!app) return;
-  if (cleanup) {
-    try {
-      cleanup();
-    } catch {}
-    cleanup = null;
+  const meta = appMeta(appId);
+  if (!meta) return;
+  if (isDesktop()) {
+    current = { screen: 'desktop', appId };
+    desktop.open(appId, moduleId, opts, fromEl);
+    return;
+  }
+  if (tabletApp) {
+    tabletApp.destroy();
+    tabletApp = null;
   }
   current = { screen: 'app', appId, moduleId };
-  // Appar med bara en modul öppnas direkt.
-  if (!moduleId && app.modules.length === 1) moduleId = app.modules[0].id;
-  if (!moduleId) {
-    renderHub(app);
-  } else {
-    renderModule(app, moduleById(app, moduleId), opts);
-  }
-  if (!windowEl.classList.contains('open')) animateOpen(fromEl);
-}
-
-function renderHub(app) {
-  const p = kos.profile;
-  const content = windowFrame({ title: app.name, icon: app.icon, color: app.color, appId: app.id });
-  const level = kos.level(app.id);
-  const showAll = p.settings.showAllModules;
-  const tiles = app.modules.map((m, i) => {
-    const locked = !showAll && level < (m.minLevel ?? 0);
-    const st = moduleStat(p, app.id, m.id);
-    const easy = m.maxLevel !== undefined && level > m.maxLevel + 1;
-    const stars = h('span.mod-stars', [1, 2, 3].map((k) => h('i', { class: k <= st.best ? 'on' : '' }, '★')));
-    const b = h(
-      'button.mod-tile',
-      { type: 'button', class: locked ? 'locked' : '', style: { '--i': i }, dataset: { mod: m.id } },
-      h('span.mod-icon', m.icon),
-      h('span.mod-name', m.name),
-      locked ? h('span.mod-lock', `🔒 ${LEVELS[m.minLevel].short}`) : m.gen ? stars : h('span.mod-kind', '▶ Utforska'),
-      easy && !locked ? h('span.mod-tag', 'Lätt') : null,
-    );
-    onTap(b, () => {
-      if (locked) {
-        kos.sfx('wrong');
-        kos.say(`${m.name} låses upp när du når ${LEVELS[m.minLevel].short}. Fortsätt öva så kommer du dit!`);
-        b.classList.add('wrong-shake');
-        setTimeout(() => b.classList.remove('wrong-shake'), 500);
-        return;
-      }
-      kos.sfx('pop');
-      openApp(app.id, m.id);
-    });
-    return b;
-  });
-  content.append(h('div.hub', h('p.hub-tag', app.tagline), h('div.mod-grid', tiles)));
-  kos.autoSay(`${app.name}. ${app.tagline}. Vad vill du göra?`);
-}
-
-function renderModule(app, mod, opts = {}) {
-  const single = app.modules.length === 1;
-  const content = windowFrame({
-    title: single ? app.name : mod.name,
-    icon: single ? app.icon : mod.icon,
-    color: app.color,
-    appId: app.id,
-    levelChip: !!mod.gen || ['robot', 'trace', 'stories'].includes(mod.view),
-    onBack: single ? null : () => openApp(app.id, null),
-  });
-  const back = () => (single ? goHome() : openApp(app.id, null));
-  if (mod.gen) {
-    cleanup = runQuiz(content, { app, module: mod, onExit: back });
-  } else if (mod.view && VIEWS[mod.view]) {
-    cleanup = VIEWS[mod.view](content, { kos, app, module: mod, level: effectiveLevel(app, mod), back, opts }) || null;
-  } else {
-    content.append(h('p', 'Kommer snart!'));
-  }
-}
-
-function openSystem(which, fromEl) {
-  if (cleanup) {
-    try {
-      cleanup();
-    } catch {}
-    cleanup = null;
-  }
-  current = { screen: 'system', which };
-  if (which === 'trophies') {
-    const content = windowFrame({ title: 'Troféer', icon: '🏆', color: '#e3a008', levelChip: false });
-    cleanup = renderTrophyRoom(content, { openApp });
-  } else if (which === 'settings') {
-    const content = windowFrame({ title: 'Inställningar', icon: '⚙️', color: '#64748b', levelChip: false });
-    cleanup = renderSettings(content, { parentGate, profileWizard, showLock, goHome, modal, refresh: () => openSystem('settings') });
-  }
+  const host = tabletHost(meta);
+  tabletApp = mountApp(host, appId, moduleId, opts);
   if (!windowEl.classList.contains('open')) animateOpen(fromEl);
 }
 

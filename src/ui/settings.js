@@ -71,6 +71,13 @@ export function renderSettings(el, { parentGate, profileWizard, showLock, goHome
       'section.set-section',
       h('h3', `Profil: ${kp.name}`),
       h('p.muted', `${profileAgeLabel(kp)} · skapad ${new Date(kp.createdAt).toLocaleDateString('sv-SE')}`),
+      h('div.set-row', h('span', 'Utseende'), seg([['auto', `Efter ålder (${kp.age >= 8 ? 'dator' : 'surfplatta'})`], ['tablet', '📱 Surfplatta'], ['desktop', '💻 Dator']], kp.settings.layout || 'auto', (v) => {
+        kp.settings.layout = v;
+        kos.saveNow();
+        render();
+        if (kp.id === kos.state.activeId) kos.toast('Det nya utseendet syns när du går tillbaka till startskärmen.', { icon: '💻' });
+      })),
+      h('p.muted', 'Surfplattan har stora ikoner och ett fönster i taget – bäst för de yngsta. Datorn har skrivbord, fönster som kan flyttas, aktivitetsfält och startmeny – roligt för äldre barn.'),
       h(
         'div.row-actions.left',
         onTap(h('button.btn.btn-ghost', { type: 'button' }, '✏️ Redigera profil och åldersintervall'), () => profileWizard({ edit: kp, onDone: render })),

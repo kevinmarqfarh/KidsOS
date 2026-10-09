@@ -103,6 +103,8 @@ export function deleteDrawing(pid, id) {
 
 export function deleteDrawingsFor(pid) {
   rawRemove(DRAW_KEY(pid));
+  rawRemove(`kidsos.v1.notes.${pid}`);
+  rawRemove(`kidsos.v1.play.${pid}`);
 }
 
 /** Säkerhetskopia som text (JSON) – fungerar även där nedladdning är spärrad. */
@@ -126,4 +128,22 @@ export function importBackup(text) {
 export function wipeAll(state) {
   for (const p of state?.profiles || []) deleteDrawingsFor(p.id);
   rawRemove(KEY);
+}
+
+/** Generell JSON-lagring per nyckel (anteckningar, lekstaden m.m.). */
+export function loadJSON(key, fallback) {
+  try {
+    const raw = rawGet(`kidsos.v1.${key}`);
+    return raw ? JSON.parse(raw) : fallback;
+  } catch {
+    return fallback;
+  }
+}
+
+export function saveJSON(key, value) {
+  return rawSet(`kidsos.v1.${key}`, JSON.stringify(value));
+}
+
+export function removeJSON(key) {
+  rawRemove(`kidsos.v1.${key}`);
 }

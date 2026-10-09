@@ -25,14 +25,16 @@ KidsOS har fem nivåer. Startnivån sätts av barnets ålder och anpassas sedan 
 | ✏️ Skriv ABC | 5 | 0 | 5 |
 | 🔬 Vetenskap | 11 | 4 | 7 |
 | 🌿 Biologi | 9 | 8 | 1 |
-| 🚀 Rymden | 8 | 2 | 6 |
+| 🚀 Rymden | 10 | 3 | 7 |
+| 🌍 Världen | 8 | 6 | 2 |
 | 🧠 AI | 9 | 7 | 2 |
 | 🤖 Kodning | 11 | 8 | 3 |
 | 🎨 Rita | 1 | 0 | 1 |
 | 🤔 Undra | 1 | 0 | 1 |
-| **Totalt** | **85** | **58** | **27** |
+| 🏡 Lekstaden | 1 | 0 | 1 |
+| **Totalt** | **96** | **65** | **31** |
 
-Dessutom: 20 robotbanor, 14 berättelser med läsförståelsefrågor, 25 artkort, 40 Undra-frågor och 54 troféer.
+Dessutom: 20 robotbanor, 14 berättelser med läsförståelsefrågor, 25 artkort, 40 Undra-frågor och 67 troféer.
 
 ## 🔢 Matte – Räkna, mät och klura
 
@@ -121,11 +123,26 @@ Dessutom: 20 robotbanor, 14 berättelser med läsförståelsefrågor, 25 artkort
 | 🪐 Solsystemet | Nivå 1 | Interaktiv | *Året runt i naturen:* Jordens, solens och månens rörelser i förhållande till varandra. Månens olika faser. Stjärnbilder och stjärnhimlens utseende vid olika tider på året. |
 | 🚀 Raketen | Nivå 1 | Interaktiv | *Taluppfattning och tals användning:* Naturliga tal och deras egenskaper samt hur talen kan delas upp och användas för att ange antal och ordning. |
 | ❓ Rymdquiz | Nivå 1 | Frågerunda | *Året runt i naturen:* Jordens, solens och månens rörelser i förhållande till varandra. Månens olika faser. Stjärnbilder och stjärnhimlens utseende vid olika tider på året. |
+| 📸 Rymdbilder | Nivå 1 | Frågerunda | *Året runt i naturen:* Jordens, solens och månens rörelser i förhållande till varandra. Månens olika faser. Stjärnbilder och stjärnhimlens utseende vid olika tider på året. |
+| 🖼️ Bildgalleri | Nivå 1 | Interaktiv | *Året runt i naturen:* Jordens, solens och månens rörelser i förhållande till varandra. Månens olika faser. Stjärnbilder och stjärnhimlens utseende vid olika tider på året.<br>*Berättelser om natur och naturvetenskap:* Berättelser om äldre tiders naturvetenskap och om olika kulturers strävan att förstå och förklara fenomen i naturen. |
 | 🌗 Dag & natt | Nivå 1 | Interaktiv | *Året runt i naturen:* Jordens, solens och månens rörelser i förhållande till varandra. Månens olika faser. Stjärnbilder och stjärnhimlens utseende vid olika tider på året. |
 | 🌙 Månens faser | Nivå 2 | Interaktiv | *Året runt i naturen:* Jordens, solens och månens rörelser i förhållande till varandra. Månens olika faser. Stjärnbilder och stjärnhimlens utseende vid olika tider på året. |
 | 🔢 Planetordning | Nivå 2 | Frågerunda | *Året runt i naturen:* Jordens, solens och månens rörelser i förhållande till varandra. Månens olika faser. Stjärnbilder och stjärnhimlens utseende vid olika tider på året. |
 | ✨ Stjärnbilder | Nivå 2 | Interaktiv | *Året runt i naturen:* Jordens, solens och månens rörelser i förhållande till varandra. Månens olika faser. Stjärnbilder och stjärnhimlens utseende vid olika tider på året.<br>*Berättelser om natur och naturvetenskap:* Berättelser om äldre tiders naturvetenskap och om olika kulturers strävan att förstå och förklara fenomen i naturen. |
 | 🌍 Varför årstider? | Nivå 3 | Interaktiv | *Året runt i naturen:* Jordens, solens och månens rörelser i förhållande till varandra. Månens olika faser. Stjärnbilder och stjärnhimlens utseende vid olika tider på året.<br>*Året runt i naturen:* Årstidsväxlingar i naturen och hur man känner igen årstider. |
+
+## 🌍 Världen – Länder, kartor, djur och förr i tiden
+
+| Modul | Från nivå | Typ | Läroplanen (Lgr22) |
+|---|---|---|---|
+| 🗺️ Världsdelar | Nivå 1 | Interaktiv | *Att undersöka verkligheten:* Jordgloben, analoga och digitala kartor samt storleksrelationer och väderstreck.<br>*Att leva i världen:* Rumsliga förutsättningar i natur och miljö för befolkning och bebyggelse, till exempel mark, vatten och klimat. |
+| 🦁 Djur i världen | Nivå 1 | Frågerunda | *Att leva i världen:* Rumsliga förutsättningar i natur och miljö för befolkning och bebyggelse, till exempel mark, vatten och klimat.<br>*Året runt i naturen:* Djur, växter och svampar i närmiljön, hur de kan grupperas samt namn på några vanligt förekommande arter. |
+| 🗼 Kända platser | Nivå 1 | Frågerunda | *Att leva i världen:* Namn och läge på platser i närmiljön och andra platser som är betydelsefulla för eleven. |
+| 🇸🇪 Sverigekartan | Nivå 2 | Interaktiv | *Att undersöka verkligheten:* Jordgloben, analoga och digitala kartor samt storleksrelationer och väderstreck.<br>*Att leva i världen:* Namn och läge på platser i närmiljön och andra platser som är betydelsefulla för eleven. |
+| 🧭 Väderstreck | Nivå 2 | Frågerunda | *Att undersöka verkligheten:* Jordgloben, analoga och digitala kartor samt storleksrelationer och väderstreck. |
+| ⏳ Förr i tiden | Nivå 1 | Frågerunda | *Att undersöka verkligheten:* Tidslinjer och tidsbegreppen dåtid, nutid och framtid.<br>*Att leva i världen:* Människors levnadsvillkor under stenålder, bronsålder och järnålder. |
+| 🎉 Högtider | Nivå 2 | Frågerunda | *Att leva i världen:* Några högtider, symboler och berättelser inom kristendom, islam och judendom. |
+| 🤝 Barnens rättigheter | Nivå 2 | Frågerunda | *Att leva i världen:* Mänskliga rättigheter inklusive alla människors lika värde och barnets rättigheter i enlighet med barnkonventionen. |
 
 ## 🧠 AI – Förstå, undersök och använd AI klokt
 
@@ -169,9 +186,15 @@ Dessutom: 20 robotbanor, 14 berättelser med läsförståelsefrågor, 25 artkort
 |---|---|---|---|
 | 🤔 Frågekort | Nivå 1 | Interaktiv | *Natur, teknik och samhälle:* Olika sätt att utforska företeelser och samband i natur, teknik och samhälle, genom observationer, mätningar och samtal.<br>*Berättelser om natur och naturvetenskap:* Berättelser om äldre tiders naturvetenskap och om olika kulturers strävan att förstå och förklara fenomen i naturen. |
 
+## 🏡 Lekstaden – Lek, bygg och upptäck
+
+| Modul | Från nivå | Typ | Läroplanen (Lgr22) |
+|---|---|---|---|
+| 🏡 Lekstaden | Nivå 1 | Interaktiv | *Taluppfattning och tals användning:* Naturliga tal och deras egenskaper samt hur talen kan delas upp och användas för att ange antal och ordning.<br>*Taluppfattning och tals användning:* De fyra räknesättens egenskaper och samband samt användning i olika situationer.<br>*Året runt i naturen:* Några djurs och växters livscykler och anpassningar till olika livsmiljöer och årstider.<br>*Året runt i naturen:* Djur, växter och svampar i närmiljön, hur de kan grupperas samt namn på några vanligt förekommande arter.<br>*Läsa och skriva:* Strategier för att avkoda, förstå och tolka ord, begrepp och texter.<br>*Bildframställning:* Framställning av berättande bilder, till exempel sagobilder och serier. Teckning, måleri, modellering och konstruktion. |
+
 ## Troféer
 
-**🧭 Äventyret:** 🌟 Första stjärnan (Gör klart din första runda) · 🗺️ Upptäcktsresande (Prova alla tio appar) · ⭐ Stjärnsamlare (Samla 50 stjärnor) · 💫 Stjärnregn (Samla 200 stjärnor) · 🌠 Stjärnhimmel (Samla 500 stjärnor) · 🎯 Fullträff (Klara en runda med allt rätt på första försöket) · 🏹 Mästerskytt (Klara 20 perfekta rundor) · 🔥 Tre dagar i rad (Lär dig något tre dagar i rad) · 🌈 En hel vecka (Lär dig något sju dagar i rad) · 🏔️ Bergsbestigare (Gör 100 rundor) · 💪 Ger aldrig upp (Försök igen efter ett fel – 25 gånger. Fel är hur man lär sig!)
+**🧭 Äventyret:** 🌟 Första stjärnan (Gör klart din första runda) · 🗺️ Upptäcktsresande (Prova alla elva lärappar) · ⭐ Stjärnsamlare (Samla 50 stjärnor) · 💫 Stjärnregn (Samla 200 stjärnor) · 🌠 Stjärnhimmel (Samla 500 stjärnor) · 🎯 Fullträff (Klara en runda med allt rätt på första försöket) · 🏹 Mästerskytt (Klara 20 perfekta rundor) · 🔥 Tre dagar i rad (Lär dig något tre dagar i rad) · 🌈 En hel vecka (Lär dig något sju dagar i rad) · 🏔️ Bergsbestigare (Gör 100 rundor) · 💪 Ger aldrig upp (Försök igen efter ett fel – 25 gånger. Fel är hur man lär sig!)
 
 **🔢 Matte:** 🔢 Räknesnille (Gör 10 matterundor) · 🧮 Mattemagiker (Gör 50 matterundor) · ⏰ Klockkoll (Gör 5 rundor med klockan) · 🤝 Tiokompis (Klara Tiokompisar perfekt 3 gånger) · ✖️ Tabellproffs (Klara Gånger & delat perfekt 3 gånger) · 🔺 Formexpert (Gör 5 rundor med former) · 🐸 Detektiv (Hitta det hemliga talet i 5 rundor)
 
@@ -189,7 +212,11 @@ Dessutom: 20 robotbanor, 14 berättelser med läsförståelsefrågor, 25 artkort
 
 **🤖 Kodning:** 🤖 Robotförare (Klara 5 robotbanor) · ↩️ Svängproffs (Klara 13 robotbanor) · 🏆 Kodmästare (Klara alla robotbanor) · 🔁 Loopig (Klara en bana med en loop) · 🐢 Kodkonstnär (Klara alla ritutmaningar med kod)
 
-**🎨 Skapa & undra:** 🖍️ Konstnär (Spara din första teckning) · 🖼️ Utställning (Spara 10 teckningar) · 🦋 Spegelkonstnär (Spara en teckning med spegelpenseln) · 🤔 Nyfiken själ (Utforska 10 Undra-frågor) · 🧠 Frågornas mästare (Utforska alla Undra-frågor)
+**🌍 Världen:** 🗺️ Jordenruntresenär (Upptäck alla sju världsdelar) · 🗼 Världsresenär (Upptäck 10 platser och djur i världen) · ✈️ Globetrotter (Upptäck alla platser och djur i världen) · 🇸🇪 Sverigekännare (Hitta fem städer på Sverigekartan) · ⏳ Tidsresenär (Gör 3 rundor Förr i tiden)
+
+**🏡 Lekstaden:** 🛍️ Första köpet (Köp något på Marknaden med dina mynt) · 🔍 Hemlighetsjägare (Hitta 5 hemligheter i Lekstaden) · 🕵️ Mästerdetektiv (Hitta alla hemligheter i Lekstaden) · 👩‍🍳 Mästerkock (Laga tre olika recept) · 🎨 Färgforskare (Upptäck alla färger i färglabbet) · 🩺 Djurdoktor (Hjälp fem olika djurpatienter) · 🧑‍🌾 Odlare (Skörda tre olika växter)
+
+**🎨 Skapa & undra:** 📝 Författare (Skriv 100 ord i Anteckningar) · 🖍️ Konstnär (Spara din första teckning) · 🖼️ Utställning (Spara 10 teckningar) · 🦋 Spegelkonstnär (Spara en teckning med spegelpenseln) · 🤔 Nyfiken själ (Utforska 10 Undra-frågor) · 🧠 Frågornas mästare (Utforska alla Undra-frågor)
 
 ## Läroplanscitat som används
 
@@ -238,5 +265,13 @@ Dessutom: 20 robotbanor, 14 berättelser med läsförståelsefrågor, 25 artkort
 | `no-berattelse` | NO | Berättelser om natur och naturvetenskap | Berättelser om äldre tiders naturvetenskap och om olika kulturers strävan att förstå och förklara fenomen i naturen. |
 | `tk-prog` | Teknik | Tekniska lösningar | Föremål i elevernas vardag som styrs med hjälp av programmering, till exempel hushållsmaskiner och smarta telefoner. |
 | `tk-styr` | Teknik | Arbetsmetoder | Styrning av föremål med programmering. |
+| `so-karta` | SO | Att undersöka verkligheten | Jordgloben, analoga och digitala kartor samt storleksrelationer och väderstreck. |
+| `so-varlden` | SO | Att leva i världen | Rumsliga förutsättningar i natur och miljö för befolkning och bebyggelse, till exempel mark, vatten och klimat. |
+| `so-platser` | SO | Att leva i världen | Namn och läge på platser i närmiljön och andra platser som är betydelsefulla för eleven. |
+| `so-forntid` | SO | Att leva i världen | Människors levnadsvillkor under stenålder, bronsålder och järnålder. |
+| `so-tid` | SO | Att undersöka verkligheten | Tidslinjer och tidsbegreppen dåtid, nutid och framtid. |
+| `so-hogtid` | SO | Att leva i världen | Några högtider, symboler och berättelser inom kristendom, islam och judendom. |
+| `so-rattigheter` | SO | Att leva i världen | Mänskliga rättigheter inklusive alla människors lika värde och barnets rättigheter i enlighet med barnkonventionen. |
+| `sv-digital` | Svenska | Läsa och skriva | Handstil och att skriva med digitala verktyg. |
 | `bi-skapa` | Bild | Bildframställning | Framställning av berättande bilder, till exempel sagobilder och serier. Teckning, måleri, modellering och konstruktion. |
 | `fsk-utforska` | Förskoleklass | Natur, teknik och samhälle | Olika sätt att utforska företeelser och samband i natur, teknik och samhälle, genom observationer, mätningar och samtal. |
