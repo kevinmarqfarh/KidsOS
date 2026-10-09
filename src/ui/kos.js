@@ -2,7 +2,7 @@
 import { loadState, saveState } from '../core/storage.js';
 import {
   newProfile, recordAnswer, recordRound, addStars, bump, addToSet, touchDay, dateKey,
-  isOverDailyLimit, currentLevel, appStat,
+  isOverDailyLimit, currentLevel, appStat, addCoins, ageBand,
 } from '../core/model.js';
 import { awardTrophies } from '../core/trophies.js';
 import { rankFor } from '../core/progress.js';
@@ -53,6 +53,7 @@ export const kos = {
     const p = this.profile;
     setSpeechEnabled(!p || p.settings.readAloud !== 'off');
     if (p) document.documentElement.style.setProperty('--me', p.color);
+    document.documentElement.dataset.ageband = p ? ageBand(p.age) : 'mid';
   },
 
   on(evt, fn) {
@@ -190,6 +191,8 @@ export const kos = {
     const p = this.profile;
     if (!p) return [];
     const won = awardTrophies(p);
+    // Varje ny trofé ger också fem mynt till Lekstaden.
+    if (won.length) addCoins(p, won.length * 5);
     if (!silent) won.forEach((t, i) => setTimeout(() => this.trophyToast(t), 400 + i * 1600));
     if (won.length) this.emit('trophies', won);
     return won;
@@ -208,14 +211,14 @@ export const kos = {
   },
   trophyToast(t) {
     this.sfx('trophy');
-    this.toast(`<small>Ny trofé!</small><b>${t.name}</b>`, { icon: t.icon, ms: 3600 });
+    this.toast(`<small>Ny trofé! +5 🪙</small><b>${t.name}</b>`, { icon: t.icon, ms: 3600 });
     this.say(`Ny trofé! ${t.name}`, { interrupt: false });
     this.confetti(60);
   },
   flyStar(n = 1) {
     if (reducedMotion()) return;
     const layer = this.overlayRoot || document.body;
-    const target = document.querySelector('.sb-stars');
+    const target = [...document.querySelectorAll('.tb-stars, .sb-stars')].find((n) => n.offsetParent !== null);
     const tr = target?.getBoundingClientRect();
     for (let i = 0; i < Math.min(n, 5); i++) {
       const s = h('div.fly-star', '⭐');

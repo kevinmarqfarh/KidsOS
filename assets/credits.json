@@ -1,0 +1,38 @@
+{
+ "earth": {
+  "author": "Harrison Schmitt / Apollo 17",
+  "credit": "https://tothemoon.im-ldi.com/gallery/Apollo/17/6#AS17-148-22727",
+  "file": "File:The_Blue_Marble,_AS17-148-22727.jpg",
+  "group": "space",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "source": "https://commons.wikimedia.org/wiki/File:The_Blue_Marble,_AS17-148-22727.jpg"
+ },
+ "moon": {
+  "author": "Gregory H. Revera",
+  "credit": "Own work",
+  "file": "File:FullMoon2010.jpg",
+  "group": "space",
+  "license": "CC BY-SA 3.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:FullMoon2010.jpg"
+ },
+ "sun": {
+  "author": "Matúš Motlo",
+  "credit": "Own work",
+  "file": "File:The_Sun_in_white_light.jpg",
+  "group": "space",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:The_Sun_in_white_light.jpg"
+ },
+ "venus": {
+  "author": "NASA/JPL-Caltech",
+  "credit": "https://solarsystem.nasa.gov/resources/2524/newly-processed-views-of-venus-from-mariner-10/",
+  "file": "File:Venus_from_Mariner_10.jpg",
+  "group": "space",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "source": "https://commons.wikimedia.org/wiki/File:Venus_from_Mariner_10.jpg"
+ }
+}

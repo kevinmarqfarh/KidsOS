@@ -1,3 +1,5 @@
+import { photo } from '../ui/img.js';
+
 // Biologi-appen: kroppen, sinnen, livscykler, näringskedjor, årstider, djurgrupper,
 // svenska arter (samlarkort) och hälsa.
 
@@ -307,7 +309,7 @@ export function genSpecies(level, rng, ctx = {}) {
   return {
     type: 'choice',
     prompt: 'Vad heter den här arten?',
-    visual: `<div class="pic-big">${target.e}</div>`,
+    visual: photo(target.id, { alt: '', cls: 'qphoto', fallback: `<div class="pic-big">${target.e}</div>` }),
     options: rng.shuffle([target, ...others]).map((s) => ({ id: s.id, label: s.n })),
     answer: target.id,
     hint: `Det är ${target.g.toLowerCase()}.`,
@@ -347,7 +349,7 @@ export const biologyApp = {
     { id: 'senses', name: 'Sinnena', icon: '👃', minLevel: 0, gen: genSenses, lgr: ['no-sinnen'] },
     { id: 'seasons', name: 'Årstider', icon: '🍂', minLevel: 0, gen: genSeasons, lgr: ['no-arstid', 'no-livscykel'] },
     { id: 'lifecycle', name: 'Livscykler', icon: '🐛', minLevel: 0, gen: genLifecycle, lgr: ['no-livscykel'] },
-    { id: 'species', name: 'Artkort', icon: '🃏', minLevel: 0, gen: genSpecies, lgr: ['no-arter'] },
+    { id: 'species', name: 'Artkort', icon: '🃏', minLevel: 0, gen: genSpecies, lgr: ['no-arter'], photo: () => photo('ekorre', { cls: 'tile-photo' }) },
     { id: 'groups', name: 'Djurgrupper', icon: '🐾', minLevel: 1, gen: genAnimalGroups, lgr: ['no-arter'] },
     { id: 'foodchain', name: 'Näringskedjor', icon: '🦊', minLevel: 1, gen: genFoodChain, lgr: ['no-kedja'] },
     { id: 'health', name: 'Må bra', icon: '💪', minLevel: 1, gen: genHealth, lgr: ['no-halsa'] },

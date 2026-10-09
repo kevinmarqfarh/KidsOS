@@ -7,6 +7,7 @@ import { SPECIES } from '../apps/biology.js';
 import { PLANETS, CONSTELLATIONS } from '../apps/space.js';
 import { UPPER } from '../apps/letters.js';
 import { hasInSet } from '../core/model.js';
+import { photo } from './img.js';
 
 export function renderTrophyRoom(el) {
   const p = kos.profile;
@@ -68,7 +69,7 @@ export function renderTrophyRoom(el) {
       }
     } else {
       body.append(
-        collection('🃏 Artkort', SPECIES, (s) => hasInSet(p, 'species', s.id), (s) => s.e, (s) => s.n, (s) => s.fact, 'Spela Artkort i Biologi för att samla fler!'),
+        collection('🃏 Artkort', SPECIES, (s) => hasInSet(p, 'species', s.id), (s) => photo(s.id, { alt: s.n, fallback: s.e }), (s) => s.n, (s) => s.fact, 'Spela Artkort i Biologi för att samla fler!'),
         collection('🪐 Planeter', PLANETS, (x) => hasInSet(p, 'planets', x.id), () => '●', (x) => x.name, (x) => x.facts[0], 'Besök planeterna i Rymden → Solsystemet.', (x) => x.color),
         collection('✨ Stjärnbilder', CONSTELLATIONS, (x) => hasInSet(p, 'constellations', x.id), () => '✨', (x) => x.name, (x) => x.story, 'Rita stjärnbilder i Rymden.'),
         collection('✏️ Skrivna bokstäver', UPPER, (x) => hasInSet(p, 'traced:upper', x), (x) => x, (x) => x, () => '', 'Skriv bokstäver i Skriv ABC.'),
@@ -85,7 +86,7 @@ export function renderTrophyRoom(el) {
         'div.coll-grid',
         items.map((it) => {
           const got = has(it);
-          const card = h('button.coll-card', { type: 'button', class: got ? 'got' : 'locked', style: color ? { '--c': color(it) } : {} }, h('span.coll-icon', got ? icon(it) : '?'), h('small', got ? name(it) : '???'));
+          const card = h('button.coll-card', { type: 'button', class: got ? 'got' : 'locked', style: color ? { '--c': color(it) } : {} }, h('span.coll-icon', { html: got ? icon(it) : '?' }), h('small', got ? name(it) : '???'));
           onTap(card, () => (got ? kos.say(`${name(it)}. ${fact(it)}`) : kos.say(hint)));
           return card;
         }),

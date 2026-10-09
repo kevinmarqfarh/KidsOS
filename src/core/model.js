@@ -35,6 +35,7 @@ export function newProfile({ name, age, avatar = '🦊', color = '#4aa8ff', wall
     wallpaper,
     createdAt: new Date().toISOString(),
     stars: 0,
+    coins: 0,
     stats: {},
     counters: {},
     sets: {},
@@ -47,6 +48,7 @@ export function newProfile({ name, age, avatar = '🦊', color = '#4aa8ff', wall
       dailyLimitMin: 0, // 0 = ingen gräns
       hiddenApps: [],
       showAllModules: false,
+      layout: 'auto', // 'auto' (efter ålder) | 'tablet' | 'desktop'
     },
   };
 }
@@ -62,6 +64,8 @@ export function normalizeProfile(p) {
   }
   if (!Array.isArray(out.settings.hiddenApps)) out.settings.hiddenApps = [];
   out.stars = Math.max(0, Number(out.stars) || 0);
+  // Profiler från version 1 saknar mynt: de får lika många mynt som stjärnor de redan tjänat.
+  out.coins = p?.coins === undefined ? out.stars : Math.max(0, Number(out.coins) || 0);
   return out;
 }
 
@@ -169,9 +173,39 @@ export function recordRound(profile, appId, moduleId, { correctFirst, total }) {
   return { rating, improved, bonus };
 }
 
+/** Stjärnor visar vad barnet har lärt sig. Varje intjänad stjärna ger också ett mynt till Lekstaden. */
 export function addStars(profile, n = 1) {
   profile.stars = Math.max(0, (profile.stars || 0) + n);
+  if (n > 0) profile.coins = (profile.coins || 0) + n;
   return profile.stars;
+}
+
+export function addCoins(profile, n) {
+  profile.coins = Math.max(0, (profile.coins || 0) + n);
+  return profile.coins;
+}
+
+/** Försöker betala. Returnerar true om det fanns tillräckligt med mynt. */
+export function spendCoins(profile, n) {
+  if ((profile.coins || 0) < n) return false;
+  profile.coins -= n;
+  return true;
+}
+
+/** Layout efter ålder: yngre barn får surfplatte-läget, 8+ får dator-läget. */
+export function layoutFor(profile, width = 1024) {
+  const pref = profile?.settings?.layout || 'auto';
+  if (pref === 'tablet' || pref === 'desktop') return pref;
+  void width;
+  return (profile?.age || 0) >= 8 ? 'desktop' : 'tablet';
+}
+
+/** Åldersband som styr textstorlek och täthet i gränssnittet. */
+export function ageBand(age) {
+  const a = Number(age) || 0;
+  if (a <= 5) return 'small';
+  if (a <= 7) return 'mid';
+  return 'big';
 }
 
 export function bump(profile, key, n = 1) {
