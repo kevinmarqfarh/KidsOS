@@ -7,3 +7,15 @@
 
 .studio-room-switch .studio-button,.studio-tabs .studio-button,.studio-swatches .studio-button{min-height:44px;min-width:44px}
 .studio-shop-card p{font-size:14px;line-height:1.55}.studio-shop-card strong{font-size:16px}.studio-shop-card small{font-size:13px}.studio-story p{line-height:1.65}.studio-tools{flex-wrap:wrap}
+
+@container (max-width: 900px) {
+  .studio-workspace, .studio-workspace.store-open { grid-template-columns: 1fr; }
+  .studio-scene { position: static; }
+  .studio-drawer { max-height: none; }
+  .studio-shop-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@container (max-width: 520px) {
+  .studio-shop-grid { grid-template-columns: 1fr; }
+  .studio-heading { flex-wrap: wrap; }
+  .studio-inventory { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}

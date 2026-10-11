@@ -1,5 +1,5 @@
 // Vetenskap – experimentvyer. Arbetsgång: Fråga → Gissa → Testa → Förklara → Dokumentera.
-import { h, clear, onTap, wait, reducedMotion } from '../dom.js';
+import { h, clear, onTap, interactiveGraphic, wait, reducedMotion } from '../dom.js';
 import { FLOAT_ITEMS, MAGNET_ITEMS, SURFACES, slideDistance, seesawTorque, SEESAW_ANIMALS, SEESAW_MISSIONS } from '../../apps/science.js';
 import { hasInSet } from '../../core/model.js';
 import { createRng } from '../../core/rng.js';
@@ -207,15 +207,18 @@ export function magnetView(el, ctx) {
 export function shadowView(el, { kos, app }) {
   const missions = missionList(['Gör skuggan riktigt lång', 'Gör skuggan riktigt kort', 'Få skuggan att peka åt vänster', 'Få skuggan att peka åt höger']);
   const svgWrap = h('div.shadow-scene');
+  const sunPosition = h('input.slider', { type: 'range', min: '5', max: '175', step: '5', value: '60', 'aria-label': 'Solens läge över himlen' });
   const info = h('div.sci-readout');
   let angle = 60; // 0 = vänster horisont, 180 = höger horisont
-  el.append(h('div.sci', h('div.sci-top', stepsBar(2), h('p.sci-q', '🔦 Dra solen över himlen. Vad händer med skuggan?')), svgWrap, info, missions.el));
+  el.append(h('div.sci', h('div.sci-top', stepsBar(2), h('p.sci-q', '🔦 Dra solen över himlen. Vad händer med skuggan?')), svgWrap, h('label.field', h('span', 'Solens läge – använd reglaget eller dra solen'), sunPosition), info, missions.el));
   const W = 400;
   const H = 260;
   const groundY = 210;
   const x0 = 200;
   const treeH = 90;
   function render() {
+    sunPosition.value = String(angle);
+    sunPosition.setAttribute('aria-valuetext', `${Math.round(angle)} grader över himlen`);
     const a = (angle * Math.PI) / 180;
     const sx = x0 - Math.cos(a) * 170;
     const sy = groundY - Math.sin(a) * 170;
@@ -264,6 +267,7 @@ export function shadowView(el, { kos, app }) {
     angle = a;
     check(render());
   };
+  sunPosition.addEventListener('input', () => { angle = Number(sunPosition.value); check(render()); });
   svgWrap.addEventListener('pointerdown', (e) => {
     drag = true;
     svgWrap.setPointerCapture?.(e.pointerId);
@@ -459,14 +463,14 @@ export function seesawView(el, { kos, app, level }) {
         const arr = side === 'L' ? left : right;
         const occ = arr.find((x) => x.d === d);
         const x = 200 + (side === 'L' ? -1 : 1) * d * 40;
-        seats.push(`<g class="seat" data-side="${side}" data-d="${d}"><rect x="${x - 19}" y="88" width="38" height="44" rx="8" fill="${occ ? 'rgba(255,255,255,.0)' : 'rgba(255,255,255,.55)'}" stroke="rgba(31,42,68,.25)" stroke-dasharray="${occ ? '0' : '4 3'}"/><text x="${x}" y="122" text-anchor="middle" font-size="30">${occ ? occ.e : ''}</text><text x="${x}" y="152" text-anchor="middle" font-size="11" fill="#56627d">${d}</text></g>`);
+        seats.push(`<g class="seat" data-hit="${side}-${d}" data-side="${side}" data-d="${d}"><rect x="${x - 19}" y="88" width="38" height="44" rx="8" fill="${occ ? 'rgba(255,255,255,.0)' : 'rgba(255,255,255,.55)'}" stroke="rgba(31,42,68,.25)" stroke-dasharray="${occ ? '0' : '4 3'}"/><text x="${x}" y="122" text-anchor="middle" font-size="30">${occ ? occ.e : ''}</text><text x="${x}" y="152" text-anchor="middle" font-size="11" fill="#56627d">${d}</text></g>`);
       }
     scene.innerHTML = `<svg viewBox="0 0 400 200" class="seesaw-svg">
       <polygon points="200,140 175,190 225,190" fill="#6b7a99"/>
       <g transform="rotate(${tilt} 200 140)"><rect x="28" y="132" width="344" height="12" rx="6" fill="#c58b4f"/>${seats.join('')}</g>
       <rect x="0" y="190" width="400" height="10" fill="#8fd18a"/></svg>`;
     scene.querySelectorAll('.seat').forEach((g) =>
-      g.addEventListener('click', () => {
+      interactiveGraphic(g, `${g.dataset.side === 'L' ? 'Vänster' : 'Höger'} plats ${g.dataset.d}. Lägg till eller ta bort djur.`, () => {
         const side = g.dataset.side;
         const d = Number(g.dataset.d);
         const arr = side === 'L' ? left : right;

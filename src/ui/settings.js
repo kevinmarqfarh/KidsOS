@@ -20,6 +20,11 @@ export function renderSettings(el, { parentGate, profileWizard, showLock, goHome
   function renderKid() {
     clear(kid).append(
       h('h2', `Mina inställningar`),
+      row('Skärmläge', seg([['desktop', '💻 PC'], ['tablet', '📱 Tablet']], p.settings.layout === 'auto' ? (p.age >= 8 ? 'desktop' : 'tablet') : p.settings.layout, v => {
+        p.settings.layout = v;
+        kos.saveNow();
+        goHome();
+      })),
       row('Min figur', h('div.pick-grid.avatars', AVATARS.map((a) => onTap(h('button.pick.pick-av', { type: 'button', class: p.avatar === a ? 'on' : '' }, a), () => {
         p.avatar = a;
         kos.saveNow();
@@ -72,7 +77,7 @@ export function renderSettings(el, { parentGate, profileWizard, showLock, goHome
       'section.set-section',
       h('h3', `Profil: ${kp.name}`),
       h('p.muted', `${profileAgeLabel(kp)} · skapad ${new Date(kp.createdAt).toLocaleDateString('sv-SE')}`),
-      h('div.set-row', h('span', 'Utseende'), seg([['auto', `Efter ålder (${kp.age >= 8 ? 'dator' : 'surfplatta'})`], ['tablet', '📱 Surfplatta'], ['desktop', '💻 Dator']], kp.settings.layout || 'auto', (v) => {
+      h('div.set-row', h('span', 'Utseende'), seg([['auto', `Efter ålder (${kp.age >= 8 ? 'dator' : 'surfplatta'})`], ['tablet', '📱 Tablet'], ['desktop', '💻 PC']], kp.settings.layout || 'auto', (v) => {
         kp.settings.layout = v;
         kos.saveNow();
         render();
@@ -250,7 +255,7 @@ export function renderSettings(el, { parentGate, profileWizard, showLock, goHome
 
   function globalSection(render) {
     const s = kos.state.settings;
-    const pinInput = h('input.text-input#pin-input', { type: 'password', inputmode: 'numeric', maxlength: '4', placeholder: s.pin ? 'Ny kod (4 siffror)' : 'Välj kod (4 siffror)', autocomplete: 'off' });
+    const pinInput = h('input.text-input#pin-input', { 'aria-label': 'Föräldrakod, fyra siffror', type: 'password', inputmode: 'numeric', maxlength: '4', placeholder: s.pin ? 'Ny kod (4 siffror)' : 'Välj kod (4 siffror)', autocomplete: 'off' });
     return h(
       'section.set-section',
       h('h3', '⚙️ Allmänt'),
@@ -291,8 +296,8 @@ export function renderSettings(el, { parentGate, profileWizard, showLock, goHome
   }
 
   function backupSection() {
-    const out = h('textarea.text-area#backup-out', { readonly: true, rows: '3', placeholder: 'Tryck på "Skapa säkerhetskopia".' });
-    const inp = h('textarea.text-area#backup-in', { rows: '3', placeholder: 'Klistra in en säkerhetskopia här för att återställa.' });
+    const out = h('textarea.text-area#backup-out', { 'aria-label': 'Skapad säkerhetskopia', readonly: true, rows: '3', placeholder: 'Tryck på "Skapa säkerhetskopia".' });
+    const inp = h('textarea.text-area#backup-in', { 'aria-label': 'Säkerhetskopia att återställa', rows: '3', placeholder: 'Klistra in en säkerhetskopia här för att återställa.' });
     const status = h('p.muted', { 'aria-live': 'polite' });
     return h(
       'section.set-section',

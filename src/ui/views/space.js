@@ -1,6 +1,6 @@
 import { photoFigure } from '../photos.js';
 // Rymden – interaktiva vyer.
-import { h, clear, onTap, wait, reducedMotion } from '../dom.js';
+import { h, clear, onTap, interactiveGraphic, wait, reducedMotion } from '../dom.js';
 import { PLANETS, SUN, CONSTELLATIONS, moonPhaseName, GBG_DAYLIGHT, MONTHS, seasonForMonth } from '../../apps/space.js';
 import { hasInSet } from '../../core/model.js';
 import { createRng } from '../../core/rng.js';
@@ -44,7 +44,7 @@ export function solarView(el, { kos, app }) {
     });
     s += '</svg>';
     holder.innerHTML = s;
-    holder.querySelectorAll('.body').forEach((g) => g.addEventListener('click', () => select(g.dataset.id)));
+    holder.querySelectorAll('.body').forEach((g) => interactiveGraphic(g, g.dataset.id === 'solen' ? 'Solen' : PLANETS.find(pl => pl.id === g.dataset.id)?.name || g.dataset.id, () => select(g.dataset.id)));
   }
   function animate() {
     if (!alive || !el.isConnected || mode !== 'orbit') return;
@@ -339,11 +339,12 @@ export function moonPhasePath(a, R = 50, cx = 60, cy = 60) {
 export function moonView(el, { kos, app }) {
   let a = 45;
   const wrap = h('div.moon-wrap');
+  const position = h('input.slider', { type: 'range', min: '0', max: '360', step: '5', value: '45', 'aria-label': 'Månens position runt jorden' });
   const phaseBox = h('div.moon-phase');
   const name = h('div.sci-readout');
   const goals = ['nymåne', 'halvmåne', 'fullmåne'];
   const goalEl = h('div.chip-row', goals.map((g) => h('span.chip-btn.static', { dataset: { g } }, `○ Hitta ${g}`)));
-  el.append(h('div.sci', h('div.teach', h('span.teach-icon', '🌙'), h('span', 'Dra månen runt jorden. Hur ser månen ut härifrån jorden?')), goalEl, h('div.moon-layout', wrap, phaseBox), name));
+  el.append(h('div.sci', h('div.teach', h('span.teach-icon', '🌙'), h('span', 'Dra månen runt jorden. Hur ser månen ut härifrån jorden?')), goalEl, h('div.moon-layout', wrap, phaseBox), h('label.field', h('span', 'Månens position – använd reglaget eller dra månen'), position), name));
   function render() {
     const rad = ((180 + a) * Math.PI) / 180;
     const mx = 200 + Math.cos(rad) * 130;
@@ -356,6 +357,8 @@ export function moonView(el, { kos, app }) {
       <circle cx="200" cy="200" r="40" fill="#3d8bfd"/><path d="M200 160 A40 40 0 0 1 200 240 Z" fill="rgba(5,8,30,.6)"/><text x="200" y="256" fill="#fff" font-size="12" text-anchor="middle">Jorden</text>
       <g transform="translate(${mx} ${my})"><circle r="30" fill="transparent"/><circle r="18" fill="#d9d6cc"/><path d="M0 -18 A18 18 0 0 1 0 18 Z" fill="rgba(5,8,30,.75)"/></g></svg>`;
     const nm = moonPhaseName(a);
+    position.value = String(a);
+    position.setAttribute('aria-valuetext', `${Math.round(a)} grader, ${nm}`);
     phaseBox.innerHTML = `<small>Så ser vi månen från jorden</small><svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="50" fill="#22284d"/><path d="${moonPhasePath(a)}" fill="#f2efe4"/></svg><b>${nm}</b>`;
     name.innerHTML = `<b>${nm[0].toUpperCase() + nm.slice(1)}.</b> ${a < 20 || a > 340 ? 'Månen står mellan jorden och solen – den belysta sidan är vänd bort från oss.' : a > 160 && a < 200 ? 'Jorden står mellan solen och månen – vi ser hela den belysta sidan.' : 'Vi ser bara en del av den belysta sidan.'}`;
     const found = nm === 'nymåne' ? 'nymåne' : nm.includes('halvmåne') ? 'halvmåne' : nm === 'fullmåne' ? 'fullmåne' : null;
@@ -384,6 +387,7 @@ export function moonView(el, { kos, app }) {
     a = (ang - 180 + 720) % 360;
     render();
   };
+  position.addEventListener('input', () => { a = Number(position.value) % 360; render(); });
   wrap.addEventListener('pointermove', move);
   wrap.addEventListener('pointerup', () => (drag = false));
   wrap.addEventListener('pointercancel', () => (drag = false));
@@ -432,7 +436,7 @@ export function starsView(el, { kos, app }) {
     const nextIdx = c.order[step];
     const stars = c.stars.map(([x, y], i) => `<g class="star-t" data-i="${i}"><circle cx="${x}" cy="${y}" r="6" fill="transparent"/><circle cx="${x}" cy="${y}" r="${i === nextIdx && step < c.order.length ? 2.2 : 1.6}" fill="#fff8d6" class="${i === nextIdx && step < c.order.length ? 'twinkle' : ''}"/></g>`).join('');
     sky.innerHTML = `<svg viewBox="0 0 100 100" class="sky-svg"><rect width="100" height="100" fill="#0b0e2a" rx="4"/>${bg}${lines}${stars}</svg>`;
-    sky.querySelectorAll('.star-t').forEach((g) => g.addEventListener('click', () => tapStar(Number(g.dataset.i))));
+    sky.querySelectorAll('.star-t').forEach((g) => interactiveGraphic(g, `Stjärna ${Number(g.dataset.i) + 1}`, () => tapStar(Number(g.dataset.i))));
   }
   function tapStar(i) {
     if (step >= c.order.length) return;

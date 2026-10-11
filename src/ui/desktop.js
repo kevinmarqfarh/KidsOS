@@ -30,6 +30,11 @@ export function createDesktop(root, { osEl, confirmSwitch, showLock }) {
   let tray;
   let startMenu;
   let resizeT;
+  const subscriptions = [];
+  const onResize = () => {
+    clearTimeout(resizeT);
+    resizeT = setTimeout(() => wins.forEach((w) => clampWin(w)), 150);
+  };
 
   function build() {
     clear(root);
@@ -39,25 +44,20 @@ export function createDesktop(root, { osEl, confirmSwitch, showLock }) {
     winLayer = h('div.win-layer');
     tasks = h('div.tb-tasks');
     tray = h('div.tb-tray');
-    const startBtn = h('button.tb-start', { type: 'button', 'aria-label': 'Start', 'aria-haspopup': 'menu' }, h('span.logo-mark', 'K'), h('span.tb-start-label', 'Start'));
+    const startBtn = h('button.tb-start', { type: 'button', 'aria-label': 'Start', 'aria-expanded': 'false', 'aria-controls': 'kids-start-menu' }, h('span.logo-mark', 'K'), h('span.tb-start-label', 'Start'));
     onTap(startBtn, () => toggleStart());
     const pinned = h('div.tb-pinned',
       onTap(h('button.tb-shortcut', { type: 'button', 'aria-label': 'Lekstaden', dataset: { shortcut: 'play' } }, h('span', '🏡'), h('small', 'Lekstaden')), () => open('play', 'studio')),
       onTap(h('button.tb-shortcut', { type: 'button', 'aria-label': 'Troféer', dataset: { shortcut: 'trophies' } }, h('span', '🏆'), h('small', 'Troféer')), () => open('trophies')));
     taskbar = h('nav.taskbar', startBtn, pinned, tasks, tray);
-    startMenu = h('div.start-menu', { hidden: true, role: 'menu' });
+    startMenu = h('div.start-menu', { hidden: true, id: 'kids-start-menu', role: 'region', 'aria-label': 'Startmeny' });
     desk.append(iconsEl, widgetsEl, winLayer);
     root.append(desk, startMenu, taskbar);
     desk.addEventListener('pointerdown', (e) => {
       if (!startMenu.hidden && !e.target.closest('.start-menu')) toggleStart(false);
     });
-    kos.on('stars', renderTray);
-    kos.on('coins', renderTray);
-    kos.on('tick', renderTray);
-    window.addEventListener('resize', () => {
-      clearTimeout(resizeT);
-      resizeT = setTimeout(() => wins.forEach((w) => clampWin(w)), 150);
-    });
+    subscriptions.push(kos.on('stars', renderTray), kos.on('coins', renderTray), kos.on('tick', renderTray));
+    window.addEventListener('resize', onResize);
     built = true;
   }
 
@@ -178,6 +178,7 @@ export function createDesktop(root, { osEl, confirmSwitch, showLock }) {
   /* ---------------- Startmeny ---------------- */
   function toggleStart(force) {
     const showIt = force ?? startMenu.hidden;
+    root.querySelector('.tb-start')?.setAttribute('aria-expanded', String(showIt));
     if (!showIt) {
       startMenu.hidden = true;
       return;
@@ -342,14 +343,14 @@ export function createDesktop(root, { osEl, confirmSwitch, showLock }) {
 
   function dragTitle(w, bar) {
     let start = null;
-    let lastTap = 0;
+    let lastTap = -Infinity;
     bar.addEventListener('pointerdown', (e) => {
-      if (e.target.closest('button') || w.max || phone() || w.fullscreen?.expanded) return;
+      if (e.target.closest('button') || phone() || w.fullscreen?.expanded) return;
       start = { x: e.clientX, y: e.clientY, rx: w.rect.x, ry: w.rect.y, moved: false };
       bar.setPointerCapture?.(e.pointerId);
     });
     bar.addEventListener('pointermove', (e) => {
-      if (!start) return;
+      if (!start || w.max) return;
       const dx = e.clientX - start.x;
       const dy = e.clientY - start.y;
       if (!start.moved && Math.hypot(dx, dy) < 6) return;
@@ -360,19 +361,18 @@ export function createDesktop(root, { osEl, confirmSwitch, showLock }) {
       clampWin(w);
     });
     const end = (e) => {
-      if (start && !start.moved && !e.target.closest('button')) {
+      if (e.type === 'pointerup' && start && !start.moved && !e.target.closest('button')) {
         const now = performance.now();
-        if (now - lastTap < 380) toggleMax(w); // dubbeltryck på titelraden
-        lastTap = now;
+        if (now - lastTap < 380) { toggleMax(w); lastTap = -Infinity; }
+        else lastTap = now;
       }
       start = null;
       w.el.classList.remove('dragging');
     };
     bar.addEventListener('pointerup', end);
     bar.addEventListener('pointercancel', end);
-    bar.addEventListener('dblclick', (e) => {
-      if (!e.target.closest('button') && !phone()) toggleMax(w);
-    });
+    // Pointerup hanterar dubbeltryck för både mus och touch.
+    // Webbläsarens efterföljande dblclick får inte växla tillbaka.
   }
 
   function resizeGrip(w, grip) {
@@ -412,6 +412,8 @@ export function createDesktop(root, { osEl, confirmSwitch, showLock }) {
     w.fullscreen?.exit();
     w.min = true;
     w.el.classList.add('minimized');
+    w.el.setAttribute('inert', '');
+    w.el.setAttribute('aria-hidden', 'true');
     kos.sfx('whoosh');
     const next = topWin();
     if (next) focus(next);
@@ -421,6 +423,8 @@ export function createDesktop(root, { osEl, confirmSwitch, showLock }) {
   function restore(w) {
     w.min = false;
     w.el.classList.remove('minimized');
+    w.el.removeAttribute('inert');
+    w.el.removeAttribute('aria-hidden');
     focus(w);
     renderTasks();
   }
@@ -429,7 +433,9 @@ export function createDesktop(root, { osEl, confirmSwitch, showLock }) {
     w.fullscreen?.exit();
     w.max = !w.max;
     w.el.classList.toggle('max', w.max || phone());
-    w.el.querySelector('.dwin-btn.max').textContent = w.max ? '❐' : '□';
+    const button = w.el.querySelector('.dwin-btn.max');
+    button.textContent = w.max ? '❐' : '□';
+    button.setAttribute('aria-label', w.max ? 'Återställ fönster' : 'Maximera');
     kos.sfx('click');
   }
 
@@ -440,6 +446,7 @@ export function createDesktop(root, { osEl, confirmSwitch, showLock }) {
     } catch (e) {
       console.error(e);
     }
+    clearTimeout(w.rt);
     w.ro?.disconnect();
     w.el.remove();
   }
@@ -448,6 +455,9 @@ export function createDesktop(root, { osEl, confirmSwitch, showLock }) {
     w.fullscreen?.exit();
     w.el.classList.add('closing');
     kos.stopSpeaking();
+    // Stoppa aktivitet och belöningar direkt när fönstret stängs.
+    w.app?.destroy();
+    w.app = null;
     setTimeout(() => destroyWin(w), 180);
     wins.delete(w.id);
     const next = topWin();
@@ -457,5 +467,12 @@ export function createDesktop(root, { osEl, confirmSwitch, showLock }) {
     renderTray();
   }
 
-  return { show, hide, open, closeAll: () => wins.forEach((w) => close(w)), get windows() { return [...wins.keys()]; } };
+  function destroy() {
+    hide();
+    clearTimeout(resizeT);
+    window.removeEventListener('resize', onResize);
+    subscriptions.splice(0).forEach(unsubscribe => unsubscribe());
+  }
+
+  return { show, hide, destroy, open, closeAll: () => wins.forEach((w) => close(w)), get windows() { return [...wins.keys()]; } };
 }

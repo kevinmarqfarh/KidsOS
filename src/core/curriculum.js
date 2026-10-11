@@ -6,7 +6,7 @@ export const CURRICULUM = {
   'ma-tal': { subject: 'Matematik', area: 'Taluppfattning och tals användning', text: 'Naturliga tal och deras egenskaper samt hur talen kan delas upp och användas för att ange antal och ordning.' },
   'ma-pos': { subject: 'Matematik', area: 'Taluppfattning och tals användning', text: 'Hur positionssystemet kan användas för att beskriva naturliga tal.' },
   'ma-rakna': { subject: 'Matematik', area: 'Taluppfattning och tals användning', text: 'De fyra räknesättens egenskaper och samband samt användning i olika situationer.' },
-  'ma-metod': { subject: 'Matematik', area: 'Taluppfattning och tals användning', text: 'Centrala metoder för beräkningar med naturliga tal, vid huvudräkning och överslagsräkning.' },
+  'ma-metod': { subject: 'Matematik', area: 'Taluppfattning och tals användning', text: 'Beräkna naturliga tal med huvudräkning, överslag och skriftliga räknemetoder. (Sammanfattning av Lgr22.)' },
   'ma-likhet': { subject: 'Matematik', area: 'Algebra', text: 'Matematiska likheter och likhetstecknets betydelse.' },
   'ma-okand': { subject: 'Matematik', area: 'Algebra', text: 'Obekanta tal och hur de kan betecknas med en symbol.' },
   'ma-monster': { subject: 'Matematik', area: 'Algebra', text: 'Hur enkla mönster i talföljder och enkla geometriska mönster kan konstrueras, beskrivas och uttryckas.' },

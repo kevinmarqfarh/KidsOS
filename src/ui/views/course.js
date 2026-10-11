@@ -5,9 +5,10 @@ import { CODING_LESSONS } from '../../apps/code.js';
 import { hasInSet } from '../../core/model.js';
 import { LEVELS } from '../../core/age.js';
 
-export function courseView(el, { kos, app, level }) {
-  const lessons = app.id === 'ai' ? AI_LESSONS : CODING_LESSONS;
-  const readSet = `courseRead:${app.id}`;
+export function courseView(el, { kos, app, module: mod, level }) {
+  const discovery = mod?.id === 'discover-course';
+  const lessons = discovery ? app.lessons : app.id === 'ai' ? AI_LESSONS : CODING_LESSONS;
+  const readSet = `${discovery ? 'discoveryRead' : 'courseRead'}:${app.id}`;
   const list = h('nav.course-list', { 'aria-label': 'Kursens lektioner' });
   const stage = h('section.course-stage', { 'aria-live': 'polite' });
   const progress = h('p.course-progress');

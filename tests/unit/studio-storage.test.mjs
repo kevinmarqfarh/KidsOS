@@ -17,3 +17,13 @@ test('backup restores studio ownership and rooms with the same profile and coin 
  deleteDrawingsFor(profile.id);
  assert.equal(loadJSON(`studio.${profile.id}`,null),null);
 });
+
+test('säkerhetskopian inkluderar hela teckningsgalleriet',async()=>{
+ const {saveDrawing,loadDrawings,MAX_DRAWINGS}=await import('../../src/core/storage.js');
+ const state=emptyState(),profile=newProfile({name:'Galleri',age:7});state.profiles.push(profile);
+ for(let i=0;i<MAX_DRAWINGS;i++)saveDrawing(profile.id,`data:image/png;base64,${i}`);
+ const backup=JSON.parse(exportBackup(state));
+ assert.equal(backup.drawings[profile.id].length,MAX_DRAWINGS);
+ assert.deepEqual(backup.drawings[profile.id],loadDrawings(profile.id));
+ deleteDrawingsFor(profile.id);
+});

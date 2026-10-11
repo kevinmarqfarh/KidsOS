@@ -157,3 +157,121 @@ test('studions helskärmsbehållare omfattar pausknappar och överlägg och åte
   instance.destroy();
   await Promise.resolve();assert.equal(document.fullscreenElement,null);assert.equal(win.classList.contains('app-fullscreen'),false);
 });
+
+test('miniräknaren kan fortsätta med ett negativt resultat och avvisar ogiltiga uttryck',async()=>{
+  const {calculate}=await import('../../src/ui/system.js');
+  assert.equal(calculate('-3+2'),-1);
+  assert.equal(calculate('2×-3'),-6);
+  assert.equal(calculate('−3,5+1,5'),-2);
+  assert.equal(calculate('2+3×4'),14);
+  assert.throws(()=>calculate('1.2.3'));
+  assert.throws(()=>calculate('2abc+3'));
+  assert.throws(()=>calculate('5÷0'));
+});
+
+test('anteckningsbyte under autosparning belönar rätt anteckning',async()=>{
+  const {saveJSON,loadJSON}=await import('../../src/core/storage.js');
+  const p=kos.profile;const storageKey=`notes.${p.id}`;
+  saveJSON(storageKey,[{id:'a',title:'A',text:'',at:new Date().toISOString(),counted:0},{id:'b',title:'B',text:'',at:new Date().toISOString(),counted:0}]);
+  const instance=mountApp({content:el(),setHead(){}},'notes');
+  const input=el().querySelector('textarea');input.value='ett två tre fyra fem sex sju åtta nio tio';input.dispatchEvent(new Event('input'));
+  el().querySelectorAll('.note-item')[1].click();
+  await delay(750);
+  const saved=loadJSON(storageKey,[]);assert.equal(saved[0].counted,10);assert.equal(saved[1].counted,0);
+  assert.equal(p.stars,1);instance.destroy();
+});
+
+test('föräldraspärren tar fysisk kodinmatning och godkänner bara en gång',async()=>{
+  const {parentGate}=await import('../../src/ui/shell.js');
+  kos.state.settings.pin='1234';let approved=0;parentGate(()=>approved++);
+  const panel=overlays().querySelector('.sheet-panel');assert.equal(panel.getAttribute('aria-label'),'🔒 För vuxna');
+  for(const digit of '1234')key(panel,digit);
+  assert.equal(approved,1);key(panel,'Enter');assert.equal(approved,1);
+});
+
+test('alla apphubbar och moduler kan öppnas och stängas i DOM-modellen',async()=>{
+  const {APPS}=await import('../../src/apps/registry.js');
+  const create=document.createElement.bind(document);
+  const context=new Proxy({}, {get(target,name){if(name==='measureText')return()=>({width:20});if(name==='getImageData')return()=>({data:new Uint8ClampedArray(4)});return target[name]||(()=>{});},set(target,name,value){target[name]=value;return true;}});
+  document.createElement=name=>{const node=create(name);if(name==='canvas'){node.getContext=()=>context;node.toDataURL=()=> 'data:image/png;base64,';}return node;};
+  const oldImage=globalThis.Image;globalThis.Image=class {set src(value){this.onload?.();}};
+  const oldObserver=globalThis.ResizeObserver;globalThis.ResizeObserver=class {observe(){}disconnect(){}};
+  const oldScroll=Element.prototype.scrollIntoView;Element.prototype.scrollIntoView=()=>{};
+  const oldRect=Element.prototype.getBoundingClientRect;Element.prototype.getBoundingClientRect=()=>({left:0,top:0,width:800,height:600});
+  try {
+    for(const app of APPS){
+      let instance=mountApp({content:el(),setHead(){},close(){}},app.id);instance.destroy();el().replaceChildren();
+      for(const mod of app.modules){
+        try {instance=mountApp({content:el(),setHead(){},close(){}},app.id,mod.id);assert.ok(el().childElementCount,`${app.id}/${mod.id}`);instance.destroy();}
+        catch(error){throw new Error(`${app.id}/${mod.id}: ${error.message}`,{cause:error});}
+        finally{el().replaceChildren();frames=[];}
+      }
+    }
+  } finally {document.createElement=create;globalThis.Image=oldImage;globalThis.ResizeObserver=oldObserver;Element.prototype.getBoundingClientRect=oldRect;Element.prototype.scrollIntoView=oldScroll;}
+});
+
+test('titelradens dubbelklick maximerar en gång och kan återställa fönstret',async()=>{
+  const {createDesktop}=await import('../../src/ui/desktop.js');
+  const oldObserver=globalThis.ResizeObserver;globalThis.ResizeObserver=class {observe(){}disconnect(){}};
+  kos.profile.settings.reducedMotion=true;kos.applySettings();
+  const os=h('div.os');el().append(os);const root=h('div');os.append(root);
+  const desktop=createDesktop(root,{osEl:os,confirmSwitch(){},showLock(){}});
+  try {
+    desktop.show();const desk=root.querySelector('.desk');Object.defineProperty(desk,'clientWidth',{value:1200});Object.defineProperty(desk,'clientHeight',{value:800});
+    desktop.open('calc');const win=root.querySelector('.dwin');const bar=win.querySelector('.dwin-bar');
+    const double=()=>{for(let i=0;i<2;i++){const down=new Event('pointerdown',{bubbles:true});down.clientX=20;down.clientY=20;bar.dispatchEvent(down);bar.dispatchEvent(new Event('pointerup',{bubbles:true}));}bar.dispatchEvent(new Event('dblclick',{bubbles:true}));};
+    double();assert.equal(win.classList.contains('max'),true);assert.equal(win.querySelector('.dwin-btn.max').getAttribute('aria-label'),'Återställ fönster');
+    double();assert.equal(win.classList.contains('max'),false);
+  } finally {desktop.destroy();globalThis.ResizeObserver=oldObserver;}
+});
+
+test('karta och kropp har namngivna tangentbordsknappar',()=>{
+  for(const [appId,modId,selector] of [['world','continents','.cont'],['biology','bodyexplore','[data-hit]']]){
+    const instance=mountApp({content:el(),setHead(){},close(){}},appId,modId);
+    const node=el().querySelector(selector);
+    assert.ok(node,`${appId}/${modId}`);
+    assert.equal(node.getAttribute('role'),'button');assert.equal(node.getAttribute('tabindex'),'0');
+    assert.ok(node.getAttribute('aria-label'));key(node,'Enter');
+    instance.destroy();el().replaceChildren();
+  }
+});
+
+test('aria-disabled stoppar både klick och tangentbord',()=>{
+  let calls=0;const button=onTap(h('div',{role:'button',tabindex:'0','aria-disabled':'true'}),()=>calls++);
+  el().append(button);button.click();key(button,'Enter');assert.equal(calls,0);
+});
+
+test('skuggexperiment och månfas kan styras med vanliga reglage',()=>{
+  for(const [appId,modId] of [['science','shadow'],['space','moon']]){
+    const instance=mountApp({content:el(),setHead(){},close(){}},appId,modId);
+    const input=el().querySelector('input[type="range"]');assert.ok(input,`${appId}/${modId}`);
+    assert.ok(input.getAttribute('aria-label'));input.value=appId==='space'?'180':'90';input.dispatchEvent(new Event('input'));
+    assert.ok(input.getAttribute('aria-valuetext'));instance.destroy();el().replaceChildren();
+  }
+});
+
+test('föräldrakod tillåter inklistrad kod och visar ett läsbart fel',async()=>{
+  const {parentGate}=await import('../../src/ui/shell.js');kos.state.settings.pin='1234';let done=0;parentGate(()=>done++);
+  const panel=overlays().querySelector('.sheet-panel');const input=panel.querySelector('input');
+  input.value='9999';input.dispatchEvent(new Event('input'));key(input,'Enter');
+  assert.equal(done,0);assert.equal(input.getAttribute('aria-invalid'),'true');assert.match(panel.querySelector('[role="alert"]').textContent,/stämmer inte/);
+  input.value='1234';input.dispatchEvent(new Event('input'));key(input,'Enter');assert.equal(done,1);
+});
+
+test('modal bakgrund isoleras och återställs utan att tidigare inert ändras',async()=>{
+  const {isolateModal}=await import('../../src/ui/dom.js');
+  const root=h('section');const background=h('button', 'Bakgrund');const wasInert=h('aside',{inert:true});const layer=h('div');const modal=h('div');
+  root.append(background,wasInert,layer);layer.append(modal);el().append(root);
+  const restore=isolateModal(modal);assert.equal(background.hasAttribute('inert'),true);assert.equal(wasInert.hasAttribute('inert'),true);
+  restore();assert.equal(background.hasAttribute('inert'),false);assert.equal(wasInert.hasAttribute('inert'),true);
+});
+
+test('surfplattefönster isolerar hemskärmen och återställer den vid Hem',async()=>{
+  const {openApp,goHome}=await import('../../src/ui/shell.js');kos.profile.settings.layout='tablet';
+  const cleanup=mountShell(el());
+  try {
+    openApp('math');const screen=el().querySelector('.screen');const win=el().querySelector('.window');
+    assert.equal(screen.hasAttribute('inert'),true);assert.equal(screen.getAttribute('aria-hidden'),'true');assert.equal(win.hasAttribute('inert'),false);
+    goHome();assert.equal(screen.hasAttribute('inert'),false);assert.equal(screen.hasAttribute('aria-hidden'),false);assert.equal(win.hasAttribute('inert'),true);
+  } finally {cleanup();}
+});

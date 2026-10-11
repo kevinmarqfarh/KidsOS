@@ -1854,3 +1854,9 @@
 }
 
 .tb-pinned{display:flex;gap:6px;flex-shrink:0}.tb-shortcut{border:0;background:#ffffff60;border-radius:12px;min-width:58px;min-height:48px;display:flex;flex-direction:column;align-items:center;justify-content:center;font:inherit;color:var(--ink);cursor:pointer}.tb-shortcut span{font-size:23px}.tb-shortcut small{font-size:10px;font-weight:700}.tb-shortcut:focus-visible{outline:3px solid #7763d6;outline-offset:2px}@media(max-width:600px){.tb-shortcut{min-width:44px}.tb-shortcut small{display:none}.tb-chip{font-size:12px}.tb-clock{display:none}}
+
+@container (max-width: 640px) {
+  .explorer, .notes { grid-template-columns: 1fr; }
+  .ex-side, .notes-list { flex-direction: row; overflow-x: auto; min-width: 0; }
+  .ex-folder { flex-shrink: 0; }
+}

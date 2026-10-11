@@ -49,3 +49,19 @@ Original prompt: Finns spelet som ska vara tungt inspirirerat av Toca Boca där 
 - Bildernas inbäddning matchar alla 20 lokala referensfiler och metadata. Externa typsnittslänkar borttagna.
 - 150 enhets- och DOM-tester passerar. Bygge och dokumentgenerering passerar. Senaste ändringarna är inte visuellt eller på faktisk iPad verifierade, eftersom webbläsarens tidigare säkerhetsblockering gäller lokala filer.
 - Aktuell åtgärds-/teststatus och återstående deltagar- och hjälpmedelskontroller finns i docs/SLUTGENOMGANG-AUTISM.md. Detta är inte en certifiering eller bevis på klinisk effekt.
+
+## 2026-10-11 — Hela appens buggranskning och enhetsanpassning
+
+Granskat skal, alla vyfamiljer, profiler, lagring, systemverktyg och stilmallar. Nytt DOM-smoketest öppnar/stänger alla 12 appar och 110 moduler. Åtgärdat lagringsreserv och ofullständig galleriexport, dubbel maximering, anteckningsbelöning på fel anteckning, negativa miniräknarresultat, föräldrakod med tangentbord, dialogfokus, fönster-/drag-/canvaslivscykler och innehållsbredd i små datorfönster. 158 enhets-/DOM-tester passerar, båda distributionsfilerna bygger och diff-kontrollen är ren. Rapport: docs/APPGENOMGANG-2026-10-11.md. Ingen ny webbläsar-/enhetsverifiering: tidigare policyspärr för lokal appvisning kvarstår. CSS, riktig fokusordning, touch, virtuellt tangentbord och AT behöver manuell verifiering.
+
+## 2026-10-11 — WCAG 2.2 AA: implementation och verifieringsplan
+
+Byggt tangentbordsaktivering och tillgängliga namn för karta, kropp, planeter, stjärnor, gungbräda och berättelseord. Namngivit text-/backup-/kodfält, lagt statusregion för miniräknaren, gjort minimerade fönster inerta och rättat startmenyns semantik. Förbättrat fokusmarkeringar och primära/feedbackfärger med beräknade kontraster. Dokumenterat kraven och kvarvarande verifiering i docs/WCAG-2.2-AA-GRANSKNING.md. Ingen generell WCAG-överensstämmelse anges; browser/AT-test blockeras fortfarande av tidigare policyspärr.
+
+### Fortsatt WCAG-granskning
+
+Lagt till reglage för solens och månens dragaktiviteter, inklistring och läsbara fel i föräldraspärren, inert-isolering av dialogbakgrund, fallbackfokus och rättad pointercancel i Lekstaden. Regressionstester samt distributionsbygge körda. Full AA-status är fortsatt öppen; se WCAG-rapportens verifieringsgräns och kvarvarande krav.
+
+## 2026-10-11 — Publicerad app testad i ansluten Chrome
+
+Användaren angav kids.kevinmarquez.se. Testat start, vuxenspärr, profilguide, hemskärm, Matte/quiz, hjälp, paus och Escape, inklusive 320 CSS-px. Bekräftat fokus bakom vuxendialog och bakom öppet appfönster. Rättat lokal hemskärmsisolering/appfokus och titelutrymme vid smal bredd; regressionsprov tillagt. Skärmbilder och fynd i docs/CHROME-WCAG-GRANSKNING.md. Ingen publicering i detta varv; verklig VoiceOver och full AA kvarstår.

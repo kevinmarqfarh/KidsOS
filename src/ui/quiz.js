@@ -529,6 +529,14 @@ function build(q, el, api) {
   const tileEls = [];
   const hear = h('button.btn.btn-ghost.btn-sm', { type: 'button' }, '🔊 Hör ordet');
   onTap(hear, () => kos.read(q.sayWord || q.word.toLowerCase(), { slow: true }));
+  if (q.showWordSupport) {
+    const writtenWord = h('p.spelling-word', { hidden: true }, q.word);
+    const showWord = onTap(h('button.btn.btn-ghost.btn-sm', { type: 'button', 'aria-expanded': 'false' }, 'Visa ordet som stöd'), () => {
+      writtenWord.hidden = !writtenWord.hidden;
+      showWord.setAttribute('aria-expanded', String(!writtenWord.hidden));
+    });
+    el.append(showWord, writtenWord);
+  }
   const renderSlots = () => {
     clear(slots);
     filled.forEach((ti, i) => {

@@ -4,13 +4,18 @@ import { GLYPHS, UPPER, LOWER, DIGITS, GUIDES, layoutWord, scoreTrace, strokeHin
 import { ALPHABET } from '../../apps/svenska.js';
 import { hasInSet } from '../../core/model.js';
 
-const SET_KEYS = { upper: 'traced:upper', lower: 'traced:lower', digits: 'traced:digits', name: 'tracedNameSet', words: 'traced:words' };
+const SET_KEYS = { pairs: 'traced:pairs', upper: 'traced:upper', lower: 'traced:lower', digits: 'traced:digits', name: 'tracedNameSet', words: 'traced:words' };
 
 export function traceView(el, { kos, app, module: mod, level }) {
   const p = kos.profile;
   const set = mod.set;
+  const practice = set === 'pairs';
+  const repetitionCount = ch => Math.max(0, Number(p.counters?.[`writing:${ch}`]) || 0);
+  const goal = () => p.settings.writingRepetitions || 8;
+  const completed = ch => practice ? repetitionCount(ch) >= goal() : hasInSet(p, SET_KEYS[set], ch);
   let items;
-  if (set === 'upper') items = UPPER;
+  if (practice) items = UPPER.flatMap(ch => [ch, ch.toLowerCase()]);
+  else if (set === 'upper') items = UPPER;
   else if (set === 'lower') items = LOWER;
   else if (set === 'digits') items = DIGITS;
   else if (set === 'name') items = [p.name];
@@ -18,7 +23,7 @@ export function traceView(el, { kos, app, module: mod, level }) {
   const setKey = SET_KEYS[set];
   let idx = 0;
   // börja på första som inte är klar
-  const firstOpen = items.findIndex((c) => !hasInSet(p, setKey, c));
+  const firstOpen = items.findIndex((c) => !completed(c));
   if (firstOpen > 0) idx = firstOpen;
   let mode = level >= 4 ? 'free' : 'trace'; // 'trace' = spåra mall, 'free' = skriv själv
   let strokes = [];
@@ -29,6 +34,15 @@ export function traceView(el, { kos, app, module: mod, level }) {
   let setupRaf = 0;
   let alive = true;
   let drawingStarted = false;
+  let activePointer = null;
+  let accepted = false;
+  const suggestedMode = () => repetitionCount(items[idx]) < 3 ? 'trace' : repetitionCount(items[idx]) < 6 ? 'faded' : 'free';
+  if (practice) mode = suggestedMode();
+  const trainingStatus = h('p.writing-progress', { 'aria-live': 'polite' });
+  const repetitions = h('select.select', { 'aria-label': 'Skrivningar per bokstavsform' }, [7, 8, 10].map(n => h('option', { value: n, selected: goal() === n }, `${n} gånger`)));
+  repetitions.addEventListener('change', () => { p.settings.writingRepetitions = Number(repetitions.value); kos.saveNow(); select(idx); });
+  const penOnly = h('button.seg-btn', { type: 'button', 'aria-pressed': String(p.settings.writingPenOnly) }, '✒️ Endast penna på skrivytan');
+  onTap(penOnly, () => { p.settings.writingPenOnly = !p.settings.writingPenOnly; penOnly.setAttribute('aria-pressed', String(p.settings.writingPenOnly)); kos.saveNow(); });
 
   const strip = h('div.trace-strip', { role: 'tablist' });
   const caption = h('div.trace-caption');
@@ -46,7 +60,7 @@ export function traceView(el, { kos, app, module: mod, level }) {
   const nextBtn = h('button.btn.btn-primary', { type: 'button', hidden: true }, 'Nästa ➜');
 
   el.append(
-    h('div.trace', strip, h('div.trace-top', caption, modeBtn), board, msg, h('div.row-actions.trace-actions', demoBtn, clearBtn, doneBtn, nextBtn)),
+    h('div.trace', practice ? h('div.writing-options', h('label', 'Träningsmål ', repetitions), penOnly, h('p.muted', 'Målet gäller både stor och liten bokstav. Dina godkända skrivningar sparas. Ta gärna en paus och fortsätt senare. Om din penna inte ritar, stäng av Endast penna.')) : null, strip, h('div.trace-top', caption, modeBtn), practice ? trainingStatus : null, board, msg, h('div.row-actions.trace-actions', demoBtn, clearBtn, doneBtn, nextBtn)),
   );
 
   function renderStrip() {
@@ -56,19 +70,29 @@ export function traceView(el, { kos, app, module: mod, level }) {
       return;
     }
     items.forEach((c, i) => {
-      const done = hasInSet(p, setKey, c);
+      const done = completed(c);
       const b = h('button.trace-chip', { type: 'button', class: `${i === idx ? 'on' : ''} ${done ? 'done' : ''}`, role: 'tab', 'aria-selected': String(i === idx) }, c);
       onTap(b, () => select(i));
       strip.appendChild(b);
     });
-    strip.children[idx]?.scrollIntoView({ inline: 'center', block: 'nearest', behavior: 'smooth' });
+    // Flytta bara bokstavslisten. Skrivytan ska inte glida vertikalt när
+    // barnet börjar ett nytt pennstreck direkt efter ett bokstavsbyte.
+    const chip = strip.children[idx];
+    if (chip && strip.scrollTo) {
+      const chipRect = chip.getBoundingClientRect();
+      const stripRect = strip.getBoundingClientRect();
+      strip.scrollTo({ left: Math.max(0, strip.scrollLeft + chipRect.left - stripRect.left - (strip.clientWidth - chipRect.width) / 2), behavior: reducedMotion() ? 'auto' : 'smooth' });
+    }
   }
 
   function select(i) {
     kos.stopSpeaking();
     current = null;
+    activePointer = null;
+    accepted = false;
     drawingStarted = false;
     idx = i;
+    if (practice) mode = suggestedMode();
     strokes = [];
     nextBtn.hidden = true;
     doneBtn.hidden = false;
@@ -86,7 +110,7 @@ export function traceView(el, { kos, app, module: mod, level }) {
   function sayItem() {
     if (!alive || drawingStarted || current) return;
     const t = itemText();
-    if (set === 'upper' || set === 'lower') {
+    if (practice || set === 'upper' || set === 'lower') {
       const a = ALPHABET.find((x) => x.l === t.toUpperCase());
       kos.autoSay(`${t.toUpperCase()}, som i ${a.word}. ${mode === 'trace' ? 'Följ linjen från den gröna pricken.' : 'Skriv själv!'}`);
     } else if (set === 'digits') kos.autoSay(`Siffran ${t}.`);
@@ -119,7 +143,7 @@ export function traceView(el, { kos, app, module: mod, level }) {
     redrawInk();
     // bildtext
     clear(caption);
-    if (set === 'upper' || set === 'lower') {
+    if (practice || set === 'upper' || set === 'lower') {
       const a = ALPHABET.find((x) => x.l === t.toUpperCase());
       caption.append(h('span.trace-pic', a.e), h('span', h('b', `${t.toUpperCase()} ${t.toLowerCase()}`), ` som i ${a.word}`));
     } else if (set === 'words') {
@@ -130,6 +154,9 @@ export function traceView(el, { kos, app, module: mod, level }) {
     } else caption.append(h('span.trace-pic', '🔢'), h('b', `Siffran ${t}`));
     modeTrace.classList.toggle('on', mode === 'trace');
     modeFree.classList.toggle('on', mode === 'free');
+    modeTrace.setAttribute('aria-pressed', String(mode === 'trace'));
+    modeFree.setAttribute('aria-pressed', String(mode === 'free'));
+    if (practice) trainingStatus.textContent = `${t === t.toUpperCase() ? 'Stor' : 'Liten'} bokstav ${t}: ${Math.min(goal(), repetitionCount(t))} av ${goal()} godkända skrivningar · ${mode === 'trace' ? 'Följ mallen' : mode === 'faded' ? 'Prova med svagare mall' : 'Skriv själv med stödlinjer'}`;
   }
 
   function drawGuide(missed = null) {
@@ -142,10 +169,10 @@ export function traceView(el, { kos, app, module: mod, level }) {
     s += `<line x1="0" x2="${W}" y1="${y(GUIDES.base)}" y2="${y(GUIDES.base)}" class="gl gl-base"/>`;
     s += `<line x1="0" x2="${W}" y1="${y(GUIDES.desc)}" y2="${y(GUIDES.desc)}" class="gl gl-top"/>`;
     const pts = (st) => st.map(([a, b]) => `${(a * 100).toFixed(1)},${(b * 100).toFixed(1)}`).join(' ');
-    const showTemplate = mode === 'trace' || missed;
+    const showTemplate = mode === 'trace' || mode === 'faded' || missed;
     const tmplClass = level >= 2 ? 'tmpl dashed' : 'tmpl';
-    if (showTemplate) for (const st of layout.strokes) s += `<polyline points="${pts(st)}" class="${tmplClass}"/>`;
-    else s += layout.strokes.map((st) => `<polyline points="${pts(st)}" class="tmpl ghost"/>`).join('');
+    if (showTemplate) for (const st of layout.strokes) s += `<polyline points="${pts(st)}" class="${tmplClass}${mode === 'faded' ? ' faded' : ''}"/>`;
+    else if (!practice) s += layout.strokes.map((st) => `<polyline points="${pts(st)}" class="tmpl ghost"/>`).join('');
     if (missed) for (const st of missed) s += `<polyline points="${pts(st)}" class="tmpl missed"/>`;
     if (mode === 'trace' && layout.strokes.length <= 12) {
       for (const hint of strokeHints(layout.strokes)) {
@@ -180,7 +207,9 @@ export function traceView(el, { kos, app, module: mod, level }) {
     return [(e.clientX - r.left) / unitPx, (e.clientY - r.top) / unitPx];
   };
   canvas.addEventListener('pointerdown', (e) => {
+    if (accepted || kos.paused || activePointer !== null || (e.pointerType === 'mouse' && e.button !== 0) || (practice && p.settings.writingPenOnly && e.pointerType !== 'pen')) return;
     e.preventDefault();
+    activePointer = e.pointerId;
     // Ett skrivdrag ska avbryta både pågående och köad uppläsning.
     drawingStarted = true;
     kos.stopSpeaking();
@@ -190,59 +219,68 @@ export function traceView(el, { kos, app, module: mod, level }) {
     redrawInk();
   });
   canvas.addEventListener('pointermove', (e) => {
-    if (!current) return;
-    const evs = e.getCoalescedEvents ? e.getCoalescedEvents() : [e];
+    if (!current || e.pointerId !== activePointer || kos.paused) return;
+    const coalesced = e.getCoalescedEvents?.();
+    const evs = coalesced?.length ? coalesced : [e];
     for (const ev of evs) current.push(toUnit(ev));
     redrawInk();
   });
-  const end = () => {
+  const end = (e) => {
+    if (e.pointerId !== activePointer) return;
     if (current && current.length) strokes.push(current);
     current = null;
+    activePointer = null;
     redrawInk();
   };
   canvas.addEventListener('pointerup', end);
-  canvas.addEventListener('pointercancel', end);
+  canvas.addEventListener('pointercancel', e => { if (e.pointerId === activePointer) { current = null; activePointer = null; redrawInk(); } });
 
   onTap(clearBtn, () => {
+    if (accepted) return;
     strokes = [];
     redrawInk();
     drawGuide();
     msg.textContent = '';
   });
   const setMode = (m) => {
+    if (accepted) return;
     if (mode === m) return;
     mode = m;
     strokes = [];
     setup();
-    kos.say(mode === 'trace' ? 'Spåra längs linjen.' : 'Skriv själv – utan mall! Du får en extra stjärna.');
+    kos.say(mode === 'trace' ? 'Spåra längs linjen.' : practice ? 'Skriv själv med stödlinjer.' : 'Skriv själv – utan mall! Du får en extra stjärna.');
   };
   onTap(modeTrace, () => setMode('trace'));
   onTap(modeFree, () => setMode('free'));
   onTap(demoBtn, () => demo());
   onTap(doneBtn, () => check());
-  onTap(nextBtn, () => select((idx + 1) % items.length));
+  onTap(nextBtn, () => select(practice && repetitionCount(itemText()) < goal() ? idx : (idx + 1) % items.length));
 
   function check() {
+    if (accepted || kos.paused || activePointer !== null) return;
     if (!strokes.length) {
-      kos.say('Rita först med fingret!');
+      kos.say('Skriv först med pennan eller fingret!');
       return;
     }
     const lvl = mode === 'free' ? Math.max(0, level - 1) : level;
     const res = scoreTrace(layout.strokes, strokes, lvl);
     const t = itemText();
     if (res.pass) {
+      accepted = practice;
       const bonus = mode === 'free' ? 1 : 0;
       const stars = res.stars + bonus;
       const isNew = !hasInSet(p, setKey, t);
-      const r = kos.reward({ app: app.id, stars, set: setKey, item: t });
+      const r = practice ? kos.reward({ app: app.id, stars: 1, counter: `writing:${t}`, ...(repetitionCount(t) + 1 >= goal() ? { set: setKey, item: t } : {}) }) : kos.reward({ app: app.id, stars, set: setKey, item: t });
+      if (practice) kos.saveNow();
       if (set === 'name') kos.reward({ counter: 'tracedName', silent: true });
       kos.sfx('correct');
       msg.className = 'trace-msg ok';
-      msg.textContent = `${'⭐'.repeat(res.stars)} ${res.stars === 3 ? 'Supersnyggt!' : res.stars === 2 ? 'Snyggt!' : 'Bra!'} ${isNew ? '(ny!)' : ''}`;
+      msg.textContent = practice ? `Bra skrivet! ${Math.min(goal(), repetitionCount(t))} av ${goal()} för ${t}.${completed(t) ? ' Träningsmålet är nått. Du kan repetera igen en annan dag.' : ' Skriv samma bokstav igen när du är redo.'}` : `${'⭐'.repeat(res.stars)} ${res.stars === 3 ? 'Supersnyggt!' : res.stars === 2 ? 'Snyggt!' : 'Bra!'} ${isNew ? '(ny!)' : ''}`;
       kos.say(res.stars === 3 ? 'Supersnyggt!' : 'Snyggt skrivet!');
-      if (res.stars === 3) kos.confetti(50);
+      if (res.stars === 3 && !practice) kos.confetti(50);
       doneBtn.hidden = true;
       nextBtn.hidden = items.length <= 1;
+      if (practice) { nextBtn.textContent = completed(t) ? 'Nästa bokstav ➜' : 'Skriv igen ➜'; trainingStatus.textContent = `${t}: ${Math.min(goal(), repetitionCount(t))} av ${goal()} godkända skrivningar`; }
       renderStrip();
       void r;
     } else {

@@ -15,6 +15,42 @@ const choice = (rng, answer, count, range) => numberOptions(rng, answer, count, 
 export const RANGE = [5, 10, 20, 100, 1000];
 export const RANGE_ADD = [5, 10, 20, 100, 1000];
 
+export function genColumn(level, rng) {
+  const max = level >= 4 ? 999 : 99;
+  const minus = rng.chance(0.5);
+  const a = rng.int(20, max - 10);
+  const b = rng.int(10, minus ? a : max - a);
+  const answer = minus ? a - b : a + b;
+  const columns = level >= 4 ? 3 : 2;
+  const labels = columns === 3 ? ['Hundratal', 'Tiotal', 'Ental'] : ['Tiotal', 'Ental'];
+  const digits = n => String(n).padStart(columns, ' ').split('').map(d => `<td>${d.trim()}</td>`).join('');
+  const notes = labels.map(label => `<td><input class="column-note" type="text" inputmode="numeric" maxlength="2" aria-label="Minnessiffra eller växling: ${label}" autocomplete="off"></td>`).join('');
+  let carry = 0;
+  const steps = [];
+  for (let i = 0; i < columns; i++) {
+    const x = Math.floor(a / 10 ** i) % 10;
+    const y = Math.floor(b / 10 ** i) % 10;
+    const place = labels[columns - i - 1].toLowerCase();
+    if (minus) {
+      const available = x - carry;
+      const borrow = available < y;
+      steps.push(`${place}: ${x}${carry ? ' − 1 (från förra växlingen)' : ''}${borrow ? ' + 10 (växla från kolumnen till vänster)' : ''} − ${y} = ${available + (borrow ? 10 : 0) - y}.`);
+      carry = borrow ? 1 : 0;
+    } else {
+      const total = x + y + carry;
+      steps.push(`${place}: ${x} + ${y}${carry ? ' + 1 (minnessiffra)' : ''} = ${total}.${total >= 10 ? ` Skriv ${total % 10} och för 1 till nästa kolumn.` : ` Skriv ${total}.`}`);
+      carry = Math.floor(total / 10);
+    }
+  }
+  return {
+    type: 'numpad', prompt: 'Räkna med uppställning', say: `Räkna ${a} ${minus ? 'minus' : 'plus'} ${b}.`,
+    visual: `<div class="column-work"><table aria-label="${a} ${minus ? 'minus' : 'plus'} ${b} i uppställning"><thead><tr><th></th>${labels.map(label => `<th>${label}</th>`).join('')}</tr></thead><tbody><tr><td></td>${notes}</tr><tr><td></td>${digits(a)}</tr><tr><td>${minus ? '−' : '+'}</td>${digits(b)}</tr><tr class="column-result"><td>=</td><td colspan="${columns}">?</td></tr></tbody></table><p>Rutorna är ditt kladd för minnessiffror och växling. Skriv hela svaret på sifferknapparna.</p></div>`,
+    answer,
+    hint: minus ? 'Börja med entalen till höger. Om de inte räcker: växla ett tiotal till tio ental. Minska då tiotalen med ett. Fortsätt åt vänster.' : 'Börja med entalen till höger. Tio ental blir ett tiotal: skriv entalen och för minnessiffran till nästa kolumn.',
+    explain: `${steps.join(' ')} Svaret är ${answer}. Kontroll: ${minus ? `${answer} + ${b} = ${a}` : `${answer} − ${b} = ${a}`}.`,
+  };
+}
+
 /* ---------- Räkna ---------- */
 export function genCount(level, rng) {
   const max = level === 0 ? 6 : level === 1 ? 10 : 20;
@@ -627,6 +663,7 @@ export const mathApp = {
   color: '#3d8bfd',
   tagline: 'Räkna, mät och klura',
   modules: [
+    { id: 'column', name: 'Uppställning', icon: '🧮', minLevel: 2, gen: genColumn, lgr: ['ma-pos', 'ma-metod', 'ma-rakna'] },
     { id: 'count', name: 'Räkna', icon: '🍎', minLevel: 0, maxLevel: 2, gen: genCount, lgr: ['ma-tal'] },
     { id: 'compare', name: 'Störst & minst', icon: '🐊', minLevel: 0, gen: genCompare, lgr: ['ma-tal'] },
     { id: 'pattern', name: 'Mönster', icon: '🔴', minLevel: 0, gen: genPattern, lgr: ['ma-monster'] },

@@ -3,7 +3,7 @@ import { h, onTap, openDialog } from './dom.js';
 const HELP = {
   course: 'Välj en lektion. Läs eller lyssna på en del i taget. Tryck på Nästa del när du vill fortsätta.',
   robot: 'Välj pilar för att bygga en instruktion. Tryck på Kör för att prova. Du kan ändra och prova igen.',
-  trace: 'Välj en bokstav eller siffra. Följ linjen med fingret, eller tryck på Visa hur. Du kan börja om.',
+  trace: 'Välj en bokstav eller siffra. Följ linjen med pennan eller fingret, eller tryck på Visa hur. Du kan börja om. I Öva A och a sparas varje godkänd skrivning.',
   float: 'Starta experimentet. Välj vad du tror kommer att hända. Titta på resultatet och välj själv när du går vidare.',
   magnet: 'Starta experimentet. Välj vad du tror magneten drar till sig. Titta på resultatet innan nästa sak.',
   water: 'Ändra temperaturen med termometern. Texten visar om det är is, vatten eller ånga. Prova det kalla locket när det är ånga.',

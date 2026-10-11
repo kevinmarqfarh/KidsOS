@@ -88,6 +88,7 @@ export function playView(el, { kos }) {
   const level = Math.min(4, Math.max(0, kos.level('math')));
   let alive = true;
   let timers = [];
+  let cancelDrag = null;
   const bar = h('div.play-bar');
   const body = h('div.play-body');
   el.append(h('div.play', bar, body));
@@ -115,6 +116,7 @@ export function playView(el, { kos }) {
     void n;
   }
   function clearTimers() {
+    cancelDrag?.();
     timers.forEach(clearInterval);
     timers = [];
   }
@@ -211,7 +213,9 @@ export function playView(el, { kos }) {
       else tap?.(e);
     };
     node.addEventListener('pointerup', end);
-    node.addEventListener('pointercancel', end);
+    node.addEventListener('pointercancel', () => {
+      start = null; moved = false; node.classList.remove('lift');
+    });
   }
   /** Hittar figur/mål nära en punkt. */
   function hitAt(stage, q, selector) {
@@ -305,6 +309,7 @@ export function playView(el, { kos }) {
       });
     }
     function trayDrag(e, it) {
+      cancelDrag?.();
       e.preventDefault();
       const pl = { uid: `u${Date.now().toString(36)}`, item: it.id, ...pct(stage, e) };
       const node = propNode(pl);
@@ -316,9 +321,17 @@ export function playView(el, { kos }) {
         node.style.top = `${q.y}%`;
         Object.assign(pl, q);
       };
-      const up = (ev) => {
+      const detach = () => {
         window.removeEventListener('pointermove', move);
         window.removeEventListener('pointerup', up);
+        window.removeEventListener('pointercancel', cancel);
+        cancelDrag = null;
+      };
+      const cancel = () => { detach(); node.remove(); };
+      cancelDrag = cancel;
+      const up = (ev) => {
+        detach();
+        if (!alive || !stage.isConnected) { node.remove(); return; }
         node.classList.remove('lift');
         const r = stage.getBoundingClientRect();
         if (ev.clientY > r.bottom || ev.clientY < r.top) {
@@ -335,6 +348,7 @@ export function playView(el, { kos }) {
       };
       window.addEventListener('pointermove', move);
       window.addEventListener('pointerup', up);
+      window.addEventListener('pointercancel', cancel);
     }
     renderTray();
     kos.autoSay('Ditt hus! Dra in saker från korgen och lek med figurerna.');

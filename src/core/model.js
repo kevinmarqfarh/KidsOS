@@ -58,6 +58,8 @@ export function newProfile({ name, age, avatar = '🦊', color = '#4aa8ff', wall
       hiddenApps: [],
       showAllModules: false,
       layout: 'auto', // 'auto' (efter ålder) | 'tablet' | 'desktop'
+      writingRepetitions: 8,
+      writingPenOnly: false,
     },
   };
 }
@@ -78,6 +80,9 @@ export function normalizeProfile(p) {
   if (![true, false, null].includes(out.settings.sound)) out.settings.sound = null;
   if (![0, 3, 5, 8].includes(out.settings.roundLength)) out.settings.roundLength = 0;
   if (!['auto', 'on', 'manual', 'off'].includes(out.settings.readAloud)) out.settings.readAloud = 'auto';
+  if (!['auto', 'tablet', 'desktop'].includes(out.settings.layout)) out.settings.layout = 'auto';
+  if (![7, 8, 10].includes(out.settings.writingRepetitions)) out.settings.writingRepetitions = 8;
+  if (typeof out.settings.writingPenOnly !== 'boolean') out.settings.writingPenOnly = false;
   for (const key of ['reducedMotion', 'celebrationEffects', 'steadyRounds', 'previewRounds', 'quietFeedback']) {
     if (typeof out.settings[key] !== 'boolean') out.settings[key] = base.settings[key];
   }

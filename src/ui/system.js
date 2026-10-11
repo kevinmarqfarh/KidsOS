@@ -125,7 +125,7 @@ function renderNotes(el) {
   let cur = notes[0] || null;
   let saveTimer;
   const list = h('div.notes-list');
-  const ta = h('textarea.notes-text#notes-text', { placeholder: 'Skriv här …', spellcheck: 'true', lang: 'sv', autocapitalize: 'sentences' });
+  const ta = h('textarea.notes-text#notes-text', { 'aria-label': 'Anteckningens text', placeholder: 'Skriv här …', spellcheck: 'true', lang: 'sv', autocapitalize: 'sentences' });
   const words = h('span.muted');
   const idea = h('div.notes-idea');
   const sizes = [22, 28, 36];
@@ -178,14 +178,15 @@ function renderNotes(el) {
     const n = countWords(ta.value);
     words.textContent = `${n} ord`;
     clearTimeout(saveTimer);
+    const edited = cur;
     saveTimer = setTimeout(() => {
       persist();
       renderList();
       // Belöning: en stjärna per tio nya ord (räknas bara en gång per anteckning).
-      const fresh = Math.floor(n / 10) - Math.floor((cur.counted || 0) / 10);
+      const fresh = Math.floor(n / 10) - Math.floor((edited.counted || 0) / 10);
       if (fresh > 0) {
         kos.reward({ app: 'notes', stars: fresh, counter: 'wordsWritten', counterBy: fresh * 10 });
-        cur.counted = n;
+        edited.counted = n;
         persist();
       }
     }, 700);
@@ -202,7 +203,9 @@ function renderNotes(el) {
 /* ======================= Miniräknare ======================= */
 /** Säker uträkning av + − × ÷ med rätt prioritet (ingen eval). */
 export function calculate(expr) {
-  const tokens = String(expr).replace(/,/g, '.').match(/\d+(?:\.\d+)?|[+\-×÷*/]/g) || [];
+  const input = String(expr).replace(/,/g, '.').replace(/−/g, '-').replace(/\s/g, '');
+  const tokens = input.match(/(?:\d+(?:\.\d*)?|\.\d+)|[+\-×÷*/]/g) || [];
+  if (tokens.join('') !== input) throw new Error('fel');
   if (!tokens.length) return null;
   const nums = [];
   const ops = [];
@@ -221,9 +224,13 @@ export function calculate(expr) {
     }
   };
   let expectNum = true;
+  let sign = 1;
   for (const t of tokens) {
+    if (expectNum && (t === '-' || t === '+')) { sign *= t === '-' ? -1 : 1; continue; }
     if (/\d/.test(t)) {
-      nums.push(Number(t));
+      if (!expectNum) throw new Error('fel');
+      nums.push(sign * Number(t));
+      sign = 1;
       expectNum = false;
     } else {
       if (expectNum) throw new Error('fel');
@@ -241,7 +248,7 @@ function renderCalc(el) {
   let expr = '';
   let result = null;
   const disp = h('div.calc-expr');
-  const res = h('div.calc-res');
+  const res = h('div.calc-res', { role: 'status', 'aria-live': 'polite', 'aria-atomic': 'true' });
   const dots = h('div.calc-dots');
   const keys = ['C', '⌫', '÷', '×', '7', '8', '9', '−', '4', '5', '6', '+', '1', '2', '3', '=', '0', ','];
   const pad = h('div.calc-pad');

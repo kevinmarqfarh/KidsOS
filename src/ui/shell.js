@@ -1,7 +1,7 @@
 import { createAppFullscreenControl, exitAppFullscreen } from './fullscreen.js';
 import { wallpaperButton } from './wallpapers.js';
 // OS-skalet: låsskärm, profiler, hemskärm, docka, appfönster, föräldraspärr och paus.
-import { h, clear, onTap, $, openDialog } from './dom.js';
+import { h, clear, onTap,  $, openDialog, isolateModal } from './dom.js';
 import { kos } from './kos.js';
 import { APPS, appById, moduleById } from '../apps/registry.js';
 import { AVATARS, PROFILE_COLORS, WALLPAPERS, LEVELS, AGE_BANDS, ageBandFor, profileAgeLabel } from '../core/age.js';
@@ -27,7 +27,7 @@ let current = { screen: 'lock' };
 export function mountShell(root) {
   statusEl = h('header.statusbar');
   screenEl = h('main.screen');
-  windowEl = h('section.window', { 'aria-hidden': 'true' });
+  windowEl = h('section.window', { 'aria-hidden': 'true', inert: true });
   const overlays = h('div.overlays');
   const deskEl = h('div.desktop-root', { hidden: true });
   osEl = h('div.os', statusEl, screenEl, windowEl, deskEl, overlays);
@@ -49,7 +49,7 @@ export function mountShell(root) {
     clearInterval(statusTimer);
     subscriptions.forEach(unsubscribe => unsubscribe());
     closeWindow(true);
-    desktop?.hide();
+    desktop?.destroy();
   };
 }
 
@@ -101,7 +101,12 @@ export function showLock() {
       kos.say(`Hej ${p.name}!`);
       goHome();
     });
-    return b;
+    const modes = h('div.seg', { 'aria-label': `Skärmläge för ${p.name}` }, ['desktop', 'tablet'].map(mode => onTap(h('button.seg-btn', { type: 'button', 'aria-label': `${mode === 'desktop' ? 'PC' : 'Tablet'} för ${p.name}`, 'aria-pressed': String(layoutFor(p) === mode), class: layoutFor(p) === mode ? 'on' : '' }, mode === 'desktop' ? '💻 PC' : '📱 Tablet'), () => {
+      p.settings.layout = mode;
+      kos.saveNow();
+      showLock();
+    })));
+    return h('div.profile-choice', b, modes);
   });
   const add = h('button.who-bubble.who-add', { type: 'button' }, h('span.who-avatar', '＋'), h('span.who-name', 'Ny profil'));
   onTap(add, () => parentGate(() => profileWizard()));
@@ -314,6 +319,9 @@ export function goHome() {
       dock,
     ),
   );
+  const homeHeading = screenEl.querySelector('.home h1');
+  homeHeading?.setAttribute('tabindex', '-1');
+  homeHeading?.focus({ preventScroll: true });
   if (kos.shouldAutoSpeak() && !goHome.spoken) {
     goHome.spoken = true;
     kos.autoSay(`${greet} ${p.name}! Vad vill du upptäcka i dag?`);
@@ -331,6 +339,9 @@ function animateOpen(fromEl) {
     windowEl.style.setProperty('--ox', '50%');
     windowEl.style.setProperty('--oy', '50%');
   }
+  screenEl.setAttribute('inert', '');
+  screenEl.setAttribute('aria-hidden', 'true');
+  windowEl.removeAttribute('inert');
   windowEl.setAttribute('aria-hidden', 'false');
   windowEl.classList.add('open');
   osEl.classList.add('app-open');
@@ -346,6 +357,9 @@ export function closeWindow(instant) {
   kos.stopSpeaking();
   if (!windowEl) return;
   windowEl.setAttribute('aria-hidden', 'true');
+  windowEl.setAttribute('inert', '');
+  screenEl?.removeAttribute('inert');
+  screenEl?.removeAttribute('aria-hidden');
   osEl?.classList.remove('app-open');
   if (instant) {
     windowEl.classList.remove('open', 'closing');
@@ -374,7 +388,7 @@ function tabletHost(meta) {
     goHome();
   });
   const backSlot = h('span.back-slot');
-  const title = h('div.win-title');
+  const title = h('div.win-title', { tabindex: '-1' });
   const lvlSlot = h('span');
   const header = h('div.win-head', home, backSlot, title, lvlSlot, tabletFullscreen?.button);
   const content = h('div.win-content');
@@ -390,6 +404,7 @@ function tabletHost(meta) {
       const lvl = levelAppId ? kos.levelInfo(levelAppId) : null;
       if (lvl) lvlSlot.appendChild(h('span.level-chip', { title: lvl.school }, `${lvl.emoji} ${lvl.short}`));
       content.scrollTop = 0;
+      title.focus({ preventScroll: true });
     },
     close: () => goHome(),
     openApp: (a, m) => openApp(a, m),
@@ -414,13 +429,37 @@ export function openApp(appId, moduleId, fromEl, opts = {}) {
   const host = tabletHost(meta);
   tabletApp = mountApp(host, appId, moduleId, opts);
   if (!windowEl.classList.contains('open')) animateOpen(fromEl);
+  windowEl.querySelector('.win-title')?.focus({ preventScroll: true });
 }
 
 /* ---------------- Modal ---------------- */
 export function modal(body, actions = [], { wide = false, dismissable = true } = {}) {
   const layer = document.querySelector('dialog.limit-screen[open]') || kos.overlayRoot;
+  const previous = document.activeElement;
+  let closed = false;
+  const controls = () => [...panel.querySelectorAll('button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [href], [tabindex]:not([tabindex="-1"])')].filter(node => !node.closest('[hidden]'));
+  const isTop = () => !closed && [...document.querySelectorAll('.sheet')].filter(node => !node.hasAttribute('inert')).at(-1) === sheet;
+  const keydown = event => {
+    if (!isTop()) return;
+    if (event.key === 'Escape' && dismissable) { event.preventDefault(); event.stopImmediatePropagation(); close(); }
+    else if (event.key === 'Tab') {
+      const items = controls();
+      const index = items.indexOf(document.activeElement);
+      if (index < 0 || (event.shiftKey ? index === 0 : index === items.length - 1)) {
+        event.preventDefault(); (event.shiftKey ? items.at(-1) : items[0])?.focus();
+      }
+    }
+  };
+  const focusin = event => { if (isTop() && !panel.contains(event.target)) (controls()[0] || panel).focus(); };
   const close = () => {
+    if (closed) return;
+    closed = true;
+    document.removeEventListener('keydown', keydown, true);
+    document.removeEventListener('focusin', focusin);
+    sheet.setAttribute('inert', '');
+    restoreBackground();
     sheet.classList.remove('in');
+    if (previous?.isConnected) previous.focus?.({ preventScroll: true });
     setTimeout(() => sheet.remove(), 220);
   };
   const actionsRow = h(
@@ -433,11 +472,17 @@ export function modal(body, actions = [], { wide = false, dismissable = true } =
       return b;
     }),
   );
-  const panel = h('div.sheet-panel', { class: wide ? 'wide' : '', role: 'dialog', 'aria-modal': 'true' }, body, actions.length ? actionsRow : null);
+  const panel = h('div.sheet-panel', { class: wide ? 'wide' : '', role: 'dialog', 'aria-modal': 'true', tabindex: '-1' }, body, actions.length ? actionsRow : null);
   const sheet = h('div.sheet', panel);
   if (dismissable) sheet.addEventListener('click', (e) => e.target === sheet && close());
   layer.appendChild(sheet);
-  requestAnimationFrame(() => sheet.classList.add('in'));
+  const restoreBackground = isolateModal(sheet);
+  const heading = panel.querySelector('h1, h2, h3');
+  if (heading) panel.setAttribute('aria-label', heading.textContent);
+  document.addEventListener('keydown', keydown, true);
+  document.addEventListener('focusin', focusin);
+  (controls()[0] || panel).focus();
+  requestAnimationFrame(() => { if (!closed) sheet.classList.add('in'); });
   return { close, panel };
 }
 
@@ -445,14 +490,22 @@ export function modal(body, actions = [], { wide = false, dismissable = true } =
 export function parentGate(onOk) {
   const pin = kos.state.settings.pin;
   let entry = '';
+  let accepted = false;
   let a;
   let b;
   if (!pin) {
     a = 6 + Math.floor(Math.random() * 4);
     b = 6 + Math.floor(Math.random() * 4);
   }
-  const display = h('div.pin-display');
+  const display = h('div.pin-display', { 'aria-hidden': 'true' });
+  const code = h('input.text-input', { type: pin ? 'password' : 'text', inputmode: 'numeric', maxlength: '4', autocomplete: 'off', 'aria-label': pin ? 'Föräldrakod' : 'Svar på frågan' });
+  const error = h('p', { role: 'alert' });
+  code.addEventListener('input', () => {
+    entry = code.value.replace(/\D/g, '').slice(0, 4);
+    code.value = entry; code.removeAttribute('aria-invalid'); error.textContent = ''; render();
+  });
   const render = () => {
+    code.value = entry;
     clear(display);
     if (pin) for (let i = 0; i < 4; i++) display.appendChild(h('span.pin-dot', { class: i < entry.length ? 'on' : '' }));
     else display.appendChild(h('span.pin-val', entry || ' '));
@@ -460,6 +513,7 @@ export function parentGate(onOk) {
   const keys = h('div.numpad.small');
   let m;
   const press = (k) => {
+    if (accepted) return;
     if (k === '⌫') entry = entry.slice(0, -1);
     else if (k === 'OK') return submit();
     else if (entry.length < 4) entry += k;
@@ -469,12 +523,15 @@ export function parentGate(onOk) {
   const submit = () => {
     const ok = pin ? entry === pin : Number(entry) === a * b;
     if (ok) {
+      accepted = true;
       m.close();
       onOk();
     } else {
       display.classList.add('wrong-shake');
       setTimeout(() => display.classList.remove('wrong-shake'), 500);
       entry = '';
+      code.setAttribute('aria-invalid', 'true');
+      error.textContent = pin ? 'Koden stämmer inte. Försök igen.' : 'Svaret stämmer inte. Försök igen.';
       render();
     }
   };
@@ -485,9 +542,17 @@ export function parentGate(onOk) {
   }
   render();
   m = modal(
-    h('div.gate', h('h2', '🔒 För vuxna'), h('p', pin ? 'Skriv föräldrakoden.' : `Vad blir ${a} × ${b}?`), pin ? null : h('small.muted', 'Tips: välj en egen fyrsiffrig kod under Inställningar → Föräldrar.'), display, keys),
+    h('div.gate', h('h2', '🔒 För vuxna'), h('p', pin ? 'Skriv föräldrakoden.' : `Vad blir ${a} × ${b}?`), pin ? null : h('small.muted', 'Tips: välj en egen fyrsiffrig kod under Inställningar → Föräldrar.'), code, display, error, keys),
     [['Avbryt', 'ghost', () => true]],
   );
+  m.panel.addEventListener('keydown', event => {
+    if (event.target === code && event.key !== 'Enter') return;
+    if (event.key === 'Enter' && event.target.closest?.('button')?.textContent === 'Avbryt') return;
+    if (/^[0-9]$/.test(event.key) || event.key === 'Backspace' || event.key === 'Enter') {
+      event.preventDefault();
+      if (!event.repeat) press(event.key === 'Backspace' ? '⌫' : event.key === 'Enter' ? 'OK' : event.key);
+    }
+  });
 }
 
 /* ---------------- Skärmtid ---------------- */

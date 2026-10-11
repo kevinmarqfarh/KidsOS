@@ -240,6 +240,7 @@ export const writeApp = {
   color: '#8a5cf6',
   tagline: 'Rita bokstäver och siffror',
   modules: [
+    { id: 'letter-practice', name: 'Öva A och a', icon: '✍️', minLevel: 0, view: 'trace', set: 'pairs', lgr: ['sv-handstil', 'sv-ljud', 'sv-regler'] },
     { id: 'upper', name: 'Stora bokstäver', icon: 'A', minLevel: 0, view: 'trace', set: 'upper', lgr: ['sv-handstil', 'sv-regler'] },
     { id: 'digits', name: 'Siffror', icon: '1', minLevel: 0, view: 'trace', set: 'digits', lgr: ['ma-tal'] },
     { id: 'name', name: 'Mitt namn', icon: '🙋', minLevel: 0, view: 'trace', set: 'name', lgr: ['sv-handstil'] },
