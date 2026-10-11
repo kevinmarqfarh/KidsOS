@@ -1,5 +1,6 @@
+import { learningPlayReward } from './play-rewards.js';
 // Generell frågemotor som kör en runda med frågor från en generator.
-import { h, clear, onTap, wait } from './dom.js';
+import { h, clear, onTap, wait, openDialog } from './dom.js';
 import { kos } from './kos.js';
 import { createRng } from '../core/rng.js';
 import { roundLength, clampLevel } from '../core/age.js';
@@ -15,22 +16,66 @@ export function effectiveLevel(app, mod) {
 
 export function runQuiz(el, { app, module: mod, onExit, seed = Date.now(), count }) {
   const p = kos.profile;
-  const total = count || roundLength(p?.age ?? 7);
+  const total = count || p?.settings.roundLength || roundLength(p?.age ?? 7);
+  const steadyLevel = p?.settings.steadyRounds ? effectiveLevel(app, mod) : null;
   const rng = createRng(seed);
   let index = 0;
   let correctFirst = 0;
   let alive = true;
+  let replayCleanup = null;
+  let pauseDialog = null;
+  let closePauseDialog = null;
+  let quizPaused = false;
+  let narrationEpoch = 0;
+  let toggleHelp = () => {};
   const ctx = { found: p?.sets?.species || {} };
 
   const dots = h('div.q-dots', Array.from({ length: total }, () => h('span.q-dot')));
   const stage = h('div.q-stage');
-  const wrap = h('div.quiz', { style: { '--app': app.color } }, dots, stage);
+  const progress = h('p.q-progress', { 'aria-live': 'polite' });
+  const pauseButton = onTap(h('button.btn.btn-ghost.quiz-pause', { type: 'button' }, 'Paus'), pause);
+  const helpButton = onTap(h('button.btn.btn-ghost.quiz-help', { type: 'button' }, 'Hjälp'), () => toggleHelp());
+  const wrap = h('div.quiz', { style: { '--app': app.color } }, h('div.q-toolbar', progress, h('div.q-support-actions', helpButton, pauseButton)), dots, stage);
   clear(el).appendChild(wrap);
+
+  function resume() {
+    if (!quizPaused) return;
+    quizPaused = false;
+    kos.paused = false;
+    kos.applySettings();
+    closePauseDialog?.();
+    closePauseDialog = null;
+    pauseDialog = null;
+    if (alive) pauseButton.focus({ preventScroll: true });
+  }
+
+  function pause() {
+    if (!alive || quizPaused) return;
+    quizPaused = true;
+    narrationEpoch++;
+    kos.paused = true;
+    kos.stopSpeaking();
+    kos.applySettings();
+    pauseDialog = h('dialog.quiz-pause-dialog', { 'aria-labelledby': 'quiz-pause-title' },
+      h('h2#quiz-pause-title', 'Paus'),
+      h('p', 'Din uppgift finns kvar. Fortsätt när du vill.'),
+      onTap(h('button.btn.btn-primary', { type: 'button' }, 'Fortsätt'), resume),
+      h('p.muted', 'Det du redan tjänat finns kvar. Om du avslutar börjar rundan om nästa gång.'),
+      onTap(h('button.btn.btn-ghost', { type: 'button' }, 'Avsluta rundan'), () => {
+        alive = false;
+        resume();
+        kos.saveNow();
+        onExit?.();
+      }));
+    pauseDialog.addEventListener('cancel', event => { event.preventDefault(); resume(); });
+    closePauseDialog = openDialog(pauseDialog, kos.overlayRoot || document.body);
+  }
 
   function next() {
     if (!alive) return;
     if (index >= total) return finish();
-    const level = effectiveLevel(app, mod);
+    const level = steadyLevel ?? effectiveLevel(app, mod);
+    progress.textContent = `Nu: fråga ${index + 1} av ${total} · Sedan: ${index + 1 === total ? 'klar' : 'nästa fråga'}`;
     let q;
     try {
       q = mod.gen(level, rng, ctx);
@@ -51,18 +96,27 @@ export function runQuiz(el, { app, module: mod, onExit, seed = Date.now(), count
     let resolved = false;
     const promptText = h('div.q-prompt-text', q.prompt);
     const speakBtn = h('button.icon-btn.q-speak', { 'aria-label': 'Läs upp frågan', type: 'button' }, '🔊');
-    onTap(speakBtn, () => kos.say(q.say || q.prompt));
+    onTap(speakBtn, () => kos.read(q.say || q.prompt));
     const prompt = h('div.q-prompt', speakBtn, promptText);
     const visual = q.visual ? h('div.q-visual', { html: q.visual }) : null;
     const answers = h('div.q-answers');
     const feedback = h('div.q-feedback', { 'aria-live': 'polite' });
+    const help = h('div.q-help-panel', { hidden: true, role: 'status' },
+      h('p', q.hint || 'Du kan be en vuxen att visa hur uppgiften fungerar.'),
+      onTap(h('button.btn.btn-ghost.btn-sm', { type: 'button' }, 'Läs hjälpen'), () => kos.read(q.hint || 'Be en vuxen att visa hur uppgiften fungerar.')));
+    toggleHelp = () => {
+      help.hidden = !help.hidden;
+      helpButton.setAttribute('aria-expanded', String(!help.hidden));
+    };
+    helpButton.setAttribute('aria-expanded', 'false');
     const body = h('div.q-body', { class: q.visual ? 'has-visual' : 'no-visual' }, h('div.q-top', prompt, visual), h('div.q-bottom', answers, feedback));
-    stage.appendChild(body);
+    stage.append(help, body);
 
     // Läs upp frågan (och textalternativ) för de som inte läser själva än.
     const optionWords = q.type === 'choice' && q.options && !q.noSpeakVisual && q.options.every((o) => o.say !== '' && /[a-zåäö]{3,}/i.test(o.say ?? o.label ?? ''));
+    const questionEpoch = narrationEpoch;
     kos.autoSay(q.say || q.prompt).then(() => {
-      if (alive && !resolved && optionWords && kos.shouldAutoSpeak()) {
+      if (alive && !quizPaused && questionEpoch === narrationEpoch && !resolved && optionWords && kos.shouldAutoSpeak()) {
         const words = q.options.map((o) => o.say ?? o.label);
         kos.autoSay(`${words.slice(0, -1).join(', ')} eller ${words[words.length - 1]}?`, { interrupt: false });
       }
@@ -127,7 +181,7 @@ export function runQuiz(el, { app, module: mod, onExit, seed = Date.now(), count
       stage.classList.add('done');
       if (q.explain) kos.autoSay(`${title[0]} ${q.explain}`);
       else kos.autoSay(title[0]);
-      setTimeout(() => nextBtn.focus({ preventScroll: true }), 50);
+      setTimeout(() => { if (alive && !quizPaused && nextBtn.isConnected) nextBtn.focus({ preventScroll: true }); }, 50);
     }
 
     const renderers = { choice, numpad, order, sort, build, tapcount, tap, clock };
@@ -136,6 +190,9 @@ export function runQuiz(el, { app, module: mod, onExit, seed = Date.now(), count
 
   async function finish() {
     alive = false;
+    pauseButton.hidden = true;
+    helpButton.hidden = true;
+    progress.textContent = `Klar: ${total} frågor`;
     kos.stopSpeaking();
     const res = kos.roundDone(app.id, mod.id, correctFirst, total);
     const best = moduleStat(kos.profile, app.id, mod.id).best;
@@ -148,12 +205,13 @@ export function runQuiz(el, { app, module: mod, onExit, seed = Date.now(), count
       h('h2.sum-title', msgs[res.rating - 1]),
       starsRow,
       h('p.sum-detail', `${correctFirst} av ${total} rätt på första försöket · +${correctFirst + res.bonus} ⭐`),
+      learningPlayReward(kos.profile, res, correctFirst),
       res.rankUp ? h('div.sum-rank', `${res.rankUp.emoji} Ny titel: ${res.rankUp.title}!`) : null,
       res.trophies.length ? h('div.sum-trophies', res.trophies.map((t) => h('div.sum-trophy', h('span', t.icon), h('div', h('small', 'Ny trofé'), h('b', t.name))))) : null,
       h(
         'div.sum-actions',
         onTap(h('button.btn.btn-ghost', { type: 'button' }, '↩ Tillbaka'), () => onExit?.()),
-        onTap(h('button.btn.btn-primary', { type: 'button' }, '🔁 En gång till'), () => runQuiz(el, { app, module: mod, onExit })),
+        onTap(h('button.btn.btn-primary', { type: 'button' }, '🔁 En gång till'), () => { replayCleanup?.(); replayCleanup = runQuiz(el, { app, module: mod, onExit }); }),
       ),
     );
     stage.appendChild(card);
@@ -161,13 +219,29 @@ export function runQuiz(el, { app, module: mod, onExit, seed = Date.now(), count
     else kos.sfx('star');
     kos.confetti(res.rating === 3 ? 160 : 70);
     kos.autoSay(`${msgs[res.rating - 1]} Du fick ${correctFirst} av ${total} rätt.`);
-    res.trophies.forEach((t, i) => setTimeout(() => kos.trophyToast(t), 900 + i * 1700));
+    res.trophies.forEach((t, i) => setTimeout(() => { if (card.isConnected && kos.profile === p) kos.trophyToast(t); }, 900 + i * 1700));
     void best;
   }
 
-  next();
+  if (p?.settings.previewRounds) {
+    dots.hidden = true;
+    helpButton.hidden = true;
+    progress.textContent = 'Din plan';
+    stage.append(h('div.quiz-plan',
+      h('h2', mod.name),
+      h('ol', h('li', `${total} frågor, en i taget.`), h('li', 'Välj själv när du går vidare.'), h('li', 'Sedan är rundan klar.')),
+      h('p', 'Du kan be om hjälp eller pausa när du vill.'),
+      onTap(h('button.btn.btn-ghost', { type: 'button' }, 'Läs planen'), () => kos.read(`${mod.name}. ${total} frågor, en i taget. Du väljer när du går vidare. Sedan är rundan klar. Du kan be om hjälp eller pausa.`)),
+      onTap(h('button.btn.btn-primary', { type: 'button' }, 'Starta rundan'), () => {
+        dots.hidden = false;
+        helpButton.hidden = false;
+        next();
+      })));
+  } else next();
   return () => {
     alive = false;
+    resume();
+    replayCleanup?.();
     kos.stopSpeaking();
   };
 }
@@ -321,23 +395,29 @@ function sort(q, el, api) {
   const bins = h('div.sort-bins', { class: `n${q.bins.length}` });
   const binEls = new Map();
   for (const b of q.bins) {
-    const be = h('div.sort-bin', { dataset: { bin: b.id }, role: 'button', tabindex: '0' }, h('div.bin-head', h('span.bin-icon', { html: b.html }), h('span.bin-label', b.label)), h('div.bin-items'));
-    onTap(be, () => selected && drop(selected, b.id), { guardMs: 0 });
+    const be = h('div.sort-bin', { dataset: { bin: b.id }, role: 'button', tabindex: '0', 'aria-label': b.label }, h('div.bin-head', h('span.bin-icon', { html: b.html }), h('span.bin-label', b.label)), h('div.bin-items'));
+    onTap(be, e => {
+      if (!e.target.closest('.sort-item')) selected && drop(selected, b.id);
+    }, { guardMs: 0 });
     binEls.set(b.id, be);
     bins.appendChild(be);
   }
   const itemEls = new Map();
   for (const it of q.items) {
-    const ie = h('div.sort-item', { dataset: { id: it.id }, role: 'button', tabindex: '0', html: it.html });
+    const ie = h('div.sort-item', { dataset: { id: it.id }, role: 'button', tabindex: '0', 'aria-label': it.say || it.label || it.n || `Sak ${itemEls.size + 1}`, 'aria-pressed': 'false', html: it.html });
     itemEls.set(it.id, ie);
     tray.appendChild(ie);
     attachDrag(ie, it);
   }
   function select(it) {
-    itemEls.forEach((e) => e.classList.remove('sel'));
+    itemEls.forEach((e) => {
+      e.classList.remove('sel');
+      e.setAttribute('aria-pressed', 'false');
+    });
     selected = it;
     if (it) {
       itemEls.get(it.id).classList.add('sel');
+      itemEls.get(it.id).setAttribute('aria-pressed', 'true');
       bins.classList.add('armed');
       if (kos.shouldAutoSpeak() && it.say) kos.say(it.say);
     } else bins.classList.remove('armed');
@@ -349,6 +429,8 @@ function sort(q, el, api) {
       kos.sfx('pop');
       ie.classList.remove('sel');
       ie.classList.add('placed');
+      ie.setAttribute('aria-disabled', 'true');
+      ie.tabIndex = -1;
       binEls.get(binId).querySelector('.bin-items').appendChild(ie);
       placed++;
       select(null);
@@ -377,8 +459,15 @@ function sort(q, el, api) {
   function attachDrag(ie, it) {
     let start = null;
     let ghost = null;
+    let suppressClick = false;
+    onTap(ie, e => {
+      e.stopPropagation();
+      if (suppressClick) { suppressClick = false; return; }
+      if (!ie.classList.contains('placed')) select(selected === it ? null : it);
+    });
     ie.addEventListener('pointerdown', (e) => {
       if (ie.classList.contains('placed')) return;
+      suppressClick = false;
       start = { x: e.clientX, y: e.clientY, id: e.pointerId };
       ie.setPointerCapture?.(e.pointerId);
     });
@@ -416,7 +505,7 @@ function sort(q, el, api) {
         else select(null);
       }
       start = null;
-      if (!wasDrag && e.type === 'pointerup') select(selected === it ? null : it);
+      suppressClick = wasDrag && e.type === 'pointerup';
     };
     ie.addEventListener('pointerup', end);
     ie.addEventListener('pointercancel', end);
@@ -439,7 +528,7 @@ function build(q, el, api) {
   const tiles = h('div.build-tiles');
   const tileEls = [];
   const hear = h('button.btn.btn-ghost.btn-sm', { type: 'button' }, '🔊 Hör ordet');
-  onTap(hear, () => kos.say(q.sayWord || q.word.toLowerCase(), { slow: true }));
+  onTap(hear, () => kos.read(q.sayWord || q.word.toLowerCase(), { slow: true }));
   const renderSlots = () => {
     clear(slots);
     filled.forEach((ti, i) => {
@@ -530,7 +619,7 @@ function tapcount(q, el, api) {
     beats = 0;
     renderBeats();
   });
-  const hear = onTap(h('button.btn.btn-ghost', { type: 'button' }, '🔊 Lyssna'), () => kos.say(q.sayWord, { slow: true }));
+  const hear = onTap(h('button.btn.btn-ghost', { type: 'button' }, '🔊 Lyssna'), () => kos.read(q.sayWord, { slow: true }));
   const done = onTap(h('button.btn.btn-primary', { type: 'button' }, 'Klar ✓'), () => {
     if (!beats || el.closest('.q-stage').classList.contains('done')) return;
     if (beats === q.answer) api.correct();

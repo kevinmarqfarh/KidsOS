@@ -8,6 +8,7 @@ import { moduleStat } from '../core/model.js';
 import { runQuiz, effectiveLevel } from './quiz.js';
 import { VIEWS } from './views/index.js';
 import { SYSTEM_APPS } from './system.js';
+import { mountActivitySupport } from './activity-support.js';
 
 /**
  * host = {
@@ -94,7 +95,11 @@ export function mountApp(host, appId, moduleId = null, opts = {}) {
     });
     const exit = () => (single ? host.close() : showHub());
     if (mod.gen) cleanup = runQuiz(host.content, { app, module: mod, onExit: exit });
-    else if (mod.view && VIEWS[mod.view]) cleanup = VIEWS[mod.view](host.content, { kos, app, module: mod, level: effectiveLevel(app, mod), back: exit, opts: mopts, host }) || null;
+    else if (mod.view && VIEWS[mod.view]) {
+      const support = mountActivitySupport(host.content, { kos, module: mod, onExit: exit });
+      const viewCleanup = VIEWS[mod.view](support.content, { kos, app, module: mod, level: effectiveLevel(app, mod), back: exit, opts: mopts, host }) || null;
+      cleanup = () => { viewCleanup?.(); support.content.remove(); support.destroy(); };
+    }
     else host.content.append(h('p', 'Kommer snart!'));
   }
 

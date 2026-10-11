@@ -1,5 +1,14 @@
 # Forskningsunderlag och designbeslut
 
+Fördjupat underlag om autism, individuella anpassningar och föreslagna utvecklingsprioriteringar finns i [AUTISM-RESEARCH.md](AUTISM-RESEARCH.md). Dokumentets implementationsstatus anger vilka delar som nu finns i appen.
+
+Den djupare genomgången med 48 kriterier, evidens och kvarvarande luckor finns i
+[AUTISM-KRAV-OCH-EVIDENS.md](AUTISM-KRAV-OCH-EVIDENS.md). Införda stödval innebär
+inte att alla kriterier är verifierade.
+
+Aktuell åtgärds- och teststatus efter genomgång av senaste projektändringarna:
+[SLUTGENOMGANG-AUTISM.md](SLUTGENOMGANG-AUTISM.md).
+
 Det här dokumentet samlar det underlag som KidsOS bygger på: hur barn använder pekskärmar, vad som gör en app verkligen lärande, hur belöningar kan användas utan att döda nyfikenheten, och hur innehållet kopplas till Skolverkets läroplan. Varje avsnitt slutar med de konkreta beslut som togs i koden.
 
 ## 1. Barn och pekskärmar
@@ -26,7 +35,7 @@ Det här dokumentet samlar det underlag som KidsOS bygger på: hur barn använde
 | Holdovers | Varje knapp ignorerar ett nytt tryck inom 350 ms (`onTap` i `src/ui/dom.js`). Snabbare för sifferknappar (120 ms) och korgar vid sortering. |
 | Fingret glider utanför | Svarsknapparna har en osynlig marginal på 7 px (`.choice::after`). Sorteringskorgar tar emot släpp 16 px utanför kanten. Tryck i bilder letar upp närmaste träffyta inom 48 px. |
 | Missar uppe till vänster | Alla svar och primära knappar ligger i nedre halvan (tumzonen). Hemknappen uppe till vänster är 64 × 60 pt. |
-| Svårt med nyp/rotation | Inga nyp- eller rotationsgester. Dubbeltrycks-zoom och nyp-zoom är avstängda. Bara tryck och enkel dragning används, och allt som går att dra går också att trycka (tryck på sak → tryck på korg). |
+| Svårt med nyp/rotation | Övningar kräver inte nypgester. Webbläsarens förstoring är tillåten; oavsiktliga dubbeltryck filtreras lokalt på knappar. Sorteringen stöder tryck och tangentbord som alternativ till drag. |
 | Svag gestigenkänning hos 5-åringar | Bokstavsspårningen bedöms med tolerans per nivå (11 % av rutan för de minsta, 6,5 % för de största). Den jämför täckning och precision i stället för exakt form, och har ett klotterskydd. Missade delar markeras orange så att barnet ser vad som fattas. |
 | Tydlig återkoppling | Varje tryck ger en fysisk "knapptryckning" (3D-knappar som trycks ned), ett ljud och färg. Rätt svar studsar, fel svar skakar. |
 
@@ -48,7 +57,7 @@ Appar bör ha tydliga lärmål och stödja utforskande, frågande och upptäckan
 ### Beslut i KidsOS
 
 - **Minds-on överallt:** programmering i stället för att trycka på saker som rör sig. Experiment där barnet *gissar först* (hypotes) och sedan testar. Klockan ställs genom att dra i visaren, och timvisaren följer med som på en riktig klocka.
-- **Inga distraktioner:** inga reklamer, inga tidtagarur, inga animationer som pågår medan barnet tänker. Konfetti visas bara när en uppgift är klar.
+- **Kontroll över intryck:** inga annonser eller tidspress för quizsvar. Barnet kan stänga av tal, ljud, dekorativa rörelser och belöningsanimationer. Experiment kan visa processer; stilla alternativ har införts för flera rörelser. Lugn återkoppling minskar notiser under övningen.
 - **Meningsfullhet:** Göteborg finns med i Dag & natt och i dagsljusdiagrammet. Svenska arter (ekorre, igelkott, blåbär), källsortering med pant, svenska tidsuttryck ("kvart i tre") och barnets eget namn i skrivövningen.
 - **Socialt:** Undra-korten slutar med "Fundera vidare" och uppmanar barnet att gissa högt eller berätta för någon. Berättelserna avslutas med "Kan du berätta den för någon?".
 - **Lärande av fel:** efter två försök visas rätt svar med en förklaring. Ingen fråga lämnas utan ett "varför".

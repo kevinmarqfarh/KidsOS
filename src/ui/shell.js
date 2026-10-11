@@ -1,6 +1,7 @@
+import { createAppFullscreenControl, exitAppFullscreen } from './fullscreen.js';
 import { wallpaperButton } from './wallpapers.js';
 // OS-skalet: låsskärm, profiler, hemskärm, docka, appfönster, föräldraspärr och paus.
-import { h, clear, onTap, $ } from './dom.js';
+import { h, clear, onTap, $, openDialog } from './dom.js';
 import { kos } from './kos.js';
 import { APPS, appById, moduleById } from '../apps/registry.js';
 import { AVATARS, PROFILE_COLORS, WALLPAPERS, LEVELS, AGE_BANDS, ageBandFor, profileAgeLabel } from '../core/age.js';
@@ -19,6 +20,7 @@ let screenEl;
 let windowEl;
 let statusEl;
 let tabletApp = null;
+let tabletFullscreen = null;
 let desktop = null;
 let current = { screen: 'lock' };
 
@@ -33,12 +35,22 @@ export function mountShell(root) {
   clear(root).appendChild(osEl);
   Object.assign(shellApi, { parentGate, profileWizard, showLock, goHome, modal, confirmSwitch });
   desktop = createDesktop(deskEl, { osEl, confirmSwitch, showLock, modal });
-  kos.on('stars', renderStatus);
-  kos.on('tick', renderStatus);
-  kos.on('limit', showLimit);
-  setInterval(renderStatus, 30000);
+  const subscriptions = [
+    kos.on('stars', renderStatus),
+    kos.on('tick', renderStatus),
+    kos.on('limit', showLimit),
+    kos.on('limit-warning', showLimitWarning),
+    kos.on('profile', () => document.querySelectorAll('.time-warning').forEach(node => node.remove())),
+  ];
+  const statusTimer = setInterval(renderStatus, 30000);
   if (kos.profile) goHome();
   else showLock();
+  return () => {
+    clearInterval(statusTimer);
+    subscriptions.forEach(unsubscribe => unsubscribe());
+    closeWindow(true);
+    desktop?.hide();
+  };
 }
 
 function setWallpaper() {
@@ -158,7 +170,7 @@ export function profileWizard({ first = false, edit = null, onDone } = {}) {
   const back = onTap(h('button.btn.btn-ghost', { type: 'button' }, '← Tillbaka'), () => { if (step > 0) { step--; renderChild(); } });
   const next = h('button.btn.btn-primary.wizard-next', { type: 'button' });
   const cancel = onTap(h('button.btn.btn-ghost', { type: 'button' }, 'Avbryt'), () => sheet.close());
-  const listen = onTap(h('button.btn.btn-ghost.wizard-listen', { type: 'button' }, '🔊 Lyssna'), () => kos.say(approved ? ['Skriv ditt namn eller ditt smeknamn. Tryck sedan på Nästa.', 'Välj en figur som du tycker om. Tryck sedan på Nästa.', 'Välj din färg och din bakgrund. Tryck sedan på Skapa eller Spara.'][step] : 'En vuxen väljer ditt åldersintervall och godkänner. Sedan kan du välja själv.'));
+  const listen = onTap(h('button.btn.btn-ghost.wizard-listen', { type: 'button' }, '🔊 Lyssna'), () => kos.read(approved ? ['Skriv ditt namn eller ditt smeknamn. Tryck sedan på Nästa.', 'Välj en figur som du tycker om. Tryck sedan på Nästa.', 'Välj din färg och din bakgrund. Tryck sedan på Skapa eller Spara.'][step] : 'En vuxen väljer ditt åldersintervall och godkänner. Sedan kan du välja själv.'));
   body.append(heading, progress, listen, stage, h('div.wizard-actions', cancel, back, next));
   const sheet = modal(body, [], { wide: true });
   const nameInput = h('input.text-input#profile-name', { type: 'text', maxlength: '16', placeholder: 'Skriv ditt namn', value: data.name, autocomplete: 'off', autocapitalize: 'words' });
@@ -274,6 +286,7 @@ export function goHome() {
 
   const dock = h('nav.dock');
   const dockItems = [
+    ['🏡', 'Lekstaden', () => openApp('play', 'studio')],
     ['🏆', 'Troféer', () => openApp('trophies')],
     ['⚙️', 'Inställningar', () => openApp('settings')],
     ['👋', 'Byt', () => confirmSwitch()],
@@ -324,6 +337,8 @@ function animateOpen(fromEl) {
 }
 
 export function closeWindow(instant) {
+  tabletFullscreen?.destroy();
+  tabletFullscreen = null;
   if (tabletApp) {
     tabletApp.destroy();
     tabletApp = null;
@@ -351,6 +366,8 @@ export function closeWindow(instant) {
 
 /** Ett helskärmsfönster för surfplatte-läget. */
 function tabletHost(meta) {
+  tabletFullscreen?.destroy();
+  tabletFullscreen = appById(meta.id) && meta.id !== 'play' ? createAppFullscreenControl(windowEl, osEl) : null;
   const home = h('button.win-home', { type: 'button', 'aria-label': 'Hem' }, h('span', '⌂'), h('small', 'Hem'));
   onTap(home, () => {
     kos.sfx('whoosh');
@@ -359,7 +376,7 @@ function tabletHost(meta) {
   const backSlot = h('span.back-slot');
   const title = h('div.win-title');
   const lvlSlot = h('span');
-  const header = h('div.win-head', home, backSlot, title, lvlSlot);
+  const header = h('div.win-head', home, backSlot, title, lvlSlot, tabletFullscreen?.button);
   const content = h('div.win-content');
   clear(windowEl).append(header, content);
   windowEl.style.setProperty('--app', meta.color);
@@ -381,6 +398,7 @@ function tabletHost(meta) {
 }
 
 export function openApp(appId, moduleId, fromEl, opts = {}) {
+  exitAppFullscreen();
   const meta = appMeta(appId);
   if (!meta) return;
   if (isDesktop()) {
@@ -400,7 +418,7 @@ export function openApp(appId, moduleId, fromEl, opts = {}) {
 
 /* ---------------- Modal ---------------- */
 export function modal(body, actions = [], { wide = false, dismissable = true } = {}) {
-  const layer = kos.overlayRoot;
+  const layer = document.querySelector('dialog.limit-screen[open]') || kos.overlayRoot;
   const close = () => {
     sheet.classList.remove('in');
     setTimeout(() => sheet.remove(), 220);
@@ -473,19 +491,30 @@ export function parentGate(onOk) {
 }
 
 /* ---------------- Skärmtid ---------------- */
+function showLimitWarning({ minutes }) {
+  const content = document.querySelector('.dwin.active .win-content') || document.querySelector('.window.open .win-content') || screenEl;
+  const message = `Om ungefär ${minutes} ${minutes === 1 ? 'minut' : 'minuter'} är skärmtiden slut. Avsluta det du håller på med. Aktiviteten finns kvar om en vuxen ger mer tid.`;
+  let warning = content.querySelector('.time-warning');
+  if (!warning) {
+    warning = h('aside.time-warning', { role: 'status' });
+    content.prepend(warning);
+  }
+  warning.textContent = message;
+}
+
 function showLimit() {
   if (document.querySelector('.limit-screen')) return;
-  closeWindow(true);
+  document.querySelectorAll('.time-warning').forEach(node => node.remove());
   kos.paused = true;
   const p = kos.profile;
   const ideas = ['🌳 Gå ut och leta efter något som har ändrat sig sedan i går', '📚 Läs en bok eller titta i en tidning', '🖍️ Rita på riktigt papper', '🧱 Bygg något med klossar', '💬 Berätta för någon vad du har lärt dig i dag'];
   const el = h(
-    'div.limit-screen',
+    'dialog.limit-screen', { 'aria-label': 'Skärmtiden är slut' },
     h('div.limit-card', h('div.limit-emoji', '🌙'), h('h1', `Bra jobbat i dag, ${p?.name || ''}!`), h('p', 'Skärmtiden för i dag är slut. Dags för en paus – hjärnan behöver vila för att minnas allt du lärt dig.'), h('ul.limit-ideas', ideas.map((i) => h('li', i)))),
     h(
       'div.limit-actions',
       onTap(h('button.btn.btn-ghost', { type: 'button' }, '👋 Byt användare'), () => {
-        el.remove();
+        closeLimit();
         kos.paused = false;
         kos.logout();
         showLock();
@@ -495,14 +524,14 @@ function showLimit() {
           addBonusMinutes(p, 15);
           kos.saveNow();
           kos.paused = false;
-          el.remove();
-          goHome();
+          closeLimit();
+          kos.emit('tick');
         }),
       ),
     ),
   );
-  kos.overlayRoot.appendChild(el);
-  kos.say(`Bra jobbat i dag! Skärmtiden är slut. Dags för en paus.`);
+  el.addEventListener('cancel', event => event.preventDefault());
+  const closeLimit = openDialog(el, kos.overlayRoot);
 }
 
 export function currentScreen() {

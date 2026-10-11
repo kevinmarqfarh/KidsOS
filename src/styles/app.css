@@ -1,3 +1,4 @@
+@import "./studio.css";
 @import "./desktop.css";
 /* KidsOS – touch-först gränssnitt för barn 4–10 år.
    Layout: ett "operativsystem" med statusrad, hemskärm med appikoner och docka,
@@ -3914,6 +3915,36 @@ small {
   }
 }
 
+html[data-reduced-motion="true"] *,
+html[data-reduced-motion="true"] *::before,
+html[data-reduced-motion="true"] *::after {
+  animation: none !important;
+  transition: none !important;
+  scroll-behavior: auto !important;
+}
+html[data-celebration-effects="false"] .sum-star,
+html[data-celebration-effects="false"] .sum-emoji,
+html[data-celebration-effects="false"] .sum-trophy {
+  animation: none !important;
+}
+.q-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 12px; }
+.q-progress { margin: 0; font-weight: 700; }
+.q-support-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.activity-support { display: flex; gap: 8px; flex-wrap: wrap; padding: 12px; }
+.activity-help { padding: 16px; margin: 12px; border: 2px solid var(--line); border-radius: 18px; background: var(--card); }
+.activity-content { min-width: 0; }
+.time-warning { padding: 12px; margin: 8px; border: 2px solid var(--line); border-radius: 14px; background: var(--card); color: var(--ink); font-weight: 700; }
+dialog.limit-screen { width: 100%; height: 100%; max-width: none; max-height: none; margin: 0; border: 0; }
+html[data-activity-paused="true"] *, html[data-activity-paused="true"] *::before, html[data-activity-paused="true"] *::after { animation-play-state: paused !important; }
+.q-help-panel, .quiz-plan { padding: 18px; border: 2px solid var(--line); border-radius: 20px; background: var(--card); margin-bottom: 12px; }
+.quiz-plan li { margin-block: 12px; }
+.quiz-plan .btn { margin: 6px; }
+.sort-item:focus-visible, .sort-bin:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; }
+.quiz-pause-dialog { max-width: min(440px, calc(100vw - 48px)); box-sizing: border-box; border: 2px solid var(--line); border-radius: 24px; padding: 28px; background: var(--card); color: var(--ink); }
+.quiz-pause-dialog::backdrop { background: #182238aa; }
+.dialog-fallback { position: fixed; inset: 0; margin: auto; height: fit-content; z-index: 1000; box-shadow: 0 0 0 100vmax #182238aa; }
+.support-settings { padding-inline: 0; }
+
 /* Verkliga referensbilder: hela motivet syns utan beskärning. */
 .photo-figure { margin: 0 auto; width: min(100%, 420px); }
 .learning-photo { display: block; width: 100%; height: auto; max-height: 280px; object-fit: contain; border-radius: 18px; background: #edf2f4; }
@@ -4002,3 +4033,23 @@ small {
 .story-evidence summary { cursor: pointer; min-height: 44px; display: flex; align-items: center; font-weight: 700; }
 .story-feedback { margin-top: 18px; }
 .story-feedback .story-next { margin-top: 14px; }
+
+.learn-play-reward { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; padding: 18px; margin: 20px auto; max-width: 700px; background: #fff1cc; border: 2px solid #ead29f; border-radius: 22px; text-align: left; }
+.learn-play-reward > div { flex: 1 1 220px; }
+.learn-play-reward p { font-size: 15px; line-height: 1.5; margin: 6px 0; }
+.learn-play-coin { font-size: 36px; }
+.learn-play-open { margin: auto; }
+.play-studio-open { margin: 8px 0 22px; }
+
+@media(max-width:480px){.dock{width:calc(100% - 24px);max-width:420px;gap:4px;padding:8px}.dock-item{min-width:0;flex:1;font-size:12px}.dock-icon{font-size:30px}}
+/* Svar bredvid en bild behöver rymligare kolumner på liggande skärmar. */
+.q-top,.q-bottom{min-width:0}.choice-label{max-width:100%;overflow-wrap:anywhere}
+@media(min-width:900px) and (min-aspect-ratio:5/4){.q-body.has-visual .choices.n4:not(.long),.q-body.has-visual .choices.n5:not(.long){--cols:2}}
+
+.app-fullscreen-toggle{border:0;border-radius:12px;background:#ffffff30;color:inherit;min-width:44px;min-height:44px;font-size:28px;cursor:pointer;flex-shrink:0}
+.win-head .app-fullscreen-toggle{color:#fff}.app-fullscreen-toggle:focus-visible{outline:3px solid #fff;outline-offset:3px}
+.os:fullscreen{width:100vw;height:100dvh}.os.app-focus-mode>.statusbar,.os.app-focus-mode .dock,.os.app-focus-mode .taskbar{visibility:hidden}
+.window.app-fullscreen,.dwin.app-fullscreen{position:fixed!important;inset:0!important;width:100vw!important;height:100dvh!important;max-width:none!important;max-height:none!important;transform:none!important;border-radius:0!important;z-index:50!important;background:var(--paper)}
+.dwin.app-fullscreen .dwin-grip{display:none}
+@media(max-width:480px){.win-head{gap:6px}.win-head .level-chip{font-size:12px;padding:6px}.app-fullscreen-toggle{min-width:44px}}
+.dwin.app-fullscreen{z-index:2147483000!important}

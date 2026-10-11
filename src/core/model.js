@@ -46,7 +46,14 @@ export function newProfile({ name, age, avatar = '🦊', color = '#4aa8ff', wall
     streak: { count: 0, best: 0, last: null },
     levelOverride: {},
     settings: {
-      readAloud: 'auto', // 'auto' (efter ålder) | 'on' | 'off'
+      readAloud: 'auto', // 'auto' (efter ålder) | 'on' | 'manual' (läsknappar) | 'off'
+      sound: null, // null = enhetens val, annars barnets eget val
+      reducedMotion: false,
+      celebrationEffects: true,
+      roundLength: 0, // 0 = efter ålder, annars 3, 5 eller 8 frågor
+      steadyRounds: false,
+      previewRounds: false,
+      quietFeedback: false,
       dailyLimitMin: 0, // 0 = ingen gräns
       hiddenApps: [],
       showAllModules: false,
@@ -68,6 +75,12 @@ export function normalizeProfile(p) {
     if (!out[k] || typeof out[k] !== 'object') out[k] = {};
   }
   if (!Array.isArray(out.settings.hiddenApps)) out.settings.hiddenApps = [];
+  if (![true, false, null].includes(out.settings.sound)) out.settings.sound = null;
+  if (![0, 3, 5, 8].includes(out.settings.roundLength)) out.settings.roundLength = 0;
+  if (!['auto', 'on', 'manual', 'off'].includes(out.settings.readAloud)) out.settings.readAloud = 'auto';
+  for (const key of ['reducedMotion', 'celebrationEffects', 'steadyRounds', 'previewRounds', 'quietFeedback']) {
+    if (typeof out.settings[key] !== 'boolean') out.settings[key] = base.settings[key];
+  }
   out.stars = Math.max(0, Number(out.stars) || 0);
   // Profiler från version 1 saknar mynt: de får lika många mynt som stjärnor de redan tjänat.
   out.coins = p?.coins === undefined ? out.stars : Math.max(0, Number(out.coins) || 0);
@@ -114,6 +127,9 @@ export function currentLevel(profile, appId) {
 export const ADAPT_UP_AFTER = 5; // rätt på första försöket i rad
 export const ADAPT_DOWN_AFTER = 3; // missar i rad
 
+// Fullföljande belönas även när barnet behöver flera försök.
+export const LEARNING_ROUND_COINS = Object.freeze({ firstCompletion: 5, practice: 2 });
+
 /**
  * Registrerar ett svar och anpassar nivån (zonen för närmaste utveckling):
  * fem rätt i rad på första försöket → nivå upp, tre missar i rad → nivå ned.
@@ -159,6 +175,7 @@ export function recordRound(profile, appId, moduleId, { correctFirst, total }) {
   const s = appStat(profile, appId);
   const m = moduleStat(profile, appId, moduleId);
   const rating = roundRating(correctFirst, total);
+  const moduleCoins = total > 0 ? (m.rounds === 0 ? LEARNING_ROUND_COINS.firstCompletion : LEARNING_ROUND_COINS.practice) : 0;
   s.rounds++;
   m.rounds++;
   m.correct += correctFirst;
@@ -175,7 +192,8 @@ export function recordRound(profile, appId, moduleId, { correctFirst, total }) {
   // Bonus: runda klar ger en extra stjärna, perfekt runda två.
   const bonus = rating === 3 ? 2 : 1;
   addStars(profile, bonus);
-  return { rating, improved, bonus };
+  addCoins(profile, moduleCoins);
+  return { rating, improved, bonus, moduleCoins, coinsEarned: bonus + moduleCoins };
 }
 
 /** Stjärnor visar vad barnet har lärt sig. Varje intjänad stjärna ger också ett mynt till Lekstaden. */
@@ -192,8 +210,10 @@ export function addCoins(profile, n) {
 
 /** Försöker betala. Returnerar true om det fanns tillräckligt med mynt. */
 export function spendCoins(profile, n) {
-  if ((profile.coins || 0) < n) return false;
-  profile.coins -= n;
+  if (!Number.isFinite(n) || n < 0 || !Number.isInteger(n)) return false;
+  const balance = profile.coins || 0;
+  if (!Number.isFinite(balance) || balance < n) return false;
+  profile.coins = balance - n;
   return true;
 }
 

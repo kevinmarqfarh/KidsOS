@@ -1,3 +1,4 @@
+import { STUDIO_ITEMS, STUDIO_ROOMS, STUDIO_PACKS, STORY_PROMPTS } from '../src/apps/studio.js';
 // Genererar docs/LARANDE.md direkt från appregistret så att dokumentationen alltid stämmer med koden.
 import { writeFileSync } from 'node:fs';
 import { APPS } from '../src/apps/registry.js';
@@ -30,6 +31,8 @@ ${LEVELS.map((l, i) => `| ${l.emoji} ${l.short} | ${l.name} | ${l.school} | ${['
 |---|---|---|---|
 ${APPS.map((a) => `| ${a.icon} ${a.name} | ${a.modules.length} | ${a.modules.filter((m) => m.gen).length} | ${a.modules.filter((m) => m.view).length} |`).join('\n')}
 | **Totalt** | **${APPS.reduce((s, a) => s + a.modules.length, 0)}** | **${APPS.reduce((s, a) => s + a.modules.filter((m) => m.gen).length, 0)}** | **${APPS.reduce((s, a) => s + a.modules.filter((m) => m.view).length, 0)}** |
+
+Skaparstudion innehåller ${STUDIO_ITEMS.length} originalföremål, ${STUDIO_ROOMS.length} rumsteman, ${STUDIO_PACKS.length} kurskopplade paket och ${STORY_PROMPTS.length} berättelseidéer. Intjänade spelmynt och avklarade moduler styr upplåsningen.
 
 Dessutom: ${ROBOT_LEVELS.length} robotbanor, ${STORIES.length} berättelser med läsförståelsefrågor, ${SPECIES.length} artkort, ${WONDERS.length} Undra-frågor och ${TROPHIES.length} troféer.
 

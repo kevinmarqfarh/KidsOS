@@ -1,4 +1,5 @@
 // Liten DOM-hjälpare: h('div.klass', {onClick}, barn...)
+import { activityWait } from '../core/activity.js';
 
 // Villkorliga barn (t.ex. `cond ? h(...) : null`) ska aldrig skrivas ut som texten "null".
 if (typeof Element !== 'undefined' && !Element.prototype.__kidsosAppend) {
@@ -94,14 +95,67 @@ export function onTap(el, fn, { guardMs = 350 } = {}) {
     last = now;
     fn(e);
   });
+  // En ARIA-roll ger inte i sig tangentbordets knappbeteende.
+  if (el.tagName !== 'BUTTON' && el.getAttribute('role') === 'button') {
+    el.addEventListener('keydown', (e) => {
+      if (e.target !== el || !['Enter', ' '].includes(e.key)) return;
+      e.preventDefault();
+      if (!e.repeat && el.getAttribute('aria-disabled') !== 'true') el.click();
+    });
+  }
   return el;
 }
 
 export function wait(ms) {
-  return new Promise((r) => setTimeout(r, ms));
+  return activityWait(ms);
+}
+
+/** Modal dialog med fokusspärr även i webbläsare utan showModal. */
+export function openDialog(dialog, layer = document.body) {
+  const previous = document.activeElement;
+  const native = typeof dialog.showModal === 'function';
+  layer.append(dialog);
+  dialog.setAttribute('aria-modal', 'true');
+  const controls = () => [...dialog.querySelectorAll('button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [href], [tabindex]:not([tabindex="-1"])')].filter(node => !node.closest('[hidden]'));
+  const key = event => {
+    if (native) return;
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      dialog.dispatchEvent(new Event('cancel', { cancelable: true }));
+    } else if (event.key === 'Tab') {
+      const items = controls();
+      const index = items.indexOf(document.activeElement);
+      event.preventDefault();
+      items[(index + (event.shiftKey ? -1 : 1) + items.length) % items.length]?.focus();
+    }
+  };
+  const blockOutside = event => {
+    if (!native && !dialog.contains(event.target)) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+    }
+  };
+  document.addEventListener('keydown', key, true);
+  document.addEventListener('pointerdown', blockOutside, true);
+  document.addEventListener('click', blockOutside, true);
+  if (native) dialog.showModal();
+  else {
+    dialog.setAttribute('open', '');
+    dialog.setAttribute('role', 'dialog');
+    dialog.classList.add('dialog-fallback');
+    controls()[0]?.focus();
+  }
+  return () => {
+    document.removeEventListener('keydown', key, true);
+    document.removeEventListener('pointerdown', blockOutside, true);
+    document.removeEventListener('click', blockOutside, true);
+    dialog.remove();
+    if (previous?.isConnected) previous.focus?.({ preventScroll: true });
+  };
 }
 
 export const reducedMotion = () => {
+  if (typeof document !== 'undefined' && document.documentElement.dataset.reducedMotion === 'true') return true;
   try {
     return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   } catch {

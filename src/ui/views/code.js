@@ -181,7 +181,7 @@ export function robotView(el, { kos, app, level }) {
     const resetBtn = h('button.btn.btn-ghost', { type: 'button' }, '↺ Rensa');
     const menuBtn = h('button.btn.btn-ghost', { type: 'button' }, '☰ Banor');
     const teach = h('div.teach', h('span.teach-icon', '💡'), h('span', L.teach));
-    const speak = onTap(h('button.icon-btn', { type: 'button', 'aria-label': 'läs upp' }, '🔊'), () => kos.say(L.teach));
+    const speak = onTap(h('button.icon-btn', { type: 'button', 'aria-label': 'läs upp' }, '🔊'), () => kos.read(L.teach));
     el.append(
       h(
         'div.robot',
@@ -227,6 +227,7 @@ export function robotView(el, { kos, app, level }) {
         }
         await wait(st.event === 'start' ? 200 : 420);
       }
+      if (!alive || !el.isConnected) return;
       editor.highlight(null);
       running = false;
       runBtn.disabled = false;
@@ -412,6 +413,7 @@ export function turtleView(el, { kos, app }) {
       kos.sfx('click');
       await wait(260);
     }
+    if (!alive || !el.isConnected) return;
     editor.highlight(null);
     running = false;
     void path;

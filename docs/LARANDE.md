@@ -31,8 +31,10 @@ KidsOS har fem nivåer. Startnivån sätts av barnets ålder och anpassas sedan 
 | 🤖 Kodning | 11 | 8 | 3 |
 | 🎨 Rita | 1 | 0 | 1 |
 | 🤔 Undra | 1 | 0 | 1 |
-| 🏡 Lekstaden | 1 | 0 | 1 |
-| **Totalt** | **96** | **65** | **31** |
+| 🏡 Lekstaden | 2 | 0 | 2 |
+| **Totalt** | **97** | **65** | **32** |
+
+Skaparstudion innehåller 80 originalföremål, 10 rumsteman, 9 kurskopplade paket och 50 berättelseidéer. Intjänade spelmynt och avklarade moduler styr upplåsningen.
 
 Dessutom: 20 robotbanor, 14 berättelser med läsförståelsefrågor, 25 artkort, 40 Undra-frågor och 67 troféer.
 
@@ -190,6 +192,7 @@ Dessutom: 20 robotbanor, 14 berättelser med läsförståelsefrågor, 25 artkort
 
 | Modul | Från nivå | Typ | Läroplanen (Lgr22) |
 |---|---|---|---|
+| 🎨 Skaparstudion | Nivå 1 | Interaktiv | *Bildframställning:* Framställning av berättande bilder, till exempel sagobilder och serier. Teckning, måleri, modellering och konstruktion.<br>*Texter:* Hur en berättande text kan organiseras med inledning, händelseförlopp och avslutning samt personbeskrivningar.<br>*Taluppfattning och tals användning:* Naturliga tal och deras egenskaper samt hur talen kan delas upp och användas för att ange antal och ordning. |
 | 🏡 Lekstaden | Nivå 1 | Interaktiv | *Taluppfattning och tals användning:* Naturliga tal och deras egenskaper samt hur talen kan delas upp och användas för att ange antal och ordning.<br>*Taluppfattning och tals användning:* De fyra räknesättens egenskaper och samband samt användning i olika situationer.<br>*Året runt i naturen:* Några djurs och växters livscykler och anpassningar till olika livsmiljöer och årstider.<br>*Året runt i naturen:* Djur, växter och svampar i närmiljön, hur de kan grupperas samt namn på några vanligt förekommande arter.<br>*Läsa och skriva:* Strategier för att avkoda, förstå och tolka ord, begrepp och texter.<br>*Bildframställning:* Framställning av berättande bilder, till exempel sagobilder och serier. Teckning, måleri, modellering och konstruktion. |
 
 ## Troféer

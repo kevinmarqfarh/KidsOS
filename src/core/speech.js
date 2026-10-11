@@ -3,6 +3,7 @@ let voice = null;
 let rate = 0.92;
 let enabled = true;
 let listeners = new Set();
+const pending = new Set();
 
 function synth() {
   return typeof window !== 'undefined' && 'speechSynthesis' in window ? window.speechSynthesis : null;
@@ -66,26 +67,33 @@ export function speak(text, { force = false, interrupt = true, slow = false } = 
   const t = cleanForSpeech(text);
   if (!t) return Promise.resolve();
   return new Promise((resolve) => {
+    let settled = false;
+    let safetyTimer = null;
+    const done = () => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(safetyTimer);
+      pending.delete(done);
+      listeners.forEach((fn) => fn(false));
+      resolve();
+    };
     try {
-      if (interrupt) s.cancel();
+      if (interrupt) stopSpeaking();
       const u = new SpeechSynthesisUtterance(t);
       u.lang = 'sv-SE';
       if (!voice) voice = pickVoice();
       if (voice) u.voice = voice;
       u.rate = slow ? Math.max(0.55, rate - 0.3) : rate;
       u.pitch = 1.05;
-      const done = () => {
-        listeners.forEach((fn) => fn(false));
-        resolve();
-      };
       u.onend = done;
       u.onerror = done;
+      pending.add(done);
       listeners.forEach((fn) => fn(true));
       s.speak(u);
       // säkerhetsnät om onend aldrig kommer (känt i vissa webbläsare)
-      setTimeout(done, Math.min(20000, 1500 + t.length * 90));
+      if (!settled) safetyTimer = setTimeout(done, Math.min(20000, 1500 + t.length * 90));
     } catch {
-      resolve();
+      done();
     }
   });
 }
@@ -94,6 +102,7 @@ export function stopSpeaking() {
   try {
     synth()?.cancel();
   } catch {}
+  for (const finish of [...pending]) finish();
 }
 
 export function onSpeaking(fn) {

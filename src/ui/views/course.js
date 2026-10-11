@@ -38,7 +38,7 @@ export function courseView(el, { kos, app, level }) {
 
   function readStep() {
     const step = lesson.steps[stepIndex];
-    kos.say(`${lesson.title}. ${step.title}. ${step.text}. ${step.example || ''}`);
+    kos.read(`${lesson.title}. ${step.title}. ${step.text}. ${step.example || ''}`);
   }
 
   function renderStep() {

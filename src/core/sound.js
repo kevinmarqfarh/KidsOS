@@ -1,6 +1,7 @@
 // Små syntetiserade ljud med Web Audio – inga ljudfiler behövs.
 let ctx = null;
 let on = true;
+const active = new Set();
 
 function ac() {
   if (!on) return null;
@@ -19,6 +20,12 @@ function ac() {
 
 export function setSoundEnabled(v) {
   on = !!v;
+  if (!on) {
+    for (const oscillator of active) {
+      try { oscillator.stop(); } catch {}
+    }
+    active.clear();
+  }
 }
 
 function tone(freq, start, dur, { type = 'sine', gain = 0.18, slide = 0 } = {}) {
@@ -26,6 +33,8 @@ function tone(freq, start, dur, { type = 'sine', gain = 0.18, slide = 0 } = {}) 
   if (!c) return;
   const t0 = c.currentTime + start;
   const o = c.createOscillator();
+  active.add(o);
+  o.onended = () => active.delete(o);
   const g = c.createGain();
   o.type = type;
   o.frequency.setValueAtTime(freq, t0);

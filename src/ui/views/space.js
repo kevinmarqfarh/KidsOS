@@ -1,6 +1,6 @@
 import { photoFigure } from '../photos.js';
 // Rymden – interaktiva vyer.
-import { h, clear, onTap, wait } from '../dom.js';
+import { h, clear, onTap, wait, reducedMotion } from '../dom.js';
 import { PLANETS, SUN, CONSTELLATIONS, moonPhaseName, GBG_DAYLIGHT, MONTHS, seasonForMonth } from '../../apps/space.js';
 import { hasInSet } from '../../core/model.js';
 import { createRng } from '../../core/rng.js';
@@ -47,10 +47,10 @@ export function solarView(el, { kos, app }) {
     holder.querySelectorAll('.body').forEach((g) => g.addEventListener('click', () => select(g.dataset.id)));
   }
   function animate() {
-    if (!alive || mode !== 'orbit') return;
+    if (!alive || !el.isConnected || mode !== 'orbit') return;
     const gs = holder.querySelectorAll('.planet');
     PLANETS.forEach((pl, i) => {
-      angles[i] += speeds[i] * 0.01;
+      if (!kos.paused && !reducedMotion()) angles[i] += speeds[i] * 0.01;
       const x = 300 + Math.cos(angles[i]) * radii[i];
       const y = 300 + Math.sin(angles[i]) * radii[i];
       gs[i]?.setAttribute('transform', `translate(${x} ${y})`);
@@ -102,7 +102,7 @@ export function solarView(el, { kos, app }) {
           : null,
         h(
           'div.row-actions',
-          onTap(h('button.btn.btn-ghost.btn-sm', { type: 'button' }, '🔊 Läs'), () => kos.say(`${body.name}. ${fact}`)),
+          onTap(h('button.btn.btn-ghost.btn-sm', { type: 'button' }, '🔊 Läs'), () => kos.read(`${body.name}. ${fact}`)),
           onTap(h('button.btn.btn-primary.btn-sm', { type: 'button' }, 'Mer fakta ➜'), () => {
             factIdx++;
             renderInfo(body);
@@ -210,7 +210,7 @@ export function rocketView(el, { kos, app, level }) {
     kos.sfx('boom');
     pad.classList.add('launch');
     el.querySelector('.choices')?.remove();
-    await wait(2600);
+    await wait(reducedMotion() ? 0 : 2600);
     if (!alive) return;
     kos.reward({ app: app.id, counter: 'rocketLaunch', stars: 2 });
     kos.confetti(120);
@@ -219,7 +219,7 @@ export function rocketView(el, { kos, app, level }) {
         'div.rocket-space',
         h('div.rs-emoji', '🌍 ✨ 🚀'),
         h('h2', 'Du är i rymden!'),
-        h('p', 'För att komma ut i rymden måste raketen åka ungefär 28 000 kilometer i timmen – snabbare än en gevärskula. Därför behövs enorma mängder bränsle.'),
+        h('p', 'För att fortsätta runt jorden i en låg omloppsbana behöver en farkost röra sig ungefär 28 000 kilometer i timmen. Raketen hjälper farkosten upp och ger den fart åt sidan.'),
         h('div.row-actions', onTap(h('button.btn.btn-ghost', { type: 'button' }, '🔧 Bygg en ny'), build), onTap(h('button.btn.btn-primary', { type: 'button' }, '🪐 Till solsystemet'), () => el.dispatchEvent(new CustomEvent('kos-open', { bubbles: true, detail: { app: 'space', module: 'solar' } })))),
       ),
     );
@@ -237,7 +237,7 @@ export function dayNightView(el, { kos, app }) {
   const wrap = h('div.dn-wrap');
   const readout = h('div.sci-readout');
   const missions = h('div.teach', h('span.teach-icon', '🌍'), h('span', 'Snurra jorden med fingret. Gör så att det blir natt i Göteborg – och sedan dag igen!'));
-  el.append(h('div.sci', missions, wrap, readout, h('div.row-actions', onTap(h('button.btn.btn-ghost', { type: 'button' }, '▶ Snurra ett dygn'), spinDay))));
+  el.append(h('div.sci', missions, wrap, readout, h('div.row-actions', onTap(h('button.btn.btn-ghost', { type: 'button' }, reducedMotion() ? 'Nästa tid på dygnet' : '▶ Snurra ett dygn'), spinDay))));
   const done = new Set();
   function timeFor(t) {
     let hrs = (12 + (t - 180) / 15) % 24;
@@ -301,7 +301,13 @@ export function dayNightView(el, { kos, app }) {
   wrap.addEventListener('pointerup', up);
   wrap.addEventListener('pointercancel', up);
   async function spinDay() {
+    if (reducedMotion()) {
+      theta = (theta + 90) % 360;
+      render();
+      return;
+    }
     for (let i = 0; i < 72; i++) {
+      if (!el.isConnected) return;
       theta = (theta + 5) % 360;
       render();
       await wait(40);

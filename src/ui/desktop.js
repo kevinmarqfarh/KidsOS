@@ -1,3 +1,5 @@
+import { createAppFullscreenControl, exitAppFullscreen } from './fullscreen.js';
+import { appById } from '../apps/registry.js';
 // Dator-läget: skrivbord med ikoner och widgetar, fönster som kan flyttas, ändras,
 // minimeras och maximeras, ett aktivitetsfält och en startmeny.
 // Allt går att göra med tryck – att dra är ett tillval (forskning: drag är svårare för små barn).
@@ -39,7 +41,10 @@ export function createDesktop(root, { osEl, confirmSwitch, showLock }) {
     tray = h('div.tb-tray');
     const startBtn = h('button.tb-start', { type: 'button', 'aria-label': 'Start', 'aria-haspopup': 'menu' }, h('span.logo-mark', 'K'), h('span.tb-start-label', 'Start'));
     onTap(startBtn, () => toggleStart());
-    taskbar = h('nav.taskbar', startBtn, tasks, tray);
+    const pinned = h('div.tb-pinned',
+      onTap(h('button.tb-shortcut', { type: 'button', 'aria-label': 'Lekstaden', dataset: { shortcut: 'play' } }, h('span', '🏡'), h('small', 'Lekstaden')), () => open('play', 'studio')),
+      onTap(h('button.tb-shortcut', { type: 'button', 'aria-label': 'Troféer', dataset: { shortcut: 'trophies' } }, h('span', '🏆'), h('small', 'Troféer')), () => open('trophies')));
+    taskbar = h('nav.taskbar', startBtn, pinned, tasks, tray);
     startMenu = h('div.start-menu', { hidden: true, role: 'menu' });
     desk.append(iconsEl, widgetsEl, winLayer);
     root.append(desk, startMenu, taskbar);
@@ -47,6 +52,7 @@ export function createDesktop(root, { osEl, confirmSwitch, showLock }) {
       if (!startMenu.hidden && !e.target.closest('.start-menu')) toggleStart(false);
     });
     kos.on('stars', renderTray);
+    kos.on('coins', renderTray);
     kos.on('tick', renderTray);
     window.addEventListener('resize', () => {
       clearTimeout(resizeT);
@@ -254,6 +260,7 @@ export function createDesktop(root, { osEl, confirmSwitch, showLock }) {
   }
 
   function open(appId, moduleId = null, opts = {}, fromEl = null) {
+    exitAppFullscreen();
     const meta = appMeta(appId);
     if (!meta) return;
     let w = wins.get(appId);
@@ -280,6 +287,10 @@ export function createDesktop(root, { osEl, confirmSwitch, showLock }) {
     const grip = h('div.dwin-grip', { 'aria-hidden': 'true' });
     const el = h('section.dwin', { style: { '--app': meta.color }, dataset: { app: appId }, role: 'dialog', 'aria-label': meta.name }, bar, content, grip);
     const w = { id: appId, meta, el, content, z: ++z, min: false, max: false, rect: defaultRect() };
+    if (appById(appId) && appId !== 'play') {
+      w.fullscreen = createAppFullscreenControl(el, osEl);
+      bar.querySelector('.dwin-ctrl').prepend(w.fullscreen.button);
+    }
     w.host = {
       content,
       setHead({ title, icon, back, levelAppId }) {
@@ -333,7 +344,7 @@ export function createDesktop(root, { osEl, confirmSwitch, showLock }) {
     let start = null;
     let lastTap = 0;
     bar.addEventListener('pointerdown', (e) => {
-      if (e.target.closest('button') || w.max || phone()) return;
+      if (e.target.closest('button') || w.max || phone() || w.fullscreen?.expanded) return;
       start = { x: e.clientX, y: e.clientY, rx: w.rect.x, ry: w.rect.y, moved: false };
       bar.setPointerCapture?.(e.pointerId);
     });
@@ -367,7 +378,7 @@ export function createDesktop(root, { osEl, confirmSwitch, showLock }) {
   function resizeGrip(w, grip) {
     let start = null;
     grip.addEventListener('pointerdown', (e) => {
-      if (w.max || phone()) return;
+      if (w.max || phone() || w.fullscreen?.expanded) return;
       e.preventDefault();
       e.stopPropagation();
       start = { x: e.clientX, y: e.clientY, w: w.rect.w, h: w.rect.h };
@@ -398,6 +409,7 @@ export function createDesktop(root, { osEl, confirmSwitch, showLock }) {
   }
 
   function minimize(w) {
+    w.fullscreen?.exit();
     w.min = true;
     w.el.classList.add('minimized');
     kos.sfx('whoosh');
@@ -414,6 +426,7 @@ export function createDesktop(root, { osEl, confirmSwitch, showLock }) {
   }
 
   function toggleMax(w) {
+    w.fullscreen?.exit();
     w.max = !w.max;
     w.el.classList.toggle('max', w.max || phone());
     w.el.querySelector('.dwin-btn.max').textContent = w.max ? '❐' : '□';
@@ -421,6 +434,7 @@ export function createDesktop(root, { osEl, confirmSwitch, showLock }) {
   }
 
   function destroyWin(w) {
+    w.fullscreen?.destroy();
     try {
       w.app?.destroy();
     } catch (e) {
@@ -431,6 +445,7 @@ export function createDesktop(root, { osEl, confirmSwitch, showLock }) {
   }
 
   function close(w) {
+    w.fullscreen?.exit();
     w.el.classList.add('closing');
     kos.stopSpeaking();
     setTimeout(() => destroyWin(w), 180);

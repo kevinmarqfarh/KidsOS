@@ -1,5 +1,5 @@
 // Vetenskap – experimentvyer. Arbetsgång: Fråga → Gissa → Testa → Förklara → Dokumentera.
-import { h, clear, onTap, wait } from '../dom.js';
+import { h, clear, onTap, wait, reducedMotion } from '../dom.js';
 import { FLOAT_ITEMS, MAGNET_ITEMS, SURFACES, slideDistance, seesawTorque, SEESAW_ANIMALS, SEESAW_MISSIONS } from '../../apps/science.js';
 import { hasInSet } from '../../core/model.js';
 import { createRng } from '../../core/rng.js';
@@ -55,7 +55,7 @@ function predictTest(el, cfg) {
   stage.appendChild(scene.el);
 
   function ask() {
-    if (!alive) return;
+    if (!alive || !el.isConnected) return;
     if (i >= list.length) return summary();
     const it = list[i];
     scene.reset(it);
@@ -78,7 +78,7 @@ function predictTest(el, cfg) {
     clear(panel);
     const result = outcome(it);
     await animate(it, result);
-    if (!alive) return;
+    if (!alive || !el.isConnected) return;
     const right = guess === result;
     log.push({ it, guess, result });
     if (right) {
@@ -150,10 +150,11 @@ export function floatView(el, ctx) {
     async animate(it, res) {
       ctx.kos.sfx('whoosh');
       itemEl.classList.add('drop');
-      await wait(650);
+      await wait(reducedMotion() ? 0 : 650);
+      if (!itemEl.isConnected) return;
       itemEl.classList.add(res === 'flyter' ? 'floating' : 'sinking');
       ctx.kos.sfx(res === 'flyter' ? 'pop' : 'boom');
-      await wait(1100);
+      await wait(reducedMotion() ? 0 : 1100);
     },
     why: (it) => it.why,
     conclusion: 'Saker som är lätta för sin storlek – ofta med luft inuti – flyter. Tunga, täta saker sjunker. Det handlar inte bara om hur stor saken är!',
@@ -186,14 +187,16 @@ export function magnetView(el, ctx) {
     scene,
     async animate(it, res) {
       mag.classList.add('lower');
-      await wait(700);
+      await wait(reducedMotion() ? 0 : 700);
+      if (!itemEl.isConnected) return;
       if (res === 'ja') {
         itemEl.classList.add('stick');
         ctx.kos.sfx('pop');
       } else itemEl.classList.add('wiggle');
-      await wait(500);
+      await wait(reducedMotion() ? 0 : 500);
+      if (!itemEl.isConnected) return;
       mag.classList.add('lift');
-      await wait(800);
+      await wait(reducedMotion() ? 0 : 800);
     },
     why: (it) => it.why,
     conclusion: 'Magneter drar till sig saker av järn och stål. Andra material – som trä, plast, glas, guld och aluminium – fastnar inte.',
@@ -305,7 +308,9 @@ export function waterView(el, { kos, app }) {
   }
   const state = () => (t <= 0 ? 'is' : t >= 100 ? 'ånga' : 'vatten');
   function step() {
-    if (!alive) return;
+    if (!alive || !el.isConnected) return;
+    if (kos.paused) { requestAnimationFrame(step); return; }
+    const still = reducedMotion();
     const ctx = canvas.getContext('2d');
     ctx.clearRect(0, 0, W, H);
     // kastrull
@@ -328,12 +333,15 @@ export function waterView(el, { kos, app }) {
         ctx.arc(W / 2 - 100 + i * 25, 66 + ((lid * 3 + i * 7) % 14), 4, 0, Math.PI * 2);
         ctx.fill();
       }
-      lid++;
+      if (!still) lid++;
     }
     const s = state();
     const energy = Math.max(0.2, (t + 25) / 40);
     for (const p of parts) {
-      if (s === 'is') {
+      if (still) {
+        p.x = W / 2 - 90 + p.gx * 20;
+        p.y = s === 'ånga' ? 80 + p.gy * 14 : s === 'vatten' ? H - 90 + p.gy * 10 : H - 130 + p.gy * 20;
+      } else if (s === 'is') {
         const hx = W / 2 - 90 + p.gx * 20;
         const hy = H - 130 + p.gy * 20;
         p.x += (hx - p.x) * 0.2 + (Math.random() - 0.5) * energy;
@@ -495,7 +503,7 @@ export function seesawView(el, { kos, app, level }) {
         el.querySelector('.sci').appendChild(h('div.fb.fb-ok', h('span.fb-icon', '💡'), h('div.fb-text', h('b', 'Förklaring: '), exp)));
         kos.say(exp);
       }
-      setTimeout(showMission, 900);
+      wait(900).then(() => { if (el.isConnected) showMission(); });
     }
   }
   renderPalette();
@@ -505,6 +513,7 @@ export function seesawView(el, { kos, app, level }) {
 
 /* ---------- Rutschkanan (friktion) ---------- */
 export function slideView(el, { kos, app }) {
+  let alive = true;
   const missions = missionList(['Prova alla fem underlag', 'Få kälken att åka längre än 8 meter', 'Hitta ett underlag där kälken fastnar i backen']);
   let surface = SURFACES[1];
   let steep = 30;
@@ -571,17 +580,23 @@ export function slideView(el, { kos, app }) {
     goBtn.disabled = true;
     const res = slideDistance(hill, surface.mu, 0.25, steep);
     kos.sfx('whoosh');
-    const start = performance.now();
     const dur = 1600;
-    await new Promise((resolve) => {
+    const completed = await new Promise((resolve) => {
+      let elapsed = 0;
+      let last = null;
       const tick = (now) => {
-        const pgr = Math.min(1, (now - start) / dur);
+        if (!alive || !el.isConnected) { resolve(false); return; }
+        if (kos.paused) { last = now; requestAnimationFrame(tick); return; }
+        elapsed += last === null ? 0 : now - last;
+        last = now;
+        const pgr = reducedMotion() ? 1 : Math.min(1, elapsed / dur);
         draw(1 - (1 - pgr) ** 2, res);
         if (pgr < 1) requestAnimationFrame(tick);
-        else resolve();
+        else resolve(true);
       };
       requestAnimationFrame(tick);
     });
+    if (!completed) return;
     goBtn.disabled = false;
     const dist = res.stuck ? 0 : Math.min(14, res.ground);
     results.push({ s: surface, steep, dist, stuck: res.stuck });
@@ -602,6 +617,7 @@ export function slideView(el, { kos, app }) {
   renderChips();
   draw(0, null);
   kos.autoSay('Vilket underlag är halast? Välj underlag och backe och tryck på åk.');
+  return () => { alive = false; };
 }
 
 /* ---------- Blanda & separera ---------- */
@@ -634,6 +650,7 @@ export function mixView(el, { kos, app }) {
     bits.innerHTML = kind === 'sand' ? '<i></i>'.repeat(18) : '<i></i>'.repeat(14);
     kos.sfx('whoosh');
     await wait(1600);
+    if (!el.isConnected) return;
     glass.classList.add('mixed');
     clear(top).append(
       stepsBar(1),
@@ -647,6 +664,7 @@ export function mixView(el, { kos, app }) {
     clear(panel);
     glass.classList.add('filtering');
     await wait(1600);
+    if (!el.isConnected) return;
     if (mixture === 'sand') {
       glass.classList.add('separated');
       if (missions.complete(0)) kos.reward({ stars: 2 });
@@ -661,6 +679,7 @@ export function mixView(el, { kos, app }) {
     glass.classList.add('evaporating');
     kos.sfx('whoosh');
     await wait(2000);
+    if (!el.isConnected) return;
     glass.classList.add('dry');
     if (mixture === 'salt') {
       if (missions.complete(1)) kos.reward({ stars: 2 });

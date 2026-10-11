@@ -258,5 +258,5 @@ export const playApp = {
   icon: '🏡',
   color: '#f97316',
   tagline: 'Lek, bygg och upptäck',
-  modules: [{ id: 'town', name: 'Lekstaden', icon: '🏡', minLevel: 0, view: 'play', lgr: ['ma-tal', 'ma-rakna', 'no-livscykel', 'no-arter', 'sv-avkoda', 'bi-skapa'] }],
+  modules: [{ id: 'studio', name: 'Skaparstudion', icon: '🎨', minLevel: 0, view: 'studio', lgr: ['bi-skapa', 'sv-text', 'ma-tal'] }, { id: 'town', name: 'Lekstaden', icon: '🏡', minLevel: 0, view: 'play', lgr: ['ma-tal', 'ma-rakna', 'no-livscykel', 'no-arter', 'sv-avkoda', 'bi-skapa'] }],
 };

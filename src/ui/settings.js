@@ -30,13 +30,14 @@ export function renderSettings(el, { parentGate, profileWizard, showLock, goHome
         kos.saveNow();
         renderKid();
       })))),
-      row('Uppläsning', seg([['auto', 'Automatisk'], ['on', 'Alltid'], ['off', 'Av']], p.settings.readAloud, (v) => {
+      row('Uppläsning', seg([['auto', 'Efter ålder'], ['on', 'Alltid'], ['manual', 'När jag trycker'], ['off', 'Av']], p.settings.readAloud, (v) => {
         p.settings.readAloud = v;
         kos.applySettings();
         kos.saveNow();
         renderKid();
-        if (v !== 'off') kos.say('Nu läser jag högt för dig.');
+        if (v === 'on' || v === 'auto') kos.autoSay('Nu läser jag högt för dig.');
       })),
+      supportSection(p, renderKid),
       !hasSwedishVoice() ? h('p.muted', 'ℹ️ Ingen svensk röst hittades i den här webbläsaren. På iPad: Inställningar → Hjälpmedel → Uppläst innehåll → Röster → Svenska.') : null,
     );
   }
@@ -59,7 +60,7 @@ export function renderSettings(el, { parentGate, profileWizard, showLock, goHome
         })), onTap(h('button.chip-btn', { type: 'button' }, '＋ Ny profil'), () => profileWizard({ onDone: () => render() }))),
       );
       if (kidP) {
-        wrap.append(reportSection(kidP), profileSection(kidP, render), levelSection(kidP, render), timeSection(kidP, render), appsSection(kidP, render));
+        wrap.append(reportSection(kidP), profileSection(kidP, render), supportSection(kidP, render), levelSection(kidP, render), timeSection(kidP, render), appsSection(kidP, render));
       }
       wrap.append(globalSection(render), backupSection(), aboutSection());
     };
@@ -100,6 +101,28 @@ export function renderSettings(el, { parentGate, profileWizard, showLock, goHome
           ]),
         ),
       ),
+    );
+  }
+
+  function supportSection(kp, render) {
+    const update = (key, value) => {
+      kp.settings[key] = value;
+      kos.applySettings();
+      kos.saveNow();
+      render();
+    };
+    return h('section.set-section.support-settings',
+      h('h3', 'Mitt stöd'),
+      h('p.muted', `Välj det som passar ${kp.name}. Valen sparas för den här profilen.`),
+      row('Ljudeffekter', seg([['default', 'Som enheten'], ['on', 'På'], ['off', 'Av']], kp.settings.sound === null ? 'default' : kp.settings.sound ? 'on' : 'off', v => update('sound', v === 'default' ? null : v === 'on'))),
+      row('Mindre rörelse', toggle(kp.settings.reducedMotion, v => update('reducedMotion', v), 'Mindre rörelse')),
+      row('Fira med animationer', toggle(kp.settings.celebrationEffects, v => update('celebrationEffects', v), 'Fira med animationer')),
+      row('Frågor per runda', seg([['0', 'Efter ålder'], ['3', '3 frågor'], ['5', '5 frågor'], ['8', '8 frågor']], String(kp.settings.roundLength), v => update('roundLength', Number(v)))),
+      row('Samma nivå hela rundan', toggle(kp.settings.steadyRounds, v => update('steadyRounds', v), 'Samma nivå hela rundan')),
+      row('Visa plan före rundan', toggle(kp.settings.previewRounds, v => update('previewRounds', v), 'Visa plan före rundan')),
+      row('Lugn återkoppling', toggle(kp.settings.quietFeedback, v => update('quietFeedback', v), 'Lugn återkoppling')),
+      h('p.muted', 'Lugn återkoppling tar bort trofénotiser och nivåfirande under övningen. Du får fortfarande stjärnor och mynt.'),
+      h('p.muted', 'Rundvalen gäller frågeövningar. Nya val används nästa runda. Mindre rörelse tar även bort belöningsanimationer; stjärnor och framsteg sparas som vanligt.'),
     );
   }
 
@@ -328,7 +351,7 @@ export function renderSettings(el, { parentGate, profileWizard, showLock, goHome
       'section.set-section',
       h('h3', 'ℹ️ Om KidsOS'),
       h('p', 'KidsOS är byggt kring nyfikenhet, kreativitet och lärande. Innehållet följer Skolverkets läroplan (Lgr22) för förskoleklass och årskurs 1–3, och designen bygger på forskning om hur barn använder pekskärmar: stora tryckytor, ingen tidspress, inga straff och uppläsning för de som inte läser själva än.'),
-      h('p.muted', 'Inga annonser. Ingen data lämnar enheten.'),
+      h('p.muted', 'Inga annonser. Profiler och framsteg sparas på den här enheten.'),
     );
   }
 
@@ -339,10 +362,10 @@ export function renderSettings(el, { parentGate, profileWizard, showLock, goHome
     return h('div.set-block', h('span.set-label', label), control);
   }
   function seg(options, value, onChange) {
-    return h('div.seg.wrap', options.map(([v, label]) => onTap(h('button.seg-btn', { type: 'button', class: String(v) === String(value) ? 'on' : '' }, label), () => onChange(v))));
+    return h('div.seg.wrap', options.map(([v, label]) => onTap(h('button.seg-btn', { type: 'button', 'aria-pressed': String(String(v) === String(value)), class: String(v) === String(value) ? 'on' : '' }, label), () => onChange(v))));
   }
-  function toggle(on, onChange) {
-    const b = h('button.toggle', { type: 'button', role: 'switch', 'aria-checked': String(!!on), class: on ? 'on' : '' }, h('i'));
+  function toggle(on, onChange, label) {
+    const b = h('button.toggle', { type: 'button', role: 'switch', 'aria-label': label, 'aria-checked': String(!!on), class: on ? 'on' : '' }, h('i'));
     onTap(b, () => {
       const v = !b.classList.contains('on');
       b.classList.toggle('on', v);

@@ -2,6 +2,11 @@
 
 Granskade 2026-10-09. 30 nya svenska scenarier i tre övningar: Tänk som en forskare, Krafter i vardagen och Ta vara på saker. Ingen extern tjänst krävs. Observationer, mätvärden och situationer är pedagogiska exempel, inte rapporterade studieresultat eller uppmaningar att utföra försök.
 
+Kompletterande rättelse 11 oktober 2026: raketvyn skiljer nu mellan att komma upp
+i rymden och att färdas runt jorden i låg omloppsbana. Hastigheten cirka 28 000 km/h
+avser låg omloppsbana, inte en generell gräns för att nå rymden. Underlag:
+[NASA, Spot the Station](https://spotthestation.nasa.gov/faq.cfm).
+
 Åldersband 4–5 år (nivå 0) har korta konkreta frågor. 6–7 år (nivå 1) arbetar med förklaring och dokumentation. 8–9 år (nivå 2–3) jämför, räknar och avgränsar slutsatser. 10–12 år (nivå 4) resonerar om flera faktorer, rättvis jämförelse, modellbegränsningar och mätosäkerhet. Generatorn väljer från det aktuella bandet.
 
 ## Källor och användning

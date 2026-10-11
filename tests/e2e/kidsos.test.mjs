@@ -725,3 +725,191 @@ test('sammanslagning: datorläge behåller kurser, Världen och Lekstaden', asyn
   assert.deepEqual(errors, []);
   await ctx.close();
 });
+
+test('Lekstaden: kursrundor ger mynt som låser upp köp, rum och sparade föremål', async () => {
+  const { page, ctx, errors } = await open(PHONE);
+  await family(page, 1);
+  const nav = await page.locator('.dock-item').allTextContents();
+  assert.ok(nav.findIndex(text => text.includes('Lekstaden')) < nav.findIndex(text => text.includes('Troféer')));
+  await page.locator('.dock').getByRole('button', { name: 'Lekstaden', exact: true }).click();
+  await page.waitForSelector('.studio-stage');
+  await page.getByRole('button', { name: 'Upptäck', exact: true }).click();
+  const pack = page.locator('.studio-shop-card[data-asset="science-pack"]');
+  assert.equal(await pack.getByRole('button', { name: 'Köp', exact: true }).count(), 0);
+  await pack.getByRole('button', { name: 'Öva och lås upp', exact: true }).click();
+  await page.waitForSelector('.q-prompt');
+  await playRound(page);
+  assert.match(await page.locator('.learn-play-reward').innerText(), /spelmynt/);
+  assert.ok((await state(page)).profiles[1].stats.science.modules.investigate.rounds >= 1);
+  const before = (await state(page)).profiles[1].coins;
+  assert.ok(before >= 14);
+  await page.getByRole('button', { name: '🏡 Till Skaparstudion', exact: true }).click();
+  await page.waitForSelector('.studio-stage');
+  await page.getByRole('button', { name: 'Upptäck', exact: true }).click();
+  await page.locator('.studio-shop-card[data-asset="science-pack"]').getByRole('button', { name: 'Köp', exact: true }).click();
+  assert.equal((await state(page)).profiles[1].coins, before - 14);
+  assert.equal(await page.locator('.studio-shop-card[data-asset="science-pack"]').getByRole('button', { name: 'Köp', exact: true }).count(), 0);
+  await page.getByRole('button', { name: 'Inred', exact: true }).click();
+  await page.getByRole('button', { name: 'Lek', exact: true }).click();
+  await page.getByRole('button', { name: 'Placera Mikroskop', exact: true }).click();
+  const stage = page.locator('.studio-stage');
+  const box = await stage.boundingBox();
+  await stage.click({ position: { x: box.width * .35, y: box.height * .8 } });
+  assert.ok(await page.evaluate(() => JSON.parse(window.render_game_to_text()).room.props.some(item => item.itemId === 'microscope')));
+  await page.screenshot({ path: join(SHOTS, 'mobil-skaparstudio.png') });
+  await page.getByRole('button', { name: 'Upptäck', exact: true }).click();
+  const room = page.locator('.studio-shop-card[data-kind="room"][data-asset="science"]');
+  await room.getByRole('button', { name: 'Öva för fler mynt', exact: true }).click();
+  await page.waitForSelector('.q-prompt');
+  await playRound(page);
+  await page.getByRole('button', { name: '🏡 Till Skaparstudion', exact: true }).click();
+  await page.getByRole('button', { name: 'Upptäck', exact: true }).click();
+  await page.locator('.studio-shop-card[data-kind="room"][data-asset="science"]').getByRole('button', { name: 'Köp', exact: true }).click();
+  assert.equal(await page.getByRole('button', { name: 'Upptäckarlabbet', exact: true }).count(), 1);
+  await page.getByRole('button', { name: 'Rum', exact: true }).click();
+  await page.getByLabel('Rummets namn', { exact: true }).fill('Sagas labb');
+  await page.getByLabel('Rummets namn', { exact: true }).blur();
+  const activeId = (await state(page)).activeId;
+  await page.reload();
+  await page.waitForSelector('.home');
+  await page.locator('.dock').getByRole('button', { name: 'Lekstaden', exact: true }).click();
+  const saved = await page.evaluate(() => JSON.parse(window.render_game_to_text()));
+  assert.equal(saved.room.name, 'Sagas labb');
+  await page.getByRole('button', { name: 'Mitt mysrum', exact: true }).click();
+  assert.ok(await page.evaluate(() => JSON.parse(window.render_game_to_text()).room.props.some(item => item.itemId === 'microscope')));
+  assert.equal((await state(page)).activeId, activeId);
+  assert.deepEqual(errors, []);
+  await ctx.close();
+});
+
+test('sifferskrivning avbryter köat tal och startar inte rösten under ritandet', async () => {
+  const { page, ctx, errors } = await open(PHONE);
+  await family(page, 0);
+  await page.evaluate(() => {
+    window.__traceSpeech = [];
+    window.__tracePending = null;
+    Object.defineProperty(window, 'speechSynthesis', { configurable: true, value: {
+      getVoices: () => [], addEventListener() {},
+      speak(utterance) { window.__traceSpeech.push(utterance.text); window.__tracePending = utterance.text; },
+      cancel() { window.__tracePending = null; },
+    } });
+  });
+  await openModule(page, 'write', 'digits');
+  assert.deepEqual(await page.evaluate(() => window.__traceSpeech), ['Siffran 0.']);
+  const canvas = page.locator('.trace-ink');
+  let box = await canvas.boundingBox();
+  for (let stroke = 0; stroke < 3; stroke++) {
+    await page.mouse.move(box.x + box.width * .35, box.y + box.height * .3);
+    await page.mouse.down();
+    assert.equal(await page.evaluate(() => window.__tracePending), null);
+    await page.mouse.move(box.x + box.width * .6, box.y + box.height * .7, { steps: 12 });
+    await page.mouse.up();
+  }
+  await page.setViewportSize({ width: 400, height: 844 });
+  assert.deepEqual(await page.evaluate(() => window.__traceSpeech), ['Siffran 0.']);
+  await page.locator('.trace-chip').filter({ hasText: /^2$/ }).click();
+  assert.deepEqual(await page.evaluate(() => window.__traceSpeech), ['Siffran 0.', 'Siffran 2.']);
+  box = await canvas.boundingBox();
+  await page.mouse.move(box.x + box.width * .4, box.y + box.height * .4);
+  await page.mouse.down();
+  await page.mouse.move(box.x + box.width * .6, box.y + box.height * .6, { steps: 10 });
+  await page.mouse.up();
+  assert.equal(await page.evaluate(() => window.__tracePending), null);
+  assert.deepEqual(await page.evaluate(() => window.__traceSpeech), ['Siffran 0.', 'Siffran 2.']);
+  assert.deepEqual(errors, []);
+  await ctx.close();
+});
+
+test('Mitt stöd: profilval, manuell uppläsning, paus och förutsägbar runda', async () => {
+  const { page, ctx, errors } = await open(PHONE);
+  try {
+    await family(page, 0);
+    await page.evaluate(() => {
+      const kos = window.kidsos.kos;
+      Object.assign(kos.profile.settings, { sound: false, reducedMotion: true, celebrationEffects: false, readAloud: 'manual', roundLength: 3, steadyRounds: true });
+      kos.profile.stats.math = { level: 0, rounds: 0, correct: 0, wrong: 0, runUp: 4, runDown: 0, modules: {} };
+      kos.applySettings();
+      kos.saveNow();
+      window.spokenTexts = [];
+      window.speechSynthesis.speak = utterance => { window.spokenTexts.push(utterance.text); utterance.onend?.(); };
+    });
+    await openModule(page, 'math', 'count');
+    assert.equal(await page.locator('.q-dot').count(), 3);
+    assert.match(await page.locator('.q-progress').innerText(), /fråga 1 av 3/);
+    assert.equal(await page.evaluate(() => window.spokenTexts.length), 0);
+    await page.locator('.q-speak').click();
+    assert.equal(await page.evaluate(() => window.spokenTexts.length), 1);
+    const question = await page.evaluate(() => JSON.stringify(window.kidsos.q));
+    await page.locator('.quiz-pause').click();
+    assert.equal(await page.evaluate(() => window.kidsos.kos.paused), true);
+    assert.equal(await page.locator('dialog').evaluate(el => el.open), true);
+    await page.evaluate(() => { window.kidsos.kos.sfx('fanfare'); window.kidsos.kos.say('oväntat'); });
+    await page.getByRole('button', { name: 'Fortsätt', exact: true }).click();
+    assert.equal(await page.evaluate(() => window.kidsos.kos.paused), false);
+    assert.equal(await page.evaluate(() => JSON.stringify(window.kidsos.q)), question);
+    assert.equal(await page.evaluate(() => window.spokenTexts.length), 1);
+    for (let i = 0; i < 3; i++) {
+      assert.equal(await page.evaluate(() => window.kidsos.q.level), 0);
+      await answerCurrent(page);
+      await page.locator('.btn-next').click();
+    }
+    await page.waitForSelector('.summary');
+    assert.equal(await page.locator('.confetti, .fly-star').count(), 0);
+    assert.equal(await page.locator('.sum-star.on').first().evaluate(el => getComputedStyle(el).animationName), 'none');
+    assert.equal(await page.evaluate(() => window.kidsos.kos.profile.stats.math.level), 1);
+    await page.evaluate(() => {
+      const kos = window.kidsos.kos;
+      kos.login(kos.state.profiles[1].id);
+    });
+    assert.equal(await page.evaluate(() => document.documentElement.dataset.reducedMotion), 'false');
+    assert.equal(await page.evaluate(() => window.kidsos.kos.profile.settings.roundLength), 0);
+    assert.deepEqual(errors, []);
+  } finally { await ctx.close(); }
+});
+
+test('Mitt stöd går att välja i barnets inställningar och finns kvar efter omstart', async () => {
+  const { page, ctx, errors } = await open(PHONE);
+  try {
+    await family(page, 0);
+    await page.evaluate(() => window.kidsos.openApp('settings'));
+    await page.getByRole('switch', { name: 'Mindre rörelse', exact: true }).click();
+    await page.getByRole('button', { name: '3 frågor', exact: true }).click();
+    await page.getByRole('button', { name: 'När jag trycker', exact: true }).click();
+    assert.equal(await page.getByRole('switch', { name: 'Mindre rörelse', exact: true }).getAttribute('aria-checked'), 'true');
+    await page.reload();
+    await page.waitForTimeout(300);
+    assert.deepEqual(await page.evaluate(() => {
+      const s = window.kidsos.kos.profile.settings;
+      return [s.reducedMotion, s.roundLength, s.readAloud];
+    }), [true, 3, 'manual']);
+    assert.deepEqual(errors, []);
+  } finally { await ctx.close(); }
+});
+
+test('paus stoppar också fördröjd uppläsning efter återgång och städas vid avslut', async () => {
+  const { page, ctx, errors } = await open(PHONE);
+  try {
+    await family(page, 0);
+    await page.evaluate(() => {
+      const kos = window.kidsos.kos;
+      kos.profile.settings.readAloud = 'on';
+      kos.applySettings();
+      kos.stopSpeaking();
+      window.utterances = [];
+      window.speechSynthesis.speak = utterance => window.utterances.push(utterance);
+    });
+    await openModule(page, 'math', 'compare');
+    assert.equal(await page.evaluate(() => window.utterances.length), 1);
+    await page.locator('.quiz-pause').click();
+    await page.getByRole('button', { name: 'Fortsätt', exact: true }).click();
+    await page.evaluate(() => window.utterances[0].onend());
+    await page.waitForTimeout(150);
+    assert.equal(await page.evaluate(() => window.utterances.length), 1);
+    await page.waitForTimeout(250);
+    await page.locator('.quiz-pause').click();
+    await page.evaluate(() => window.kidsos.goHome());
+    assert.equal(await page.locator('.quiz-pause-dialog').count(), 0);
+    assert.equal(await page.evaluate(() => window.kidsos.kos.paused), false);
+    assert.deepEqual(errors, []);
+  } finally { await ctx.close(); }
+});

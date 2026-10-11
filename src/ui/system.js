@@ -89,7 +89,7 @@ function renderExplorer(el, { openApp }) {
     const box = h(
       'div.ex-preview',
       h('div.ex-big', { html: f.big }),
-      h('div.ex-info', h('b', f.name), f.text ? h('p', f.text) : null, f.credit ? h('small.credit', f.credit) : null, h('div.row-actions.left', f.say ? onTap(h('button.btn.btn-ghost.btn-sm', { type: 'button' }, '🔊 Läs'), () => kos.say(f.say)) : null, onTap(h('button.btn.btn-primary.btn-sm', { type: 'button' }, '✕ Stäng'), () => box.remove()))),
+      h('div.ex-info', h('b', f.name), f.text ? h('p', f.text) : null, f.credit ? h('small.credit', f.credit) : null, h('div.row-actions.left', f.say ? onTap(h('button.btn.btn-ghost.btn-sm', { type: 'button' }, '🔊 Läs'), () => kos.read(f.say)) : null, onTap(h('button.btn.btn-primary.btn-sm', { type: 'button' }, '✕ Stäng'), () => box.remove()))),
     );
     main.appendChild(box);
     if (f.say) kos.autoSay(f.say);
@@ -134,7 +134,7 @@ function renderNotes(el) {
   const toolbar = h(
     'div.notes-tools',
     onTap(h('button.btn.btn-ghost.btn-sm', { type: 'button' }, '＋ Ny'), () => newNote()),
-    onTap(h('button.btn.btn-ghost.btn-sm', { type: 'button' }, '🔊 Läs upp'), () => kos.say(ta.value || 'Du har inte skrivit något än.')),
+    onTap(h('button.btn.btn-ghost.btn-sm', { type: 'button' }, '🔊 Läs upp'), () => kos.read(ta.value || 'Du har inte skrivit något än.')),
     onTap(h('button.btn.btn-ghost.btn-sm', { type: 'button', 'aria-label': 'textstorlek' }, 'Aa'), () => {
       size = (size + 1) % sizes.length;
       ta.style.fontSize = `${sizes[size]}px`;

@@ -1,5 +1,5 @@
 // Skriv ABC – spåra bokstäver, siffror, ord och sitt eget namn med fingret.
-import { h, clear, onTap } from '../dom.js';
+import { h, clear, onTap, reducedMotion } from '../dom.js';
 import { GLYPHS, UPPER, LOWER, DIGITS, GUIDES, layoutWord, scoreTrace, strokeHints, WRITE_WORDS } from '../../apps/letters.js';
 import { ALPHABET } from '../../apps/svenska.js';
 import { hasInSet } from '../../core/model.js';
@@ -26,6 +26,9 @@ export function traceView(el, { kos, app, module: mod, level }) {
   let layout = null;
   let unitPx = 100;
   let demoRaf = 0;
+  let setupRaf = 0;
+  let alive = true;
+  let drawingStarted = false;
 
   const strip = h('div.trace-strip', { role: 'tablist' });
   const caption = h('div.trace-caption');
@@ -62,6 +65,9 @@ export function traceView(el, { kos, app, module: mod, level }) {
   }
 
   function select(i) {
+    kos.stopSpeaking();
+    current = null;
+    drawingStarted = false;
     idx = i;
     strokes = [];
     nextBtn.hidden = true;
@@ -78,6 +84,7 @@ export function traceView(el, { kos, app, module: mod, level }) {
   }
 
   function sayItem() {
+    if (!alive || drawingStarted || current) return;
     const t = itemText();
     if (set === 'upper' || set === 'lower') {
       const a = ALPHABET.find((x) => x.l === t.toUpperCase());
@@ -174,6 +181,9 @@ export function traceView(el, { kos, app, module: mod, level }) {
   };
   canvas.addEventListener('pointerdown', (e) => {
     e.preventDefault();
+    // Ett skrivdrag ska avbryta både pågående och köad uppläsning.
+    drawingStarted = true;
+    kos.stopSpeaking();
     cancelDemo();
     canvas.setPointerCapture?.(e.pointerId);
     current = [toUnit(e)];
@@ -261,6 +271,15 @@ export function traceView(el, { kos, app, module: mod, level }) {
     cancelDemo();
     const all = layout.strokes;
     const ns = 'http://www.w3.org/2000/svg';
+    if (reducedMotion()) {
+      for (const stroke of all) {
+        const path = document.createElementNS(ns, 'polyline');
+        path.setAttribute('class', 'demo-path');
+        path.setAttribute('points', stroke.map(([x, y]) => `${x * 100},${y * 100}`).join(' '));
+        svg.append(path);
+      }
+      return;
+    }
     const pen = document.createElementNS(ns, 'circle');
     pen.setAttribute('r', '4');
     pen.setAttribute('class', 'demo-pen');
@@ -269,6 +288,8 @@ export function traceView(el, { kos, app, module: mod, level }) {
     let pi = 0;
     let poly = null;
     const step = () => {
+      if (!alive || !el.isConnected) return;
+      if (kos.paused) { demoRaf = requestAnimationFrame(step); return; }
       if (si >= all.length) {
         setTimeout(cancelDemo, 600);
         return;
@@ -297,11 +318,15 @@ export function traceView(el, { kos, app, module: mod, level }) {
   const onResize = () => setup();
   window.addEventListener('resize', onResize);
   renderStrip();
-  requestAnimationFrame(() => {
+  setupRaf = requestAnimationFrame(() => {
+    if (!alive) return;
     setup();
     sayItem();
   });
   return () => {
+    alive = false;
+    cancelAnimationFrame(setupRaf);
+    kos.stopSpeaking();
     cancelDemo();
     window.removeEventListener('resize', onResize);
   };

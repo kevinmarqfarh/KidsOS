@@ -1,7 +1,7 @@
 // Lekstaden – öppen lekvärld med inbyggt lärande.
 import { h, clear, onTap } from '../dom.js';
 import { loadJSON, saveJSON } from '../../core/storage.js';
-import { spendCoins, addCoins, addToSet, hasInSet } from '../../core/model.js';
+import { spendCoins, addToSet, hasInSet } from '../../core/model.js';
 import {
   SCENES, ITEMS, itemById, SHOP_CATS, coinsForLevel, fewestCoins, PLANTS, GROW_MINUTES, canGrow, growTick,
   INGREDIENTS, RECIPES, matchRecipe, BASE_COLORS, MIXES, mixColors, TOOLS, PATIENTS, SECRETS,
@@ -109,11 +109,10 @@ export function playView(el, { kos }) {
     if (speak) kos.say(text);
   }
   function earn(n, why) {
-    addCoins(p, n);
-    kos.save();
-    kos.sfx('star');
-    kos.toast(`+${n} 🪙 ${why}`, { icon: '🪙', ms: 2200 });
-    clear(bar.querySelector('.wallet') || h('span')).append(h('span.coin', '🪙'), h('b', String(p.coins)));
+    // Fri lek ger respons och upptäckter. Valutan tjänas genom lärandet.
+    kos.sfx('correct');
+    kos.toast(why, { icon: '✨', ms: 2200 });
+    void n;
   }
   function clearTimers() {
     timers.forEach(clearInterval);
@@ -136,6 +135,7 @@ export function playView(el, { kos }) {
     });
     const found = Object.keys(st.secrets).length;
     body.append(
+      onTap(h('button.btn.btn-primary.play-studio-open', { type: 'button' }, '🎨 Skapa rum och figurer'), () => el.dispatchEvent(new CustomEvent('kos-open', { bubbles: true, detail: { app: 'play', module: 'studio' } }))),
       map,
       h('div.town-info', h('span', `🔍 Hemligheter: ${found}`), h('span', `🧪 Färger: ${Object.keys(st.colors).length}/${MIXES.length}`), h('span', `🍳 Recept: ${Object.keys(st.recipes).length}/${RECIPES.length}`), h('span', `🏥 Patienter: ${st.patients}`)),
       h('p.muted.town-tip', '🪙 Mynt tjänar du genom att lära dig i de andra apparna – varje stjärna ger ett mynt.'),
@@ -417,11 +417,11 @@ export function playView(el, { kos }) {
       wrap.appendChild(grid);
       const harvest = Object.entries(st.pantry).filter(([, n]) => n > 0);
       if (harvest.length) {
-        wrap.append(h('h4', '🧺 Sälj från trädgården (1 🪙 st)'), h('div.chip-row', harvest.map(([k, n]) => {
+        wrap.append(h('h4', '🧺 Ge bort från trädgården'), h('div.chip-row', harvest.map(([k, n]) => {
           const ing = INGREDIENTS.find((i) => i.id === k) || { e: '🌻', n: 'solrosfrön' };
           return onTap(h('button.chip-btn', { type: 'button' }, `${ing.e} ${ing.n} × ${n}`), () => {
             st.pantry[k]--;
-            earn(1, `Sålde ${ing.n}`);
+            earn(1, `Gav bort ${ing.n}`);
             save();
             render();
           });
@@ -484,6 +484,7 @@ export function playView(el, { kos }) {
         const best = fewestCoins(it.price, coins);
         const efficient = best && put.length === best.length && level >= 2;
         kos.save();
+        kos.emit('coins', p.coins);
         dlg.remove();
         done();
         if (efficient) earn(1, 'Smart! Så få mynt som möjligt.');
@@ -537,7 +538,7 @@ export function playView(el, { kos }) {
     function renderRecipe() {
       recipeCard.hidden = false;
       clear(recipeCard).append(
-        h('div.rc-head', h('span', recipe.e), h('b', recipe.n), onTap(h('button.icon-btn', { type: 'button', 'aria-label': 'läs upp' }, '🔊'), () => kos.say(`${recipe.n}. Du behöver ${recipeText(recipe)}.`))),
+        h('div.rc-head', h('span', recipe.e), h('b', recipe.n), onTap(h('button.icon-btn', { type: 'button', 'aria-label': 'läs upp' }, '🔊'), () => kos.read(`${recipe.n}. Du behöver ${recipeText(recipe)}.`))),
         h('ul', Object.entries(recipe.needs).map(([k, n]) => {
           const ing = INGREDIENTS.find((i) => i.id === k);
           const have = bowl[k] || 0;

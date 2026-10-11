@@ -35,7 +35,7 @@ export function bodyView(el, { kos, app, level }) {
     const r = kos.reward({ app: app.id, set: 'bodyParts', item: id, stars: hasInSet(p, 'bodyParts', id) ? 0 : 1 });
     kos.sfx('pop');
     const nm = part.name[0].toUpperCase() + part.name.slice(1);
-    clear(card).append(h('div.pi-card', h('h3', nm, r.isNew ? h('span.new-tag', 'Ny!') : null), h('p.pi-fact', part.fn), onTap(h('button.btn.btn-ghost.btn-sm', { type: 'button' }, '🔊 Läs'), () => kos.say(`${nm}. ${part.fn}`))));
+    clear(card).append(h('div.pi-card', h('h3', nm, r.isNew ? h('span.new-tag', 'Ny!') : null), h('p.pi-fact', part.fn), onTap(h('button.btn.btn-ghost.btn-sm', { type: 'button' }, '🔊 Läs'), () => kos.read(`${nm}. ${part.fn}`))));
     kos.autoSay(`${nm}. ${part.fn}`);
     renderFound();
   }
@@ -85,7 +85,7 @@ export function storiesView(el, { kos, app, level }) {
           const span = h('span.word', w);
           span.addEventListener('click', () => {
             span.classList.add('said');
-            kos.say(w.replace(/[^\p{L}\p{N}]/gu, ''), { slow: true });
+            kos.read(w.replace(/[^\p{L}\p{N}]/gu, ''), { slow: true });
             setTimeout(() => span.classList.remove('said'), 800);
           });
           return span;
@@ -110,7 +110,7 @@ export function storiesView(el, { kos, app, level }) {
         if (!reading || !alive) break;
         ln.classList.add('reading');
         ln.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
-        await kos.say(ln.textContent);
+        await kos.read(ln.textContent);
         ln.classList.remove('reading');
         await wait(250);
       }
