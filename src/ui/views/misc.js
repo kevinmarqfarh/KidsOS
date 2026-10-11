@@ -8,6 +8,7 @@ import { hasInSet } from '../../core/model.js';
 import { loadDrawings, saveDrawing, deleteDrawing, loadJSON } from '../../core/storage.js';
 import { createRng } from '../../core/rng.js';
 import { photo, creditLine } from '../img.js';
+import { flipCard, speakAlong, shimmer } from '../fx.js';
 
 /* ---------- Utforska kroppen ---------- */
 export function bodyView(el, { kos, app, level }) {
@@ -110,7 +111,8 @@ export function storiesView(el, { kos, app, level }) {
         if (!reading || !alive) break;
         ln.classList.add('reading');
         ln.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
-        await kos.say(ln.textContent);
+        // fx: ord-för-ord-markering medan raden läses (koppling ljud–skrift).
+        await speakAlong(ln, (t, o) => kos.say(t, o));
         ln.classList.remove('reading');
         await wait(250);
       }
@@ -235,17 +237,22 @@ export function wonderView(el, { kos, app, opts, level }) {
   function open(w) {
     clear(el);
     const answer = h('div.wonder-answer', { hidden: true }, h('p', wonderAnswer(w, level)), h('div.wonder-think', h('b', '🤔 Fundera vidare: '), w.think));
-    const reveal = h('button.btn.btn-primary.btn-xl', { type: 'button' }, '💡 Visa svaret');
+    const reveal = shimmer(h('button.btn.btn-primary.btn-xl', { type: 'button' }, '💡 Visa svaret'));
     const speak = onTap(h('button.icon-btn', { type: 'button', 'aria-label': 'läs upp frågan' }, '🔊'), () => kos.say(answer.hidden ? `${w.q} Vad tror du?` : `${w.a} Fundera vidare: ${w.think}`));
+    const flip = flipCard(
+      h('span.wonder-guess', h('span.fx-q-mark', '?'), h('span', 'Vad tror du? Gissa först – säg det högt eller berätta för någon!'), h('small.fx-flip-hint', 'Tryck för att vända kortet')),
+      answer,
+      { label: 'Vänd kortet och se svaret', onFlip: (f) => f && doReveal() },
+    );
     el.append(
       h(
         'div.wonder-card-big',
         photo(`w-${w.id}`) ? h('figure.wcb-photo', h('span', { html: photo(`w-${w.id}`, { alt: w.q }) }), h('figcaption.credit', creditLine(`w-${w.id}`))) : h('span.wcb-e', w.e),
         h('span.wcb-cat', `${CAT_ICON[w.cat] || ''} ${w.cat}`),
         h('h2', w.q, ' ', speak),
-        h('p.wonder-guess', 'Vad tror du? Gissa först – säg det högt eller berätta för någon!'),
+        // fx: Flip Card – gissa först (framsida), vänd för svaret (baksida).
+        flip,
         reveal,
-        answer,
         h('div.row-actions', onTap(h('button.btn.btn-ghost', { type: 'button' }, '☰ Alla frågor'), () => {
           kos.stopSpeaking();
           list();
@@ -256,13 +263,18 @@ export function wonderView(el, { kos, app, opts, level }) {
       ),
     );
     kos.autoSay(`${w.q} Vad tror du? Gissa först!`);
-    onTap(reveal, () => {
+    let revealed = false;
+    function doReveal() {
       reveal.hidden = true;
       answer.hidden = false;
+      flip.flip(true);
+      if (revealed) return;
+      revealed = true;
       const first = !hasInSet(p, 'wonders', w.id);
       kos.reward({ app: app.id, set: 'wonders', item: w.id, stars: first ? 1 : 0 });
       kos.say(`${wonderAnswer(w, level)} Fundera vidare: ${w.think}`);
-    });
+    }
+    onTap(reveal, doReveal);
   }
   const focus = opts?.focus && available.find((w) => w.id === opts.focus);
   if (focus) open(focus);

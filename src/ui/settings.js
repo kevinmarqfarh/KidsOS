@@ -10,6 +10,7 @@ import { curriculumFor, CURRICULUM } from '../core/curriculum.js';
 import { exportBackup, importBackup, wipeAll, deleteDrawingsFor, isPersistent } from '../core/storage.js';
 import { hasSwedishVoice } from '../core/speech.js';
 import { TROPHIES } from '../core/trophies.js';
+import { INTERESTS, REWARDS, ADAPTED_QUESTION_CHOICES, ADAPTED_OPTION_CHOICES, adaptedPrefs } from '../core/adapted.js';
 
 export function renderSettings(el, { parentGate, profileWizard, showLock, goHome, modal, refresh }) {
   const p = kos.profile;
@@ -60,7 +61,7 @@ export function renderSettings(el, { parentGate, profileWizard, showLock, goHome
         })), onTap(h('button.chip-btn', { type: 'button' }, '＋ Ny profil'), () => profileWizard({ onDone: () => render() }))),
       );
       if (kidP) {
-        wrap.append(learnedSection(kidP), reportSection(kidP), profileSection(kidP, render), levelSection(kidP, render), timeSection(kidP, render), appsSection(kidP, render));
+        wrap.append(learnedSection(kidP), reportSection(kidP), profileSection(kidP, render), adaptedSection(kidP, render), levelSection(kidP, render), timeSection(kidP, render), appsSection(kidP, render));
       }
       wrap.append(globalSection(render), backupSection(), photoCreditsSection(), aboutSection());
     };
@@ -101,6 +102,53 @@ export function renderSettings(el, { parentGate, profileWizard, showLock, goHome
           ]),
         ),
       ),
+    );
+  }
+
+  /** Anpassat läge (autism/intellektuell funktionsnedsättning): förklaring + finjusteringar. Se docs/ANPASSAT-LAGE.md. */
+  function adaptedSection(kp, render) {
+    const ap = adaptedPrefs(kp);
+    const on = kp.settings.adapted === true;
+    const save = (patch) => {
+      kp.settings.adaptedPrefs = { ...ap, ...patch };
+      kos.saveNow();
+      if (kp.id === kos.state.activeId) kos.applySettings();
+      render();
+    };
+    const rows = on
+      ? [
+          h('div.set-row', h('span', 'Frågor per pass'), seg(ADAPTED_QUESTION_CHOICES.map((n) => [String(n), String(n)]), String(ap.questions), (v) => save({ questions: Number(v) }))),
+          h('div.set-row', h('span', 'Svarsalternativ'), seg(ADAPTED_OPTION_CHOICES.map((n) => [String(n), n ? `Högst ${n}` : 'Som vanligt']), String(ap.options), (v) => save({ options: Number(v) }))),
+          h('div.set-row', h('span', 'Ljudeffekter (mjuka)'), toggle(ap.sound, (v) => save({ sound: v }))),
+          h('div.set-row', h('span', 'Fokus-hjälp (dimma det som inte behövs just nu)'), toggle(ap.focus, (v) => save({ focus: v }))),
+          h('div.set-row', h('span', 'Favoritintresse'), seg(INTERESTS.map((i) => [i.id, `${i.icon} ${i.label}`]), ap.interest, (v) => save({ interest: v }))),
+          h('div.set-row', h('span', 'Belöning efter passet'), seg(REWARDS.map((r) => [r.id, `${r.icon} ${r.label}`]), ap.reward, (v) => save({ reward: v }))),
+        ]
+      : [];
+    return h(
+      'section.set-section.adapted-settings',
+      h('h3', '🧩 Anpassat läge'),
+      h('p.muted', 'För barn med autism och/eller intellektuell funktionsnedsättning. Läget bygger på evidensbaserade arbetssätt (bildstöd, förutsägbar struktur, förstärkning och felfri inlärning) och ersätter inte råd från habiliteringen eller skolan.'),
+      h('div.set-row', h('span', 'Anpassat läge'), toggle(on, (v) => {
+        kp.settings.adapted = v;
+        kos.saveNow();
+        if (kp.id === kos.state.activeId) kos.applySettings();
+        render();
+      })),
+      h(
+        'details.adapted-what',
+        h('summary', 'Vad gör läget?'),
+        h(
+          'ul',
+          h('li', 'Först–sen-remsa: ”Först 5 uppgifter ➜ sen belöning”, med synlig progress.'),
+          h('li', 'Korta pass och färre svarsalternativ. Uppläsning är alltid på (om den inte är avstängd).'),
+          h('li', 'Felfri inlärning: efter ett fel visas rätt svar tydligt och frågan görs om. Ingen negativ återkoppling.'),
+          h('li', 'Lugnare färger, inga skakningar, ingen konfetti och inga överraskande popup-rutor.'),
+          h('li', 'Paus-knapp (”Jag behöver en paus”) och ingen tidspress. ”Samma igen” upprepar exakt samma uppgifter.'),
+          h('li', 'Belöningen bygger på barnets favoritintresse: bubblor att trycka på, en stjärnhimmel eller favoriter.'),
+        ),
+      ),
+      ...rows,
     );
   }
 

@@ -9,6 +9,7 @@ import { PLANETS, CONSTELLATIONS } from '../apps/space.js';
 import { UPPER } from '../apps/letters.js';
 import { hasInSet } from '../core/model.js';
 import { photo } from './img.js';
+import { animatedList, numberTicker } from './fx.js';
 
 export function renderTrophyRoom(el) {
   const p = kos.profile;
@@ -26,7 +27,10 @@ export function renderTrophyRoom(el) {
   );
   el.append(h('div.troom', head, tabs, body));
   function stat(icon, v, label) {
-    return h('div.tr-stat', h('span', icon), h('b', String(v)), h('small', label));
+    // fx: Number Ticker – siffrorna räknar upp när rummet öppnas.
+    const b = h('b', String(v));
+    if (typeof v === 'number' && v > 0) numberTicker(b, 0, v);
+    return h('div.tr-stat', h('span', icon), b, h('small', label));
   }
   function renderTabs() {
     clear(tabs);
@@ -49,7 +53,7 @@ export function renderTrophyRoom(el) {
         const n = list.filter((t) => p.trophies[t.id]).length;
         body.appendChild(h('h3.tr-cat', `${c.icon} ${c.name}`, h('small', ` ${n}/${list.length}`)));
         body.appendChild(
-          h(
+          animatedList(h(
             'div.medal-grid',
             list.map((t) => {
               const got = p.trophies[t.id];
@@ -65,7 +69,7 @@ export function renderTrophyRoom(el) {
               onTap(m, () => kos.say(got ? `${t.name}! ${t.desc}` : `${t.desc} Du har ${pr.value} av ${pr.target}.`));
               return m;
             }),
-          ),
+          )),
         );
       }
     } else {
@@ -84,7 +88,7 @@ export function renderTrophyRoom(el) {
       'section.coll',
       h('h3.tr-cat', title, h('small', ` ${n}/${items.length}`)),
       n === 0 ? h('p.muted', hint) : null,
-      h(
+      animatedList(h(
         'div.coll-grid',
         items.map((it) => {
           const got = has(it);
@@ -92,7 +96,7 @@ export function renderTrophyRoom(el) {
           onTap(card, () => (got ? kos.say(`${name(it)}. ${fact(it)}`) : kos.say(hint)));
           return card;
         }),
-      ),
+      ), { step: 25, cap: 600 }),
     );
   }
   renderTabs();

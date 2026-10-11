@@ -1,0 +1,33 @@
+/* Foton som ersätter emoji (src/ui/img.js: pic/photoize). Storleken följer elementets
+   font-size, så .pic, .pic.sm, .pic-big och räknegrupper blir lika stora som emojin var. */
+.photo-pic {
+  display: inline-block;
+  vertical-align: middle;
+  line-height: 0;
+}
+.photo-pic > img.photo {
+  width: 1.2em;
+  height: 1.2em;
+  object-fit: cover;
+  border-radius: 0.24em;
+  background: #fff;
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.9), 0 2px 6px rgba(20, 30, 60, 0.18);
+  user-select: none;
+  -webkit-user-drag: none;
+  pointer-events: none;
+}
+.pic-big .photo-pic > img.photo,
+.pic-big.photo-pic > img.photo {
+  width: 1.5em;
+  height: 1.5em;
+  border-radius: 0.18em;
+}
+/* Små räknebilder: lite mindre runda hörn så att motivet syns. */
+.eg-item .photo-pic > img.photo {
+  width: 1.1em;
+  height: 1.1em;
+  border-radius: 0.3em;
+}
+.eg-item.has-photo-pic {
+  padding: 1px;
+}

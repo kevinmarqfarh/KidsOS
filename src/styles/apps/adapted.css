@@ -1,0 +1,551 @@
+/* Anpassat läge – stöd för barn med autism och/eller intellektuell funktionsnedsättning.
+   Aktiveras med <html data-adapted="on"> (kos.applySettings). Logik: core/adapted.js, ui/adapted-ui.js.
+   Principer (docs/ANPASSAT-LAGE.md): lugnt och förutsägbart, en sak i taget, stora mål,
+   inga skakningar/blixtar/konfetti, mjuka och valbara belöningar. */
+
+:root[data-adapted='on'] {
+  --ad-calm: #f5f3ee;
+  --ad-line: #d9d4c8;
+  --ad-ok: #2f9e6e;
+  --ad-ok-bg: #e8f6ef;
+  --ad-model: #3f7fd8;
+  --ad-model-bg: #eaf2fd;
+}
+:root[data-adapted='on'][data-ostheme='night'] {
+  --ad-calm: #20253f;
+  --ad-line: #3a4166;
+  --ad-ok-bg: #1d3a32;
+  --ad-model-bg: #1f2c4d;
+}
+
+/* ---------- Lugnare färger och färre rörelser ---------- */
+:root[data-adapted='on'] .os::before {
+  filter: saturate(0.55) brightness(1.02);
+}
+:root[data-adapted='on'][data-ostheme='night'] .os::before {
+  filter: saturate(0.5) brightness(0.5);
+}
+:root[data-adapted='on'] .os *,
+:root[data-adapted='on'] .os *::before,
+:root[data-adapted='on'] .os *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  animation-delay: 0s !important;
+}
+:root[data-adapted='on'] .window {
+  transition-duration: 0.15s, 0.15s, 0s;
+}
+:root[data-adapted='on'] .win-content {
+  background: var(--ad-calm);
+}
+:root[data-adapted='on'] .wrong-shake,
+:root[data-adapted='on'] .hit-wrong {
+  animation: none !important;
+}
+:root[data-adapted='on'] .confetti,
+:root[data-adapted='on'] .fly-star {
+  display: none !important;
+}
+
+/* ---------- Frågemotorn ---------- */
+.quiz.adapted {
+  --app: color-mix(in srgb, var(--app) 55%, #8b97a8);
+  position: relative;
+  gap: 14px;
+}
+.quiz.adapted .q-progress {
+  display: none; /* progressen visas i först–sen-remsan */
+}
+.quiz.adapted .choices {
+  gap: 18px;
+}
+.quiz.adapted .choice {
+  min-height: 132px;
+  border: 3px solid var(--ad-line);
+  box-shadow: none;
+  background: var(--card);
+}
+.quiz.adapted .choice:active {
+  transform: none;
+  box-shadow: none;
+  border-color: var(--ad-model);
+}
+.quiz.adapted .choice-label {
+  font-size: clamp(30px, 5.4vw, 46px);
+}
+.quiz.adapted .pic {
+  font-size: clamp(72px, 13vw, 108px);
+}
+.quiz.adapted .pic.sm {
+  font-size: clamp(52px, 9vw, 74px);
+}
+.quiz.adapted .choice img,
+.quiz.adapted .q-visual img {
+  max-height: min(38vh, 320px);
+  width: auto;
+}
+.quiz.adapted .q-visual svg {
+  min-width: min(100%, 360px);
+}
+.quiz.adapted .choice.right {
+  background: var(--ad-ok-bg);
+  border-color: var(--ad-ok);
+  box-shadow: 0 0 0 3px var(--ad-ok);
+  animation: none;
+}
+.quiz.adapted .choice:disabled:not(.right) {
+  opacity: 0.3;
+}
+.quiz.adapted .q-prompt {
+  box-shadow: none;
+  border: 2px solid var(--ad-line);
+}
+.quiz.adapted .fb {
+  box-shadow: none;
+  border: 3px solid var(--ad-line);
+}
+.quiz.adapted .fb-ok {
+  background: var(--ad-ok-bg);
+  border-color: var(--ad-ok);
+}
+.quiz.adapted .fb-model,
+.quiz.adapted .fb-learn {
+  background: var(--ad-model-bg);
+  border-color: var(--ad-model);
+}
+.quiz.adapted .fb-icon {
+  font-size: 48px;
+}
+.quiz.adapted .fb-text b {
+  font-family: var(--font-display);
+  font-size: 30px;
+}
+.ad-explain {
+  display: block;
+  font-size: 16px;
+  color: var(--ink-soft);
+  margin-top: 4px;
+}
+.quiz.adapted .btn-next {
+  min-height: 76px;
+  font-size: 26px;
+}
+
+/* Felfri inlärning: mjuk markering på rätt svar vid omgörning (prompt). */
+.ad-prompt {
+  outline: 4px dashed var(--ad-model);
+  outline-offset: 4px;
+}
+svg .ad-prompt,
+.q-visual .ad-prompt {
+  outline: none;
+  filter: drop-shadow(0 0 6px var(--ad-model));
+}
+
+/* ---------- Fokus-hjälp: en sak i taget, dimma resten ---------- */
+:root[data-adapted='on'][data-adapted-focus='on'] .win-head .level-chip {
+  display: none;
+}
+:root[data-adapted='on'][data-adapted-focus='on'] .os.app-open .statusbar,
+:root[data-adapted='on'][data-adapted-focus='on'] .win-head {
+  opacity: 0.55;
+}
+:root[data-adapted='on'][data-adapted-focus='on'] .quiz.adapted .q-stage.done .q-top {
+  opacity: 0.4;
+}
+:root[data-adapted='on'][data-adapted-focus='on'] .quiz.adapted .q-stage.done .choice:not(.right) {
+  opacity: 0.15;
+}
+:root[data-adapted='on'][data-adapted-focus='on'] .quiz.adapted .q-stage.done .q-answers > :not(.choices) {
+  opacity: 0.5;
+}
+:root[data-adapted='on'][data-adapted-focus='on'] .quiz.adapted .q-stage.modeling .q-top {
+  opacity: 1; /* vid "titta – det här är rätt" ska frågan synas */
+}
+
+/* ---------- Först–sen-remsa (visuellt schema) ---------- */
+.ad-strip {
+  display: flex;
+  align-items: stretch;
+  gap: 10px;
+  background: var(--card);
+  border: 2px solid var(--ad-line);
+  border-radius: var(--r-lg);
+  padding: 10px;
+}
+.ad-first,
+.ad-then {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-radius: var(--r);
+  padding: 8px 12px;
+  background: var(--ad-calm);
+  min-height: 64px;
+}
+.ad-first {
+  flex: 1;
+  min-width: 0;
+}
+.ad-then {
+  flex: 0 0 auto;
+}
+.ad-ft-label {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 20px;
+  color: var(--ink-soft);
+}
+.ad-strip .q-dots {
+  flex: 1;
+  justify-content: flex-start;
+  gap: 10px;
+}
+.ad-strip .q-dot {
+  width: 30px;
+  height: 30px;
+  border: 3px solid var(--ad-line);
+  background: var(--card);
+}
+.ad-strip .q-dot.ok,
+.ad-strip .q-dot.meh {
+  /* Båda räknas som klara – inga "sämre" prickar i anpassat läge. */
+  background: var(--ad-ok);
+  border-color: var(--ad-ok);
+  transform: none;
+}
+.ad-arrow {
+  align-self: center;
+  font-size: 28px;
+  color: var(--ink-soft);
+}
+.ad-then-icon {
+  font-size: 40px;
+  line-height: 1;
+}
+.ad-then-name {
+  font-weight: 700;
+  font-size: 17px;
+}
+.ad-pause {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 84px;
+  min-height: 64px;
+  border-radius: var(--r);
+  border: 3px solid var(--ad-line);
+  background: var(--card);
+  color: var(--ink);
+  font: 700 16px var(--font-body);
+  cursor: pointer;
+}
+.ad-pause-icon {
+  font-size: 30px;
+  line-height: 1;
+}
+@media (max-width: 560px) {
+  .ad-strip {
+    flex-wrap: wrap;
+  }
+  .ad-first {
+    flex: 1 1 100%;
+  }
+  .ad-then {
+    flex: 1;
+  }
+  .ad-arrow {
+    display: none;
+  }
+  .ad-strip .q-dot {
+    width: 22px;
+    height: 22px;
+  }
+}
+
+/* ---------- Paus ---------- */
+.ad-pause-screen {
+  position: absolute;
+  inset: 0;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: color-mix(in srgb, var(--ad-calm) 94%, transparent);
+  border-radius: var(--r-lg);
+  padding: 16px;
+}
+.ad-pause-card {
+  text-align: center;
+  background: var(--card);
+  border: 2px solid var(--ad-line);
+  border-radius: var(--r-lg);
+  padding: 28px 24px;
+  max-width: 440px;
+  width: 100%;
+}
+.ad-pause-card h2 {
+  font-size: 40px;
+  margin: 6px 0;
+}
+.ad-pause-card p {
+  font-size: 20px;
+  margin: 6px 0;
+}
+.ad-breathe {
+  width: 120px;
+  height: 120px;
+  margin: 0 auto 8px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 54px;
+  background: var(--ad-ok-bg);
+  border: 3px solid var(--ad-ok);
+}
+.ad-resume {
+  margin-top: 14px;
+}
+
+/* ---------- Avslutning och belöning ---------- */
+.ad-summary {
+  box-shadow: none;
+  border: 2px solid var(--ad-line);
+}
+.ad-done {
+  font-size: 22px;
+  margin: 4px 0 12px;
+}
+.ad-trophy {
+  color: var(--ink-soft);
+  margin: 0 0 10px;
+}
+.ad-reward {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+.ad-reward-msg {
+  min-height: 1.4em;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 24px;
+  margin: 0;
+}
+.ad-reward-pick {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin: 12px 0 4px;
+}
+.ad-pick-label {
+  color: var(--ink-soft);
+  font-weight: 700;
+}
+.ad-pick {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  border: 3px solid var(--ad-line);
+  background: var(--card);
+  font-size: 30px;
+  cursor: pointer;
+}
+.ad-pick.on {
+  border-color: var(--ad-ok);
+  background: var(--ad-ok-bg);
+}
+
+/* Bubblor */
+.ad-bubbles {
+  position: relative;
+  width: 100%;
+  height: clamp(240px, 38vh, 340px);
+  border-radius: var(--r-lg);
+  background: linear-gradient(180deg, #e6f3fb, #f3f8f1);
+  overflow: hidden;
+}
+:root[data-ostheme='night'] .ad-bubbles {
+  background: linear-gradient(180deg, #1d2c45, #1f2d33);
+}
+.ad-bubble {
+  position: absolute;
+  width: 84px;
+  height: 84px;
+  margin: -42px 0 0 -42px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.9);
+  background: radial-gradient(circle at 32% 30%, rgba(255, 255, 255, 0.95) 0 10%, rgba(180, 220, 255, 0.55) 40%, rgba(160, 200, 240, 0.35) 70%);
+  box-shadow: inset 0 0 12px rgba(120, 170, 220, 0.5);
+  font-size: 38px;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: transform 0.25s ease, opacity 0.25s ease;
+}
+.ad-bubble.popped {
+  transform: scale(1.35);
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Stjärnhimmel */
+.ad-sky {
+  position: relative;
+  width: 100%;
+  height: clamp(240px, 38vh, 340px);
+  border-radius: var(--r-lg);
+  background: linear-gradient(180deg, #1c2350, #2d2a62);
+  cursor: pointer;
+  overflow: hidden;
+}
+.ad-star {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  font-size: 34px;
+  pointer-events: none;
+}
+
+/* Favoriter */
+.ad-friend {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  width: min(100%, 300px);
+  padding: 20px;
+  border-radius: var(--r-lg);
+  border: 3px solid var(--ad-line);
+  background: var(--card);
+  color: var(--ink);
+  cursor: pointer;
+}
+.ad-friend-emoji {
+  font-size: clamp(96px, 20vw, 150px);
+  line-height: 1.1;
+}
+.ad-friend-name {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 30px;
+}
+
+/* Mjuka, långsamma och förutsägbara rörelser – bara om enheten tillåter rörelse. */
+@media (prefers-reduced-motion: no-preference) {
+  :root[data-adapted='on'] .ad-reward .ad-bubble:not(.popped) {
+    animation: ad-float 5s ease-in-out infinite !important;
+    animation-duration: 5s !important;
+    animation-iteration-count: infinite !important;
+    animation-delay: calc(var(--k, 0) * -0.6s) !important;
+  }
+  :root[data-adapted='on'] .ad-pause-card .ad-breathe {
+    animation: ad-breathe 8s ease-in-out infinite !important;
+    animation-duration: 8s !important;
+    animation-iteration-count: infinite !important;
+  }
+  :root[data-adapted='on'] .ad-reward .ad-friend.hop {
+    animation: ad-hop 0.5s ease-out !important;
+    animation-duration: 0.5s !important;
+  }
+  :root[data-adapted='on'] .quiz.adapted .ad-prompt {
+    animation: ad-glow 2.4s ease-in-out infinite !important;
+    animation-duration: 2.4s !important;
+    animation-iteration-count: infinite !important;
+  }
+}
+@keyframes ad-float {
+  0%, 100% { translate: 0 0; }
+  50% { translate: 0 -10px; }
+}
+@keyframes ad-breathe {
+  0%, 100% { transform: scale(0.85); }
+  50% { transform: scale(1.1); }
+}
+@keyframes ad-hop {
+  0% { transform: translateY(0); }
+  40% { transform: translateY(-14px); }
+  100% { transform: translateY(0); }
+}
+@keyframes ad-glow {
+  0%, 100% { outline-color: var(--ad-model); }
+  50% { outline-color: color-mix(in srgb, var(--ad-model) 35%, transparent); }
+}
+
+/* ---------- Profilguiden och föräldradelen ---------- */
+.adapted-choice {
+  display: grid;
+  gap: 12px;
+  margin: 14px 0 6px;
+  padding: 16px;
+  border: 2px solid var(--line);
+  border-radius: 22px;
+  background: var(--card);
+}
+.adapted-choice.on {
+  border-color: var(--good);
+}
+.adapted-choice-head {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 12px;
+}
+.adapted-choice-head b {
+  display: block;
+  font-size: 17px;
+}
+.adapted-choice-head small,
+.adapted-choice-more small {
+  display: block;
+  color: var(--ink-soft);
+  line-height: 1.45;
+  margin-top: 3px;
+}
+.adapted-choice-icon {
+  font-size: 34px;
+}
+.adapted-choice-more > span {
+  font-weight: 700;
+}
+.adapted-interests {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 8px 0 4px;
+}
+.adapted-interests .pick.adapted-interest {
+  width: auto;
+  height: auto;
+  min-height: 52px;
+  padding: 8px 14px;
+  font-size: 17px;
+  border-radius: 16px;
+}
+.adapted-what {
+  margin: 4px 0 10px;
+}
+.adapted-what summary {
+  cursor: pointer;
+  font-weight: 700;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+}
+.adapted-what ul {
+  margin: 6px 0 0;
+  padding-left: 22px;
+  line-height: 1.55;
+}
+@media (max-width: 480px) {
+  .adapted-choice-head {
+    grid-template-columns: auto 1fr;
+  }
+  .adapted-choice-head .toggle {
+    grid-column: 1 / -1;
+    justify-self: start;
+  }
+}

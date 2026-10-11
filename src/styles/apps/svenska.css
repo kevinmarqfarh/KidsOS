@@ -1,1 +1,218 @@
-/* Extra stilar för svenska */
+/* Extra stilar för svenska och Skriv ABC */
+
+/* ---------- Skriv ABC: repetera samma bokstav ---------- */
+.rep-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 10px 18px;
+  width: 100%;
+  max-width: 900px;
+}
+.rep-pick {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.rep-q {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 17px;
+  opacity: 0.8;
+}
+.rep-choice {
+  border: 0;
+  min-height: 52px;
+  min-width: 112px;
+  padding: 8px 16px;
+  border-radius: 16px;
+  background: var(--card);
+  box-shadow: 0 3px 0 var(--line);
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 20px;
+}
+.rep-choice.on {
+  background: var(--app);
+  color: #fff;
+  box-shadow: 0 3px 0 color-mix(in srgb, var(--app) 60%, #000);
+}
+.rep-progress {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+.rep-dots {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+}
+.rep-dot {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--paper-2);
+  box-shadow: inset 0 0 0 2px var(--line);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 15px;
+  color: color-mix(in srgb, var(--ink) 45%, transparent);
+  transition: transform 0.2s;
+}
+.rep-dots.many .rep-dot {
+  width: 30px;
+  height: 30px;
+  font-size: 13px;
+}
+.rep-dot.now {
+  box-shadow: inset 0 0 0 3px var(--app);
+  color: var(--app);
+  transform: scale(1.12);
+}
+.rep-dot.done {
+  background: color-mix(in srgb, #ffd23f 35%, var(--card));
+  box-shadow: none;
+  font-size: 20px;
+  animation: rep-pop 0.35s ease-out;
+}
+.rep-dots.many .rep-dot.done {
+  font-size: 16px;
+}
+.rep-left {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 16px;
+}
+.rep-after {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+}
+.rep-after[hidden] {
+  display: none;
+}
+.rep-big {
+  min-height: 58px;
+  font-size: 19px;
+  padding: 10px 20px;
+}
+@keyframes rep-pop {
+  0% {
+    transform: scale(0.4);
+  }
+  70% {
+    transform: scale(1.25);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Svag mall (sista gångerna i en serie) */
+.tmpl.faint {
+  stroke: color-mix(in srgb, var(--ink) 7%, transparent);
+  stroke-width: 5;
+}
+.trace-hear {
+  border: 0;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--paper-2);
+  font-size: 22px;
+  flex: none;
+}
+
+/* ---------- Skriv ABC: stava ord ---------- */
+.spell-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  width: 100%;
+  max-width: 900px;
+}
+.spell-row[hidden],
+.rep-bar[hidden] {
+  display: none;
+}
+.spell-pic-box {
+  font-size: clamp(56px, 12vw, 84px);
+  line-height: 1;
+  flex: none;
+}
+.spell-pic-box .spell-photo,
+.spell-pic .spell-photo {
+  width: clamp(84px, 18vw, 140px);
+  height: clamp(84px, 18vw, 140px);
+  object-fit: cover;
+  border-radius: 18px;
+  box-shadow: var(--shadow);
+}
+.spell-mid {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+}
+.spell-slots {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.spell-slot {
+  min-width: 44px;
+  height: 54px;
+  padding: 0 4px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  background: var(--card);
+  box-shadow: inset 0 -3px 0 var(--line);
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 32px;
+}
+.spell-slot.hint {
+  color: color-mix(in srgb, var(--ink) 28%, transparent);
+}
+.spell-slot.now {
+  box-shadow: inset 0 0 0 3px var(--app);
+}
+.spell-slot.done {
+  background: color-mix(in srgb, var(--good) 18%, var(--card));
+  color: var(--good);
+}
+.spell-btns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.spell-hear {
+  min-height: 48px;
+}
+
+@media (max-width: 560px) {
+  .rep-choice {
+    min-width: 96px;
+    font-size: 18px;
+  }
+  .spell-slot {
+    min-width: 36px;
+    height: 46px;
+    font-size: 26px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .rep-dot,
+  .rep-dot.done {
+    animation: none;
+    transition: none;
+  }
+}

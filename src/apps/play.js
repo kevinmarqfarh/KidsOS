@@ -401,27 +401,28 @@ export const PATIENTS = [
 
 /* ---------- Bondgården ---------- */
 // diet: 'växtätare' | 'allätare' | 'köttätare'. likes = maten djuret vill ha.
+// ph = nyckel till ett riktigt foto (src/ui/img.js, samma nycklar som emoji-photos.js). Saknas fotot visas emojin.
 export const FARM_FOODS = [
-  { id: 'grass', e: '🌿', n: 'gräs och hö' },
-  { id: 'grain', e: '🌾', n: 'säd' },
-  { id: 'corn', e: '🌽', n: 'majs' },
-  { id: 'carrot', e: '🥕', n: 'morot' },
-  { id: 'apple', e: '🍎', n: 'äpple' },
-  { id: 'lettuce', e: '🥬', n: 'sallad' },
-  { id: 'worm', e: '🪱', n: 'mask' },
-  { id: 'fish', e: '🐟', n: 'fisk' },
-  { id: 'milk', e: '🥛', n: 'mjölk' },
+  { id: 'grass', ph: 'ho', e: '🌿', n: 'gräs och hö' },
+  { id: 'grain', ph: 'obj-wheat', e: '🌾', n: 'säd' },
+  { id: 'corn', ph: 'obj-corn', e: '🌽', n: 'majs' },
+  { id: 'carrot', ph: 'obj-carrot', e: '🥕', n: 'morot' },
+  { id: 'apple', ph: 'obj-apple', e: '🍎', n: 'äpple' },
+  { id: 'lettuce', ph: 'sallat', e: '🥬', n: 'sallad' },
+  { id: 'worm', ph: 'daggmask', e: '🪱', n: 'mask' },
+  { id: 'fish', ph: 'obj-fish', e: '🐟', n: 'fisk' },
+  { id: 'milk', ph: 'obj-milk', e: '🥛', n: 'mjölk' },
 ];
 export const FARM_ANIMALS = [
-  { id: 'cow', e: '🐄', n: 'kon', sound: 'Muu!', diet: 'växtätare', likes: ['grass', 'grain', 'corn'], no: ['worm', 'fish'], product: 'milk', fact: 'Kon är en idisslare: hon tuggar maten en gång till efteråt. Magen har fyra delar.' },
-  { id: 'horse', e: '🐎', n: 'hästen', sound: 'Gnägg!', diet: 'växtätare', likes: ['grass', 'grain', 'carrot', 'apple'], no: ['worm', 'fish'], fact: 'Hästen kan slumra stående, men för att sova djupt lägger den sig ner.' },
-  { id: 'sheep', e: '🐑', n: 'fåret', sound: 'Bää!', diet: 'växtätare', likes: ['grass', 'grain'], no: ['worm', 'fish'], product: 'wool', fact: 'Fårets ull växer hela tiden. Den klipps en eller två gånger om året och blir till garn.' },
-  { id: 'goat', e: '🐐', n: 'geten', sound: 'Mää!', diet: 'växtätare', likes: ['grass', 'grain', 'carrot', 'apple', 'lettuce'], no: ['worm', 'fish'], fact: 'Getter är duktiga på att klättra och äter gärna löv och kvistar.' },
-  { id: 'pig', e: '🐖', n: 'grisen', sound: 'Nöff nöff!', diet: 'allätare', likes: ['grain', 'corn', 'apple', 'carrot', 'lettuce', 'worm'], no: [], fact: 'Grisar kan inte svettas så bra. Därför rullar de sig i lera för att svalka sig.' },
-  { id: 'hen', e: '🐔', n: 'hönan', sound: 'Kackel kackel!', diet: 'allätare', likes: ['grain', 'corn', 'worm', 'lettuce'], no: [], product: 'egg', fact: 'En värphöna kan lägga nästan ett ägg varje dag.' },
-  { id: 'duck', e: '🦆', n: 'ankan', sound: 'Kvack!', diet: 'allätare', likes: ['grain', 'lettuce', 'worm'], no: [], fact: 'Ankans fjädrar har ett fett som gör dem vattentäta. Därför blir den inte blöt!' },
-  { id: 'rabbit', e: '🐇', n: 'kaninen', sound: 'Nam nam!', diet: 'växtätare', likes: ['grass', 'carrot', 'lettuce'], no: ['worm', 'fish'], fact: 'Kaninens tänder växer hela livet. Hö och gräs sliter ner dem.' },
-  { id: 'cat', e: '🐈', n: 'katten', sound: 'Mjau!', diet: 'köttätare', likes: ['fish'], no: ['grain', 'corn', 'carrot', 'apple', 'lettuce', 'milk'], fact: 'På gården jagar katter möss.' },
+  { id: 'cow', ph: 'obj-cow', e: '🐄', n: 'kon', sound: 'Muu!', diet: 'växtätare', likes: ['grass', 'grain', 'corn'], no: ['worm', 'fish'], product: 'milk', fact: 'Kon är en idisslare: hon tuggar maten en gång till efteråt. Magen har fyra delar.' },
+  { id: 'horse', ph: 'obj-horse', e: '🐎', n: 'hästen', sound: 'Gnägg!', diet: 'växtätare', likes: ['grass', 'grain', 'carrot', 'apple'], no: ['worm', 'fish'], fact: 'Hästen kan slumra stående, men för att sova djupt lägger den sig ner.' },
+  { id: 'sheep', ph: 'obj-sheep', e: '🐑', n: 'fåret', sound: 'Bää!', diet: 'växtätare', likes: ['grass', 'grain'], no: ['worm', 'fish'], product: 'wool', fact: 'Fårets ull växer hela tiden. Den klipps en eller två gånger om året och blir till garn.' },
+  { id: 'goat', ph: 'obj-goat', e: '🐐', n: 'geten', sound: 'Mää!', diet: 'växtätare', likes: ['grass', 'grain', 'carrot', 'apple', 'lettuce'], no: ['worm', 'fish'], fact: 'Getter är duktiga på att klättra och äter gärna löv och kvistar.' },
+  { id: 'pig', ph: 'obj-pig', e: '🐖', n: 'grisen', sound: 'Nöff nöff!', diet: 'allätare', likes: ['grain', 'corn', 'apple', 'carrot', 'lettuce', 'worm'], no: [], fact: 'Grisar kan inte svettas så bra. Därför rullar de sig i lera för att svalka sig.' },
+  { id: 'hen', ph: 'obj-chicken', e: '🐔', n: 'hönan', sound: 'Kackel kackel!', diet: 'allätare', likes: ['grain', 'corn', 'worm', 'lettuce'], no: [], product: 'egg', fact: 'En värphöna kan lägga nästan ett ägg varje dag.' },
+  { id: 'duck', ph: 'grasand', e: '🦆', n: 'ankan', sound: 'Kvack!', diet: 'allätare', likes: ['grain', 'lettuce', 'worm'], no: [], fact: 'Ankans fjädrar har ett fett som gör dem vattentäta. Därför blir den inte blöt!' },
+  { id: 'rabbit', ph: 'obj-rabbit', e: '🐇', n: 'kaninen', sound: 'Nam nam!', diet: 'växtätare', likes: ['grass', 'carrot', 'lettuce'], no: ['worm', 'fish'], fact: 'Kaninens tänder växer hela livet. Hö och gräs sliter ner dem.' },
+  { id: 'cat', ph: 'obj-cat', e: '🐈', n: 'katten', sound: 'Mjau!', diet: 'köttätare', likes: ['fish'], no: ['grain', 'corn', 'carrot', 'apple', 'lettuce', 'milk'], fact: 'På gården jagar katter möss.' },
 ];
 export const FARM_PRODUCTS = {
   milk: { e: '🥛', n: 'mjölk' },
@@ -771,10 +772,10 @@ export const SECRETS = {
   school: [{ x: 94, y: 92, e: '✏️' }, { x: 5, y: 10, e: '🍎' }, { x: 50, y: 95, e: '📎' }],
   library: [{ x: 6, y: 92, e: '🐛' }, { x: 94, y: 8, e: '📜' }, { x: 50, y: 95, e: '🗺️' }],
   farm: [{ x: 4, y: 92, e: '🐣' }, { x: 95, y: 6, e: '🌈' }, { x: 60, y: 30, e: '🐸' }],
-  beach: [{ x: 8, y: 52, e: '🦀' }, { x: 94, y: 94, e: '🐚' }, { x: 50, y: 6, e: '🪁' }, { x: 30, y: 96, e: '⭐' }],
+  beach: [{ x: 6, y: 45, e: '🦀' }, { x: 94, y: 94, e: '🐚' }, { x: 50, y: 6, e: '🪁' }, { x: 30, y: 96, e: '⭐' }],
   vet: [{ x: 94, y: 88, e: '🐾' }, { x: 6, y: 12, e: '🦴' }, { x: 30, y: 94, e: '🐁' }],
   lab: [{ x: 50, y: 92, e: '🦠' }, { x: 92, y: 10, e: '🔮' }, { x: 8, y: 60, e: '🧲' }],
-  garden: [{ x: 6, y: 92, e: '🐛' }, { x: 94, y: 8, e: '🦋' }, { x: 50, y: 95, e: '🪱' }, { x: 32, y: 34, e: '🐞' }],
+  garden: [{ x: 31, y: 93, e: '🐛' }, { x: 94, y: 8, e: '🦋' }, { x: 50, y: 95, e: '🪱' }, { x: 32, y: 34, e: '🐞' }],
   wardrobe: [{ x: 92, y: 90, e: '🧦' }, { x: 8, y: 10, e: '💎' }],
 };
 /** Villkor för hemligheter: vad måste man göra för att de ska synas? (måste gå att uppfylla) */
@@ -873,22 +874,34 @@ export function normalizePlay(raw) {
       return { ...base, ...c, id: String(c.id), name: String(c.name || base.name).slice(0, 12), hair: HAIR_STYLES.includes(c.hair) ? c.hair : base.hair, wear };
     });
   }
-  if (isObj(raw.charPos)) st.charPos = raw.charPos;
+  if (isObj(raw.charPos)) {
+    for (const [scene, map] of Object.entries(raw.charPos)) {
+      if (!isObj(map)) continue;
+      st.charPos[scene] = {};
+      for (const [cid, pos] of Object.entries(map)) if (isObj(pos)) st.charPos[scene][cid] = { x: clampPct(pos.x, 3, 97, 50), y: clampPct(pos.y, 5, 95, 70) };
+    }
+  }
   if (Array.isArray(raw.garden)) {
     const g = raw.garden.map((p) => (isObj(p) && PLANTS[p.plant] ? { plant: p.plant, stage: Math.max(0, Math.min(3, Math.floor(num(p.stage)))), watered: !!p.watered, wateredAt: num(p.wateredAt) } : emptyPot()));
     while (g.length < GARDEN_POTS) g.push(emptyPot());
     st.garden = g;
   }
   st.pantry = countMap(raw.pantry);
-  if (isObj(raw.colors)) st.colors = { ...raw.colors };
+  for (const id of Object.keys(st.pantry)) if (!pantryInfo(id)) delete st.pantry[id];
+  // Färgerna läses också av Rita (namn → hex). Bara kända blandningar behålls.
+  if (isObj(raw.colors)) for (const m of MIXES) if (raw.colors[m.n]) st.colors[m.n] = m.hex;
   st.recipes = countMap(raw.recipes);
-  if (isObj(raw.secrets)) st.secrets = { ...raw.secrets };
+  for (const id of Object.keys(st.recipes)) if (!RECIPES.some((r) => r.id === id)) delete st.recipes[id];
+  if (isObj(raw.secrets)) {
+    const known = new Set(secretIds());
+    for (const id of Object.keys(raw.secrets)) if (known.has(id) && raw.secrets[id]) st.secrets[id] = 1;
+  }
   st.patients = Math.max(0, Math.floor(num(raw.patients)));
   st.bought = Math.max(0, Math.floor(num(raw.bought)));
   if (isObj(raw.farm)) st.farm = { lastProduct: isObj(raw.farm.lastProduct) ? { ...raw.farm.lastProduct } : {}, fed: countMap(raw.farm.fed) };
   if (isObj(raw.school)) st.school = { solved: Math.max(0, Math.floor(num(raw.school.solved))), streak: Math.max(0, Math.floor(num(raw.school.streak))) };
-  if (isObj(raw.books)) st.books = { ...raw.books };
-  if (isObj(raw.beach)) st.beach = { ...raw.beach };
+  if (isObj(raw.books)) for (const b of BOOKS) if (raw.books[b.id]) st.books[b.id] = 1;
+  if (isObj(raw.beach)) for (const b of BEACH_ITEMS) if (raw.beach[b.id]) st.beach[b.id] = 1;
   if (isObj(raw.quiz)) st.quiz = { right: Math.max(0, Math.floor(num(raw.quiz.right))) };
   st.goal = typeof raw.goal === 'string' && itemById(raw.goal) ? raw.goal : null;
   if (isObj(raw.earned) && typeof raw.earned.day === 'string') st.earned = { day: raw.earned.day, n: countMap(raw.earned.n) };

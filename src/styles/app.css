@@ -1,4 +1,5 @@
 @import "./desktop.css";
+@import "./fx.css";
 @import "./apps/math.css";
 @import "./apps/svenska.css";
 @import "./apps/no.css";
@@ -7,6 +8,8 @@
 @import "./apps/wonder.css";
 @import "./apps/play.css";
 @import "./apps/platform.css";
+@import "./apps/photos.css";
+@import "./apps/adapted.css";
 
 /* KidsOS – touch-först gränssnitt för barn 4–10 år.
    Layout: ett "operativsystem" med statusrad, hemskärm med appikoner och docka,

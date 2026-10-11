@@ -1,6 +1,7 @@
 // Ren datamodell för profiler, framsteg och statistik.
 // Alla funktioner här är fria från DOM och lagring så att de kan enhetstestas.
 import { startLevelForProfile, AGE_BANDS, clampLevel, MAX_LEVEL } from './age.js';
+import { normalizeAdaptedSettings } from './adapted.js';
 
 export const STATE_VERSION = 1;
 
@@ -24,7 +25,7 @@ export function makeId(prefix = 'p') {
   return `${prefix}${Date.now().toString(36)}${idCounter.toString(36)}${Math.floor(Math.random() * 1e4).toString(36)}`;
 }
 
-export function newProfile({ name, age, avatar = '🦊', color = '#4aa8ff', wallpaper = 'sky', ageBand } = {}) {
+export function newProfile({ name, age, avatar = '🦊', color = '#4aa8ff', wallpaper = 'sky', ageBand, adapted = false, adaptedPrefs } = {}) {
   const band = AGE_BANDS.find(item => item.id === ageBand);
   const cleanName = String(name || '').trim().slice(0, 16) || 'Kompis';
   return {
@@ -52,6 +53,8 @@ export function newProfile({ name, age, avatar = '🦊', color = '#4aa8ff', wall
       hiddenApps: [],
       showAllModules: false,
       layout: 'auto', // 'auto' (efter ålder) | 'tablet' | 'desktop'
+      // Anpassat läge (stöd för autism/intellektuell funktionsnedsättning), se core/adapted.js.
+      ...normalizeAdaptedSettings({ adapted, adaptedPrefs }),
     },
   };
 }
@@ -69,6 +72,7 @@ export function normalizeProfile(p) {
     if (!out[k] || typeof out[k] !== 'object') out[k] = {};
   }
   if (!Array.isArray(out.settings.hiddenApps)) out.settings.hiddenApps = [];
+  Object.assign(out.settings, normalizeAdaptedSettings(p?.settings));
   out.stars = Math.max(0, Number(out.stars) || 0);
   // Profiler från version 1 saknar mynt: de får lika många mynt som stjärnor de redan tjänat.
   out.coins = p?.coins === undefined ? out.stars : Math.max(0, Number(out.coins) || 0);

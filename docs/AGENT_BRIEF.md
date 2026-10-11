@@ -45,3 +45,15 @@ Kort lista:
 3. Önskade foton.
 4. Trofé-förslag.
 5. Kända risker.
+
+## Våg 2: uppdaterat läge (läs detta också)
+- Kevin har byggt vidare med Codex. Det arbetet är nu sammanslaget med vågen 1.
+  - Nya appar: `src/apps/ai.js` och `ai-lab.js`, med vyerna `src/ui/views/ai.js` och `course.js`. Kodkursen ligger i `code.js` (CODING_LESSONS).
+  - Åldersintervall finns i `src/core/age.js`. Bakgrunder finns i `src/ui/wallpapers.js`.
+  - Ett andra fotosystem finns: `src/ui/photos.js` med `src/assets/photos/*` och `catalog.js`. Det kommer att slås ihop med `src/ui/img.js` av fotoagenten.
+- **Läs om dina filer innan du ändrar dem.** De kan ha ändrats sedan du såg dem senast.
+- Flera agenter kan behöva röra samma delade fil. Gör då små, riktade Edit-anrop: läs alltid precis innan och skriv aldrig om hela filen. Dessa filer delas:
+  - `shell.js`, `kos.js` och `quiz.js` ägs av agenten för anpassat läge.
+  - Animationer och 21st-komponenter ägs av fx-agenten.
+- Under testerna finns alla appars innehåll i `tests/unit/`. Hela sviten ska vara grön när du är klar. Om ett test som inte är ditt failar, nämn det i rapporten.
+- Riktiga foton prioriteras framför emoji när det hjälper förståelsen. Använd hjälparna i `src/ui/img.js` (`photo`, `hasPhoto` och snart `pic`). Ha alltid emoji som reserv.

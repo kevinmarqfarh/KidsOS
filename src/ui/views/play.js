@@ -5,7 +5,7 @@ import { spendCoins, addCoins, addToSet, dateKey } from '../../core/model.js';
 import {
   SCENES, ITEMS, itemById, SHOP_CATS, shopItems, withArticle, payCoins, changeAllowed, payState, changeOptions, goalProgress, priceQuiz,
   MONEY, fewestCoins, PLANTS, GROW_MINUTES, growTick, capEarn, pantryInfo,
-  INGREDIENTS, RECIPES, matchRecipe, bookRecipes, BASE_COLORS, MIXES, mixColors, TOOLS, PATIENTS, SECRETS, SECRET_TRIGGERS,
+  INGREDIENTS, RECIPES, matchRecipe, bookRecipes, BASE_COLORS, MIXES, mixColors, TOOLS, PATIENTS, SECRETS, SECRET_TRIGGERS, SECRET_COUNT,
   FARM_ANIMALS, FARM_FOODS, FARM_PRODUCTS, farmReaction, productReady, farmQuestion, BEACH_ITEMS, inSea,
   SCHOOL_SUBJECTS, schoolTask, SCHOOL_PER_COIN, BOOKS, booksForLevel, BOOK_COINS,
   SKIN, HAIR_COLORS, HAIR_STYLES, CLOTH_COLORS, newCharacter, normalizePlay,
@@ -16,6 +16,7 @@ import { PLACES } from '../../apps/world.js';
 import { PLANETS } from '../../apps/space.js';
 import { createRng } from '../../core/rng.js';
 import { sfx } from '../../core/sound.js';
+import { photo, hasPhoto } from '../img.js';
 
 /* ---------------- Figurer (SVG) ---------------- */
 export function charSvg(c, mood = 'happy') {
@@ -71,7 +72,10 @@ const BG = {
     ${Array.from({ length: 6 }, (_, i) => `<circle cx="${40 + i * 64}" cy="${40 + (i % 2) * 30}" r="${6 + (i % 3) * 3}" fill="#c4b5fd" opacity=".6"/>`).join('')}</svg>`,
   garden: () => `<svg viewBox="0 0 400 300" preserveAspectRatio="none"><rect width="400" height="300" fill="#bae6fd"/><circle cx="340" cy="50" r="28" fill="#fde047"/><rect y="150" width="400" height="150" fill="#86efac"/>
     <path d="M0 150 Q100 120 200 150 T400 150 V160 H0Z" fill="#4ade80"/>${Array.from({ length: 14 }, (_, i) => `<path d="M${i * 30 + 6} 150 l4 -14 l4 14" fill="#16a34a"/>`).join('')}<rect x="10" y="100" width="380" height="8" fill="#a16207" opacity=".7"/>${Array.from({ length: 12 }, (_, i) => `<rect x="${14 + i * 32}" y="86" width="8" height="40" fill="#a16207" opacity=".7"/>`).join('')}</svg>`,
-  market: () => `<svg viewBox="0 0 400 300" preserveAspectRatio="none"><rect width="400" height="300" fill="#fef9c3"/>${Array.from({ length: 10 }, (_, i) => `<path d="M${i * 40} 0 h40 v34 q-20 14 -40 0z" fill="${i % 2 ? '#fde047' : '#f97316'}"/>`).join('')}<rect y="250" width="400" height="50" fill="#fcd34d"/></svg>`,
+  market: () => `<svg viewBox="0 0 400 300" preserveAspectRatio="none"><rect width="400" height="300" fill="#fef9c3"/>${Array.from({ length: 10 }, (_, i) => `<path d="M${i * 40} 0 h40 v70 q-20 28 -40 0z" fill="${i % 2 ? '#fde047' : '#f97316'}"/>`).join('')}
+    <rect x="0" y="190" width="400" height="110" fill="#d6a76c"/><rect x="0" y="180" width="400" height="18" fill="#a16207"/>
+    ${[30, 130, 230, 330].map((x, i) => `<rect x="${x}" y="200" width="60" height="40" rx="4" fill="#92400e"/>${Array.from({ length: 5 }, (_, k) => `<circle cx="${x + 8 + k * 11}" cy="202" r="7" fill="${['#ef4444', '#facc15', '#22c55e', '#f97316'][i]}"/>`).join('')}`).join('')}
+    <rect y="260" width="400" height="40" fill="#fcd34d"/></svg>`,
   school: () => `<svg viewBox="0 0 400 300" preserveAspectRatio="none"><rect width="400" height="300" fill="#fef3c7"/><rect y="215" width="400" height="85" fill="#d6a76c"/>
     <rect x="70" y="20" width="260" height="150" rx="8" fill="#14532d" stroke="#a16207" stroke-width="10"/><rect x="150" y="170" width="100" height="8" fill="#a16207"/><rect x="160" y="166" width="20" height="5" rx="2" fill="#fff"/>
     <circle cx="370" cy="40" r="20" fill="#fff" stroke="#334155" stroke-width="4"/><line x1="370" y1="40" x2="370" y2="28" stroke="#334155" stroke-width="3"/><line x1="370" y1="40" x2="379" y2="44" stroke="#334155" stroke-width="3"/>
@@ -93,6 +97,7 @@ const BG = {
 };
 
 const cap = (t) => t.charAt(0).toUpperCase() + t.slice(1);
+const DIET_ICON = { växtätare: '🌿', allätare: '🍽️', köttätare: '🍖' };
 
 /* ---------------- Vyn ---------------- */
 export function playView(el, { kos }) {
@@ -108,7 +113,10 @@ export function playView(el, { kos }) {
     clearTimeout(saveT);
     saveT = setTimeout(() => saveJSON(key, st), 200);
   };
-  const level = Math.min(4, Math.max(0, kos.level('math')));
+  const lvlOf = (app) => Math.min(4, Math.max(0, Number(kos.level(app)) || 0));
+  const level = lvlOf('math'); // pengar, priser och räkning
+  const readLevel = lvlOf('svenska'); // biblioteket och ord på skoltavlan
+  const bioLevel = lvlOf('biology'); // bondgården
   let alive = true;
   let timers = [];
   const bar = h('div.play-bar');
@@ -165,6 +173,19 @@ export function playView(el, { kos }) {
     const b = h('button.goal-banner', { type: 'button', class: g.done ? 'done' : '' }, h('span.gb-e', it.e), h('span.gb-text', h('b', g.done ? '🎉 Klart!' : '🎯 Sparmål'), h('span.gb-bar', h('i', { style: { width: `${g.pct}%` } })), h('small', `${g.have} / ${it.price} 🪙`)));
     return onTap(b, () => kos.say(text));
   }
+  /** Visar en dialog över Lekstaden och ser till att dess överkant syns. */
+  function showDlg(dlg) {
+    el.querySelector('.play').appendChild(dlg);
+    toTop();
+    return dlg;
+  }
+  function toTop() {
+    try {
+      bar.scrollIntoView({ block: 'nearest' });
+      const r = bar.getBoundingClientRect();
+      if (r.top < 0 || r.top > window.innerHeight * 0.4) bar.scrollIntoView({ block: 'start' });
+    } catch {}
+  }
   function clearTimers() {
     timers.forEach(clearInterval);
     timers = [];
@@ -175,6 +196,8 @@ export function playView(el, { kos }) {
     clearTimers();
     topbar('Lekstaden', false);
     clear(body);
+    el.querySelectorAll('.play > .pay').forEach((d) => d.remove());
+    toTop();
     const map = h('div.town');
     SCENES.forEach((s, i) => {
       const b = h('button.town-house', { type: 'button', style: { '--c': s.color, '--i': i } }, h('span.th-roof'), h('span.th-icon', s.icon), h('span.th-name', s.name), h('small', s.blurb));
@@ -188,7 +211,7 @@ export function playView(el, { kos }) {
     body.append(
       goalBanner() || h('span'),
       map,
-      h('div.town-info', h('span', `🔍 Hemligheter: ${found}`), h('span', `🧪 Färger: ${Object.keys(st.colors).length}/${MIXES.length}`), h('span', `🍳 Recept: ${Object.keys(st.recipes).length}/${RECIPES.length}`), h('span', `📚 Böcker: ${Object.keys(st.books).length}/${BOOKS.length}`), h('span', `🏫 Uppgifter: ${st.school.solved}`), h('span', `🏥 Patienter: ${st.patients}`)),
+      h('div.town-info', h('span', `🔍 Hemligheter: ${found}/${SECRET_COUNT}`), h('span', `🧪 Färger: ${Object.keys(st.colors).length}/${MIXES.length}`), h('span', `🍳 Recept: ${Object.keys(st.recipes).length}/${RECIPES.length}`), h('span', `📚 Böcker: ${Object.keys(st.books).length}/${BOOKS.length}`), h('span', `🏫 Uppgifter: ${st.school.solved}`), h('span', `🏥 Patienter: ${st.patients}`)),
       h('p.muted.town-tip', '🪙 Mynt tjänar du genom att lära dig i de andra apparna – varje stjärna ger ett mynt.'),
     );
     kos.autoSay('Välkommen till Lekstaden! Vart vill du gå?');
@@ -199,6 +222,8 @@ export function playView(el, { kos }) {
     const s = SCENES.find((x) => x.id === id);
     topbar(`${s.icon} ${s.name}`);
     clear(body);
+    el.querySelectorAll('.play > .pay').forEach((d) => d.remove());
+    toTop();
     ({ house, market, kitchen, school, library, farm, beach, vet, lab, garden, wardrobe })[id]();
   }
 
@@ -211,7 +236,7 @@ export function playView(el, { kos }) {
     (SECRETS[sceneId] || []).forEach((sec, i) => {
       const sid = `${sceneId}-${i}`;
       const cls = [st.secrets[sid] ? 'found' : '', sec.when ? `needs-${sec.when}` : ''].filter(Boolean).join(' ');
-      const spot = h('button.secret', { type: 'button', style: { left: `${sec.x}%`, top: `${sec.y}%` }, 'aria-label': 'hemlighet', class: cls }, st.secrets[sid] ? sec.e : '');
+      const spot = h('button.secret', { type: 'button', style: { left: `${sec.x}%`, top: `${sec.y}%`, '--d': String((i * 2.3) % 7) }, 'aria-label': 'hemlighet', class: cls }, st.secrets[sid] ? sec.e : '');
       onTap(spot, () => {
         if (st.secrets[sid]) {
           bubble(stage, sec.e, { speak: false, ms: 900 });
@@ -345,7 +370,7 @@ export function playView(el, { kos }) {
     const stage = makeStage('house', BG.house(hour < 7 || hour >= 19));
     const placed = (st.placed.house = st.placed.house || []);
     const tray = h('div.tray');
-    body.append(stage, h('p.tray-title', '🧺 Mina saker – dra in i rummet'), tray);
+    body.append(stage, h('p.tray-title', '🧺 Mina saker – dra in i rummet eller tryck'), tray);
     function propNode(pl) {
       const it = itemById(pl.item);
       const data = { item: pl.item, uid: pl.uid };
@@ -381,6 +406,7 @@ export function playView(el, { kos }) {
     }
     function trayDrag(e, it) {
       e.preventDefault();
+      const start = { x: e.clientX, y: e.clientY };
       const pl = { uid: `u${Date.now().toString(36)}`, item: it.id, ...pct(stage, e) };
       const node = propNode(pl);
       node.classList.add('lift');
@@ -394,13 +420,17 @@ export function playView(el, { kos }) {
       const up = (ev) => {
         window.removeEventListener('pointermove', move);
         window.removeEventListener('pointerup', up);
+        window.removeEventListener('pointercancel', up);
         node.classList.remove('lift');
         const r = stage.getBoundingClientRect();
-        if (ev.clientY > r.bottom || ev.clientY < r.top) {
+        const tapped = Math.hypot(ev.clientX - start.x, ev.clientY - start.y) < 10;
+        if (tapped) {
+          // Ett tryck ställer saken mitt i rummet.
+          Object.assign(pl, { x: 30 + Math.random() * 40, y: 62 + Math.random() * 16 });
+        } else if (ev.type === 'pointercancel' || ev.clientY > r.bottom || ev.clientY < r.top) {
           node.remove();
           return;
-        }
-        Object.assign(pl, pct(stage, ev));
+        } else Object.assign(pl, pct(stage, ev));
         node.style.left = `${pl.x}%`;
         node.style.top = `${pl.y}%`;
         placed.push(pl);
@@ -410,6 +440,7 @@ export function playView(el, { kos }) {
       };
       window.addEventListener('pointermove', move);
       window.addEventListener('pointerup', up);
+      window.addEventListener('pointercancel', up);
     }
     renderTray();
     kos.autoSay('Ditt hus! Dra in saker från korgen och lek med figurerna.');
@@ -521,7 +552,24 @@ export function playView(el, { kos }) {
   function market() {
     let cat = SHOP_CATS[0].id;
     const wrap = h('div.market');
-    body.append(h('div.stage-strip', { html: BG.market() }), wrap);
+    const stage = makeStage('market', BG.market());
+    stage.classList.add('short');
+    // Försäljaren ger tips om pengar – anpassat efter nivån.
+    const sellerChar = { skin: '#c68a5b', hair: 'lockigt', hairColor: '#2b1d14', shirt: '#22c55e', pants: '#1f2937', wear: { head: 'sunhat' } };
+    const seller = h('button.char.seller', { type: 'button', 'aria-label': 'försäljaren', style: { left: '50%', top: '50%' }, html: charSvg(sellerChar) });
+    const tips = level <= 0
+      ? ['Välkommen! Titta på prickarna – lägg ett mynt för varje prick.', 'Ju fler prickar, desto dyrare.']
+      : level <= 2
+        ? ['Välkommen! Lägg mynt tills det blir precis rätt summa.', 'Tips: en femma är lika mycket som fem enkronor.', 'Har du inte råd? Välj ett sparmål!']
+        : ['Välkommen! Du kan betala med en större sedel och få växel.', 'Växel räknar du ut genom att räkna upp från priset.', 'Prova Prisjakten: vilket är billigast?'];
+    let tipI = 0;
+    onTap(seller, () => {
+      seller.innerHTML = charSvg(sellerChar, 'yum');
+      setTimeout(() => (seller.innerHTML = charSvg(sellerChar)), 900);
+      bubble(stage, tips[tipI++ % tips.length], { ms: 3600 });
+    });
+    stage.appendChild(seller);
+    body.append(stage, wrap);
     function render() {
       clear(wrap);
       wrap.append(
@@ -592,7 +640,7 @@ export function playView(el, { kos }) {
           render();
         })),
       );
-      el.querySelector('.play').appendChild(dlg);
+      showDlg(dlg);
       kos.say(`${cap(withArticle(it))} kostar ${it.price} mynt. Du har ${g.have}. Det fattas ${g.left}.`);
     }
     function pay(it, done) {
@@ -697,7 +745,7 @@ export function playView(el, { kos }) {
         );
         kos.say(`Du betalar ${s.sum}. Det kostar ${it.price}. Hur mycket får du tillbaka?`);
       }
-      el.querySelector('.play').appendChild(dlg);
+      showDlg(dlg);
       render2();
       kos.say(`${cap(withArticle(it))} kostar ${it.price} mynt. ${level === 0 ? 'Lägg ett mynt för varje prick.' : 'Lägg rätt summa på disken.'}`);
     }
@@ -705,7 +753,7 @@ export function playView(el, { kos }) {
     function quiz() {
       const rng = createRng(Date.now());
       const dlg = h('div.pay');
-      el.querySelector('.play').appendChild(dlg);
+      showDlg(dlg);
       function next() {
         const q = priceQuiz(level, rng);
         let tries = 0;
@@ -771,7 +819,10 @@ export function playView(el, { kos }) {
       clear(shelf);
       available().forEach((ing) => {
         const t = h('button.tray-item', { type: 'button', 'aria-label': ing.n }, ing.e, ing.grown ? h('small.cnt', String(st.pantry[ing.id])) : null);
-        onTap(t, () => addIng(ing), { guardMs: 120 });
+        dragSource(t, stage, ing.e, {
+          onDrop: (q) => (overNode(stage, q, bowlEl, 6) ? addIng(ing) : bubble(bowlEl, 'Släpp i skålen!', { speak: false, ms: 1000 })),
+          onTap: () => addIng(ing),
+        });
         shelf.appendChild(t);
       });
     }
@@ -866,7 +917,7 @@ export function playView(el, { kos }) {
         secretsFound.length ? h('div.chip-row', secretsFound.map((r) => h('span.chip-btn.static.done', `${r.e} ${r.n}`))) : null,
         h('div.row-actions', onTap(h('button.btn.btn-ghost', { type: 'button' }, 'Stäng'), () => dlg.remove())),
       );
-      el.querySelector('.play').appendChild(dlg);
+      showDlg(dlg);
     }
     renderShelf();
     renderBowl();
@@ -894,6 +945,7 @@ export function playView(el, { kos }) {
       window.removeEventListener('pointercancel', up);
       if (!ghost) return tap?.();
       ghost.remove();
+      ghostDrag.last = performance.now();
       const r = stage.getBoundingClientRect();
       if (ev.clientY > r.bottom || ev.clientY < r.top || ev.clientX < r.left || ev.clientX > r.right) return;
       onDrop?.(pct(stage, ev));
@@ -901,6 +953,31 @@ export function playView(el, { kos }) {
     window.addEventListener('pointermove', move);
     window.addEventListener('pointerup', up);
     window.addEventListener('pointercancel', up);
+  }
+  /**
+   * En knapp i en bricka som både kan dras in i scenen och tryckas på (även med tangentbord).
+   * onDrop får {x, y} i procent av scenen.
+   */
+  function dragSource(btn, stage, content, { onDrop, onTap: tap, guardMs = 120 }) {
+    btn.addEventListener('pointerdown', (e) => {
+      if (e.button > 0) return;
+      ghostDrag(e, stage, content, { onDrop });
+    });
+    onTap(btn, (e) => {
+      // Ett klick direkt efter en dragning ska inte räknas som ett tryck.
+      if (performance.now() - (ghostDrag.last || -1e9) < 400) return;
+      tap(e);
+    }, { guardMs });
+    return btn;
+  }
+  /** Ligger punkten q (procent) över noden? Marginal i procent av scenens bredd. */
+  function overNode(stage, q, node, margin = 4) {
+    const s = stage.getBoundingClientRect();
+    const r = node.getBoundingClientRect();
+    const x = s.left + (q.x / 100) * s.width;
+    const y = s.top + (q.y / 100) * s.height;
+    const m = (margin / 100) * s.width;
+    return x > r.left - m && x < r.right + m && y > r.top - m && y < r.bottom + m;
   }
 
   /* ---------- Små bilder för skoltavlan ---------- */
@@ -978,7 +1055,8 @@ export function playView(el, { kos }) {
     }
     function next() {
       const rng = createRng(Date.now());
-      task = schoolTask(level, rng, subject === 'mix' ? undefined : subject);
+      const sub = subject === 'mix' ? rng.pick(SCHOOL_SUBJECTS).id : subject;
+      task = schoolTask(sub === 'words' ? readLevel : level, rng, sub);
       tries = 0;
       clear(board).append(h('div.board-text', task.text), showVisual(task.show) || h('span'));
       clear(opts).append(...task.options.map((o) => {
@@ -1024,12 +1102,12 @@ export function playView(el, { kos }) {
     body.append(stage, h('p.tray-title', '📚 Välj en bok att läsa'), shelf);
     function renderShelf() {
       clear(shelf);
-      booksForLevel(level).forEach((b) => shelf.appendChild(onTap(h('button.book-btn', { type: 'button', class: st.books[b.id] ? 'read' : '' }, h('span.bk-e', b.e), h('span.bk-t', b.title), st.books[b.id] ? h('small.have', '✓ läst') : h('small', '📖 ny')), () => openBook(b))));
+      booksForLevel(readLevel).forEach((b) => shelf.appendChild(onTap(h('button.book-btn', { type: 'button', class: st.books[b.id] ? 'read' : '' }, h('span.bk-e', b.e), h('span.bk-t', b.title), st.books[b.id] ? h('small.have', '✓ läst') : h('small', '📖 ny')), () => openBook(b))));
     }
     function openBook(b) {
       let page = 0;
       const dlg = h('div.pay.reader');
-      el.querySelector('.play').appendChild(dlg);
+      showDlg(dlg);
       const close = () => dlg.remove();
       function words(text) {
         return h('p.reader-text', text.split(' ').map((w) => onTap(h('span.word', { tabindex: '0' }, w), () => kos.say(w.replace(/[.,!?–]/g, '')), { guardMs: 150 })).flatMap((n, i) => (i ? [' ', n] : [n])));
@@ -1055,7 +1133,7 @@ export function playView(el, { kos }) {
             })),
           h('p.muted.reader-tip', 'Tryck på ett ord för att höra det.'),
         );
-        if (level <= 1 || kos.shouldAutoSpeak()) kos.say(text);
+        if (readLevel <= 1 || kos.shouldAutoSpeak()) kos.say(text);
       }
       function question() {
         let tries = 0;
@@ -1120,13 +1198,31 @@ export function playView(el, { kos }) {
     });
     let selected = null;
     const tray = h('div.tray');
-    const info = h('p.pay-msg');
-    body.append(stage, info, h('p.tray-title', '🧺 Dra maten till ett djur – eller tryck på maten och sedan på djuret'), tray, h('div.row-actions.left', onTap(h('button.btn.btn-ghost.big-touch', { type: 'button' }, '🧑‍🌾 Bondens fråga'), () => question())));
+    const card = h('div.farm-card');
+    body.append(stage, card, h('p.tray-title', '🧺 Dra maten till ett djur – eller tryck på maten och sedan på djuret'), tray, h('div.row-actions.left', onTap(h('button.btn.btn-ghost.big-touch', { type: 'button' }, '🧑‍🌾 Bondens fråga'), () => question())));
+    /** Kort med riktigt foto av djuret (emoji om fotot saknas) och vad det äter. */
+    function showCard(a, food, ok) {
+      const pic = photo(a.ph, { alt: a.n, cls: 'fc-photo', fallback: '' });
+      const likes = FARM_FOODS.filter((f) => a.likes.includes(f.id));
+      clear(card).append(
+        h('div.fc-pic', pic ? { html: pic } : null, pic ? null : h('span.fc-emoji', a.e)),
+        h('div.fc-text',
+          h('b', `${cap(a.n)} ${a.e}`),
+          h('span.fc-diet', `${DIET_ICON[a.diet] || ''} ${cap(a.diet)}`),
+          food ? h('p', { class: ok ? 'ok' : 'no' }, ok ? `✔ ${cap(a.n)} tycker om ${food.n}.` : `✘ ${cap(a.n)} vill inte ha ${food.n}.`) : h('p', a.fact),
+          h('div.fc-likes', h('small', 'Gillar: '), ...likes.map((f) => foodChip(f)))),
+      );
+      card.classList.add('show');
+    }
+    function foodChip(f) {
+      const pic = hasPhoto(f.ph) ? photo(f.ph, { alt: f.n, cls: 'fc-food-photo' }) : '';
+      return h('span.fc-food', { title: f.n }, pic ? h('span', { html: pic }) : f.e, h('small', f.n));
+    }
     function renderTray() {
       clear(tray);
       FARM_FOODS.forEach((f) => {
         const b = h('button.tray-item', { type: 'button', class: selected === f.id ? 'sel' : '', 'aria-label': f.n }, f.e);
-        b.addEventListener('pointerdown', (e) => ghostDrag(e, stage, f.e, {
+        dragSource(b, stage, f.e, {
           onDrop: (q) => {
             const hit = hitAt(stage, q, '.animal');
             if (hit) give(FARM_ANIMALS.find((a) => a.id === hit.dataset.id), f, hit);
@@ -1134,9 +1230,9 @@ export function playView(el, { kos }) {
           onTap: () => {
             selected = selected === f.id ? null : f.id;
             renderTray();
-            kos.say(f.n);
+            kos.say(selected ? `${f.n}. Tryck på ett djur.` : f.n);
           },
-        }));
+        });
         tray.appendChild(b);
       });
     }
@@ -1144,7 +1240,9 @@ export function playView(el, { kos }) {
       if (selected) return give(a, FARM_FOODS.find((f) => f.id === selected), node);
       node.classList.add('jump');
       setTimeout(() => node.classList.remove('jump'), 600);
-      bubble(node, `${a.sound} ${a.fact}`, { ms: 5000 });
+      showCard(a);
+      bubble(node, a.sound, { speak: false, ms: 1400 });
+      kos.say(`${a.sound} ${a.fact}`);
     }
     function give(a, f, node) {
       const r = farmReaction(a.id, f.id);
@@ -1156,8 +1254,9 @@ export function playView(el, { kos }) {
         st.farm.fed[a.id] = (st.farm.fed[a.id] || 0) + 1;
         if (addToSet(p, 'playFarm', a.id)) earn(1, `Du gav ${a.n} rätt mat!`, 'farm');
         if (productReady(a, st.farm.lastProduct[a.id])) dropProduct(a, node);
-        info.textContent = `${a.e} ${a.n.charAt(0).toUpperCase() + a.n.slice(1)} är ${a.diet}.`;
+        showCard(a, f, true);
       } else {
+        showCard(a, f, false);
         node.classList.add('shake');
         setTimeout(() => node.classList.remove('shake'), 500);
         if (r.no) kos.sfx('wrong');
@@ -1182,14 +1281,16 @@ export function playView(el, { kos }) {
     }
     function question() {
       const rng = createRng(Date.now());
-      const q = farmQuestion(level, rng);
+      const q = farmQuestion(bioLevel, rng);
       let tries = 0;
       const dlg = h('div.pay');
       clear(dlg).append(
         h('h3', '🧑‍🌾 Bondens fråga'),
         h('p.big-text', h('b', q.text)),
         h('div.answer-row', q.options.map((o) => {
-          const b = h('button.answer-btn.book-ans', { type: 'button' }, h('span.pic', o.e), h('span', o.label));
+          const ph = (FARM_ANIMALS.find((a) => a.id === o.id) || FARM_FOODS.find((f) => f.id === o.id))?.ph;
+          const pic = q.kind !== 'diet' && hasPhoto(ph) ? photo(ph, { alt: o.label, cls: 'ans-photo' }) : '';
+          const b = h('button.answer-btn.book-ans', { type: 'button', 'aria-label': o.label }, pic ? h('span.pic', { html: pic }) : h('span.pic', o.e), h('span', o.label));
           return onTap(b, () => {
             if (o.id !== q.answer) {
               tries++;
@@ -1212,7 +1313,7 @@ export function playView(el, { kos }) {
           question();
         })),
       );
-      el.querySelector('.play').appendChild(dlg);
+      showDlg(dlg);
       kos.say(q.say);
     }
     renderTray();
@@ -1259,10 +1360,11 @@ export function playView(el, { kos }) {
       clear(tray);
       BEACH_ITEMS.forEach((it) => {
         const b = h('button.tray-item', { type: 'button', class: st.beach[it.id] ? 'done' : '', 'aria-label': it.n }, it.e);
-        b.addEventListener('pointerdown', (e) => ghostDrag(e, stage, it.e, {
+        dragSource(b, stage, it.e, {
           onDrop: (q) => drop(it, q),
           onTap: () => drop(it, { x: 70, y: 60 }),
-        }));
+          guardMs: 300,
+        });
         tray.appendChild(b);
       });
       tray.appendChild(h('small.muted', ` Testat: ${tested()}/${BEACH_ITEMS.length}`));
@@ -1312,9 +1414,12 @@ export function playView(el, { kos }) {
     const tray = h('div.tray');
     body.append(stage, status, h('p.tray-title', '🧰 Verktyg och mat – dra till djuret eller tryck'), tray);
     let pt;
+    let lastPt = null;
     let stepI;
     function next() {
-      pt = rng.pick(PATIENTS);
+      do pt = rng.pick(PATIENTS);
+      while (pt === lastPt);
+      lastPt = pt;
       stepI = 0;
       patientEl.textContent = pt.animal;
       patientEl.className = 'patient arrive';
@@ -1351,17 +1456,15 @@ export function playView(el, { kos }) {
     }
     TOOLS.forEach((t) => {
       const b = h('button.tray-item', { type: 'button', 'aria-label': t.n }, t.e);
-      let start;
-      b.addEventListener('pointerdown', (e) => (start = { x: e.clientX, y: e.clientY }));
-      b.addEventListener('pointerup', (e) => {
-        const r = patientEl.getBoundingClientRect();
-        const moved = start && Math.hypot(e.clientX - start.x, e.clientY - start.y) > 10;
-        if (!moved || (e.clientX > r.left - 40 && e.clientX < r.right + 40 && e.clientY > r.top - 40 && e.clientY < r.bottom + 40)) use(t);
-        start = null;
+      dragSource(b, stage, t.e, {
+        onDrop: (q) => (overNode(stage, q, patientEl, 8) ? use(t) : bubble(patientEl, 'Hit! Dra den till mig.', { speak: false, ms: 1200 })),
+        onTap: () => use(t),
+        guardMs: 250,
       });
       tray.appendChild(b);
     });
     next();
+    kos.autoSay('Djurkliniken! Ta reda på vad djuret behöver. Dra rätt sak till djuret.');
   }
 
   /* ======================= Färglabbet ======================= */
@@ -1371,7 +1474,16 @@ export function playView(el, { kos }) {
     const flask = h('div.flask', { style: { left: '50%', top: '56%' } }, h('div.flask-liquid'), h('span.flask-glass', '⚗️'));
     stage.appendChild(flask);
     const pots = h('div.pots');
-    BASE_COLORS.forEach((c) => pots.appendChild(onTap(h('button.pot', { type: 'button', style: { '--c': c.hex }, 'aria-label': c.n }, h('i'), h('small', c.n)), () => drop(c), { guardMs: 150 })));
+    BASE_COLORS.forEach((c) => {
+      const b = h('button.pot', { type: 'button', style: { '--c': c.hex }, 'aria-label': c.n }, h('i'), h('small', c.n));
+      const blob = h('span.paint-drop', { style: { background: c.hex } });
+      dragSource(b, stage, blob, {
+        onDrop: (q) => (overNode(stage, q, flask, 6) ? drop(c) : bubble(flask, 'Släpp färgen i kolven!', { speak: false, ms: 1100 })),
+        onTap: () => drop(c),
+        guardMs: 150,
+      });
+      pots.appendChild(b);
+    });
     const board = h('div.color-board');
     const info = h('p.pay-msg');
     body.append(stage, info, pots, h('div.row-actions', onTap(h('button.btn.btn-ghost', { type: 'button' }, '🫗 Töm kolven'), () => {
@@ -1384,7 +1496,7 @@ export function playView(el, { kos }) {
       const single = drops.length && new Set(drops).size === 1 ? BASE_COLORS.find((c) => c.id === drops[0]).hex : null;
       liq.style.background = m ? m.hex : single || (drops.length ? '#a8a29e' : 'transparent');
       liq.style.height = `${Math.min(80, drops.length * 22)}%`;
-      info.textContent = drops.length ? `I kolven: ${drops.map((d) => BASE_COLORS.find((c) => c.id === d).n).join(' + ')}${m ? ` = ${m.n}!` : ''}` : 'Tryck på färgburkarna för att droppa färg i kolven.';
+      info.textContent = drops.length ? `I kolven: ${drops.map((d) => BASE_COLORS.find((c) => c.id === d).n).join(' + ')}${m ? ` = ${m.n}!` : ''}` : 'Tryck på en färgburk – eller dra den till kolven – för att droppa färg.';
       renderBoard();
     }
     function drop(c) {
@@ -1435,10 +1547,21 @@ export function playView(el, { kos }) {
       const tools = [{ id: 'water', e: '🚿', n: 'vattenkanna' }, ...ITEMS.filter((i) => i.cat === 'frön' && (st.inv[i.id] || 0) > 0)];
       tools.forEach((t) => {
         const b = h('button.tray-item', { type: 'button', class: selected === t.id ? 'sel' : '', 'aria-label': t.n }, t.e, t.id !== 'water' ? h('small.cnt', String(st.inv[t.id])) : null);
-        onTap(b, () => {
-          selected = selected === t.id ? null : t.id;
-          renderTray();
-          kos.say(t.n);
+        dragSource(b, stage, t.e, {
+          onDrop: (q) => {
+            const i = potEls.findIndex((n) => overNode(stage, q, n, 2));
+            if (i < 0) return;
+            const keep = selected;
+            selected = t.id;
+            tapPot(i);
+            selected = keep && keep !== 'water' && !(st.inv[keep] > 0) ? null : keep;
+            renderTray();
+          },
+          onTap: () => {
+            selected = selected === t.id ? null : t.id;
+            renderTray();
+            kos.say(selected ? `${t.n}. Tryck på en kruka.` : t.n);
+          },
         });
         tray.appendChild(b);
       });
@@ -1516,10 +1639,26 @@ export function playView(el, { kos }) {
   /* ======================= Frisören / garderoben ======================= */
   function wardrobe() {
     let cur = st.chars[0];
-    const preview = h('div.wr-preview');
+    const stage = makeStage('wardrobe', BG.wardrobe());
+    stage.classList.add('short');
+    const preview = h('button.char.catwalk', { type: 'button', 'aria-label': 'figuren', style: { left: '50%', top: '52%' } });
+    onTap(preview, () => {
+      preview.innerHTML = charSvg(cur, 'yum');
+      setTimeout(() => (preview.innerHTML = charSvg(cur)), 900);
+      kos.sfx('pop');
+      bubble(stage, `Hej! Jag heter ${cur.name}. Vad fin jag är!`, { ms: 2200 });
+    });
+    stage.appendChild(preview);
     const people = h('div.chip-row');
     const opts = h('div.wr-opts');
-    body.append(h('div.wardrobe', h('div.wr-left', people, preview), opts));
+    body.append(stage, h('div.wardrobe', h('div.wr-left', people), opts));
+    function wear(it) {
+      if (cur.wear[it.slot] === it.id) delete cur.wear[it.slot];
+      else cur.wear[it.slot] = it.id;
+      kos.sfx('pop');
+      save();
+      render();
+    }
     function render() {
       clear(people);
       st.chars.forEach((c) => people.appendChild(onTap(h('button.wr-person', { type: 'button', class: c === cur ? 'on' : '', html: charSvg(c) }), () => {
@@ -1548,11 +1687,12 @@ export function playView(el, { kos }) {
         row('Hårfärg', swatch('hairColor', HAIR_COLORS)),
         row('Tröja', swatch('shirt', CLOTH_COLORS)),
         row('Byxor', swatch('pants', CLOTH_COLORS)),
-        row('Kläder', clothes.length ? clothes.map((it) => onTap(h('button.pick', { type: 'button', class: cur.wear[it.slot] === it.id ? 'on' : '', 'aria-label': it.n }, it.e), () => {
-          cur.wear[it.slot] = cur.wear[it.slot] === it.id ? undefined : it.id;
-          kos.sfx('pop');
-          save();
-          render();
+        row('Kläder – tryck eller dra till figuren', clothes.length ? clothes.map((it) => dragSource(h('button.pick', { type: 'button', class: cur.wear[it.slot] === it.id ? 'on' : '', 'aria-label': it.n }, it.e), stage, it.e, {
+          onDrop: (q) => {
+            if (!overNode(stage, q, preview, 4)) return;
+            if (cur.wear[it.slot] !== it.id) wear(it);
+          },
+          onTap: () => wear(it),
         })) : [h('span.muted', 'Köp kläder och hattar på Marknaden!')]),
         h('div.row-actions.left', onTap(h('button.btn.btn-ghost', { type: 'button' }, '🎲 Slumpa'), () => {
           const n = newCharacter();

@@ -5,6 +5,7 @@
 // Allt innehåll är kontrollerat för korrekt svenska (en/ett, bestämd form,
 // plural). Emojierna ska entydigt avbilda ordet så att en 5-åring förstår.
 // Se tests/unit/svenska.test.mjs för automatiska kontroller av listorna.
+import { photo, hasPhoto } from '../ui/img.js';
 
 export const ALPHABET = [
   { l: 'A', word: 'apa', e: '🐒' },
@@ -83,13 +84,60 @@ export const WORDS = [
   { w: 'snögubbe', e: '⛄' }, { w: 'ekorre', e: '🐿️' }, { w: 'bläckfisk', e: '🐙' }, { w: 'citron', e: '🍋' }, { w: 'elefant', e: '🐘' },
 ];
 
+/*
+ * Stava ord: nivåindelade ordlistor (lyssna på ordet → bygg eller skriv det).
+ *   Nivå 0: 2–3 bokstäver, korta vardagsord (ko, is, sol).
+ *   Nivå 1: ljudenliga ord – varje bokstav har sitt vanliga ljud, ingen dubbelteckning.
+ *   Nivå 2: 4–7 bokstäver med ng/nk, gn, sj-, tj- och j-ljud och mjukt k/g.
+ *   Nivå 3: dubbelteckning och ck (kort vokal före).
+ *   Nivå 4: långa och sammansatta ord.
+ * Format "ord emoji". Bara gemener a–ö, varje ord och varje emoji förekommer en gång
+ * (kontrolleras i tests/unit/svenska.test.mjs). Fotonyckeln är obj-<ord>.
+ */
+const SPELL_RAW = [
+  // Nivå 0
+  'ko 🐄|is 🧊|bi 🐝|te 🍵|fe 🧚|sol ☀️|bil 🚗|mus 🐭|hus 🏠|båt ⛵|får 🐑|bok 📖|tåg 🚂|sko 👟|lök 🧅|ris 🍚|ben 🦴|sax ✂️|apa 🐒|orm 🐍|fot 🦶|räv 🦊|mun 👄|öra 👂|öga 👁️|val 🐳|ost 🧀|säl 🦭|mål 🥅|ros 🌹|nöt 🌰|ägg 🥚|ufo 🛸|lås 🔒|nål 🪡|ved 🪵|tre 3️⃣|sex 6️⃣|nio 9️⃣|tio 🔟|röd 🔴|blå 🔵|gul 🟡|vit ⚪|pil ➡️|rep 🪢|bro 🌉|arm 💪|löv 🍁|såg 🪚',
+  // Nivå 1
+  'kaka 🍪|lama 🦙|gris 🐷|fisk 🐟|hund 🐶|tand 🦷|hand ✋|moln ☁️|träd 🌳|tält ⛺|brev ✉️|bröd 🍞|korv 🌭|sten 🪨|krok 🪝|stol 🪑|gran 🌲|palm 🌴|kran 🏗️|oliv 🫒|majs 🌽|pumpa 🎃|melon 🍈|druva 🍇|kokos 🥥|panda 🐼|koala 🐨|haj 🦈|groda 🐸|ödla 🦎|mask 🪱|tomte 🎅|drake 🐉|prins 🤴|krona 👑|fiol 🎻|lampa 💡|tvål 🧼|krita 🖍️|karta 🗺️|moped 🛵|kanot 🛶|polis 👮|pirat 🏴‍☠️|pilot 👨‍✈️|radio 📻|piano 🎹|tomat 🍅|banan 🍌|robot 🤖|raket 🚀|kanin 🐰|morot 🥕|tiger 🐯|lejon 🦁|päron 🍐|paket 🎁|kamel 🐫|måne 🌙|näsa 👃|myra 🐜|häst 🐴|örn 🦅|svan 🦢|bäver 🦫|tårta 🎂|smör 🧈|pasta 🍝|salt 🧂|gurka 🥒|bebis 👶|åska ⛈️|mobil 📱|dator 💻|komet ☄️|planet 🪐|godis 🍬|ananas 🍍|paprika 🫑|nudlar 🍜|björn 🐻|linjal 📏|svamp 🍄|pokal 🏆|skål 🥣|yxa 🪓',
+  // Nivå 2
+  'ring 💍|säng 🛏️|tunga 👅|honung 🍯|ängel 👼|munk 🍩|bank 🏦|ankare ⚓|pingvin 🐧|känguru 🦘|sju 7️⃣|sked 🥄|skjorta 👔|stjärna ⭐|skidor 🎿|choklad 🍫|sjuk 🤒|tjej 👧|tjur 🐂|kyrka ⛪|kälke 🛷|körsbär 🍒|get 🐐|hjärta ❤️|hjälm ⛑️|ljus 🕯️|berg ⛰️|apelsin 🍊|vulkan 🌋|kaktus 🌵|tulpan 🌷|pensel 🖌️|halsduk 🧣|strumpa 🧦|stövel 👢|sandal 👡|diamant 💎|mynt 🪙|traktor 🚜|delfin 🐬|hamster 🐹|kamera 📷|avokado 🥑|trumpet 🎺|medalj 🏅|magnet 🧲|regn 🌧️|skola 🏫|kedja ⛓️|pengar 💰|elefant 🐘|fjäril 🦋|paraply ☂️|potatis 🥔|cykel 🚲|citron 🍋|mjölk 🥛|pojke 👦|tärning 🎲|tidning 📰|kalender 📅|pingis 🏓|solros 🌻|blixt ⚡|jorden 🌍|plåster 🩹|mormor 👵|morfar 👴|snigel 🐌|zebra 🦓',
+  // Nivå 3
+  'katt 🐱|hatt 🎩|boll ⚽|glass 🍦|buss 🚌|mamma 👩|pappa 👨|trumma 🥁|flagga 🚩|uggla 🦉|skepp 🚢|äpple 🍎|ekorre 🐿️|blomma 🌸|nyckel 🔑|kyckling 🐥|tupp 🐓|klocka ⏰|jacka 🧥|soffa 🛋️|penna 🖊️|sallad 🥗|kaffe ☕|pizza 🍕|giraff 🦒|gitarr 🎸|ballong 🎈|dörr 🚪|skägg 🧔|vatten 💧|snäcka 🐚|krabba 🦀|hummer 🦞|gorilla 🦍|bläckfisk 🐙|dimma 🌫️|pussel 🧩|tablett 💊|nalle 🧸|puss 💋|hammare 🔨|tallrik 🍽️|muffins 🧁|klubba 🍭|jordgubbe 🍓|broccoli 🥦|hiss 🛗|tass 🐾|stopp 🛑|tumme 👍|slott 🏰|ryggsäck 🎒|tennis 🎾|igelkott 🦔|konfetti 🎊|batteri 🔋|satellit 🛰️|kompass 🧭|palett 🎨',
+  // Nivå 4
+  'snögubbe ⛄|pannkaka 🥞|flygplan ✈️|helikopter 🚁|krokodil 🐊|sköldpadda 🐢|nyckelpiga 🐞|papegoja 🦜|flamingo 🦩|enhörning 🦄|regnbåge 🌈|motorcykel 🏍️|hamburgare 🍔|fyrverkeri 🎆|polisbil 🚓|ambulans 🚑|brandbil 🚒|mikrofon 🎤|vattenmelon 🍉|snöflinga ❄️|astronaut 🧑‍🚀|prinsessa 👸|sjöjungfru 🧜‍♀️|trollkarl 🧙|dinosaurie 🦕|trafikljus 🚦|teleskop 🔭|mikroskop 🔬|glasögon 👓|smörgås 🥪|jordnöt 🥜|vitlök 🧄|blåbär 🫐|julgran 🎄|skalbagge 🪲|fladdermus 🦇|tvättbjörn 🦝|isbjörn 🐻‍❄️|kundvagn 🛒|sparkcykel 🛴|skridsko ⛸️|termometer 🌡️|tandborste 🪥|basketboll 🏀|stjärnfall 🌠|fallskärm 🪂|brevlåda 📫|ficklampa 🔦|häftstift 📌|badkar 🛁',
+];
+// Ord utan meningsfullt foto (färger och tal) får ingen fotonyckel.
+const NO_PHOTO = new Set(['tre', 'sex', 'nio', 'tio', 'sju', 'röd', 'blå', 'gul', 'vit', 'sjuk', 'pil']);
+export const SPELL_WORDS = SPELL_RAW.flatMap((row, lvl) =>
+  row.split('|').map((pair) => {
+    const i = pair.indexOf(' ');
+    const w = pair.slice(0, i);
+    return { w, e: pair.slice(i + 1), lvl, ...(NO_PHOTO.has(w) ? {} : { photo: `obj-${w}` }) };
+  }),
+);
+export const spellWordsForLevel = (level) => SPELL_WORDS.filter((x) => x.lvl === Math.max(0, Math.min(4, level)));
+
+/** Förklarar det kluriga i ett ords stavning (för explain/hint). Tom sträng om ordet är ljudenligt. */
+export function spellTip(w) {
+  if (w.includes('ck')) return 'ck är ett dubbelt k. Vokalen före är kort.';
+  const dbl = w.match(/([bcdfgklmnprstvz])\1/);
+  if (dbl) return `Vokalen före ${dbl[0]} är kort – därför skriver vi dubbelt ${dbl[1]}.`;
+  if (/stj|skj|sj|ch|sk[eiyäö]/.test(w)) return 'Sj-ljudet kan stavas sj, sk, skj, stj eller ch.';
+  if (/tj|^k[eiyäö]|^kj/.test(w)) return 'Tj-ljudet kan stavas tj eller k – k före e, i, y, ä och ö låter ofta tj.';
+  if (/^hj|^lj|^g[eiyäö]|rg$|lj/.test(w)) return 'J-ljudet kan stavas j, g, hj och lj.';
+  if (/gn/.test(w)) return 'gn låter som ngn, men vi skriver bara g och n.';
+  if (/ng/.test(w)) return 'ng är ett ljud, men vi skriver två bokstäver: n och g.';
+  if (/nk/.test(w)) return 'Före k låter n som ng, men vi skriver bara n.';
+  return '';
+}
+
 // Rimgrupper. `r` är rimdelen (från den betonade vokalen) som alla ord slutar på.
 export const RHYME_GROUPS = [
   { r: 'us', w: [{ w: 'hus', e: '🏠' }, { w: 'mus', e: '🐭' }, { w: 'ljus', e: '🕯️' }] },
   { r: 'att', w: [{ w: 'katt', e: '🐱' }, { w: 'hatt', e: '🎩' }, { w: 'natt', e: '🌃' }] },
   { r: 'ko', w: [{ w: 'ko', e: '🐄' }, { w: 'sko', e: '👟' }] },
   { r: 'ol', w: [{ w: 'sol', e: '☀️' }, { w: 'stol', e: '🪑' }] },
-  { r: 'ykel', w: [{ w: 'nyckel', e: '🔑' }, { w: 'cykel', e: '🚲' }] },
+  { r: 'kel', w: [{ w: 'nyckel', e: '🔑' }, { w: 'cykel', e: '🚲' }] },
   { r: 'åg', w: [{ w: 'tåg', e: '🚂' }, { w: 'våg', e: '🌊' }] },
   { r: 'oll', w: [{ w: 'boll', e: '⚽' }, { w: 'noll', e: '0️⃣' }] },
   { r: 'is', w: [{ w: 'gris', e: '🐷' }, { w: 'ris', e: '🍚' }, { w: 'is', e: '🧊' }] },
@@ -107,8 +155,12 @@ export const RHYME_GROUPS = [
   { r: 'uss', w: [{ w: 'buss', e: '🚌' }, { w: 'puss', e: '💋' }] },
   { r: 'ål', w: [{ w: 'mål', e: '🥅' }, { w: 'skål', e: '🥣' }] },
 ];
-/** Bakåtkompatibelt: rimpar (de två första orden i varje grupp). */
-export const RHYMES = RHYME_GROUPS.map((g) => g.w.slice(0, 2));
+/**
+ * Bakåtkompatibelt: enkla rimpar (de två första orden i varje grupp) där slutet
+ * också ser likadant ut i skrift (minst två lika slutbokstäver). Rim som två/blå
+ * låter lika men skrivs olika och används bara i RHYME_GROUPS (genRhyme).
+ */
+export const RHYMES = RHYME_GROUPS.map((g) => g.w.slice(0, 2)).filter(([a, b]) => a.w.slice(-2) === b.w.slice(-2));
 
 // Stavelser: s = ordet uppdelat i stavelser (talstavelser, så som man klappar).
 export const SYLLABLES = [
@@ -1309,6 +1361,49 @@ export function genBuild(level, rng) {
   };
 }
 
+/* ---------- Stava ord: lyssna på ordet och bygg det med bokstavsbrickor ---------- */
+const COMMON_LOWER = COMMON.map((a) => a.l.toLowerCase());
+/** Bokstäver som lockar till vanliga stavfel i just det här ordet (distraktorer). */
+export function trickyLetters(w) {
+  const out = [];
+  if (/stj|skj|sj|ch|sk[eiyäö]/.test(w)) out.push('j', 'h', 's');
+  if (/tj|^k[eiyäö]/.test(w)) out.push('j', 'c');
+  if (/^hj|^lj|^g[eiyäö]|rg$/.test(w)) out.push('j', 'g');
+  if (/ng|nk|gn/.test(w)) out.push('g', 'n', 'm');
+  if (/ck/.test(w)) out.push('k', 'c');
+  const dbl = w.match(/([a-zåäö])\1/);
+  if (dbl) out.push(dbl[1]);
+  return [...new Set(out)];
+}
+const EXTRA_TILES = [0, 1, 2, 2, 3];
+export function genSpellWord(level, rng) {
+  const lvl = Math.max(0, Math.min(4, level));
+  // Ibland ett lättare ord för att hålla flytet uppe.
+  const item = rng.pick(spellWordsForLevel(lvl > 0 && rng.chance(0.2) ? lvl - 1 : lvl));
+  const upper = lvl <= 1;
+  const cased = upper ? item.w.toUpperCase() : item.w;
+  const letters = cased.split('');
+  const nExtra = EXTRA_TILES[lvl];
+  const extra = [];
+  for (const l of rng.shuffle(trickyLetters(item.w))) if (extra.length < nExtra && (!item.w.includes(l) || /([a-zåäö])\1/.test(item.w))) extra.push(l);
+  const fill = rng.shuffle(COMMON_LOWER.filter((l) => !item.w.includes(l) && !extra.includes(l)));
+  while (extra.length < nExtra) extra.push(fill.pop());
+  const tip = spellTip(item.w);
+  const pic = item.photo && hasPhoto(item.photo) ? photo(item.photo, { alt: item.w, cls: 'spell-photo' }) : item.e;
+  return {
+    type: 'build',
+    prompt: 'Lyssna och stava ordet!',
+    say: `Stava ordet ${item.w}.`,
+    visual: `<div class="pic-big spell-pic">${pic}</div>`,
+    word: cased,
+    tiles: rng.shuffle([...letters, ...extra.map((l) => (upper ? l.toUpperCase() : l))]),
+    sayWord: item.w,
+    hint: `Säg ordet långsamt och lyssna efter varje ljud: ${item.w.split('').join(' – ')}.`,
+    explain: `${cased}: ${letters.join(' – ')}.${tip ? ` ${tip}` : ''}`,
+    collect: { set: 'spelledWords', item: item.w },
+  };
+}
+
 /* ---------- Läs & välj ---------- */
 export function genReadPick(level, rng) {
   const pool = wordsForLevel(Math.max(1, level));
@@ -1761,7 +1856,7 @@ export const TEXT_CLUES = [
     "Det regnar. Isa tar ett paraply.",
     "Vad vill Isa hålla borta?",
     "regnet",
-    "solen i texten",
+    "sin hund",
     "sin bok"
   ],
   [
@@ -1885,7 +1980,7 @@ function contextChoice(bank, level, rng, inference) {
     type: 'choice', prompt: `${context} ${question}`, say: `${context} ${question}`,
     options: rng.shuffle([answer, ...wrong]).map((label) => ({ id: label, label, say: label })),
     answer, hint: inference ? 'Lyssna på texten igen. Vilken ledtråd hjälper dig?' : 'Lyssna på hela meningen. Den hjälper dig att förstå ordet.',
-    explain: `${answer}. ${context}`,
+    explain: `Svaret är: ${answer}. Ledtråden finns i texten: ${context}`,
   };
 }
 export function genContextWords(level, rng) { return contextChoice(CONTEXT_WORDS, level, rng, false); }
@@ -1904,7 +1999,7 @@ export const svenskaApp = {
     { id: 'firstsound', name: 'Första ljudet', icon: '👂', minLevel: 0, gen: genFirstSound, lgr: ['sv-ljud'] },
     { id: 'case', name: 'Stor & liten', icon: '🅰️', minLevel: 0, gen: genCase, lgr: ['sv-regler'] },
     { id: 'enett', name: 'En eller ett?', icon: '☝️', minLevel: 1, gen: genGrammar, lgr: ['sv-normer', 'sv-ord'] },
-    { id: 'build', name: 'Bygg ordet', icon: '🧩', minLevel: 1, gen: genBuild, lgr: ['sv-skriva', 'sv-ljud'] },
+    { id: 'build', name: 'Stava ord', icon: '🔡', minLevel: 0, gen: genSpellWord, lgr: ['sv-skriva', 'sv-ljud', 'sv-normer'] },
     { id: 'readpick', name: 'Läs & välj', icon: '👀', minLevel: 1, gen: genReadPick, lgr: ['sv-avkoda'] },
     { id: 'readtext', name: 'Läs och förstå', icon: '🔍', minLevel: 1, gen: genReadText, lgr: ['sv-avkoda', 'sv-forsta'] },
     { id: 'alphabet', name: 'ABC-ordning', icon: '🔠', minLevel: 1, gen: genAlphabet, lgr: ['sv-alfabet'] },

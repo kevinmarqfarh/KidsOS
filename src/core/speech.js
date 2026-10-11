@@ -60,7 +60,12 @@ export function cleanForSpeech(text) {
     .trim();
 }
 
-export function speak(text, { force = false, interrupt = true, slow = false } = {}) {
+export function getSpeechRate() {
+  return rate;
+}
+
+/** onBoundary(charIndex, cleanText) anropas per ord om rösten stöder det (används av fx.speakAlong). */
+export function speak(text, { force = false, interrupt = true, slow = false, onStart, onBoundary } = {}) {
   const s = synth();
   if (!s || (!enabled && !force)) return Promise.resolve();
   const t = cleanForSpeech(text);
@@ -80,6 +85,12 @@ export function speak(text, { force = false, interrupt = true, slow = false } = 
       };
       u.onend = done;
       u.onerror = done;
+      if (onStart) u.onstart = () => onStart(u.rate);
+      if (onBoundary) {
+        u.onboundary = (e) => {
+          if (!e.name || e.name === 'word') onBoundary(e.charIndex, t);
+        };
+      }
       listeners.forEach((fn) => fn(true));
       s.speak(u);
       // säkerhetsnät om onend aldrig kommer (känt i vissa webbläsare)

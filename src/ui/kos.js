@@ -10,6 +10,7 @@ import { speak, stopSpeaking, setSpeechRate, setSpeechEnabled, initSpeech } from
 import { sfx, setSoundEnabled, unlockAudio } from '../core/sound.js';
 import { isPreReader, LEVELS } from '../core/age.js';
 import { h, reducedMotion } from './dom.js';
+import { isAdapted, adaptedPrefs, adaptedSfx } from '../core/adapted.js';
 
 const listeners = new Map();
 let saveTimer = null;
@@ -54,6 +55,26 @@ export const kos = {
     setSpeechEnabled(!p || p.settings.readAloud !== 'off');
     if (p) document.documentElement.style.setProperty('--me', p.color);
     document.documentElement.dataset.ageband = p ? ageBand(p.age) : 'mid';
+    // Anpassat läge: lugnare färger, färre animationer och fokus-hjälp (styles/apps/adapted.css).
+    const root = document.documentElement.dataset;
+    if (p && isAdapted(p)) {
+      const ap = adaptedPrefs(p);
+      root.adapted = 'on';
+      root.adaptedFocus = ap.focus ? 'on' : 'off';
+      root.interest = ap.interest;
+    } else {
+      delete root.adapted;
+      delete root.adaptedFocus;
+      delete root.interest;
+    }
+  },
+
+  /** Är anpassat läge på för den aktiva profilen? */
+  get adapted() {
+    return isAdapted(this.profile);
+  },
+  adaptedPrefs() {
+    return adaptedPrefs(this.profile);
   },
 
   on(evt, fn) {
@@ -109,6 +130,7 @@ export const kos = {
     if (!p) return false;
     if (p.settings.readAloud === 'on') return true;
     if (p.settings.readAloud === 'off') return false;
+    if (isAdapted(p)) return true; // anpassat läge: uppläsning alltid på
     return isPreReader(p.age) || p.age <= 7;
   },
   say(text, opts) {
@@ -120,6 +142,8 @@ export const kos = {
   },
   stopSpeaking,
   sfx(name) {
+    if (this.adapted) name = adaptedSfx(name, this.adaptedPrefs());
+    if (!name) return;
     try {
       sfx[name]?.();
     } catch {}
@@ -143,7 +167,7 @@ export const kos = {
       addStars(p, 1);
       this.emit('stars', p.stars);
     }
-    if (change === 'up') {
+    if (change === 'up' && !this.adapted) {
       this.toast(`<b>Nivå upp!</b> ${LEVELS[appStat(p, appId).level].emoji} Du är redo för lite svårare uppgifter.`, { icon: '🚀' });
       this.sfx('fanfare');
     }
@@ -191,6 +215,7 @@ export const kos = {
     const p = this.profile;
     if (!p) return [];
     const won = awardTrophies(p);
+    if (this.adapted) silent = true; // anpassat läge: inga överraskningspopups
     // Varje ny trofé ger också fem mynt till Lekstaden.
     if (won.length) addCoins(p, won.length * 5);
     if (!silent) won.forEach((t, i) => setTimeout(() => this.trophyToast(t), 400 + i * 1600));
@@ -210,12 +235,14 @@ export const kos = {
     }, ms);
   },
   trophyToast(t) {
+    if (this.adapted) return;
     this.sfx('trophy');
     this.toast(`<small>Ny trofé! +5 🪙</small><b>${t.name}</b>`, { icon: t.icon, ms: 3600 });
     this.say(`Ny trofé! ${t.name}`, { interrupt: false });
     this.confetti(60);
   },
   flyStar(n = 1) {
+    if (this.adapted) return this.sfx('star');
     if (reducedMotion()) return;
     const layer = this.overlayRoot || document.body;
     const target = [...document.querySelectorAll('.tb-stars, .sb-stars')].find((n) => n.offsetParent !== null);
@@ -234,7 +261,7 @@ export const kos = {
     this.sfx('star');
   },
   confetti(count = 120) {
-    if (reducedMotion()) return;
+    if (reducedMotion() || this.adapted) return; // anpassat läge: ingen konfetti-storm
     const layer = this.overlayRoot || document.body;
     const c = h('canvas.confetti');
     layer.appendChild(c);

@@ -10,6 +10,7 @@ import { nextTrophy, TROPHIES } from '../core/trophies.js';
 import { wonderOfTheDay } from '../apps/wonder.js';
 import { minutesLeftToday } from '../core/model.js';
 import { clockSvg, timeToSwedish } from './visuals.js';
+import { tickerSpan } from './fx.js';
 
 const ACCESSORIES = ['explorer', 'notes', 'calc', 'trophies', 'settings'];
 
@@ -146,8 +147,8 @@ export function createDesktop(root, { osEl, confirmSwitch, showLock }) {
     const who = h('button.tb-user', { type: 'button', 'aria-label': 'Användare' }, h('span.sb-avatar', { style: { background: p.color } }, p.avatar));
     onTap(who, () => toggleStart());
     clear(tray).append(
-      h('span.tb-chip', { title: 'Mynt' }, `🪙 ${p.coins || 0}`),
-      h('span.tb-chip.tb-stars', { title: 'Stjärnor' }, `⭐ ${p.stars}`),
+      h('span.tb-chip', { title: 'Mynt' }, '🪙 ', tickerSpan(`tb-coins:${p.id}`, p.coins || 0)),
+      h('span.tb-chip.tb-stars', { title: 'Stjärnor' }, '⭐ ', tickerSpan(`tb-stars:${p.id}`, p.stars)),
       p.streak?.count > 1 ? h('span.tb-chip.tb-opt', { title: 'Dagar i rad' }, `🔥 ${p.streak.count}`) : null,
       Number.isFinite(left) ? h('span.tb-chip.tb-opt', { title: 'Tid kvar i dag' }, `⏳ ${Math.ceil(left)}`) : null,
       h('span.tb-clock', h('b', now.toLocaleTimeString('sv-SE', { hour: '2-digit', minute: '2-digit' })), h('small', now.toLocaleDateString('sv-SE', { day: 'numeric', month: 'short' }))),

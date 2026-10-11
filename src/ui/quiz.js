@@ -4,7 +4,11 @@ import { kos } from './kos.js';
 import { createRng } from '../core/rng.js';
 import { roundLength, clampLevel } from '../core/age.js';
 import { clockSvg, timeToSwedish, digitalTime } from './visuals.js';
-import { moduleStat } from '../core/model.js';
+import { moduleStat, appStat, ADAPT_UP_AFTER } from '../core/model.js';
+import { LEVELS, MAX_LEVEL } from '../core/age.js';
+import { isAdapted, adaptedPrefs, adaptQuestion, sessionLength, errorlessNext, praiseFor, interestFor } from '../core/adapted.js';
+import { adaptedStrip, adaptedFinish, adaptedIntro } from './adapted-ui.js';
+import { progressRing, sparkles, shimmer, ripple, blurFade, wordReveal, speakAlong, levelProgress, numberTicker } from './fx.js';
 
 const MAX_TRIES = { choice: 2, numpad: 3, order: 2, build: 3, tapcount: 3, tap: 3, clock: 3 };
 
@@ -15,7 +19,10 @@ export function effectiveLevel(app, mod) {
 
 export function runQuiz(el, { app, module: mod, onExit, seed = Date.now(), count }) {
   const p = kos.profile;
-  const total = count || roundLength(p?.age ?? 7);
+  // Anpassat läge (core/adapted.js): korta pass, färre alternativ, felfri inlärning, först–sen-remsa.
+  const adapted = isAdapted(p);
+  const ap = adaptedPrefs(p);
+  const total = count || sessionLength(p, roundLength(p?.age ?? 7));
   const rng = createRng(seed);
   let index = 0;
   let correctFirst = 0;
@@ -24,7 +31,13 @@ export function runQuiz(el, { app, module: mod, onExit, seed = Date.now(), count
 
   const dots = h('div.q-dots', Array.from({ length: total }, () => h('span.q-dot')));
   const stage = h('div.q-stage');
-  const wrap = h('div.quiz', { style: { '--app': app.color } }, dots, stage);
+  // fx: rundans framsteg som ring (Animated Circular Progress, Magic UI)
+  const ring = progressRing({ value: 0, max: total, size: 46, stroke: 6, center: (v, m) => `${v}/${m}`, ariaLabel: (v, m) => `Fråga ${v} av ${m} klar` });
+  const wrap = h('div.quiz', { style: { '--app': app.color } }, h('div.q-progress', ring.el, dots), stage);
+  if (adapted) {
+    wrap.classList.add('adapted');
+    wrap.prepend(adaptedStrip({ dots, total, prefs: ap, host: wrap }));
+  }
   clear(el).appendChild(wrap);
 
   function next() {
@@ -40,28 +53,36 @@ export function runQuiz(el, { app, module: mod, onExit, seed = Date.now(), count
     }
     if (!q) return finish();
     q.level = level;
+    if (adapted) q = adaptQuestion(q, ap);
     if (window.kidsos) window.kidsos.q = q; // testkrok: aktuell fråga
     renderQuestion(q);
   }
 
-  function renderQuestion(q) {
+  /** redo > 0: anpassat läge gör om frågan efter ett fel (felfri inlärning). */
+  function renderQuestion(q, redo = 0) {
     clear(stage);
     stage.classList.remove('done');
-    let tries = 0;
+    let tries = redo;
     let resolved = false;
     const promptText = h('div.q-prompt-text', q.prompt);
     const speakBtn = h('button.icon-btn.q-speak', { 'aria-label': 'Läs upp frågan', type: 'button' }, '🔊');
-    onTap(speakBtn, () => kos.say(q.say || q.prompt));
+    // fx: när uppläst text = frågetexten markeras varje ord medan det läses (läsinlärning).
+    const along = typeof q.prompt === 'string' && (!q.say || q.say === q.prompt) && /\s/.test(q.prompt.trim());
+    if (along) wordReveal(promptText, q.prompt);
+    const sayAlong = () => speakAlong(promptText, (t, o) => kos.say(t, o));
+    onTap(speakBtn, () => (along ? sayAlong() : kos.say(q.say || q.prompt)));
     const prompt = h('div.q-prompt', speakBtn, promptText);
     const visual = q.visual ? h('div.q-visual', { html: q.visual }) : null;
     const answers = h('div.q-answers');
     const feedback = h('div.q-feedback', { 'aria-live': 'polite' });
     const body = h('div.q-body', { class: q.visual ? 'has-visual' : 'no-visual' }, h('div.q-top', prompt, visual), h('div.q-bottom', answers, feedback));
-    stage.appendChild(body);
+    stage.appendChild(blurFade(body));
 
     // Läs upp frågan (och textalternativ) för de som inte läser själva än.
     const optionWords = q.type === 'choice' && q.options && !q.noSpeakVisual && q.options.every((o) => o.say !== '' && /[a-zåäö]{3,}/i.test(o.say ?? o.label ?? ''));
-    kos.autoSay(q.say || q.prompt).then(() => {
+    // Anpassat läge: första frågan inleds med först–sen ("Först 5 uppgifter. Sen bubblor.").
+    const intro = adapted && index === 0 && !redo ? kos.autoSay(adaptedIntro(total, ap)) : Promise.resolve();
+    intro.then(() => (alive && !resolved ? (along && kos.shouldAutoSpeak() ? sayAlong() : kos.autoSay(q.say || q.prompt)) : null)).then(() => {
       if (alive && !resolved && optionWords && kos.shouldAutoSpeak()) {
         const words = q.options.map((o) => o.say ?? o.label);
         kos.autoSay(`${words.slice(0, -1).join(', ')} eller ${words[words.length - 1]}?`, { interrupt: false });
@@ -78,6 +99,7 @@ export function runQuiz(el, { app, module: mod, onExit, seed = Date.now(), count
         kos.sfx('correct');
         kos.answer(app.id, first);
         if (first) kos.flyStar(1);
+        if (!adapted) sparkles(stage.querySelector('.right, .hit-right') || answers, { count: first ? 16 : 8 });
         if (q.collect) {
           const r = kos.reward({ set: q.collect.set, item: q.collect.item, silent: true });
           if (r.isNew && q.collect.label) kos.toast(q.collect.label, { icon: '🃏' });
@@ -86,6 +108,7 @@ export function runQuiz(el, { app, module: mod, onExit, seed = Date.now(), count
       },
       wrong(customHint) {
         if (resolved) return;
+        if (adapted) return errorless();
         tries++;
         kos.sfx('wrong');
         kos.retry();
@@ -112,8 +135,34 @@ export function runQuiz(el, { app, module: mod, onExit, seed = Date.now(), count
       },
     };
 
+    /** Felfri inlärning: inget "fel", bara "titta – det här är rätt" och gör om (en gång). */
+    function errorless() {
+      tries++;
+      kos.retry();
+      resolved = true;
+      api.reveal?.();
+      if (errorlessNext(redo) === 'reveal') {
+        dots.children[index]?.classList.add('meh');
+        kos.answer(app.id, false);
+        showResult(false, false);
+        return;
+      }
+      const again = h('button.btn.btn-primary.btn-next', { type: 'button' }, 'Gör igen ➜');
+      onTap(again, () => {
+        kos.stopSpeaking();
+        renderQuestion(q, redo + 1);
+      });
+      clear(feedback).append(h('div.fb.fb-model', h('span.fb-icon', '👉'), h('div.fb-text', h('b', 'Titta! '), 'Det här är rätt. Nu gör vi den igen.'), again));
+      feedback.classList.add('show');
+      stage.classList.add('done', 'modeling');
+      kos.say('Titta! Det här är rätt. Nu gör vi den igen.');
+      setTimeout(() => again.focus({ preventScroll: true }), 50);
+    }
+
     function showResult(ok, first) {
-      const nextBtn = h('button.btn.btn-primary.btn-next', { type: 'button' }, index + 1 >= total ? 'Klar! 🎉' : 'Nästa ➜');
+      if (adapted) return showAdaptedResult(ok);
+      const nextBtn = shimmer(h('button.btn.btn-primary.btn-next', { type: 'button' }, index + 1 >= total ? 'Klar! 🎉' : 'Nästa ➜'));
+      ring.update(index + 1, total);
       onTap(nextBtn, () => {
         kos.stopSpeaking();
         index++;
@@ -130,33 +179,74 @@ export function runQuiz(el, { app, module: mod, onExit, seed = Date.now(), count
       setTimeout(() => nextBtn.focus({ preventScroll: true }), 50);
     }
 
+    /** Anpassat läge: kort, konkret och alltid positivt. Barnet trycker själv vidare (ingen tidspress). */
+    function showAdaptedResult(ok) {
+      ring.update(index + 1, total);
+      const last = index + 1 >= total;
+      const nextBtn = h('button.btn.btn-primary.btn-next', { type: 'button' }, last ? 'Klart! 🎉' : 'Nästa ➜');
+      onTap(nextBtn, () => {
+        kos.stopSpeaking();
+        index++;
+        next();
+      });
+      const word = ok ? praiseFor(index) : 'Nu vet du!';
+      const icon = ok ? interestFor(ap).icon : '👍';
+      clear(feedback).append(h('div.fb', { class: ok ? 'fb-ok' : 'fb-learn' }, h('span.fb-icon', icon), h('div.fb-text', h('b', `${word} `), q.explain ? h('small.ad-explain', q.explain) : null), nextBtn));
+      feedback.classList.add('show');
+      stage.classList.add('done');
+      kos.autoSay(word);
+      setTimeout(() => nextBtn.focus({ preventScroll: true }), 50);
+    }
+
     const renderers = { choice, numpad, order, sort, build, tapcount, tap, clock };
     (renderers[q.type] || choice)(q, answers, api, visual, stage);
+    // Felfri inlärning: vid omgörningen pekar en mjuk markering ut rätt svar (prompt som sedan tonas bort).
+    if (adapted && redo) {
+      answers.querySelector(`.choice[data-id="${CSS.escape(String(q.answer))}"]`)?.classList.add('ad-prompt');
+      visual?.querySelector(`[data-hit="${CSS.escape(String(q.answer))}"]`)?.classList.add('ad-prompt');
+    }
   }
 
   async function finish() {
     alive = false;
     kos.stopSpeaking();
     const res = kos.roundDone(app.id, mod.id, correctFirst, total);
+    if (adapted) {
+      // Tydlig avslutning + utlovad belöning. "Samma igen" ger exakt samma uppgifter (samma frö).
+      return adaptedFinish({ stage, res, total, prefs: ap, onExit, again: () => runQuiz(el, { app, module: mod, onExit, seed, count }), fresh: () => runQuiz(el, { app, module: mod, onExit }) });
+    }
     const best = moduleStat(kos.profile, app.id, mod.id).best;
     clear(stage);
     const starsRow = h('div.sum-stars', [1, 2, 3].map((i) => h('span.sum-star', { class: i <= res.rating ? 'on' : '', style: { '--d': `${i * 0.18}s` } }, '★')));
     const msgs = ['Bra jobbat!', 'Superbra!', 'Fantastiskt – allt rätt!'];
+    // fx: två ringar – rundans resultat och hur nära nästa nivå barnet är (synliga delmål).
+    const score = progressRing({ value: correctFirst, max: total, size: 116, stroke: 12, center: (v, m) => h('span', h('b', `${v}/${m}`), h('em', 'rätt')), ariaLabel: (v, m) => `${v} av ${m} rätt på första försöket` });
+    const lp = levelProgress(p ? appStat(p, app.id) : null, { upAfter: ADAPT_UP_AFTER, maxLevel: MAX_LEVEL });
+    const lvl = LEVELS[lp.level];
+    const levelRing = progressRing({ value: lp.atMax ? lp.need : lp.run, max: lp.need, size: 116, stroke: 12, className: 'lvl', center: () => lvl.emoji, ariaLabel: () => `${lvl.short}` });
+    levelRing.el.style.setProperty('--fx-ring-color', '#2fae66');
+    const rings = h(
+      'div.sum-rings',
+      h('div.sum-ring', score.el, h('small', 'den här rundan')),
+      h('div.sum-ring.level', levelRing.el, h('small', lp.atMax ? `${lvl.short} – högsta nivån!` : `${lvl.short}: ${lp.run} av ${lp.need} rätt i rad till nästa nivå`)),
+    );
     const card = h(
       'div.summary',
       h('div.sum-emoji', res.rating === 3 ? '🏆' : res.rating === 2 ? '🌟' : '💪'),
-      h('h2.sum-title', msgs[res.rating - 1]),
+      h('h2.sum-title', { class: res.rating === 3 ? 'fx-sparkle-text' : '' }, msgs[res.rating - 1]),
       starsRow,
-      h('p.sum-detail', `${correctFirst} av ${total} rätt på första försöket · +${correctFirst + res.bonus} ⭐`),
+      rings,
+      h('p.sum-detail', `${correctFirst} av ${total} rätt på första försöket · +`, h('span.sum-gain', String(correctFirst + res.bonus)), ' ⭐'),
       res.rankUp ? h('div.sum-rank', `${res.rankUp.emoji} Ny titel: ${res.rankUp.title}!`) : null,
       res.trophies.length ? h('div.sum-trophies', res.trophies.map((t) => h('div.sum-trophy', h('span', t.icon), h('div', h('small', 'Ny trofé'), h('b', t.name))))) : null,
       h(
         'div.sum-actions',
         onTap(h('button.btn.btn-ghost', { type: 'button' }, '↩ Tillbaka'), () => onExit?.()),
-        onTap(h('button.btn.btn-primary', { type: 'button' }, '🔁 En gång till'), () => runQuiz(el, { app, module: mod, onExit })),
+        onTap(shimmer(h('button.btn.btn-primary', { type: 'button' }, '🔁 En gång till')), () => runQuiz(el, { app, module: mod, onExit })),
       ),
     );
     stage.appendChild(card);
+    numberTicker(card.querySelector('.sum-gain'), 0, correctFirst + res.bonus, { duration: 900 });
     if (res.rating === 3) kos.sfx('fanfare');
     else kos.sfx('star');
     kos.confetti(res.rating === 3 ? 160 : 70);
@@ -169,6 +259,7 @@ export function runQuiz(el, { app, module: mod, onExit, seed = Date.now(), count
   return () => {
     alive = false;
     kos.stopSpeaking();
+    if (wrap.querySelector('.ad-pause-screen')) kos.paused = false; // stängd mitt i en paus
   };
 }
 
@@ -178,7 +269,7 @@ function choice(q, el, api) {
   const long = q.options.some((o) => (o.label || '').length > 12);
   const grid = h('div.choices', { class: [q.wide ? 'wide' : '', long ? 'long' : '', `n${q.options.length}`].join(' ') });
   const btns = q.options.map((o) => {
-    const b = h('button.choice', { type: 'button', dataset: { id: o.id } }, o.html ? h('span.choice-html', { html: o.html }) : h('span.choice-label', o.label));
+    const b = ripple(h('button.choice', { type: 'button', dataset: { id: o.id } }, o.html ? h('span.choice-html', { html: o.html }) : h('span.choice-label', o.label)));
     onTap(b, () => {
       if (b.disabled || el.closest('.q-stage').classList.contains('done')) return;
       if (o.id === q.answer) {
@@ -236,7 +327,7 @@ function numpad(q, el, api) {
     update();
   };
   for (const k of ['1', '2', '3', '4', '5', '6', '7', '8', '9', '⌫', '0', 'OK']) {
-    const b = h('button.np-key', { type: 'button', class: k === 'OK' ? 'ok' : k === '⌫' ? 'del' : '' }, k === '⌫' ? '⌫' : k);
+    const b = ripple(h('button.np-key', { type: 'button', class: k === 'OK' ? 'ok' : k === '⌫' ? 'del' : '' }, k === '⌫' ? '⌫' : k));
     onTap(b, () => press(k), { guardMs: 120 });
     keys.appendChild(b);
   }
@@ -369,7 +460,7 @@ function sort(q, el, api) {
       select(null);
       const hintEl = el.parentElement.querySelector('.q-feedback');
       if (hintEl) {
-        clear(hintEl).append(h('div.fb.fb-try', h('span.fb-icon', '💡'), h('div', h('b', 'Inte där! '), q.hint || 'Försök med en annan.')));
+        clear(hintEl).append(h('div.fb.fb-try', h('span.fb-icon', '💡'), h('div', h('b', kos.adapted ? 'Prova en annan. ' : 'Inte där! '), q.hint || 'Försök med en annan.')));
         hintEl.classList.add('show');
       }
     }
