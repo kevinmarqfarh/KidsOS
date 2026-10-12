@@ -1,5 +1,7 @@
-import { pairsView, numberWorkshopView, fractionKitchenView, storyAtelierView, wordSceneView, mapJourneyView } from './workshops.js';
+import { pictureStoryView, readingWorkshopView } from './literacy.js';
+import { columnCoachView, pairsView, numberWorkshopView, fractionKitchenView, storyAtelierView, wordSceneView, mapJourneyView } from './workshops.js';
 import { studioView } from './studio.js';
+import { photoExploreView } from './photo-explore.js';
 import { drawingMissionsView } from './drawing-missions.js';
 import { courseView } from './course.js';
 import { aiLabView } from './ai.js';
@@ -16,6 +18,10 @@ import { SPACE_PHOTOS } from '../../apps/space.js';
 const spaceGalleryView = (el, ctx) => galleryView(el, { ...ctx, items: SPACE_PHOTOS, title: 'Riktiga bilder från rymden' });
 
 export const VIEWS = {
+  pictureStory: pictureStoryView,
+  readingWorkshop: readingWorkshopView,
+  columnCoach: columnCoachView,
+  photoExplore: photoExploreView,
   pairs: pairsView,
   numberWorkshop: numberWorkshopView,
   fractionKitchen: fractionKitchenView,

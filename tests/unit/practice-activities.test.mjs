@@ -22,7 +22,7 @@ test('each app has new practice with age progression and distinct scenarios', ()
       assert.ok(seen.every(prompt => allowed.includes(prompt)));
     }
   }
-  assert.equal(DRAW_MISSIONS.length, 6);
+  assert.equal(DRAW_MISSIONS.length, 24);
 });
 
 test('generated shopping and loops are arithmetically correct and spelling tiles are complete', () => {

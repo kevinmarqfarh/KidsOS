@@ -80,6 +80,87 @@
   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Colosseo_2020.jpg"
  },
+ "course-autumn": {
+  "author": "Theactivistuk",
+  "credit": "Own work",
+  "file": "File:The Forest in Autumn.jpg",
+  "group": "course-scenes",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:The_Forest_in_Autumn.jpg"
+ },
+ "course-condensation": {
+  "author": "Realmboy",
+  "credit": "Own work",
+  "file": "File:Water condensation on vertical surface early morning.jpg",
+  "group": "course-scenes",
+  "license": "CC BY 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Water_condensation_on_vertical_surface_early_morning.jpg"
+ },
+ "course-fallen-leaves": {
+  "author": "Yuyudevil",
+  "credit": "No machine-readable source provided. Own work assumed (based on copyright claims).",
+  "file": "File:Fallen leaves.jpg",
+  "group": "course-scenes",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "source": "https://commons.wikimedia.org/wiki/File:Fallen_leaves.jpg"
+ },
+ "course-oak": {
+  "author": "AnRo0002",
+  "credit": "Own work",
+  "file": "File:20250501Quercus robur.jpg",
+  "group": "course-scenes",
+  "license": "CC0",
+  "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+  "source": "https://commons.wikimedia.org/wiki/File:20250501Quercus_robur.jpg"
+ },
+ "course-roots": {
+  "author": "Mark Hofstetter",
+  "credit": "Own work; upphov enligt filhistoriken på Wikimedia Commons",
+  "file": "File:Avocado Seedling.jpg",
+  "group": "course-scenes",
+  "license": "CC BY 2.5",
+  "licenseUrl": "https://creativecommons.org/licenses/by/2.5",
+  "source": "https://commons.wikimedia.org/wiki/File:Avocado_Seedling.jpg"
+ },
+ "course-shadow": {
+  "author": "Fons Heijnsbroek",
+  "credit": "Own work",
+  "file": "File:Shadows of trees in the streets of Amsterdam in spring of 2013.jpg",
+  "group": "course-scenes",
+  "license": "CC0",
+  "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+  "source": "https://commons.wikimedia.org/wiki/File:Shadows_of_trees_in_the_streets_of_Amsterdam_in_spring_of_2013.jpg"
+ },
+ "course-spring": {
+  "author": "Misaochan",
+  "credit": "Own work",
+  "file": "File:Cherry blossoms in spring.jpg",
+  "group": "course-scenes",
+  "license": "CC BY-SA 3.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Cherry_blossoms_in_spring.jpg"
+ },
+ "course-sprouts": {
+  "author": "P1898",
+  "credit": "Own work",
+  "file": "File:Essential Sprouting2026-06-18mung beans 02.jpg",
+  "group": "course-scenes",
+  "license": "CC BY 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Essential_Sprouting2026-06-18mung_beans_02.jpg"
+ },
+ "course-winter": {
+  "author": "Oven Fresh",
+  "credit": "No machine-readable source provided. Own work assumed (based on copyright claims).",
+  "file": "File:Winter forest.jpg",
+  "group": "course-scenes",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "source": "https://commons.wikimedia.org/wiki/File:Winter_forest.jpg"
+ },
  "daggmask": {
   "author": "Michael Linnenbach",
   "credit": "",
@@ -126,13 +207,13 @@
   "source": "https://commons.wikimedia.org/wiki/File:Tour_Eiffel_Wikimedia_Commons.jpg"
  },
  "ek": {
-  "author": "MPF",
-  "credit": "",
-  "file": "File:Quercus_robur.jpg",
+  "author": "AnRo0002",
+  "credit": "Own work",
+  "file": "File:20250501Quercus robur.jpg",
   "group": "species",
-  "license": "CC BY-SA 3.0",
-  "licenseUrl": "http://creativecommons.org/licenses/by-sa/3.0/",
-  "source": "https://commons.wikimedia.org/wiki/File:Quercus_robur.jpg"
+  "license": "CC0",
+  "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+  "source": "https://commons.wikimedia.org/wiki/File:20250501Quercus_robur.jpg"
  },
  "ekorre": {
   "author": "Peter Trimming",
@@ -243,13 +324,13 @@
   "source": "https://commons.wikimedia.org/wiki/File:Polar_Bear_-_Alaska_(cropped).jpg"
  },
  "iss": {
-  "author": "NASA",
-  "credit": "https://www.flickr.com/photos/nasa2explore/51749924967/in/photostream/; see also https://images.nasa.gov/details-jsc2021e064211_alt",
-  "file": "File:The_station_pictured_from_the_SpaceX_Crew_Dragon_5.jpg",
+  "author": "NASA/Crew of STS-132",
+  "credit": "https://images-assets.nasa.gov/image/s132e012208/s132e012208~orig.jpg(https://images.nasa.gov/details-s132e012208)",
+  "file": "File:International Space Station after undocking of STS-132.jpg",
   "group": "space",
   "license": "Public domain",
   "licenseUrl": "",
-  "source": "https://commons.wikimedia.org/wiki/File:The_station_pictured_from_the_SpaceX_Crew_Dragon_5.jpg"
+  "source": "https://commons.wikimedia.org/wiki/File:International_Space_Station_after_undocking_of_STS-132.jpg"
  },
  "jaguar": {
   "author": "Pascal Blachier from Savoie, France",

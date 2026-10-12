@@ -2002,6 +2002,9 @@ export const svenskaApp = {
   color: '#f2545b',
   tagline: 'Ljud, bokstäver, ord och sagor',
   modules: [
+    {id:"picture-story",name:"Bild till berättelse",icon:"🖼️",minLevel:0,view:"pictureStory",lgr:["sv-skriva","sv-text"]},
+    {id:"fact-reading",name:"Faktaläsaren",icon:"🔍",minLevel:0,view:"readingWorkshop",kind:"fact",lgr:["sv-forsta","sv-skriva"]},
+    {id:"story-reading",name:"Läs och tolka berättelser",icon:"📚",minLevel:0,view:"readingWorkshop",kind:"story",lgr:["sv-forsta","sv-text"]},
     { id: 'letterpic', name: 'Bokstavsljud', icon: '🔤', minLevel: 0, maxLevel: 2, gen: genLetterPic, lgr: ['sv-ljud', 'sv-fsk'] },
     { id: 'rhyme', name: 'Rimma', icon: '🎵', minLevel: 0, gen: genRhyme, lgr: ['sv-fsk', 'sv-avkoda'] },
     { id: 'syllables', name: 'Klappa stavelser', icon: '🥁', minLevel: 0, gen: genSyllables, lgr: ['sv-avkoda'] },

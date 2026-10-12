@@ -109,10 +109,11 @@ export function deleteDrawingsFor(pid) {
   rawRemove(`kidsos.v1.play.${pid}`);
   rawRemove(`kidsos.v1.studio.${pid}`);
   rawRemove(`kidsos.v1.story.${pid}`);
+  rawRemove(`kidsos.v1.literacy.${pid}`);
 }
 
 /** Per-profil-data (utöver teckningar) som följer med i säkerhetskopian: nyckelprefix → förväntad typ. */
-export const BACKUP_EXTRAS = { notes: 'array', play: 'object' };
+export const BACKUP_EXTRAS = { notes: 'array', play: 'object', literacy: 'object' };
 
 const typeOk = (v, type) => (type === 'array' ? Array.isArray(v) : !!v && typeof v === 'object' && !Array.isArray(v));
 

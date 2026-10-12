@@ -10,7 +10,7 @@
     "saturn": "en:Saturn",
     "uranus": "en:Uranus",
     "neptune": "File:Neptune_Voyager2_color_calibrated.png",
-    "iss": "en:International Space Station",
+    "iss": "File:International Space Station after undocking of STS-132.jpg",
     "astronaut": "en:Buzz Aldrin",
     "saturnv": "en:Saturn V",
     "rover": "en:Perseverance (rover)",
@@ -45,7 +45,7 @@
     "blabar": "sv:Blåbär",
     "flugsvamp": "sv:Röd flugsvamp",
     "gran": "sv:Gran",
-    "ek": "File:Quercus_robur.jpg",
+    "ek": "File:20250501Quercus robur.jpg",
     "maskros": "sv:Maskrosor"
   },
   "world": {
@@ -422,5 +422,16 @@
     "kansla-arg": "File:Angry woman.jpg",
     "kansla-acklad": "File:Disgust expression cropped.jpg",
     "kansla-trott": "File:Yawning woman.jpg"
+  },
+  "course-scenes": {
+    "course-autumn": "File:The Forest in Autumn.jpg",
+    "course-winter": "File:Winter forest.jpg",
+    "course-sprouts": "File:Essential Sprouting2026-06-18mung beans 02.jpg",
+    "course-oak": "File:20250501Quercus robur.jpg",
+    "course-spring": "File:Cherry blossoms in spring.jpg",
+    "course-shadow": "File:Shadows of trees in the streets of Amsterdam in spring of 2013.jpg",
+    "course-roots": "File:Avocado Seedling.jpg",
+    "course-condensation": "File:Water condensation on vertical surface early morning.jpg",
+    "course-fallen-leaves": "File:Fallen leaves.jpg"
   }
 }

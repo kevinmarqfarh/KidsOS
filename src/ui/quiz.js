@@ -1,5 +1,8 @@
 import { questionSession, variedQuestion } from '../core/questions.js';
 import { learningPlayReward } from './play-rewards.js';
+import { photosForQuestion } from '../apps/question-photos.js';
+import { learningPhoto } from './learning-photo.js';
+import { hasPhoto } from './img.js';
 // Generell frågemotor som kör en runda med frågor från en generator.
 import { h, clear, onTap, wait, openDialog } from './dom.js';
 import { kos } from './kos.js';
@@ -143,7 +146,11 @@ export function runQuiz(el, { app, module: mod, onExit, seed = Date.now(), count
       helpButton.setAttribute('aria-expanded', String(!help.hidden));
     };
     helpButton.setAttribute('aria-expanded', 'false');
-    const body = h('div.q-body', { class: q.visual ? 'has-visual' : 'no-visual' }, h('div.q-top', prompt, visual), h('div.q-bottom', answers, feedback));
+    const photos = adapted && ap.themeTasks ? [] : photosForQuestion(app.id, mod.id, q.prompt).filter(item=>hasPhoto(item.key));
+    const photoSupport = photos.length ? h('div.question-photo-support',
+      h('p.muted', 'Fotot är ett exempel. Använd informationen i frågan när du svarar.'),
+      h('div.question-photo-grid', photos.map(item=>learningPhoto(item,{compact:true})))) : null;
+    const body = h('div.q-body', { class: q.visual || photoSupport ? 'has-visual' : 'no-visual' }, h('div.q-top', prompt, visual, photoSupport), h('div.q-bottom', answers, feedback));
     stage.append(help, blurFade(body));
 
     // Läs upp frågan (och textalternativ) för de som inte läser själva än.

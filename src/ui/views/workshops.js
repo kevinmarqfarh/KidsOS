@@ -1,3 +1,4 @@
+import { genColumn, columnSteps } from '../../apps/math.js';
 import { photoImage, photoCredits } from '../photos.js';
 import { studioCharacterSvg, studioItemSvg } from '../studio-art.js';
 import { h, clear, onTap } from '../dom.js';
@@ -9,7 +10,7 @@ const button = (text,fn,key,attrs={}) => onTap(h('button.workshop-button',{type:
 const field = (text,control) => h('label.workshop-field',h('span',text),control);
 const status = () => h('p.workshop-status',{role:'status','aria-live':'polite','aria-atomic':'true'});
 
-function workshop(el,ctx,title,instruction,body) {
+export function workshop(el,ctx,title,instruction,body) {
   let alive=true;
   const root=h('section.workshop',{ 'aria-label':title });
   const work=h('div.workshop-work');
@@ -200,5 +201,28 @@ export function mapJourneyView(el,ctx) {
         if(pos.x===target.x&&pos.y===target.y){mission++;ui.draw();ui.finish(current.place,`Du hittade ${target.name}! ${mission===3?'Resan är klar.':'Nästa ledtråd visas ovanför.'}`);}
         else ui.announce('Du är på en annan plats. Läs ledtråden och titta på kartans symboler.');
       },'check',{disabled:!current}),button('Börja om från hemmet',()=>{mission=0;pos={x:0,y:2};ui.draw();ui.announce('Samma resa börjar vid hemmet.');},'restart'));
+  });
+}
+
+
+export function columnCoachView(el,ctx) {
+  const rng=createRng(Date.now());
+  let task,steps,index=0,digit='',done=false,help=false;
+  const next=()=>{task=genColumn(ctx.level,rng);const match=task.prompt.match(/(\d+) ([+−-]) (\d+)/);steps=columnSteps(Number(match[1]),Number(match[3]),match[2]);index=0;digit='';done=false;help=false;};
+  next();
+  return workshop(el,ctx,'Uppställning steg för steg','Börja med entalen till höger. Välj en siffra för varje kolumn. Du bestämmer när du går vidare.',(work,ui)=>{
+    const width=steps.length;
+    work.append(h('h3',task.prompt),h('div',{html:task.visual}),h('p',done?`Klart: ${task.answer}`:`Steg ${index+1} av ${width}: ${['Ental','Tiotal','Hundratal','Tusental'][index]}`));
+    if(done){work.append(h('p',task.explain),button('Nästa uppställning',()=>{next();ui.draw();ui.announce('Ny uppställning. Börja med entalen.');},'next'));return;}
+    const expected=Math.floor(task.answer/10**index)%10;
+    work.append(h('p',`Ditt svar i kolumnen: ${digit||'?'}`),h('div.workshop-tools',...Array.from({length:10},(_,n)=>button(String(n),()=>{if(ctx.kos.paused)return;digit=String(n);ui.draw();},`digit-${n}`,{'aria-pressed':String(digit===String(n))}))),
+      button('Visa steget',()=>{help=true;ui.draw();},'hint'),help?h('p',steps[index]):null,
+      button('Kontrollera kolumnen',()=>{
+        if(ctx.kos.paused)return;
+        if(Number(digit)!==expected||digit===''){ui.announce('Prova igen. Du kan välja Visa steget för att se hur du räknar.');return;}
+        const explanation=steps[index];index++;digit='';help=false;done=index===width;ui.draw();
+        if(done)ui.finish(String(task.answer)+task.prompt,`Alla kolumner klara. Svaret är ${task.answer}.`);
+        else ui.announce(`${explanation}. Fortsätt med nästa kolumn.`);
+      },'check',{disabled:digit===''}));
   });
 }

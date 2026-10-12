@@ -19,7 +19,7 @@ export function generateImages() {
     bytes += buf.length;
     out[key] = `data:image/webp;base64,${buf.toString('base64')}`;
   }
-  const slim = Object.fromEntries(Object.entries(credits).filter(([k]) => out[k]).map(([k, c]) => [k, { a: c.author, l: c.license, u: c.source, g: c.group }]));
+  const slim = Object.fromEntries(Object.entries(credits).filter(([k]) => out[k]).map(([k, c]) => [k, { a: c.author, l: c.license, lu: c.licenseUrl, u: c.source, g: c.group }]));
   mkdirSync(join(root, 'src/generated'), { recursive: true });
   writeFileSync(join(root, 'src/generated/images.js'), `// GENERERAD av scripts/gen-images.mjs – ändra inte för hand.\nexport const IMAGES = ${JSON.stringify(out)};\nexport const CREDITS = ${JSON.stringify(slim)};\n`);
   creditsDoc();

@@ -2,7 +2,7 @@
 
 <!-- GENERERAD av scripts/credits-doc.mjs från assets/credits.json – ändra inte för hand. -->
 
-KidsOS innehåller 365 foton från Wikimedia Commons (inklusive NASA). Alla har fria licenser: public domain, CC0, CC BY eller CC BY-SA.
+KidsOS innehåller 374 bilder från Wikimedia Commons (inklusive NASA). Biblioteket innehåller fotografier och vissa äldre illustrationer. Alla har fria licenser: public domain, CC0, CC BY eller CC BY-SA.
 Bilderna är förminskade och omkodade till WebP men i övrigt oförändrade. Följ länken för original, fullständig licens och upphov.
 
 ## feelings (4)
@@ -34,7 +34,7 @@ Bilderna är förminskade och omkodade till WebP men i övrigt oförändrade. F�
 | earth | [The_Blue_Marble,_AS17-148-22727.jpg](https://commons.wikimedia.org/wiki/File:The_Blue_Marble,_AS17-148-22727.jpg) | Harrison Schmitt / Apollo 17 | Public domain |
 | earthrise | [NASA-Apollo8-Dec24-Earthrise.jpg](https://commons.wikimedia.org/wiki/File:NASA-Apollo8-Dec24-Earthrise.jpg) | NASA/Bill Anders | Public domain |
 | eclipse | [Solar_eclipse_1999_4.jpg](https://commons.wikimedia.org/wiki/File:Solar_eclipse_1999_4.jpg) | Luc Viatour | [CC BY-SA 3.0](http://creativecommons.org/licenses/by-sa/3.0/) |
-| iss | [The_station_pictured_from_the_SpaceX_Crew_Dragon_5.jpg](https://commons.wikimedia.org/wiki/File:The_station_pictured_from_the_SpaceX_Crew_Dragon_5.jpg) | NASA | Public domain |
+| iss | [International Space Station after undocking of STS-132.jpg](https://commons.wikimedia.org/wiki/File:International_Space_Station_after_undocking_of_STS-132.jpg) | NASA/Crew of STS-132 | Public domain |
 | jupiter | [Jupiter_OPAL_2024.png](https://commons.wikimedia.org/wiki/File:Jupiter_OPAL_2024.png) | NASA/STSCI (S.T.A.R.S) | Public domain |
 | mars | [Mars_-_August_30_2021_-_Flickr_-_Kevin_M._Gill.png](https://commons.wikimedia.org/wiki/File:Mars_-_August_30_2021_-_Flickr_-_Kevin_M._Gill.png) | Kevin Gill from Los Angeles, CA, United States | [CC BY 2.0](https://creativecommons.org/licenses/by/2.0) |
 | mercury | [Mercury_in_true_color.jpg](https://commons.wikimedia.org/wiki/File:Mercury_in_true_color.jpg) | NASA/Johns Hopkins University Applied Physics Laboratory/Arizona State University/Carnegie Institution of Washington | Public domain |
@@ -58,7 +58,7 @@ Bilderna är förminskade och omkodade till WebP men i övrigt oförändrade. F�
 | blabar | [Blåbär,_Blueberry.jpg](https://commons.wikimedia.org/wiki/File:Bl%C3%A5b%C3%A4r,_Blueberry.jpg) | O forsberg | [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0) |
 | citronfjaril | [Gonepteryx_rhamni_-_Citron-1.jpg](https://commons.wikimedia.org/wiki/File:Gonepteryx_rhamni_-_Citron-1.jpg) | Thomas Bresson | [CC BY 2.0](https://creativecommons.org/licenses/by/2.0) |
 | daggmask | [Regenwurm1.jpg](https://commons.wikimedia.org/wiki/File:Regenwurm1.jpg) | Michael Linnenbach | [CC BY-SA 3.0](http://creativecommons.org/licenses/by-sa/3.0/) |
-| ek | [Quercus_robur.jpg](https://commons.wikimedia.org/wiki/File:Quercus_robur.jpg) | MPF | [CC BY-SA 3.0](http://creativecommons.org/licenses/by-sa/3.0/) |
+| ek | [20250501Quercus robur.jpg](https://commons.wikimedia.org/wiki/File:20250501Quercus_robur.jpg) | AnRo0002 | [CC0](http://creativecommons.org/publicdomain/zero/1.0/deed.en) |
 | ekorre | [Squirrel_posing.jpg](https://commons.wikimedia.org/wiki/File:Squirrel_posing.jpg) | Peter Trimming | [CC BY 2.0](https://creativecommons.org/licenses/by/2.0) |
 | flugsvamp | [Amanita_muscaria_tyndrum.jpg](https://commons.wikimedia.org/wiki/File:Amanita_muscaria_tyndrum.jpg) | Tim Bekaert | Public domain |
 | gran | [Kuusk_Keila-Paldiski_rdt_ääres.jpg](https://commons.wikimedia.org/wiki/File:Kuusk_Keila-Paldiski_rdt_%C3%A4%C3%A4res.jpg) | Ivar Leidus | [CC BY-SA 3.0 ee](https://creativecommons.org/licenses/by-sa/3.0/ee/deed.en) |
@@ -399,3 +399,17 @@ Bilderna är förminskade och omkodade till WebP men i övrigt oförändrade. F�
 | obj-wood | [Špalek_na_štípání.jpg](https://commons.wikimedia.org/wiki/File:%C5%A0palek_na_%C5%A1t%C3%ADp%C3%A1n%C3%AD.jpg) | Chmee2 | [CC BY-SA 3.0](http://creativecommons.org/licenses/by-sa/3.0/) |
 | obj-yarn | [Yarn_at_Folklife_-_Stierch.jpg](https://commons.wikimedia.org/wiki/File:Yarn_at_Folklife_-_Stierch.jpg) | Sarah Stierch | [CC BY 4.0](https://creativecommons.org/licenses/by/4.0) |
 | obj-zebra | [Equus zebra hartmannae - Etosha 2015.jpg](https://commons.wikimedia.org/wiki/File:Equus_zebra_hartmannae_-_Etosha_2015.jpg) | Yathin S Krishnappa | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) |
+
+## Fotografier för lektioner och fotospaning (9)
+
+| Nyckel | Fil | Upphov | Licens |
+|---|---|---|---|
+| course-autumn | [The Forest in Autumn.jpg](https://commons.wikimedia.org/wiki/File:The_Forest_in_Autumn.jpg) | Theactivistuk | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) |
+| course-condensation | [Water condensation on vertical surface early morning.jpg](https://commons.wikimedia.org/wiki/File:Water_condensation_on_vertical_surface_early_morning.jpg) | Realmboy | [CC BY 4.0](https://creativecommons.org/licenses/by/4.0) |
+| course-fallen-leaves | [Fallen leaves.jpg](https://commons.wikimedia.org/wiki/File:Fallen_leaves.jpg) | Yuyudevil | Public domain |
+| course-oak | [20250501Quercus robur.jpg](https://commons.wikimedia.org/wiki/File:20250501Quercus_robur.jpg) | AnRo0002 | [CC0](http://creativecommons.org/publicdomain/zero/1.0/deed.en) |
+| course-roots | [Avocado Seedling.jpg](https://commons.wikimedia.org/wiki/File:Avocado_Seedling.jpg) | Mark Hofstetter | [CC BY 2.5](https://creativecommons.org/licenses/by/2.5) |
+| course-shadow | [Shadows of trees in the streets of Amsterdam in spring of 2013.jpg](https://commons.wikimedia.org/wiki/File:Shadows_of_trees_in_the_streets_of_Amsterdam_in_spring_of_2013.jpg) | Fons Heijnsbroek | [CC0](http://creativecommons.org/publicdomain/zero/1.0/deed.en) |
+| course-spring | [Cherry blossoms in spring.jpg](https://commons.wikimedia.org/wiki/File:Cherry_blossoms_in_spring.jpg) | Misaochan | [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0) |
+| course-sprouts | [Essential Sprouting2026-06-18mung beans 02.jpg](https://commons.wikimedia.org/wiki/File:Essential_Sprouting2026-06-18mung_beans_02.jpg) | P1898 | [CC BY 4.0](https://creativecommons.org/licenses/by/4.0) |
+| course-winter | [Winter forest.jpg](https://commons.wikimedia.org/wiki/File:Winter_forest.jpg) | Oven Fresh | Public domain |

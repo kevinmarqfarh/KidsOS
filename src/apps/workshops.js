@@ -1,6 +1,7 @@
 // Egenförfattade bygg- och skapandeaktiviteter för KidsOS.
 export const WORKSHOP_MODULES = {
   math: [
+    {id:"column-coach",name:"Uppställning steg för steg",icon:"🧮",minLevel:1,view:"columnCoach",lgr:["ma-pos","ma-skriftlig"]},
     {id:'pair-workshop',name:'Parverkstaden',icon:'🧩',minLevel:0,view:'pairs',kind:'numbers',lgr:['ma-tal']},
     {id:'number-workshop',name:'Talverkstaden',icon:'🧱',minLevel:0,view:'numberWorkshop',lgr:['ma-pos']},
     {id:'fraction-kitchen',name:'Bråkköket',icon:'🍽️',minLevel:1,view:'fractionKitchen',lgr:['ma-tal','ma-prop']},

@@ -73,3 +73,23 @@ Granskat offentliga ämneskataloger, raketprogression och lärarmaterial; öppna
 ## 2026-10-12 — Interaktiva verkstäder byggda
 
 Åtta nya moduler: tal-/bokstavs-/naturpar, Talverkstaden, Bråkköket, Berättelseateljén, Ordscenen och Min kartresa. Egna upplägg och befintliga KidsOS-tillgångar; inga Skolplus-speltillgångar kopierade. Stabila kort, synligt stöd, förhandsplan, paus, egna teckningar, valbar dragning med penna/finger och knappväg för kärnfunktioner. Berättelser sparas per profil, följer backup och profilborttagning. Modeller och DOM-flöden testade; riktig penn-/iPad- och visuell verifiering efter publicering återstår. Dokumenterat i docs/VERKSTADER-KIDSOS.md.
+
+## 2026-10-12 — Oavsiktlig frågerepetition åtgärdad
+
+Hittat tvåfrågepooler i nyaste nivågruppen och urval med återläggning. Gemensam frågeidentitet, historik per profil/app/modul under sessionen, kortlekar för fasta banker och reservväg som avslutar med korrekt faktiskt frågeantal. Utökat kurs-/AI-/språk-/stavningsbanker. Samtidig stor sammanslagning ändrade frågeformat; bevarat den nya koden, anpassat AI-urvalets viktning och tagit bort dubbla banknycklar utan att kasta frågor. 453 enhets-/DOM-tester och distributionsbygge passerar. Detaljer och bankantal: docs/FRAGEVARIATION.md. Ingen publicering i detta varv.
+
+## Svenska: bildberättelser och läs-/skrivverkstad (2026-10-12)
+- Tre nya aktiviteter: Bild till berättelse, Faktaläsaren och Läs och tolka berättelser.
+- 24 faktatexter + 12 berättelser i kort/längre version, 108 textstödda frågor, 24 fotografiska skrivuppslag.
+- Egen observation och fantasi skiljs åt; skrivplanering, återberättande, alternativt slut, stödord och faktaskrivande med frivillig bearbetningschecklista.
+- Eget svar/exempelsvar, stabila valalternativ, texten kvar, manuell ledtråd och navigering utan tidspress.
+- Profilutkast följer backup/radering; börjar med text som ännu inte fått alla valfrågor klara. Egna texter/svar betygsätts inte automatiskt.
+- Skolverketförankring och praktiskt upplägg: docs/SVENSKA-LASA-SKRIVA.md.
+- 467 enhet/DOM-tester passerar, produktionsbygge och whitespacekontroll passerar. Nya flöden inte verifierade på fysisk touchpenna eller i publicerad webbläsarversion.
+
+## Skolverketförankrad materialrunda (2026-10-12)
+- Granskning av Lpfö 18 reviderad 2025 och Lgr22 för förskoleklass, åk 1–3 och åk 4–6; dokumenterad i docs/SKOLVERKET-PROGRESSION.md.
+- 48 nya lektionsuppdrag med nivåmatchade övningar och fotografier, 84 nya ämnesfrågor, 18 nya bilduppdrag och två nya fördjupningsmoduler i matte.
+- 12 längre svenska fördjupningstexter med 48 frågor. Läsbanken totalt 48 texter och 156 frågor, bildverkstaden totalt 24 uppdrag.
+- Läroplansreferenser för yngre/äldre åtskilda från originala sammanfattningar. Ingen automatisk betygsbedömning av kreativt skrivande eller fria svar.
+- 474 enhets/DOM-tester passerade före sista källtaggsjusteringen; den verifieras med riktade tester och produktionsbygge inför commit/push.

@@ -360,3 +360,70 @@ test('ateljén använder sparad teckning utan att duplicera bilddata i berättel
   assert.equal(el().querySelector('.story-drawing').getAttribute('src'),'data:image/png;base64,AAAA');
   assert.equal(loadJSON(`story.${kos.profile.id}`,null)[0].drawing,list[0].id);instance.destroy();
 });
+
+test('en tömd frågebank avslutar en kort runda utan dubblett eller fel frågeantal',()=>{
+  let cursor=0;const mod={id:'scarce-bank',gen:()=>({type:'choice',prompt:`Fråga ${cursor++%2}`,options:[{id:'a',label:'A'},{id:'b',label:'B'}],answer:'a',hint:'Välj A.',explain:'A är rätt.'})};
+  const cleanup=runQuiz(el(),{app,module:mod,count:8});
+  const first=window.kidsos.q.prompt;el().querySelector('[data-id="a"]').click();el().querySelector('.btn-next').click();
+  assert.notEqual(window.kidsos.q.prompt,first);el().querySelector('[data-id="a"]').click();el().querySelector('.btn-next').click();
+  assert.match(el().querySelector('.sum-detail').textContent,/2 av 2 rätt/);assert.equal(appStat(kos.profile,'test').rounds,1);cleanup();
+});
+
+test('uppställningscoachen kontrollerar varje kolumn och avslutar först efter sista siffran',()=>{
+  kos.profile.settings.previewRounds=false;
+  const instance=mountApp(workshopHost(),'math','column-coach');
+  const title=el().querySelector('.workshop-work h3').textContent;
+  const [,a,op,b]=title.match(/(\d+) ([+-]) (\d+)/);
+  const answer=op==='+'?Number(a)+Number(b):Number(a)-Number(b);
+  const width=Math.max(a.length,b.length,String(answer).length);
+  tapWorkshop('hint');
+  assert.match(el().querySelector('.workshop-work').textContent,/Ental:/);
+  tapWorkshop(`digit-${(answer+1)%10}`);tapWorkshop('check');
+  assert.match(el().querySelector('.workshop-status').textContent,/Prova igen/);
+  for(let i=0;i<width;i++){tapWorkshop(`digit-${Math.floor(answer/10**i)%10}`);tapWorkshop('check');}
+  assert.ok(workshopControl('next'));assert.match(el().querySelector('.workshop-status').textContent,/Alla kolumner klara/);
+  instance.destroy();
+});
+
+test('bildberättelse sparar utkast mellan bilder och efter att aktiviteten stängts',()=>{
+  kos.profile.settings.previewRounds=false;
+  let instance=mountApp(workshopHost(),'svenska','picture-story');
+  assert.ok(el().querySelector('.learning-photo-card img'));
+  const input=[...el().querySelectorAll('textarea')].find(n=>n.getAttribute('aria-label')==='Min berättelse');
+  assert.ok(input);input.value='Katten reste till månen.';input.dispatchEvent(new Event('input'));
+  const selector=workshopControl('picture-select');for(const option of selector.querySelectorAll('option'))option.removeAttribute('selected');selector.querySelectorAll('option')[1].setAttribute('selected','');selector.dispatchEvent(new Event('change'));
+  assert.equal([...el().querySelectorAll('textarea')].find(n=>n.getAttribute('aria-label')==='Min berättelse').value,'');
+  instance.destroy();el().replaceChildren();instance=mountApp(workshopHost(),'svenska','picture-story');
+  assert.equal([...el().querySelectorAll('textarea')].find(n=>n.getAttribute('aria-label')==='Min berättelse').value,'Katten reste till månen.');
+  instance.destroy();
+});
+
+test('faktaläsning behåller text, visar stöd och sparar svar med egna ord',()=>{
+  kos.profile.settings.previewRounds=false;
+  const instance=mountApp(workshopHost(),'svenska','fact-reading');
+  assert.match(el().querySelector('.literacy-passage').textContent,/Biblioteket/);
+  assert.equal(workshopControl('next-question').disabled,true);
+  tapWorkshop('text-length');assert.equal(workshopControl('next-question').disabled,false);
+  tapWorkshop('answer-1');tapWorkshop('check');assert.match(el().querySelector('.workshop-status').textContent,/Prova igen/);
+  tapWorkshop('answer-0');tapWorkshop('check');assert.match(el().querySelector('.workshop-status').textContent,/Det stämmer/);
+  tapWorkshop('next-question');tapWorkshop('answer-mode');
+  const answer=workshopControl('own-answer');answer.value='Fler barn ska kunna läsa böckerna.';answer.dispatchEvent(new Event('input'));
+  tapWorkshop('model-answer');assert.match(el().querySelector('.literacy-evidence').textContent,/fler kan läsa/);
+  assert.equal(workshopControl('own-answer').value,'Fler barn ska kunna läsa böckerna.');
+  assert.match(el().querySelector('.literacy-passage').textContent,/Biblioteket/);
+  instance.destroy();
+});
+
+test('svenska visar fördjupning först på högre nivå och avancerad text har fullt frågestöd',()=>{
+  kos.profile.settings.previewRounds=false;
+  let instance=mountApp(workshopHost(),'svenska','fact-reading');
+  assert.equal(workshopControl('text-select').querySelectorAll('option').length,24);
+  instance.destroy();el().replaceChildren();kos.profile.settings.showAllModules=true;
+  instance=mountApp(workshopHost(),'svenska','fact-reading');
+  const select=workshopControl('text-select');assert.equal(select.querySelectorAll('option').length,30);
+  for(const option of select.querySelectorAll('option'))option.removeAttribute('selected');select.querySelectorAll('option')[24].setAttribute('selected','');select.dispatchEvent(new Event('change'));
+  assert.match(el().querySelector('.literacy-passage').textContent,/olika syften/);
+  assert.ok(workshopControl('next-question'));assert.equal(workshopControl('text-length'),null);
+  assert.match(el().querySelector('.workshop-work').textContent,/Fråga 1 av 4/);
+  instance.destroy();
+});

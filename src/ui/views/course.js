@@ -4,6 +4,8 @@ import { AI_LESSONS } from '../../apps/ai.js';
 import { CODING_LESSONS, migrateCodeProfile } from '../../apps/code.js';
 import { hasInSet } from '../../core/model.js';
 import { LEVELS } from '../../core/age.js';
+import { LESSON_PHOTOS, NATIVE_LESSON_PHOTOS, PHOTO_DETAILS } from '../../apps/photo-learning.js';
+import { learningPhoto } from '../learning-photo.js';
 
 export function courseView(el, { kos, app, module: mod, level }) {
   const discovery = mod?.id === 'discover-course';
@@ -48,11 +50,14 @@ export function courseView(el, { kos, app, module: mod, level }) {
     clear(stage);
     const step = lesson.steps[stepIndex];
     const finalStep = stepIndex === lesson.steps.length - 1;
+    const photoKey = discovery ? LESSON_PHOTOS[lesson.id]?.[stepIndex] : stepIndex === 0 ? NATIVE_LESSON_PHOTOS[app.id]?.[lesson.id] : null;
     stage.append(
+      lesson.stageLabel ? h('p.course-eyebrow',lesson.stageLabel) : null,
       h('p.course-eyebrow', `Lektion ${lessons.indexOf(lesson) + 1} · Del ${stepIndex + 1} av ${lesson.steps.length}`),
       h('h2', lesson.title),
       h('h3', step.title),
       h('p.course-text', step.text),
+      photoKey ? learningPhoto(PHOTO_DETAILS[photoKey], { compact: true }) : null,
       step.example ? h('div.course-example', h('b', 'Prova att tänka så här'), h('p', step.example)) : null,
       onTap(h('button.btn.btn-ghost', { type: 'button' }, '🔊 Lyssna'), readStep),
     );

@@ -1,7 +1,12 @@
 // Nya konkreta introduktionsfall, med egenförfattade svar och förklaringar.
-const a=(prompt,answer,x,y,explain)=>[0,prompt,answer,[x,y],'Titta på vad som händer i just den här situationen.',explain,['💬','💬','💬']];
+const a=(prompt,answer,x,y,explain)=>[2,prompt,answer,[x,y],'Titta på vad som händer i just den här situationen.',explain,['💬','💬','💬']];
 export const EXTRA_AI_SCENARIOS={
  everyday:[
+  a('En app föreslår nästa låt. Vad kan förslaget bygga på?','Information om tidigare val','Att appen läser dina tankar','Att högtalaren känner smak','Rekommendationer kan använda mönster i data om val.'),
+  a('En översättningsapp gav en konstig mening. Vad hjälper?','Granska betydelsen med någon som kan språket','Anta att alla översättningar är exakta','Bara byta textfärg','Översättningar kan missa sammanhang och behöver kontrolleras.'),
+  a('En navigeringsapp visar en väg som är stängd. Vad gör ni?','Kontrollerar aktuella förhållanden med en vuxen','Följer alltid förslaget ändå','Antar att kartan styr verkligheten','Tekniska förslag kan vara inaktuella och behöver jämföras med verkligheten.'),
+  a('En röstapp missförstår ett ord. Vad kan påverka?','Ljud, uttal eller modellens begränsningar','Bara telefonens skal','Att ordet har slutat finnas','Taligenkänning kan fungera olika under olika förhållanden.'),
+  a('Vilken skillnad finns mellan en vanlig timer och en bildmodell?','Timern kan följa en fast regel medan modellen hittar mönster i bilder','Alla timers måste träna på kattbilder','Ingen skillnad kan undersökas','Alla digitala funktioner använder inte samma typ av teknik.'),
   a('En telefon föreslår nästa ord. Vad är det?','Ett förslag från programmet','En order','Någon som läser dina tankar','Du väljer själv om du vill använda ordet som föreslås.'),
   a('En talapp skriver fel namn. Vad kan du göra?','Rätta texten','Tro att ditt namn har ändrats','Sluta använda ditt namn','Taligenkänning kan göra fel. En människa behöver kontrollera texten.'),
   a('En musikapp föreslår en sång. Måste du lyssna?','Nej, du väljer','Ja, alltid','Bara om telefonen är stor','En rekommendation är ett förslag, inte något du måste följa.'),
@@ -9,6 +14,11 @@ export const EXTRA_AI_SCENARIOS={
   a('En timer ringer efter en minut. Är den alltid AI?','Nej, den kan följa en enkel regel','Ja, allt som låter är AI','Ja, alla klockor tänker','Vanliga program kan följa bestämda regler utan att använda AI.'),
  ],
  feelings:[
+  a('En chatt skriver att den saknar dig. Vad behöver du komma ihåg?','Det är skapad text från ett program','Den är en människa som väntar på dig','Du måste stanna kvar för alltid','Personliga formuleringar gör inte programmet till en människa.'),
+  a('En AI gissar att någon är arg från en bild. Vad behövs för att förstå personen?','Lyssna på personen och förstå sammanhanget','Tro att bilden bevisar känslan','Anta att alla ansikten betyder samma sak','En bildmodell kan inte säkert veta en människas upplevelse.'),
+  a('Du vill dela något viktigt som hänt. Vem kan vara ett verkligt stöd?','En människa du litar på','Enbart text som en app skapar','Ingen får lyssna','En betrodd människa kan lyssna, förstå sammanhang och hjälpa.'),
+  a('Du vill ta paus från en chatt. Får du det?','Ja, du bestämmer när du slutar','Nej, programmet kan förbjuda det','Nej, du måste alltid svara','Du ska kunna lämna en app utan att pressas att fortsätta.'),
+  a('Varför kan ett vänligt AI-svar ändå behöva granskas?','Vänlig ton garanterar inte ett bra eller korrekt svar','Snälla ord kan aldrig vara fel','Allt personligt är bevis','Ton och innehållets kvalitet är olika saker.'),
   a('Du saknar en vän. Vem kan vara en riktig vän?','En människa','En rad text','En laddare','Relationer till människor bygger på att dela upplevelser och bry sig om varandra.'),
   a('En chatt skriver att den är ledsen. Har programmet känslor?','Nej, det kan skapa sådana ord','Ja, precis som du','Ja, om skärmen är blå','AI kan skapa ord om känslor utan att uppleva känslorna.'),
   a('Du blir orolig av ett svar. Vad kan du göra?','Prata med en vuxen du litar på','Hålla det hemligt','Låta programmet bestämma','Människor du litar på kan lyssna och hjälpa dig när något känns svårt.'),
@@ -16,6 +26,11 @@ export const EXTRA_AI_SCENARIOS={
   a('En app vill att du ska fortsätta när du vill vila. Vad får du göra?','Ta en paus','Aldrig sluta','Fråga laddaren om lov','Du och dina vuxna bestämmer över din tid. Du får ta en paus.'),
  ],
  create:[
+  a('AI gav en idé till en teckning. Vad kan du göra med den?','Ändra och utveckla den med egna val','Följa varje detalj utan att tänka','Anta att det bara finns en tillåten idé','Ett förslag kan vara en början som du själv bearbetar.'),
+  a('En genererad saga har ett slut som inte passar. Vad hjälper?','Läsa och skriva om slutet','Påstå att inget får ändras','Dela texten utan att läsa','Skapande innehåll behöver granskas och kan förbättras.'),
+  a('Du använder en genererad bild i ett arbete. Vad behöver vara tydligt?','Hur bilden skapades och vad den visar','Att den måste vara ett riktigt foto','Att ingen får fråga om källor','Bildens ursprung hjälper andra tolka den.'),
+  a('Du vill skapa utan att dela privata uppgifter. Vilket är lämpligt?','Använda en påhittad person och plats','Skicka din kompis privata adress','Lägga lösenord i sagan','Påhittade exempel kan stödja skapande utan personuppgifter.'),
+  a('AI gav flera olika förslag. Hur kan du välja?','Jämföra dem med det du vill uttrycka','Välja bara det längsta','Anta att alla passar lika bra','Dina mål och egna val hjälper dig utveckla ett skapande arbete.'),
   a('AI föreslår en sagotitel. Vem får ändra den?','Du','Bara datorn','Ingen','Förslag kan ändras. Du kan använda ditt eget tänkande och dina idéer.'),
   a('En AI-bild har ett konstigt öga. Vad kan du göra?','Granska och ändra din idé','Låtsas att alla ögon ser så ut','Tro att bilden bevisar något','Skapade bilder kan innehålla fel. Människor behöver titta på resultatet.'),
   a('Du vill ha en idé till en teckning. Vad kan du göra sedan?','Rita och välja själv','Låta datorn bestämma allt','Sluta ha egna idéer','Ett förslag kan vara en början. Du utvecklar bilden med dina egna val.'),

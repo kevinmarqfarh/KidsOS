@@ -154,6 +154,22 @@ export function genNeighbors(level, rng) {
   };
 }
 
+/* Barnet övar på att beskriva regeln innan nästa tal räknas ut. */
+export function genSequenceRule(level, rng) {
+  const step=rng.pick(level<=1?[1,2]:level===2?[2,5,10]:[3,4,5,10,25]);
+  const descending=level>=2 && rng.chance(0.4);
+  const start=rng.int(1,level<=1?10:40)+(descending?step*5:0);
+  const delta=descending?-step:step;
+  const seq=Array.from({length:5},(_,i)=>start+i*delta);
+  const rule=n=>`${n>0?'Öka':'Minska'} med ${Math.abs(n)}`;
+  const candidates=[delta,-delta,descending?-(step+1):step+1];
+  return {type:'choice',prompt:'Vilken regel följer talföljden?',say:`${seq.join(', ')}. Vilken regel följer talen?`,
+    visual:`<div class="seq">${seq.map(n=>`<span>${n}</span>`).join('<span class="sep">,</span>')}</div>`,
+    options:rng.shuffle(candidates.map(n=>({id:String(n),label:rule(n)}))),answer:String(delta),
+    hint:`Jämför de två första talen: ${seq[0]} och ${seq[1]}. Vad ändras?`,
+    explain:`${rule(delta)} varje gång: ${seq[0]} ${delta>0?'+':'−'} ${step} = ${seq[1]}. Nästa tal är ${seq[4]+delta}.`};
+}
+
 /* ---------- Plus & minus ---------- */
 export function genAddSub(level, rng) {
   const max = RANGE_ADD[level];
@@ -1924,6 +1940,25 @@ export function genSharing(level, rng) {
   };
 }
 
+// Lägesmått och samband mellan andelar för fördjupning i åk 4–6.
+export function genStatistics(level,rng) {
+  const kind=rng.pick(['median','mean','mode']);const a=rng.int(1,12),step=rng.int(1,5);
+  const values=kind==='mode'?[a,a,a,a+step,a+step]:kind==='mean'?[a,a,a+step,a+2*step,a+7*step]:[a,a+step,a+2*step,a+3*step,a+7*step];
+  const shown=rng.shuffle(values),answer=kind==='mode'?a:a+2*step;
+  const name={median:'medianen',mean:'medelvärdet',mode:'typvärdet'}[kind];
+  return {type:'choice',prompt:`Vilket tal är ${name}?`,say:`Talen är ${shown.join(', ')}. Vilket tal är ${name}?`,visual:`<div class="seq">${shown.map(n=>`<span>${n}</span>`).join(', ')}</div>`,
+    options:choice(rng,answer,3,{min:0,max:a+5*step,spread:step}),answer:String(answer),
+    hint:kind==='median'?'Ordna talen. Välj det mittersta.':kind==='mode'?'Vilket tal förekommer flest gånger?':'Lägg ihop talen och dela summan med antalet tal.',
+    explain:kind==='median'?`I ordning: ${[...values].sort((x,y)=>x-y).join(', ')}. Det mittersta talet är ${answer}.`:kind==='mode'?`${a} förekommer tre gånger. Det andra talet förekommer två gånger. Typvärdet är ${a}.`:`Summan är ${values.reduce((x,y)=>x+y,0)}. Dela med fem: ${answer}.`};
+}
+export function genFractionLinks(level,rng) {
+  const d=rng.pick([2,4,5,10]),n=rng.int(1,d-1),percent=n*100/d;
+  const decimal=String(n/d).replace('.',',');
+  return {type:'choice',prompt:`Vilken procentandel motsvarar ${n}/${d} av en helhet?`,say:`${n} av ${d} lika delar. Hur många procent?`,
+    options:rng.shuffle([percent,percent+5,percent-5]).map(value=>({id:String(value),label:`${value} %`})),answer:String(percent),
+    hint:`Hela är 100 procent. Dela 100 i ${d} lika delar och ta ${n} av dem.`,explain:`${n}/${d} = ${decimal} = ${percent} %. Varje del är ${100/d} procent av samma helhet.`};
+}
+
 export const mathApp = {
   id: 'math',
   name: 'Matte',
@@ -1931,6 +1966,8 @@ export const mathApp = {
   color: '#3d8bfd',
   tagline: 'Räkna, mät och klura',
   modules: [
+    {id:"statistics-lab",name:"Median, medelvärde och typvärde",icon:"📊",minLevel:4,gen:genStatistics,lgr:["ma-46"]},
+    {id:"fraction-links",name:"Bråk, decimal och procent",icon:"🍰",minLevel:4,gen:genFractionLinks,lgr:["ma-46"]},
     { id: 'column-notes', name: 'Uppställning med kladd', icon: '📝', minLevel: 3, gen: genColumnNotes, lgr: ['ma-pos', 'ma-metod', 'ma-rakna'] },
     { id: 'count', name: 'Räkna', icon: '🍎', minLevel: 0, maxLevel: 2, gen: genCount, lgr: ['ma-tal'] },
     { id: 'compare', name: 'Störst & minst', icon: '🐊', minLevel: 0, gen: genCompare, lgr: ['ma-tal'] },
@@ -1938,6 +1975,7 @@ export const mathApp = {
     { id: 'shapes', name: 'Former', icon: '🔺', minLevel: 0, gen: genShapes, lgr: ['ma-geo'] },
     { id: 'tenpairs', name: 'Tiokompisar', icon: '🤝', minLevel: 0, gen: genTenPairs, lgr: ['ma-tal', 'ma-rakna'] },
     { id: 'addsub', name: 'Plus & minus', icon: '➕', minLevel: 0, gen: genAddSub, lgr: ['ma-rakna', 'ma-metod'] },
+    { id: 'sequence-rule', name: 'Hitta regeln i talföljden', icon: '🔎', minLevel: 0, gen: genSequenceRule, lgr: ['ma-tal', 'ma-monster'] },
     { id: 'neighbors', name: 'Talföljder', icon: '🐾', minLevel: 0, gen: genNeighbors, lgr: ['ma-tal', 'ma-monster'] },
     { id: 'clock', name: 'Klockan', icon: '⏰', minLevel: 0, gen: genClock, lgr: ['ma-tid'] },
     { id: 'missing', name: 'Hemliga talet', icon: '🐸', minLevel: 1, gen: genMissing, lgr: ['ma-likhet', 'ma-okand'] },

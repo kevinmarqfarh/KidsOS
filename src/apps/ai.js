@@ -148,8 +148,8 @@ for (const [topic, rows] of Object.entries(EXTRA_AI_SCENARIOS)) AI_SCENARIOS[top
 export function genAIQuiz(topic, level, rng, ctx = {}) {
   const eligible = AI_SCENARIOS[topic].filter(item => item[0] <= level);
   const fresh = eligible.filter(item => item[0] >= level - 1);
-  const pool = level >= 2 && fresh.length && rng.chance(.7) ? fresh : eligible;
-  const row = deckPick(pool, rng, ctx, `ai:${topic}:${pool === fresh ? 'fresh' : 'all'}`);
+  const preferFresh = level >= 2 && fresh.length && rng.chance(.7);
+  const row = deckPick(eligible, rng, ctx, `ai:${topic}`, item=>item[1], preferFresh ? item=>item[0]>=level-1 : null);
   const [, prompt, answer, distractors, hint, explain, pics] = row;
   const labels = [answer, ...distractors];
   const usePics = level <= 1 && Array.isArray(pics) && pics.length === labels.length;

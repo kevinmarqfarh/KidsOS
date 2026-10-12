@@ -8,7 +8,8 @@ import { normalizeProfile, newProfile, layoutFor } from '../../src/core/model.js
 test('every app has accessible discovery lessons linked to real practice and curriculum', () => {
   // Känslor & jag är ett stödprogram (autismstöd) utan skolämneslektioner.
   for (const app of APPS.filter((a) => a.id !== 'feelings')) {
-    assert.equal(app.lessons.length, 2);
+    assert.ok(app.lessons.length >= 2);
+    assert.equal(new Set(app.lessons.map(l=>l.id)).size,app.lessons.length);
     assert.equal(app.lessons[0].minLevel, 0);
     assert.ok(app.modules.some(m => m.id === 'discover-course' && m.view === 'course'));
     for (const lesson of app.lessons) {

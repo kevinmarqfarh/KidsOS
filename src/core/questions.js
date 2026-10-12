@@ -29,7 +29,7 @@ export function variedQuestion(generate,session,roundSeen=new Set(),attempts=32)
   if(best){const id=questionIdentity(best);roundSeen.add(id);session.recent.push(id);if(session.recent.length>32)session.recent.shift();}
   return best;
 }
-export function deckPick(pool,rng,ctx,key,identity=item=>item[1]) {
+export function deckPick(pool,rng,ctx,key,identity=item=>item[1],preferred=null) {
   if(!pool.length)return null;
   const signature=JSON.stringify(pool.map(identity));
   const decks=ctx.questionDecks||(ctx.questionDecks={});
@@ -39,5 +39,7 @@ export function deckPick(pool,rng,ctx,key,identity=item=>item[1]) {
     deck.remaining=rng.shuffle(pool.map((_,i)=>i));
     if(pool.length>1&&identity(pool[deck.remaining[0]])===deck.last){const first=deck.remaining.shift();deck.remaining.push(first);}
   }
-  const row=pool[deck.remaining.shift()];deck.last=identity(row);return row;
+  const preferredIndex=preferred?deck.remaining.findIndex(i=>preferred(pool[i])):-1;
+  const [index]=deck.remaining.splice(preferredIndex<0?0:preferredIndex,1);
+  const row=pool[index];deck.last=identity(row);return row;
 }

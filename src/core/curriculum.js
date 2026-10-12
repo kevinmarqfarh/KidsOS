@@ -1,6 +1,7 @@
 // Koppling till läroplanerna. Citaten är hämtade ur Skolverkets Lgr22
 // (centralt innehåll i årskurs 1–3 resp. förskoleklassen) och Lpfö 18.
 // Se docs/RESEARCH.md för källor.
+import progression from './lgr/progression.js';
 import math from './lgr/math.js';
 import svenska from './lgr/svenska.js';
 import no from './lgr/no.js';
@@ -77,7 +78,7 @@ const BASE = {
   'fsk-utforska': { subject: 'Förskoleklass', area: 'Natur, teknik och samhälle', text: 'Olika sätt att utforska företeelser och samband i natur, teknik och samhälle, genom observationer, mätningar och samtal.' },
 };
 
-export const CURRICULUM = { ...BASE, ...math, ...svenska, ...no, ...space, ...world, ...wonder, ...play, ...platform };
+export const CURRICULUM = { ...BASE, ...math, ...svenska, ...no, ...space, ...world, ...wonder, ...play, ...platform, ...progression };
 
 export function curriculumFor(ids = []) {
   return ids.map((id) => ({ id, ...CURRICULUM[id] })).filter((c) => c.text);

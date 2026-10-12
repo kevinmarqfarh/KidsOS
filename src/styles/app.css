@@ -4181,7 +4181,51 @@ button, [role="button"], input, select, textarea { scroll-margin-block: 90px; }
 .workshop-gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 130px), 1fr)); gap: 12px; }
 .workshop-gallery img { width: 100%; height: 100px; object-fit: contain; }
 .story-drawing { display: block; max-width: 100%; max-height: 360px; object-fit: contain; border-radius: 20px; background: var(--card); }
+
+/* Foton som aktivt stöd för observationer och läsning, även i smala appfönster. */
+.learning-photo-card { width: 100%; margin: 0; padding: 12px; background: var(--card); border: 2px solid var(--line); border-radius: 20px; box-sizing: border-box; }
+.learning-photo-card > img { display: block; width: 100%; height: clamp(200px, 30vw, 360px); object-fit: contain; border-radius: 12px; background: #edf2f4; }
+.learning-photo-card.compact { max-width: 480px; margin: 16px auto; }
+.learning-photo-card.compact > img { height: 210px; }
+.learning-photo-card figcaption { margin-top: 10px; display: grid; gap: 6px; overflow-wrap: anywhere; }
+.learning-photo-card figcaption small { line-height: 1.5; font-size: 12px; }
+.learning-photo-card details { font-size: 13px; }
+.learning-photo-card summary { cursor: pointer; min-height: 44px; display: flex; align-items: center; text-decoration: underline; }
+.learning-photo-card details a, .learning-photo-card details > span { display: block; padding-block: 6px; color: inherit; }
+.photo-explore { max-width: 1100px; margin: auto; padding: clamp(12px, 2vw, 24px); }
+.photo-explore-layout { display: grid; grid-template-columns: minmax(180px, .65fr) minmax(0, 1.35fr); gap: 22px; align-items: start; }
+.photo-explore-list { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 12px; }
+.photo-explore-card { min-width: 0; min-height: 140px; padding: 10px; display: flex; flex-direction: column; align-items: center; gap: 8px; color: var(--ink); font: inherit; font-weight: 700; border: 2px solid var(--line); background: var(--card); border-radius: 18px; overflow-wrap: anywhere; }
+.photo-explore-card[aria-pressed="true"] { border-color: var(--ink); box-shadow: inset 0 0 0 2px var(--ink); background: var(--learn-bg); }
+.photo-explore-card img { width: 100%; height: 90px; object-fit: contain; border-radius: 10px; background: #edf2f4; }
+.photo-explore-card small { font-weight: 400; }
+.photo-explore-stage { min-width: 0; }
+.photo-explore-stage .btn { margin: 6px; }
+.photo-observation { font-size: clamp(20px, 3vw, 26px); line-height: 1.5; }
+.photo-insight { padding: 18px; border-radius: 18px; background: var(--learn-bg); margin-block: 16px; }
+@container (max-width: 680px) { .photo-explore-layout { grid-template-columns: 1fr; } .photo-explore-stage { grid-row: 1; } .photo-explore-list { grid-row: 2; grid-template-columns: repeat(3, minmax(0,1fr)); } }
+@media (max-width: 680px) { .photo-explore-layout { grid-template-columns: 1fr; } .photo-explore-stage { grid-row: 1; } .photo-explore-list { grid-row: 2; grid-template-columns: repeat(3, minmax(0,1fr)); } }
+@media (max-width: 420px) { .photo-explore-list { grid-template-columns: repeat(2, minmax(0,1fr)); } }
+.photo-comparison, .question-photo-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 12px; align-items: start; }
+.photo-comparison .learning-photo-card > img { height: 220px; }
+.question-photo-grid:has(> :only-child) { grid-template-columns: minmax(0,1fr); }
+.question-photo-support .learning-photo-card.compact { margin-block: 0; }
+.question-photo-support .learning-photo-card > img { height: 160px; }
+.question-photo-support figcaption > b { font-size: 15px; }
+.question-photo-support > p { font-size: 13px; margin-bottom: 8px; }
+.drawing-reference summary { min-height: 48px; display: flex; align-items: center; cursor: pointer; text-decoration: underline; }
+@container (max-width: 480px) { .photo-comparison { grid-template-columns: 1fr; } .question-photo-grid { grid-template-columns: 1fr; } }
+@media (max-width: 480px) { .photo-comparison { grid-template-columns: 1fr; } .question-photo-grid { grid-template-columns: 1fr; } }
 /* Smala skärmar: inga element får skjuta ut i sidled. */
 .trace-top { flex-wrap: wrap; }
 .win-title { overflow: hidden; }
 .win-title > span:last-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+
+/* Texten och bildmotivet ska förbli läsbara i små kursfönster. */
+.literacy-passage,.literacy-evidence{max-width:65ch;padding:clamp(12px,3cqw,24px);border:1px solid var(--line);border-radius:16px;line-height:1.8;overflow-wrap:anywhere}
+.literacy-passage p{white-space:pre-line;font-size:clamp(1.05rem,3cqw,1.3rem)}
+.literacy-review{display:grid;gap:12px;min-width:0;border:1px solid var(--line);border-radius:12px;padding:16px}
+.literacy-review .workshop-field{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:48px}
+.literacy-review input{min-width:24px;min-height:24px;flex-shrink:0}
+.workshop-field textarea{width:100%;max-width:100%;box-sizing:border-box;font:inherit;line-height:1.6;resize:vertical}
+.workshop .learning-photo-card{max-width:680px;margin-inline:auto}

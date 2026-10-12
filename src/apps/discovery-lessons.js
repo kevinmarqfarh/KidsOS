@@ -1,3 +1,4 @@
+import { PROGRESSION_LESSONS } from './progression-lessons.js';
 // Egna pedagogiska texter, förankrade i källorna i docs/COURSE-RESEARCH.md.
 // Nivåerna är appens progression, inte officiella kunskapskrav.
 const lesson = (id, title, minLevel, moduleId, lgr, text, example, task, takeaway) => ({
@@ -57,3 +58,5 @@ export const DISCOVERY_LESSONS = {
     lesson('lek-budget', 'Planera dina inköp', 4, 'town', ['ma-rakna', 'ma-metod'], 'En budget hjälper dig att planera hur pengarna ska räcka. Jämför priser och räkna vad som blir kvar.', 'Du har 30 mynt och köper saker för 12 och 8. Du har 10 kvar.', 'Gör en låtsasbutik på papper. Sätt priser och planera två olika inköp med samma budget. Förklara vilket du väljer.', 'Du kan räkna, jämföra och välja innan du köper.'),
   ],
 };
+
+for(const [app,lessons] of Object.entries(PROGRESSION_LESSONS)) DISCOVERY_LESSONS[app].push(...lessons);

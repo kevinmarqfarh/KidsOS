@@ -5,7 +5,7 @@ import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
-const GROUPS = { space: 'Rymden', species: 'Arter (Biologi)', world: 'Världen', wonder: 'Undra', objects: 'Föremål, djur och mat (ersätter emoji)' };
+const GROUPS = { space: 'Rymden', species: 'Arter (Biologi)', world: 'Världen', wonder: 'Undra', objects: 'Föremål, djur och mat (ersätter emoji)', 'course-scenes': 'Fotografier för lektioner och fotospaning' };
 const one = (s) => String(s || '').replace(/\s+/g, ' ').replace(/\|/g, '\\|').trim();
 
 export function creditsDoc() {
@@ -18,7 +18,7 @@ export function creditsDoc() {
     '',
     '<!-- GENERERAD av scripts/credits-doc.mjs från assets/credits.json – ändra inte för hand. -->',
     '',
-    `KidsOS innehåller ${keys.length} foton från Wikimedia Commons (inklusive NASA). Alla har fria licenser: public domain, CC0, CC BY eller CC BY-SA.`,
+    `KidsOS innehåller ${keys.length} bilder från Wikimedia Commons (inklusive NASA). Biblioteket innehåller fotografier och vissa äldre illustrationer. Alla har fria licenser: public domain, CC0, CC BY eller CC BY-SA.`,
     'Bilderna är förminskade och omkodade till WebP men i övrigt oförändrade. Följ länken för original, fullständig licens och upphov.',
     '',
   ];

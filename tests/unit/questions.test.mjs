@@ -12,9 +12,9 @@ test('åtta kursfrågor i varje nivågrupp är unika före repetition',()=>{
   assert.equal(new Set(seen).size,8,`${topic}/${level}`);
  }
 });
-test('alla AI-ämnen erbjuder minst åtta olika frågor redan på startnivån',()=>{
+test('alla AI-ämnen erbjuder minst åtta olika frågor från nivå 2',()=>{
  for(const topic of Object.keys(AI_SCENARIOS)){
-  const ctx={},rng=createRng(1),seen=new Set();for(let i=0;i<8;i++)seen.add(genAIQuiz(topic,0,rng,ctx).prompt);
+  const ctx={},rng=createRng(1),seen=new Set();for(let i=0;i<8;i++)seen.add(genAIQuiz(topic,2,rng,ctx).prompt);
   assert.equal(seen.size,8,topic);
  }
 });

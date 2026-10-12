@@ -1,6 +1,10 @@
 import { h, clear, onTap } from '../dom.js';
 import { DRAW_MISSIONS } from '../../apps/practice-activities.js';
 import { drawView } from './misc.js';
+import { learningPhoto } from '../learning-photo.js';
+import { PHOTO_DETAILS } from '../../apps/photo-learning.js';
+
+const REFERENCES = {'Mitt fantasidjur':'obj-butterfly','Nära och långt borta':'obj-bridge','En bild med ett budskap':'course-oak','Byt bildutsnitt':'obj-flower'};
 
 export function drawingMissionsView(el, ctx) {
   const available = DRAW_MISSIONS.filter(item => item.level <= ctx.level);
@@ -11,6 +15,7 @@ export function drawingMissionsView(el, ctx) {
   function render() {
     const mission = available[index];
     clear(brief).append(h('h2', mission.title), h('p', mission.text),
+      REFERENCES[mission.title] ? h('details.drawing-reference', h('summary','Visa ett foto som inspiration'), learningPhoto(PHOTO_DETAILS[REFERENCES[mission.title]],{compact:true})) : null,
       h('p.muted', 'Det finns flera bra lösningar. Din bild bedöms inte automatiskt. Spara den i galleriet och berätta om dina val.'),
       onTap(h('button.btn.btn-ghost', {type:'button'}, '🔊 Läs uppdraget'), () => ctx.kos.read(`${mission.title}. ${mission.text}`)),
       onTap(h('button.btn.btn-ghost', {type:'button'}, 'Byt uppdrag'), () => { index = (index + 1) % available.length; render(); }));

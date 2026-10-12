@@ -1,4 +1,6 @@
+import { EXTRA_DRAW_MISSIONS } from './drawing-enrichment.js';
 import { deckPick } from '../core/questions.js';
+import { PROGRESSION_QUESTIONS } from './progression-questions.js';
 import { EXTRA_ACTIVITY_BANKS } from './question-enrichment.js';
 // Egenförfattade aktiviteter. Inspiration och läroplanskoppling:
 // docs/COURSE-RESEARCH.md och docs/PRACTICE-ACTIVITIES.md.
@@ -73,6 +75,8 @@ export const ACTIVITY_BANKS = {
 
 for (const [topic, rows] of Object.entries(EXTRA_ACTIVITY_BANKS)) ACTIVITY_BANKS[topic].push(...rows);
 
+for(const [topic,rows] of Object.entries(PROGRESSION_QUESTIONS)) ACTIVITY_BANKS[topic].push(...rows);
+
 export function genActivity(topic, level, rng, ctx = {}) {
   const bank = ACTIVITY_BANKS[topic].filter(row => row[0] <= level);
   const newest = Math.max(...bank.map(row => row[0]));
@@ -131,6 +135,8 @@ export const DRAW_MISSIONS = [
   { level: 4, title: 'En bild med ett budskap', text: 'Gör en affisch om att ta hand om naturen. Välj en bild och några ord. Förklara vad du vill att betraktaren ska tänka eller göra.' },
   { level: 4, title: 'Byt bildutsnitt', text: 'Rita en scen och sedan en närbild av en detalj. Jämför hur de två bilderna berättar olika saker.' },
 ];
+
+DRAW_MISSIONS.push(...EXTRA_DRAW_MISSIONS);
 
 const TOPICS = {
   science: ['Undersök & förklara','🔬',['no-metod','no-material']],

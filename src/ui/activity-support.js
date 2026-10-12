@@ -1,7 +1,11 @@
 import { h, onTap, openDialog } from './dom.js';
 
 const HELP = {
+  photoExplore: 'Välj ett fotografi. Titta på hela bilden och lyssna på frågan. Du kan peka, prata eller rita ditt svar. Upptäck mer ger en förklaring. Undersökt sparar att du har tittat och funderat.',
   pairs: 'Välj två kort som hör ihop. Visa alla kort om du vill ha stöd. Efter två olika kort väljer du själv när du provar igen.',
+  columnCoach: 'Räkna från höger: ental, tiotal och hundratal. Visa steget för hjälp med minnessiffror och växling. Välj en siffra och kontrollera kolumnen.',
+  pictureStory: 'Titta på bilden. Beskriv vad du ser och hitta på början, händelse och slut. Du kan skriva, prata eller peka. Din berättelse får inget automatiskt betyg.',
+  readingWorkshop: 'Texten ligger kvar. Läs eller lyssna och svara på en fråga i taget. Visa ledtråden om du vill. Byt till kort text eller svara med egna ord.',
   numberWorkshop: 'Lägg till ental och tiotal. Växla mellan dem med knapparna. Kontrollera när talet matchar målet.',
   fractionKitchen: 'Välj hur många lika stora delar portionen har. Tryck på delar för att välja dem och jämför med målet.',
   storyAtelier: 'Välj början, sedan och slutet. Välj idéer och skriv eller berätta med en vuxen. Din text sparas när du skriver.',
