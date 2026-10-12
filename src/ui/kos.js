@@ -61,11 +61,12 @@ export const kos = {
       const ap = adaptedPrefs(p);
       root.adapted = 'on';
       root.adaptedFocus = ap.focus ? 'on' : 'off';
+      root.adaptedCalm = ap.calm ? 'on' : 'off'; // dämpade färger (valbart)
+      root.adaptedMotion = ap.motion ? 'on' : 'off'; // mjuka animationer eller inga alls
+      root.adaptedStreak = ap.hideStreak ? 'hide' : 'show'; // ingen "dagar i rad"-stress
       root.interest = ap.interest;
     } else {
-      delete root.adapted;
-      delete root.adaptedFocus;
-      delete root.interest;
+      for (const k of ['adapted', 'adaptedFocus', 'adaptedCalm', 'adaptedMotion', 'adaptedStreak', 'interest']) delete root[k];
     }
   },
 

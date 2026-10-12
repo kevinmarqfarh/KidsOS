@@ -26,7 +26,7 @@ export const OCEANS = [
 ];
 
 export const WORLD_ANIMALS = [
-  { id: 'lejon', def: 'lejonet', name: 'Lejon', e: '🦁', home: 'afrika', fact: 'Lejon lever i grupper som kallas flockar. Det är oftast honorna som jagar.' },
+  { id: 'lejon', def: 'lejonet', name: 'Lejon', e: '🦁', home: 'afrika', not: ['asien'], fact: 'Lejon lever i grupper som kallas flockar. Det är oftast honorna som jagar.' },
   { id: 'elefant', def: 'den afrikanska elefanten', name: 'Afrikansk elefant', e: '🐘', home: 'afrika', fact: 'Den afrikanska elefanten är det största landdjuret. Den kan dricka över 100 liter vatten om dagen.' },
   { id: 'kanguru', def: 'kängurun', name: 'Känguru', e: '🦘', home: 'oceanien', fact: 'Kängurun bär sin unge i en pung på magen och kan hoppa fortare än en bil i stan.' },
   { id: 'koala', def: 'koalan', name: 'Koala', e: '🐨', home: 'oceanien', fact: 'Koalan äter nästan bara eukalyptusblad och sover upp till 20 timmar om dygnet.' },
@@ -34,27 +34,27 @@ export const WORLD_ANIMALS = [
   { id: 'tiger', def: 'tigern', name: 'Tiger', e: '🐯', home: 'asien', fact: 'Tigern är det största kattdjuret. Ingen tiger har exakt samma ränder som en annan.' },
   { id: 'kejsarpingvin', def: 'kejsarpingvinen', name: 'Kejsarpingvin', e: '🐧', home: 'antarktis', fact: 'Kejsarpingvinens pappa håller ägget varmt på fötterna i två månader mitt i vintern.' },
   { id: 'lama', def: 'laman', name: 'Lama', e: '🦙', home: 'sydamerika', fact: 'Laman lever i Anderna. Den kan bära packning uppe i bergen.' },
-  { id: 'jaguar', def: 'jaguaren', name: 'Jaguar', e: '🐆', home: 'sydamerika', fact: 'Jaguaren lever i regnskogen och är – till skillnad från de flesta katter – bra på att simma.' },
+  { id: 'jaguar', def: 'jaguaren', name: 'Jaguar', e: '🐆', home: 'sydamerika', not: ['nordamerika'], fact: 'Jaguaren lever i regnskogen och är – till skillnad från de flesta katter – bra på att simma.' },
   { id: 'bison', def: 'bisonoxen', name: 'Bisonoxe', e: '🦬', home: 'nordamerika', fact: 'Bisonoxen är Nordamerikas tyngsta landdjur. Förr vandrade miljontals över prärien.' },
-  { id: 'ren', def: 'renen', name: 'Ren', e: '🦌', home: 'europa', fact: 'Renen lever i norra Sverige. Både hanar och honor har horn.' },
-  { id: 'isbjorn', def: 'isbjörnen', name: 'Isbjörn', e: '🐻‍❄️', home: 'arktis', fact: 'Isbjörnen lever på isen runt Nordpolen. Pälsen ser vit ut men huden under är svart.' },
+  { id: 'ren', def: 'renen', name: 'Ren', e: '🦌', home: 'europa', not: ['arktis', 'asien', 'nordamerika'], fact: 'Renen lever i norra Sverige. Både hanar och honor har horn. Släktingar till renen lever i andra kalla länder runt Nordpolen.' },
+  { id: 'isbjorn', def: 'isbjörnen', name: 'Isbjörn', e: '🐻‍❄️', home: 'arktis', not: ['europa', 'asien', 'nordamerika'], fact: 'Isbjörnen lever på isen runt Nordpolen. Pälsen ser vit ut men huden under är svart.' },
 ];
 
 export const PLACES = [
-  { id: 'eiffel', name: 'Eiffeltornet', country: 'Frankrike', flag: '🇫🇷', cont: 'europa', fact: 'Eiffeltornet i Paris byggdes 1889 och är över 300 meter högt.' },
-  { id: 'colosseum', name: 'Colosseum', country: 'Italien', flag: '🇮🇹', cont: 'europa', fact: 'Colosseum i Rom är nästan 2 000 år gammalt. Där tittade romarna på skådespel.' },
-  { id: 'sagrada', name: 'Sagrada Família', country: 'Spanien', flag: '🇪🇸', cont: 'europa', fact: 'Kyrkan i Barcelona har byggts i över 140 år och är fortfarande inte helt färdig.' },
-  { id: 'vasa', name: 'Regalskeppet Vasa', country: 'Sverige', flag: '🇸🇪', cont: 'europa', fact: 'Vasa sjönk i Stockholm 1628 på sin första resa och bärgades 333 år senare.' },
-  { id: 'pyramider', name: 'Pyramiderna i Giza', country: 'Egypten', flag: '🇪🇬', cont: 'afrika', fact: 'Pyramiderna byggdes för cirka 4 500 år sedan som gravar åt kungar, faraoner.' },
-  { id: 'kilimanjaro', name: 'Kilimanjaro', country: 'Tanzania', flag: '🇹🇿', cont: 'afrika', fact: 'Kilimanjaro är Afrikas högsta berg. Det har snö på toppen fast det ligger nära ekvatorn.' },
-  { id: 'muren', name: 'Kinesiska muren', country: 'Kina', flag: '🇨🇳', cont: 'asien', fact: 'Kinesiska muren är tusentals kilometer lång och byggdes för att skydda landet.' },
-  { id: 'tajmahal', name: 'Taj Mahal', country: 'Indien', flag: '🇮🇳', cont: 'asien', fact: 'Taj Mahal är byggt av vit marmor och glittrar olika i morgon- och kvällsljus.' },
-  { id: 'persepolis', name: 'Persepolis', country: 'Iran', flag: '🇮🇷', cont: 'asien', fact: 'Persepolis var en praktfull huvudstad i det gamla Persien för cirka 2 500 år sedan.' },
-  { id: 'everest', name: 'Mount Everest', country: 'Nepal och Kina', flag: '🏔️', cont: 'asien', fact: 'Mount Everest är världens högsta berg – nästan 8 850 meter högt.' },
-  { id: 'frihetsgudinnan', name: 'Frihetsgudinnan', country: 'USA', flag: '🇺🇸', cont: 'nordamerika', fact: 'Frihetsgudinnan i New York var en gåva från Frankrike och invigdes 1886.' },
-  { id: 'machupicchu', name: 'Machu Picchu', country: 'Peru', flag: '🇵🇪', cont: 'sydamerika', fact: 'Machu Picchu är en stad som inkafolket byggde högt uppe i Anderna på 1400-talet.' },
-  { id: 'moai', name: 'Moai-statyerna', country: 'Chile (Påskön)', flag: '🇨🇱', cont: 'sydamerika', fact: 'På Påskön, som tillhör Chile, står hundratals stora stenhuvuden som kallas moai.' },
-  { id: 'sydneyopera', name: 'Operahuset i Sydney', country: 'Australien', flag: '🇦🇺', cont: 'oceanien', fact: 'Taket på operahuset i Sydney ser ut som segel på ett skepp.' },
+  { id: 'eiffel', e: '🗼', in: 'i Frankrike', name: 'Eiffeltornet', country: 'Frankrike', flag: '🇫🇷', cont: 'europa', fact: 'Eiffeltornet i Paris byggdes 1889 och är över 300 meter högt.' },
+  { id: 'colosseum', e: '🏟️', in: 'i Italien', name: 'Colosseum', country: 'Italien', flag: '🇮🇹', cont: 'europa', fact: 'Colosseum i Rom är nästan 2 000 år gammalt. Där tittade romarna på skådespel.' },
+  { id: 'sagrada', e: '⛪', in: 'i Spanien', name: 'Sagrada Família', country: 'Spanien', flag: '🇪🇸', cont: 'europa', fact: 'Kyrkan i Barcelona har byggts i över 140 år och är fortfarande inte helt färdig.' },
+  { id: 'vasa', e: '⛵', in: 'i Sverige', name: 'Regalskeppet Vasa', country: 'Sverige', flag: '🇸🇪', cont: 'europa', fact: 'Vasa sjönk i Stockholm 1628 på sin första resa och bärgades 333 år senare.' },
+  { id: 'pyramider', e: '🐪', in: 'i Egypten', name: 'Pyramiderna i Giza', country: 'Egypten', flag: '🇪🇬', cont: 'afrika', fact: 'Pyramiderna byggdes för cirka 4 500 år sedan som gravar åt kungar, faraoner.' },
+  { id: 'kilimanjaro', e: '🏔️', in: 'i Tanzania', name: 'Kilimanjaro', country: 'Tanzania', flag: '🇹🇿', cont: 'afrika', fact: 'Kilimanjaro är Afrikas högsta berg. Det har snö på toppen fast det ligger nära ekvatorn.' },
+  { id: 'muren', e: '🧱', in: 'i Kina', name: 'Kinesiska muren', country: 'Kina', flag: '🇨🇳', cont: 'asien', fact: 'Kinesiska muren är tusentals kilometer lång och byggdes för att skydda landet.' },
+  { id: 'tajmahal', e: '🕌', in: 'i Indien', name: 'Taj Mahal', country: 'Indien', flag: '🇮🇳', cont: 'asien', fact: 'Taj Mahal är byggt av vit marmor och glittrar olika i morgon- och kvällsljus.' },
+  { id: 'persepolis', e: '🏛️', in: 'i Iran', name: 'Persepolis', country: 'Iran', flag: '🇮🇷', cont: 'asien', fact: 'Persepolis var en praktfull huvudstad i det gamla Persien för cirka 2 500 år sedan.' },
+  { id: 'everest', e: '🏔️', in: 'på gränsen mellan Nepal och Kina', name: 'Mount Everest', country: 'Nepal och Kina', noCountryQ: true, flag: '🏔️', cont: 'asien', fact: 'Mount Everest är världens högsta berg – nästan 8 850 meter högt.' },
+  { id: 'frihetsgudinnan', e: '🗽', in: 'i USA', name: 'Frihetsgudinnan', country: 'USA', flag: '🇺🇸', cont: 'nordamerika', fact: 'Frihetsgudinnan i New York var en gåva från Frankrike och invigdes 1886.' },
+  { id: 'machupicchu', e: '⛰️', in: 'i Peru', name: 'Machu Picchu', country: 'Peru', flag: '🇵🇪', cont: 'sydamerika', fact: 'Machu Picchu är en stad som inkafolket byggde högt uppe i Anderna på 1400-talet.' },
+  { id: 'moai', e: '🗿', in: 'på Påskön, som tillhör Chile', name: 'Moai-statyerna', country: 'Chile', flag: '🇨🇱', cont: 'oceanien', fact: 'På Påskön, långt ute i Stilla havet, står hundratals stora stenhuvuden som kallas moai.' },
+  { id: 'sydneyopera', e: '🎭', in: 'i Australien', name: 'Operahuset i Sydney', country: 'Australien', flag: '🇦🇺', cont: 'oceanien', fact: 'Taket på operahuset i Sydney ser ut som segel på ett skepp.' },
 ];
 
 /* ---------- Länder och flaggor ---------- */
@@ -68,7 +68,7 @@ export const COUNTRIES = [
   { id: 'island', name: 'Island', flag: '🇮🇸', cont: 'europa', capital: 'Reykjavik', prep: 'på', nordic: true, fact: 'Island är en ö med vulkaner, glaciärer och varma källor.' },
   { id: 'tyskland', name: 'Tyskland', flag: '🇩🇪', cont: 'europa', capital: 'Berlin', prep: 'i', fact: 'Tyskland är det land i EU där flest människor bor.' },
   { id: 'frankrike', name: 'Frankrike', flag: '🇫🇷', cont: 'europa', capital: 'Paris', prep: 'i', fact: 'I Frankrike finns Eiffeltornet och massor av sorters ost.' },
-  { id: 'storbritannien', name: 'Storbritannien', flag: '🇬🇧', cont: 'europa', capital: 'London', prep: 'i', fact: 'Storbritannien är en stor ö med England, Skottland och Wales.' },
+  { id: 'storbritannien', name: 'Storbritannien', flag: '🇬🇧', cont: 'europa', capital: 'London', prep: 'i', fact: 'Storbritannien består av England, Skottland, Wales och Nordirland. De flesta bor på den stora ön Storbritannien.' },
   { id: 'spanien', name: 'Spanien', flag: '🇪🇸', cont: 'europa', capital: 'Madrid', prep: 'i', fact: 'I Spanien äter många middag sent på kvällen, när det har blivit svalare.' },
   { id: 'italien', name: 'Italien', flag: '🇮🇹', cont: 'europa', capital: 'Rom', prep: 'i', fact: 'Italien ser ut som en stövel på kartan. Pizzan kommer därifrån.' },
   { id: 'grekland', name: 'Grekland', flag: '🇬🇷', cont: 'europa', capital: 'Aten', prep: 'i', fact: 'De första olympiska spelen hölls i Grekland för nästan 3 000 år sedan.' },
@@ -142,6 +142,35 @@ export const SWEDEN_BOUNDS = { top: 69.5, bottom: 55.1, left: 10.4, right: 24.6 
 export function projectSweden(lat, lon, b = SWEDEN_BOUNDS) {
   return { x: (lon - b.left) / (b.right - b.left), y: (b.top - lat) / (b.top - b.bottom) };
 }
+
+// Förenklad Sverigekontur (longitud, latitud) som ritas när kartfotot saknas. Samma projektion som
+// projectSweden, så stiften hamnar rätt. Bredden är korrigerad med cos(62°) så att formen inte blir utdragen.
+export const SWEDEN_OUTLINE = {
+  land: [
+    [[20.55, 69.06], [21.3, 68.78], [22.4, 68.47], [23.0, 68.1], [23.45, 67.4], [23.6, 66.8], [23.7, 66.3], [24.15, 65.82], [23.2, 65.75], [22.15, 65.55], [21.5, 65.3], [21.25, 64.8], [20.6, 64.1], [20.0, 63.7], [19.0, 63.3], [18.2, 62.9], [17.6, 62.45], [17.25, 61.9], [17.2, 61.3], [17.2, 60.7], [17.9, 60.55], [18.6, 60.25], [19.05, 59.85], [18.8, 59.35], [18.3, 59.05], [17.8, 58.9], [17.0, 58.65], [16.65, 58.15], [16.6, 57.6], [16.45, 57.15], [16.35, 56.65], [15.95, 56.2], [15.4, 56.12], [14.75, 56.15], [14.25, 55.95], [14.35, 55.55], [13.8, 55.42], [13.36, 55.34], [12.95, 55.4], [12.95, 55.65], [12.75, 55.95], [12.55, 56.2], [12.85, 56.45], [12.85, 56.7], [12.2, 57.15], [11.9, 57.65], [11.6, 58.0], [11.4, 58.35], [11.15, 58.95], [11.45, 59.1], [11.75, 59.6], [12.45, 60.05], [12.6, 60.55], [12.25, 61.05], [12.7, 61.45], [12.15, 61.75], [12.3, 62.3], [12.05, 62.65], [12.15, 63.3], [12.6, 63.95], [13.95, 64.05], [14.1, 64.5], [13.65, 64.6], [14.45, 65.3], [14.55, 65.75], [15.4, 66.15], [16.0, 66.5], [16.6, 67.05], [17.3, 67.5], [17.9, 67.95], [18.15, 68.45], [19.0, 68.5], [20.0, 68.4], [20.25, 68.75], [20.0, 69.0]],
+    [[18.13, 56.92], [18.45, 57.15], [18.75, 57.35], [18.95, 57.55], [19.25, 57.85], [19.1, 57.98], [18.85, 57.9], [18.55, 57.75], [18.2, 57.5], [18.1, 57.25]],
+    [[16.4, 56.2], [16.55, 56.25], [16.75, 56.6], [16.95, 56.9], [17.15, 57.33], [17.0, 57.37], [16.75, 57.0], [16.5, 56.6]],
+  ],
+  lakes: [
+    [[12.45, 58.4], [13.1, 58.5], [13.6, 58.65], [14.15, 58.75], [14.0, 59.1], [13.5, 59.35], [13.1, 59.25], [12.7, 59.15], [12.85, 58.85], [12.4, 58.6]],
+    [[14.15, 57.8], [14.35, 57.8], [14.6, 58.2], [14.95, 58.55], [14.85, 58.85], [14.6, 58.6], [14.35, 58.3], [14.15, 58.0]],
+    [[16.0, 59.45], [16.6, 59.38], [17.3, 59.33], [17.8, 59.3], [17.6, 59.55], [16.8, 59.55], [16.2, 59.6]],
+  ],
+};
+export const SWEDEN_SVG_W = Math.round(1000 * ((SWEDEN_BOUNDS.right - SWEDEN_BOUNDS.left) * Math.cos((62 * Math.PI) / 180)) / (SWEDEN_BOUNDS.top - SWEDEN_BOUNDS.bottom));
+/** Sverigekarta som SVG (land, Gotland, Öland och de stora sjöarna). */
+export function swedenSvg(cls = 'smap-img') {
+  const W = SWEDEN_SVG_W;
+  const pt = ([lon, lat]) => {
+    const q = projectSweden(lat, lon);
+    return `${(q.x * W).toFixed(1)},${(q.y * 1000).toFixed(1)}`;
+  };
+  const poly = (list, fill) => list.map((p) => `<polygon points="${p.map(pt).join(' ')}" fill="${fill}"/>`).join('');
+  return `<svg class="${cls} sweden-svg" viewBox="0 0 ${W} 1000" role="img" aria-label="Karta över Sverige"><rect width="${W}" height="1000" fill="#bfe3f7"/>`
+    + `<g stroke="#8a9a6a" stroke-width="3" stroke-linejoin="round">${poly(SWEDEN_OUTLINE.land, '#d9ecc0')}</g>${poly(SWEDEN_OUTLINE.lakes, '#7cc8f2')}</svg>`;
+}
+/** Kartbilden: riktig karta om fotot finns, annars den ritade. */
+export const swedenBase = (cls = 'smap-img') => (hasPhoto('sverigekarta') ? photo('sverigekarta', { alt: 'Karta över Sverige', cls }) : swedenSvg(cls));
 
 export const DIRECTIONS = ['norr', 'nordost', 'öster', 'sydost', 'söder', 'sydväst', 'väster', 'nordväst'];
 /** Kompassriktning i grader (0 = norr, 90 = öster) från A till B. */
@@ -228,23 +257,22 @@ export function worldMapSvg(highlight = null, { oceans = false, oceanLabels = fa
   return `${s}</svg>`;
 }
 
-/** Liten Sverigekarta med markerade platser, eller tom sträng om kartbilden saknas. */
+/** Liten Sverigekarta med markerade platser (foto om det finns, annars ritad karta). */
 export function swedenMapHtml(points, { labels = false } = {}) {
-  if (!hasPhoto('sverigekarta')) return '';
   const pins = points.map((p, i) => {
     const q = projectSweden(p.lat, p.lon);
     return `<span class="smap-pin${i ? ' alt' : ''}" style="left:${(q.x * 100).toFixed(1)}%;top:${(q.y * 100).toFixed(1)}%"><i></i>${labels ? `<b>${p.name}</b>` : ''}</span>`;
   }).join('');
-  return `<div class="smap">${photo('sverigekarta', { alt: 'Karta över Sverige', cls: 'smap-img' })}<span class="smap-n">N ⬆</span>${pins}</div>`;
+  return `<div class="smap">${swedenBase('smap-img')}<span class="smap-n">N ⬆</span>${pins}</div>`;
 }
 
 /* ---------- Förr i tiden ---------- */
 export const ERAS = [
   { id: 'sten', name: 'Stenåldern', img: 'flintyxa', e: '🪨', when: 'för 10 000 år sedan', fact: 'Människorna jagade, fiskade och gjorde verktyg av sten, ben och trä.' },
-  { id: 'brons', name: 'Bronsåldern', img: 'hallristning', e: '🗿', when: 'för 3 500 år sedan', fact: 'Man gjorde saker av brons och ristade bilder i berget – som hällristningarna i Tanum i Bohuslän.' },
+  { id: 'brons', name: 'Bronsåldern', img: 'hallristning', e: '🛡️', when: 'för 3 500 år sedan', fact: 'Man gjorde saker av brons och ristade bilder i berget – som hällristningarna i Tanum i Bohuslän.' },
   { id: 'jarn', name: 'Järnåldern och vikingatiden', img: 'vikingaskepp', e: '⛵', when: 'för 1 200 år sedan', fact: 'Vikingarna seglade långt i sina skepp, handlade och skrev med runor.' },
   { id: 'medel', name: 'Medeltiden', img: 'visby', e: '🏰', when: 'för 700 år sedan', fact: 'Man byggde borgar, kyrkor och stadsmurar – som ringmuren i Visby.' },
-  { id: 'anga', name: '1800-talet', img: 'angmaskin', e: '🚂', when: 'för 150 år sedan', fact: 'Ångloken kom och man kunde resa snabbt med tåg för första gången.' },
+  { id: 'anga', name: '1800-talet', img: 'angmaskin', e: '🚂', when: 'för ungefär 170 år sedan', fact: 'Ångloken kom och man kunde resa snabbt med tåg för första gången.' },
   { id: 'nu', name: 'I dag', img: null, e: '📱', when: 'nu', fact: 'Vi har datorer, mobiler och flygplan – och du lever just nu!' },
 ];
 
@@ -253,7 +281,7 @@ export const TIMELINE = [
   { id: 'forsta', e: '🏕️', name: 'De första människorna kommer till Sverige', when: 'för mer än 10 000 år sedan', y: -11000 },
   { id: 'bonder', e: '🌾', name: 'De första bönderna i Sverige', when: 'för ungefär 6 000 år sedan', y: -4000 },
   { id: 'pyramid', e: '🔺', name: 'Pyramiderna i Egypten byggs', when: 'för ungefär 4 500 år sedan', y: -2550 },
-  { id: 'bronsalder', e: '🗿', name: 'Bronsåldern börjar i Norden', when: 'för ungefär 3 700 år sedan', y: -1700 },
+  { id: 'bronsalder', e: '🛡️', name: 'Bronsåldern börjar i Norden', when: 'för ungefär 3 700 år sedan', y: -1700 },
   { id: 'vikingar', e: '⛵', name: 'Vikingatiden', when: 'för ungefär 1 200 år sedan', y: 800 },
   { id: 'ringmur', e: '🏰', name: 'Ringmuren i Visby byggs', when: 'för ungefär 700 år sedan', y: 1300 },
   { id: 'vasaskepp', e: '🚢', name: 'Skeppet Vasa sjunker', when: 'år 1628', y: 1628 },
@@ -331,7 +359,7 @@ export const HOLIDAYS = [
   { id: 'eid', name: 'Eid al-fitr', e: '🌙', tradition: 'islam', fact: 'Eid al-fitr firas när fastemånaden ramadan är slut – med fest, nya kläder och god mat.' },
   { id: 'ramadan', name: 'Ramadan', e: '🌙', tradition: 'islam', fact: 'Under ramadan fastar vuxna muslimer från soluppgång till solnedgång. På kvällen äter man tillsammans. Barn behöver inte fasta.' },
   { id: 'eidadha', name: 'Eid al-adha', e: '🍲', tradition: 'islam', fact: 'Eid al-adha är islams största högtid. Man firar med familjen och delar med sig av mat till andra.' },
-  { id: 'nowruz', name: 'Nowruz', e: '🌱', tradition: 'persiskt nyår', fact: 'Nowruz betyder "ny dag" och firas vid vårdagjämningen i Iran och många andra länder – med ett dukat bord med sju saker.' },
+  { id: 'nowruz', name: 'Nowruz', e: '🌱', tradition: 'persisk tradition', fact: 'Nowruz betyder "ny dag" och firas vid vårdagjämningen i Iran och många andra länder – med ett dukat bord med sju saker.' },
   { id: 'diwali', name: 'Diwali', e: '🪔', tradition: 'hinduismen', fact: 'Diwali är hinduismens ljusfest. Man tänder små lampor och ljus för att ljuset ska vinna över mörkret.' },
   { id: 'lucia', name: 'Lucia', e: '👑', tradition: 'svensk tradition', fact: 'Den 13 december sjunger lucia och hennes följe med ljus i håret i den mörka vintern.' },
   { id: 'midsommar', name: 'Midsommar', e: '💐', tradition: 'svensk tradition', fact: 'På midsommar dansar vi runt midsommarstången när dagarna är som längst.' },
@@ -339,8 +367,6 @@ export const HOLIDAYS = [
   { id: 'nationaldag', name: 'Sveriges nationaldag', e: '🇸🇪', tradition: 'svensk tradition', fact: 'Den 6 juni firar Sverige nationaldagen. Då valdes Gustav Vasa till kung år 1523.' },
   { id: 'samedag', name: 'Samernas nationaldag', e: '🎉', tradition: 'samisk tradition', fact: 'Den 6 februari är samernas nationaldag. Samerna är Sveriges urfolk och har en egen flagga och ett eget språk.' },
 ];
-// De holiday-id som det finns foton för i katalogen (övriga visar emoji).
-const HOLIDAY_PHOTOS = new Set(['julgran', 'pasagg', 'menora', 'eid', 'nowruz', 'lucia', 'midsommar']);
 
 export const RELIGIONS = [
   { id: 'kristendomen', name: 'kristendomen', symbol: '✝️', symbolName: 'korset', house: 'kyrka', book: 'Bibeln', fact: 'Kristna tror på Gud och på Jesus. De samlas i kyrkan, och deras heliga bok heter Bibeln.' },
@@ -390,7 +416,7 @@ export const RULE_CASES = [
   { min: 0, max: 1, q: 'Hur visar du att du vill säga något i klassen?', a: ['Räcker upp handen', '✋'], w: [['Ropar högt', '📢'], ['Somnar', '😴']], ex: 'Man räcker upp handen och väntar på sin tur. Då kan alla höras.' },
   { min: 0, max: 1, q: 'Vad säger man när man har gjort fel mot någon?', a: ['Förlåt', '🙏'], w: [['Hej då', '👋'], ['Grattis', '🎉']], ex: 'Att säga förlåt och försöka göra det bra igen visar att man bryr sig.' },
   { min: 0, max: 1, q: 'En kompis är ledsen. Vad kan du göra?', a: ['Fråga hur det är', '🤗'], w: [['Skratta', '😂'], ['Springa iväg', '🏃']], ex: 'Att fråga hur någon mår och lyssna är att vara en bra kompis.' },
-  { min: 0, max: 1, q: 'Vad gör man med skräp i skolan?', a: ['Slänger det i papperskorgen', '🗑️'], w: [['Kastar det på golvet', '🫳'], ['Gömmer det i bänken', '🙈']], ex: 'Om alla hjälper till blir skolan en fin plats att vara på.' },
+  { min: 0, max: 1, q: 'Vad gör man med skräp i skolan?', a: ['Slänger det i papperskorgen', '🗑️'], w: [['Kastar det på golvet', '⬇️'], ['Gömmer det i bänken', '🙈']], ex: 'Om alla hjälper till blir skolan en fin plats att vara på.' },
   { min: 1, max: 4, q: 'Någon säger "Du får inte vara med!" till en kompis. Vad är schysst att göra?', a: 'Säga: "Klart du får vara med!"', w: ['Skratta åt kompisen', 'Låtsas att man inte hörde'], ex: 'I skolan ska alla få vara med. Ingen ska bli utanför.' },
   { min: 1, max: 4, q: 'Varför har vi regler i skolan?', a: 'För att alla ska känna sig trygga och kunna lära sig', w: ['För att vuxna ska få bestämma allt', 'För att det ska bli tråkigt'], ex: 'Regler hjälper oss att vara schyssta mot varandra. Många skolor bestämmer ordningsreglerna tillsammans med eleverna.' },
   { min: 1, max: 4, q: 'Du råkar ha sönder en kompis penna. Vad är bra att göra?', a: 'Säga förlåt och försöka hjälpa till', w: ['Gömma pennan', 'Säga att någon annan gjorde det'], ex: 'Alla gör misstag ibland. Det viktiga är att man säger som det är och försöker ställa det till rätta.' },
@@ -516,8 +542,16 @@ export const TRUE_FALSE = [
 
 /* ======================= Hjälpfunktioner ======================= */
 const contName = (id) => (id === 'arktis' ? ARKTIS.name : CONTINENTS.find((c) => c.id === id).name);
-const pic = (key, alt, e) => photo(key, { alt, cls: 'qphoto', fallback: `<span class="pic-big">${e || '🖼️'}</span>` });
+const qpic = (key, alt, e) => photo(key, { alt, cls: 'qphoto', fallback: `<span class="pic-big">${e || '🖼️'}</span>` });
 const emojiOpt = (id, e, say) => ({ id, html: `<span class="pic">${e}</span><span class="lbl">${say}</span>`, say });
+/**
+ * Bildsvar för förläsare: foton om ALLA alternativ har foto (annars kan ett ensamt foto avslöja svaret),
+ * annars stora emoji. say = det som läses upp för alternativet.
+ */
+function imgOptions(items, { key = (x) => x.id, e = (x) => x.e, say = () => '' } = {}) {
+  const photos = items.every((x) => hasPhoto(key(x)));
+  return items.map((x) => ({ id: x.id, html: photos ? photo(key(x), { alt: '', cls: 'ophoto' }) : `<span class="pic">${e(x)}</span>`, say: say(x) }));
+}
 const inLevel = (x, level) => (x.min ?? 0) <= level && level <= (x.max ?? 4);
 
 /** Flervalsfråga från en frågebank-post {q, a, w, ex}. a/w kan vara text eller [text, emoji]. */
@@ -537,16 +571,16 @@ export function genWorldAnimals(level, rng) {
     // De yngsta: välj rätt djur bland tre foton.
     const others = rng.sample(WORLD_ANIMALS.filter((x) => x.id !== a.id), 2);
     return {
-      type: 'choice', prompt: `Var är ${a.name.toLowerCase()}?`, wide: true,
-      options: rng.shuffle([a, ...others]).map((x) => ({ id: x.id, html: photo(x.id, { alt: '', cls: 'ophoto', fallback: `<span class="pic">${x.e}</span>` }), say: '' })),
-      answer: a.id, hint: `Leta efter ${a.e}`, explain: a.fact, collect: { set: 'places', item: a.id },
+      type: 'choice', prompt: `Var är ${a.def}?`, say: `Tryck på ${a.def}.`, wide: true,
+      options: imgOptions(rng.shuffle([a, ...others])),
+      answer: a.id, hint: `Leta efter ${a.def}.`, explain: a.fact, collect: { set: 'places', item: a.id },
     };
   }
   const regions = [...CONTINENTS.map((c) => c.id), 'arktis'];
-  const wrong = rng.sample(regions.filter((r) => r !== a.home), level <= 1 ? 2 : 3);
+  const wrong = rng.sample(regions.filter((r) => r !== a.home && !(a.not || []).includes(r)), level <= 1 ? 2 : 3);
   return {
     type: 'choice', prompt: `Var i världen bor ${a.def} i det vilda?`,
-    visual: pic(a.id, a.name, a.e),
+    visual: qpic(a.id, a.name, a.e),
     options: rng.shuffle([a.home, ...wrong]).map((r) => ({ id: r, label: contName(r) })),
     answer: a.home, hint: 'Tänk på klimatet: varmt, kallt, regnskog eller öken?', explain: a.fact, collect: { set: 'places', item: a.id },
   };
@@ -556,31 +590,40 @@ export function genWorldAnimals(level, rng) {
 export function genPlaces(level, rng) {
   const pl = rng.pick(PLACES);
   if (level === 0) {
-    const others = rng.sample(PLACES.filter((x) => x.id !== pl.id), 2);
+    // Olika emoji så att reservbilderna går att skilja åt (Everest och Kilimanjaro har båda 🏔️).
+    const others = rng.sample(PLACES.filter((x) => x.id !== pl.id && x.e !== pl.e), 2);
     return {
-      type: 'choice', prompt: `Var är ${pl.name}?`, wide: true,
-      options: rng.shuffle([pl, ...others]).map((x) => ({ id: x.id, html: photo(x.id, { alt: '', cls: 'ophoto', fallback: `<span class="pic">${x.flag}</span>` }), say: '' })),
+      type: 'choice', prompt: `Var är ${pl.name}?`, say: `Tryck på ${pl.name}.`, wide: true,
+      options: imgOptions(rng.shuffle([pl, ...others])),
       answer: pl.id, hint: pl.fact, explain: pl.fact, collect: { set: 'places', item: pl.id },
     };
   }
   if (level === 1 || rng.chance(0.4)) {
     const others = rng.sample(PLACES.filter((x) => x.id !== pl.id), 2);
     return {
-      type: 'choice', prompt: 'Vad heter platsen på bilden?', visual: pic(pl.id, pl.name, pl.flag),
+      type: 'choice', prompt: 'Vad heter platsen på bilden?', visual: qpic(pl.id, pl.name, pl.e),
       options: rng.shuffle([pl, ...others]).map((x) => ({ id: x.id, label: x.name })), answer: pl.id,
-      hint: `Den finns i ${pl.country}.`, explain: pl.fact, collect: { set: 'places', item: pl.id },
+      hint: `Den finns ${pl.in}.`, explain: pl.fact, collect: { set: 'places', item: pl.id },
     };
   }
-  const others = rng.sample([...new Map(PLACES.filter((x) => x.country !== pl.country).map((x) => [x.country, x])).values()], level >= 3 ? 3 : 2);
+  if (pl.noCountryQ) {
+    const others = rng.sample(PLACES.filter((x) => x.id !== pl.id), level >= 3 ? 3 : 2);
+    return {
+      type: 'choice', prompt: 'Vad heter platsen på bilden?', visual: qpic(pl.id, pl.name, pl.e),
+      options: rng.shuffle([pl, ...others]).map((x) => ({ id: x.id, label: x.name })), answer: pl.id,
+      hint: `Den finns ${pl.in}.`, explain: pl.fact, collect: { set: 'places', item: pl.id },
+    };
+  }
+  const others = rng.sample([...new Map(PLACES.filter((x) => x.country !== pl.country && !x.noCountryQ).map((x) => [x.country, x])).values()], level >= 3 ? 3 : 2);
   return {
-    type: 'choice', prompt: `I vilket land finns ${pl.name}?`, visual: pic(pl.id, pl.name, pl.flag),
+    type: 'choice', prompt: `I vilket land finns ${pl.name}?`, visual: qpic(pl.id, pl.name, pl.e),
     options: rng.shuffle([pl, ...others]).map((x) => ({ id: x.country, label: `${x.flag} ${x.country}`, say: x.country })), answer: pl.country,
-    hint: `Det ligger i ${contName(pl.cont)}.`, explain: pl.fact, collect: { set: 'places', item: pl.id },
+    hint: pl.id === 'moai' ? 'Påskön ligger långt ute i Stilla havet, men landet den tillhör ligger i Sydamerika.' : `Det ligger i ${contName(pl.cont)}.`, explain: pl.fact, collect: { set: 'places', item: pl.id },
   };
 }
 
 /* ---------- Världshaven ---------- */
-const SEA_ANIMALS = [['val', '🐋'], ['bläckfisk', '🐙'], ['delfin', '🐬'], ['hummer', '🦞'], ['sköldpadda', '🐢']];
+const SEA_ANIMALS = [['val', '🐋'], ['bläckfisk', '🐙'], ['delfin', '🐬'], ['hummer', '🦞'], ['havssköldpadda', '🐢'], ['haj', '🦈']];
 const LAND_ANIMALS = [['kamel', '🐫'], ['giraff', '🦒'], ['ko', '🐄'], ['ekorre', '🐿️'], ['häst', '🐴']];
 const OCEAN_FACTS = [
   { q: 'Vilket är världens största hav?', a: 'stilla', ex: 'Stilla havet är störst. Det täcker nästan en tredjedel av jorden.' },
@@ -589,7 +632,7 @@ const OCEAN_FACTS = [
   { q: 'Vilket hav ligger runt Nordpolen?', a: 'norra', ex: 'Norra ishavet ligger runt Nordpolen och är det minsta världshavet.' },
   { q: 'Vilket hav ligger mellan Afrika och Australien?', a: 'indiska', ex: 'Indiska oceanen ligger mellan Afrika, Asien och Australien.' },
   { q: 'Vilket hav ligger mellan Asien och Amerika?', a: 'stilla', ex: 'Stilla havet ligger mellan Asien och Australien i väster och Amerika i öster.' },
-  { q: 'Vilket är det varmaste världshavet?', a: 'indiska', ex: 'Indiska oceanen ligger mest nära ekvatorn och söder om den. Den är varmast.' },
+  { q: 'Vilket är det varmaste världshavet?', a: 'indiska', ex: 'En stor del av Indiska oceanen ligger nära ekvatorn, där solen värmer mest. Därför är den varmast.' },
   { q: 'Vilket är det minsta världshavet?', a: 'norra', ex: 'Norra ishavet är minst. En stor del av året är det täckt av is.' },
 ];
 const SWEDISH_SEAS = [
@@ -612,14 +655,14 @@ export function genOceans(level, rng) {
     return {
       type: 'choice', prompt: 'Vilket djur bor i havet?', wide: true,
       options: rng.shuffle([emojiOpt(n, e, n), ...others.map(([m, f]) => emojiOpt(m, f, m))]), answer: n,
-      hint: 'Vem kan simma under vattnet hela livet?', explain: `En ${n} bor i havet. Jordens hav är fulla av liv – från små räkor till jättestora valar.`,
+      hint: 'Vem kan simma under vattnet hela livet?', explain: `${n[0].toUpperCase()}${n.slice(1)} bor i havet. Jordens hav är fulla av liv – från små räkor till jättestora valar.`,
     };
   }
   if (level <= 2 || rng.chance(0.45)) {
     const o = rng.pick(level === 1 ? OCEANS.filter((x) => x.id !== 'sodra') : OCEANS);
     return {
       type: 'tap', prompt: `Tryck på ${o.name}!`, say: `Tryck på ${o.name} på kartan.`,
-      visual: worldMapSvg(null, { oceans: true, contHits: false, home: false }), answer: o.id,
+      visual: worldMapSvg(null, { oceans: true, oceanLabels: level === 1, contHits: false, home: false }), answer: o.id,
       hint: level <= 1 ? 'Haven är de blå fälten mellan världsdelarna.' : o.fact, explain: o.fact,
     };
   }
@@ -803,7 +846,7 @@ export function genCompass(level, rng) {
     const opts = rng.shuffle([ans, ...rng.sample(DIRECTIONS.filter((c) => c !== ans), level >= 4 ? 3 : 2)]);
     return {
       type: 'choice', prompt: `Du är ${atPlace(from)}. Åt vilket håll ligger ${to.name}?`, visual: swedenMapHtml([from, to], { labels: true }) || compassSvg(0),
-      options: opts.map((o) => ({ id: o, label: o })), answer: ans, hint: 'Norr är uppåt på kartan.', explain: `${to.name} ligger åt ${ans} från ${from.name}. ${to.fact}`,
+      options: opts.map((o) => ({ id: o, label: o })), answer: ans, hint: 'Norr är uppåt på kartan.', explain: `${to.name} ligger ${ans} om ${from.name}. ${to.fact}`,
     };
   }
   if (rng.chance(0.3)) {
@@ -857,10 +900,19 @@ export function genHistory(level, rng) {
       answerOrder: eras.map((e) => e.id), joiner: '→', hint: 'Stenåldern var allra först – för väldigt länge sedan.', explain: eras.map((e) => `${e.name}: ${e.when}`).join('. ') + '.',
     };
   }
+  if (level === 0) {
+    const old = rng.pick(TIME_ITEMS.filter((i) => i.bin === 'dati'));
+    const now = rng.sample(TIME_ITEMS.filter((i) => i.bin === 'nu'), 2);
+    return {
+      type: 'choice', prompt: 'Vad hör till förr i tiden?', say: 'Vad hör till förr i tiden, för länge sedan?', wide: true,
+      options: rng.shuffle([old, ...now]).map((i) => emojiOpt(i.id, i.e, i.n)), answer: old.id,
+      hint: 'Vad fanns för väldigt länge sedan?', explain: `${old.n[0].toUpperCase()}${old.n.slice(1)} hör till dåtiden – det som redan har hänt för länge sedan.`,
+    };
+  }
   const era = rng.pick(ERAS.slice(0, 5));
   const others = rng.sample(ERAS.filter((e) => e !== era), 2);
   return {
-    type: 'choice', prompt: 'Vilken tid kommer bilden från?', visual: era.img ? pic(era.img, era.name, era.e) : `<span class="pic-big">${era.e}</span>`,
+    type: 'choice', prompt: 'Vilken tid kommer bilden från?', visual: era.img ? qpic(era.img, era.name, era.e) : `<span class="pic-big">${era.e}</span>`,
     options: rng.shuffle([era, ...others]).map((e) => ({ id: e.id, label: e.name })), answer: era.id, hint: era.fact, explain: `${era.name} – ${era.when}. ${era.fact}`,
   };
 }
@@ -877,12 +929,12 @@ export function genPastLife(level, rng) {
     };
   }
   const item = rng.pick(PAST_LIFE.filter((x) => inLevel(x, level)));
-  const visual = item.era === 'viking' ? pic('vikingaskepp', 'Vikingaskepp', '⛵') : item.era === 'sten' ? pic('flintyxa', 'Flintyxa', '🪨') : item.era === 'brons' ? pic('hallristning', 'Hällristning', '🗿') : '<span class="pic-big">⚒️</span>';
+  const visual = item.era === 'viking' ? qpic('vikingaskepp', 'Vikingaskepp', '⛵') : item.era === 'sten' ? qpic('flintyxa', 'Flintyxa', '🪨') : item.era === 'brons' ? qpic('hallristning', 'Hällristning', '🛡️') : '<span class="pic-big">⚒️</span>';
   return bankChoice(rng, item, level, { visual: level === 0 ? undefined : visual, hint: 'Tänk på hur det var innan det fanns el, bilar och affärer.' });
 }
 
 /* ---------- Högtider ---------- */
-const holidayVisual = (ho) => (HOLIDAY_PHOTOS.has(ho.id) ? pic(ho.id, ho.name, ho.e) : `<span class="pic-big">${ho.e}</span>`);
+const holidayVisual = (ho) => qpic(ho.id, ho.name, ho.e);
 export function genHolidays(level, rng) {
   if (level <= 1) {
     const easy = HOLIDAYS.filter((x) => ['julgran', 'pasagg', 'lucia', 'midsommar', 'menora', 'eid', 'valborg', 'diwali'].includes(x.id));
@@ -890,7 +942,7 @@ export function genHolidays(level, rng) {
     const others = rng.sample(easy.filter((x) => x.e !== ho.e), 2);
     return {
       type: 'choice', prompt: `Vilken bild hör till ${ho.name.toLowerCase().startsWith('eid') ? ho.name : ho.name.toLowerCase()}?`, wide: true,
-      options: rng.shuffle([ho, ...others]).map((x) => ({ id: x.id, html: `<span class="pic">${x.e}</span>`, say: '' })), answer: ho.id,
+      options: imgOptions(rng.shuffle([ho, ...others])), answer: ho.id,
       hint: 'Tänk på vad man brukar se när man firar.', explain: ho.fact,
     };
   }
@@ -913,8 +965,8 @@ export function genHolidays(level, rng) {
       hint: 'Fundera på vem som firar högtiden.', explain: ho.fact,
     };
   }
-  const withPhoto = HOLIDAYS.filter((x) => HOLIDAY_PHOTOS.has(x.id));
-  const h0 = rng.pick(withPhoto);
+  const withPhoto = HOLIDAYS.filter((x) => hasPhoto(x.id));
+  const h0 = rng.pick(withPhoto.length >= 3 ? withPhoto : HOLIDAYS);
   const others = rng.sample(HOLIDAYS.filter((x) => x.id !== h0.id && x.e !== h0.e), 2);
   return {
     type: 'choice', prompt: 'Vilken högtid visar bilden?', visual: holidayVisual(h0),
@@ -1104,17 +1156,17 @@ export const worldApp = {
   color: '#0f9d8a',
   tagline: 'Länder, kartor, djur och förr i tiden',
   modules: [
-    { id: 'continents', name: 'Världsdelar och hav', icon: '🗺️', minLevel: 0, view: 'continents', lgr: ['so-karta', 'so-varlden', 'so-varldshav'], photo: () => photo('worldmap', { cls: 'tile-photo' }) },
+    { id: 'continents', name: 'Världsdelar och hav', icon: '🗺️', minLevel: 0, view: 'continents', lgr: ['so-varldshav', 'so-karta'], photo: () => photo('worldmap', { cls: 'tile-photo' }) },
     { id: 'oceans', name: 'Världshaven', icon: '🌊', minLevel: 0, gen: genOceans, lgr: ['so-varldshav', 'so-karta'] },
-    { id: 'animals', name: 'Djur i världen', icon: '🦁', minLevel: 0, gen: genWorldAnimals, lgr: ['so-varlden', 'no-arter'], photo: () => photo('lejon', { cls: 'tile-photo' }) },
-    { id: 'places', name: 'Kända platser', icon: '🗼', minLevel: 0, gen: genPlaces, lgr: ['so-platser'], photo: () => photo('eiffel', { cls: 'tile-photo' }) },
+    { id: 'animals', name: 'Djur i världen', icon: '🦁', minLevel: 0, gen: genWorldAnimals, lgr: ['so-varlden', 'so-varldshav', 'no-arter'], photo: () => photo('lejon', { cls: 'tile-photo' }) },
+    { id: 'places', name: 'Kända platser', icon: '🗼', minLevel: 0, gen: genPlaces, lgr: ['so-varldshav', 'so-platser'], photo: () => photo('eiffel', { cls: 'tile-photo' }) },
     { id: 'flags', name: 'Flaggor och länder', icon: '🏳️', minLevel: 0, gen: genFlags, lgr: ['so-varldshav', 'so-platser'] },
-    { id: 'truefalse', name: 'Sant eller falskt?', icon: '🤔', minLevel: 0, gen: genTrueFalse, lgr: ['so-varldshav', 'so-platser'] },
+    { id: 'truefalse', name: 'Sant eller falskt?', icon: '🤔', minLevel: 0, gen: genTrueFalse, lgr: ['so-varldshav', 'so-platser', 'so-varlden'] },
     { id: 'sweden', name: 'Sverigekartan', icon: '🇸🇪', minLevel: 1, view: 'sweden', lgr: ['so-karta', 'so-platser'], photo: () => photo('sverigekarta', { cls: 'tile-photo map' }) },
     { id: 'swedenquiz', name: 'Sverigequiz', icon: '🏞️', minLevel: 1, gen: genSwedenQuiz, lgr: ['so-platser', 'so-karta'] },
     { id: 'compass', name: 'Väderstreck', icon: '🧭', minLevel: 1, gen: genCompass, lgr: ['so-karta'] },
     { id: 'history', name: 'Tidslinjer', icon: '⏳', minLevel: 0, gen: genHistory, lgr: ['so-tid', 'so-forntid'], photo: () => photo('angmaskin', { cls: 'tile-photo' }) },
-    { id: 'pastlife', name: 'Barn förr i tiden', icon: '⛵', minLevel: 0, gen: genPastLife, lgr: ['so-forntid', 'so-norden-forntid', 'so-skildringar'], photo: () => photo('vikingaskepp', { cls: 'tile-photo' }) },
+    { id: 'pastlife', name: 'Barn förr i tiden', icon: '⛵', minLevel: 0, gen: genPastLife, lgr: ['so-forntid', 'so-norden-forntid', 'so-mytologi'], photo: () => photo('vikingaskepp', { cls: 'tile-photo' }) },
     { id: 'holidays', name: 'Högtider', icon: '🎉', minLevel: 1, gen: genHolidays, lgr: ['so-hogtid'], photo: () => photo('lucia', { cls: 'tile-photo' }) },
     { id: 'rights', name: 'Barnens rättigheter', icon: '🤝', minLevel: 0, gen: genRights, lgr: ['so-rattigheter'] },
     { id: 'rules', name: 'Regler och schyssta val', icon: '🙋', minLevel: 0, gen: genRules, lgr: ['so-normer', 'so-livsfragor'] },

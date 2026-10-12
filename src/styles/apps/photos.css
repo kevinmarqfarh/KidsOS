@@ -31,3 +31,106 @@
 .eg-item.has-photo-pic {
   padding: 1px;
 }
+
+/* ---------- Riktiga foton i Rymden och Biologi ---------- */
+/* Månfaser: fotot är beskuret runt måndisken på svart bakgrund. */
+.moon-photo {
+  display: inline-block;
+  line-height: 0;
+  border-radius: 50%;
+  background: #000;
+  overflow: hidden;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.12), 0 6px 18px rgba(5, 8, 30, 0.35);
+}
+.moon-photo > img.photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+/* Nymåne: månen finns där men vi ser nästan ingenting av den. */
+.moon-photo.is-new > img.photo {
+  filter: brightness(0.13) saturate(0);
+}
+.moon-photo.big,
+.moon-drawn.big {
+  width: 170px;
+  height: 170px;
+}
+.moon-photo.qmoon,
+.moon-drawn.qmoon {
+  width: min(62vw, 260px);
+  height: min(62vw, 260px);
+}
+.moon-photo.sm,
+.moon-drawn.sm {
+  width: 84px;
+  height: 84px;
+}
+.moon-phase .credit {
+  font-family: var(--font-body);
+  text-align: center;
+}
+
+/* Modell bredvid ett riktigt foto (dag/natt, stjärnbilder, årstider). Under varandra på smala skärmar. */
+.photo-side {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 14px;
+  align-items: center;
+  justify-items: center;
+}
+@media (min-width: 700px) {
+  .photo-side {
+    grid-template-columns: 3fr 2fr;
+  }
+}
+.real-photo {
+  margin: 0;
+  width: min(100%, 420px);
+  background: var(--card);
+  border-radius: var(--r-lg, 22px);
+  padding: 8px;
+  box-shadow: var(--shadow);
+}
+.real-photo[hidden] {
+  display: none;
+}
+.real-photo > img.photo {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  height: auto;
+  object-fit: cover;
+  border-radius: 16px;
+}
+.real-photo figcaption {
+  padding: 6px 4px 0;
+  line-height: 1.35;
+}
+.real-photo figcaption b {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 19px;
+}
+
+/* Planeter som foton i storleksjämförelsen. */
+.sp-ball.has-photo {
+  background: #000;
+  overflow: hidden;
+  line-height: 0;
+}
+.sp-ball.has-photo > img.photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  transform: scale(1.12);
+}
+
+/* Livscykelsteg som foton – lite större än vanliga emojifoton. */
+.photo-pic.lc-pic > img.photo {
+  width: 1.3em;
+  height: 1.3em;
+  border-radius: 0.2em;
+}

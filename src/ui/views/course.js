@@ -1,12 +1,14 @@
 // Läs/lyssna → fundera → öva. Lästa lektioner hålls isär från quizresultat.
 import { h, clear, onTap } from '../dom.js';
 import { AI_LESSONS } from '../../apps/ai.js';
-import { CODING_LESSONS } from '../../apps/code.js';
+import { CODING_LESSONS, migrateCodeProfile } from '../../apps/code.js';
 import { hasInSet } from '../../core/model.js';
 import { LEVELS } from '../../core/age.js';
 
 export function courseView(el, { kos, app, level }) {
   const lessons = app.id === 'ai' ? AI_LESSONS : CODING_LESSONS;
+  // Sammanslagna kodmoduler: flytta gammal statistik till de nya id:na (en gång, idempotent).
+  if (app.id === 'code' && migrateCodeProfile(kos.profile)) kos.save?.();
   const readSet = `courseRead:${app.id}`;
   const list = h('nav.course-list', { 'aria-label': 'Kursens lektioner' });
   const stage = h('section.course-stage', { 'aria-live': 'polite' });

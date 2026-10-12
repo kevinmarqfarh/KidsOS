@@ -6,8 +6,8 @@ import { roundLength, clampLevel } from '../core/age.js';
 import { clockSvg, timeToSwedish, digitalTime } from './visuals.js';
 import { moduleStat, appStat, ADAPT_UP_AFTER } from '../core/model.js';
 import { LEVELS, MAX_LEVEL } from '../core/age.js';
-import { isAdapted, adaptedPrefs, adaptQuestion, sessionLength, errorlessNext, praiseFor, interestFor } from '../core/adapted.js';
-import { adaptedStrip, adaptedFinish, adaptedIntro } from './adapted-ui.js';
+import { isAdapted, adaptedPrefs, adaptQuestion, sessionLength, errorlessNext, praiseFor, interestFor, remainingCue, softRetryText } from '../core/adapted.js';
+import { adaptedStrip, adaptedFinish, adaptedIntro, adaptedCheckin, setStripStep, setStripLeft } from './adapted-ui.js';
 import { progressRing, sparkles, shimmer, ripple, blurFade, wordReveal, speakAlong, levelProgress, numberTicker } from './fx.js';
 
 const MAX_TRIES = { choice: 2, numpad: 3, order: 2, build: 3, tapcount: 3, tap: 3, clock: 3 };
@@ -34,9 +34,11 @@ export function runQuiz(el, { app, module: mod, onExit, seed = Date.now(), count
   // fx: rundans framsteg som ring (Animated Circular Progress, Magic UI)
   const ring = progressRing({ value: 0, max: total, size: 46, stroke: 6, center: (v, m) => `${v}/${m}`, ariaLabel: (v, m) => `Fråga ${v} av ${m} klar` });
   const wrap = h('div.quiz', { style: { '--app': app.color } }, h('div.q-progress', ring.el, dots), stage);
+  // Autismstöd: visuellt schema, polletter och "kvar"-klocka överst (adapted-ui.js).
+  const strip = adapted ? adaptedStrip({ dots, total, prefs: ap, host: wrap }) : null;
   if (adapted) {
     wrap.classList.add('adapted');
-    wrap.prepend(adaptedStrip({ dots, total, prefs: ap, host: wrap }));
+    wrap.prepend(strip);
   }
   clear(el).appendChild(wrap);
 
@@ -53,7 +55,11 @@ export function runQuiz(el, { app, module: mod, onExit, seed = Date.now(), count
     }
     if (!q) return finish();
     q.level = level;
-    if (adapted) q = adaptQuestion(q, ap);
+    if (adapted) {
+      q = adaptQuestion(q, ap);
+      setStripStep(strip, 'tasks');
+      setStripLeft(strip, index, total, ap);
+    }
     if (window.kidsos) window.kidsos.q = q; // testkrok: aktuell fråga
     renderQuestion(q);
   }
@@ -81,7 +87,9 @@ export function runQuiz(el, { app, module: mod, onExit, seed = Date.now(), count
     // Läs upp frågan (och textalternativ) för de som inte läser själva än.
     const optionWords = q.type === 'choice' && q.options && !q.noSpeakVisual && q.options.every((o) => o.say !== '' && /[a-zåäö]{3,}/i.test(o.say ?? o.label ?? ''));
     // Anpassat läge: första frågan inleds med först–sen ("Först 5 uppgifter. Sen bubblor.").
-    const intro = adapted && index === 0 && !redo ? kos.autoSay(adaptedIntro(total, ap)) : Promise.resolve();
+    // Förvarning före slutet: "Två uppgifter kvar." / "Sista uppgiften! Sen bubblor."
+    const cue = adapted && !redo ? remainingCue(index, total, ap) : null;
+    const intro = adapted && index === 0 && !redo ? kos.autoSay(adaptedIntro(total, ap)) : cue ? kos.autoSay(cue.say) : Promise.resolve();
     intro.then(() => (alive && !resolved ? (along && kos.shouldAutoSpeak() ? sayAlong() : kos.autoSay(q.say || q.prompt)) : null)).then(() => {
       if (alive && !resolved && optionWords && kos.shouldAutoSpeak()) {
         const words = q.options.map((o) => o.say ?? o.label);
@@ -108,7 +116,7 @@ export function runQuiz(el, { app, module: mod, onExit, seed = Date.now(), count
       },
       wrong(customHint) {
         if (resolved) return;
-        if (adapted) return errorless();
+        if (adapted && ap.errorMode === 'errorless') return errorless();
         tries++;
         kos.sfx('wrong');
         kos.retry();
@@ -119,6 +127,14 @@ export function runQuiz(el, { app, module: mod, onExit, seed = Date.now(), count
           kos.answer(app.id, false);
           api.reveal?.();
           showResult(false, false);
+          return;
+        }
+        if (adapted) {
+          // Autismstöd: mjukt och lugnt – inget "fel"-ljud, inget "Nästan!", bara en uppmaning och ev. ledtråd.
+          const soft = softRetryText(customHint || q.hint);
+          clear(feedback).append(h('div.fb.fb-try.ad-soft', h('span.fb-icon', '🤔'), h('div', h('b', `${soft.title} `), soft.text)));
+          feedback.classList.add('show');
+          kos.say(soft.say);
           return;
         }
         const hint = customHint || q.hint || 'Försök igen!';
@@ -182,6 +198,7 @@ export function runQuiz(el, { app, module: mod, onExit, seed = Date.now(), count
     /** Anpassat läge: kort, konkret och alltid positivt. Barnet trycker själv vidare (ingen tidspress). */
     function showAdaptedResult(ok) {
       ring.update(index + 1, total);
+      setStripLeft(strip, index + 1, total, ap); // klockan krymper direkt när uppgiften är gjord
       const last = index + 1 >= total;
       const nextBtn = h('button.btn.btn-primary.btn-next', { type: 'button' }, last ? 'Klart! 🎉' : 'Nästa ➜');
       onTap(nextBtn, () => {
@@ -189,7 +206,7 @@ export function runQuiz(el, { app, module: mod, onExit, seed = Date.now(), count
         index++;
         next();
       });
-      const word = ok ? praiseFor(index) : 'Nu vet du!';
+      const word = ok ? praiseFor(index, ap) : 'Nu vet du!';
       const icon = ok ? interestFor(ap).icon : '👍';
       clear(feedback).append(h('div.fb', { class: ok ? 'fb-ok' : 'fb-learn' }, h('span.fb-icon', icon), h('div.fb-text', h('b', `${word} `), q.explain ? h('small.ad-explain', q.explain) : null), nextBtn));
       feedback.classList.add('show');
@@ -213,7 +230,7 @@ export function runQuiz(el, { app, module: mod, onExit, seed = Date.now(), count
     const res = kos.roundDone(app.id, mod.id, correctFirst, total);
     if (adapted) {
       // Tydlig avslutning + utlovad belöning. "Samma igen" ger exakt samma uppgifter (samma frö).
-      return adaptedFinish({ stage, res, total, prefs: ap, onExit, again: () => runQuiz(el, { app, module: mod, onExit, seed, count }), fresh: () => runQuiz(el, { app, module: mod, onExit }) });
+      return adaptedFinish({ stage, res, total, prefs: ap, onExit, strip, again: () => runQuiz(el, { app, module: mod, onExit, seed, count }), fresh: () => runQuiz(el, { app, module: mod, onExit }) });
     }
     const best = moduleStat(kos.profile, app.id, mod.id).best;
     clear(stage);
@@ -255,7 +272,9 @@ export function runQuiz(el, { app, module: mod, onExit, seed = Date.now(), count
     void best;
   }
 
-  next();
+  // Autismstöd: "Hur mår du?" före passet (inte vid "Samma igen", då är barnet redan igång).
+  if (adapted && ap.checkin && !count) adaptedCheckin({ stage, prefs: ap, host: wrap, onStart: () => alive && next() });
+  else next();
   return () => {
     alive = false;
     kos.stopSpeaking();

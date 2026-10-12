@@ -340,5 +340,14 @@
     "obj-wood": "File:Špalek_na_štípání.jpg",
     "obj-yarn": "File:Yarn_at_Folklife_-_Stierch.jpg",
     "obj-zebra": "File:Equus zebra hartmannae - Etosha 2015.jpg"
+  },
+  "moon": {
+    "moon-waxing-crescent": "File:New Year's Even Waxing Crescent Moon. - Flickr - StephenGA.jpg",
+    "moon-first-quarter": "File:First Quarter Moon on 12-15-18 - Flickr - StephenGA.png",
+    "moon-waxing-gibbous": "File:Waxing Gibbous Moon on 4-6-17 (33757272721).jpg",
+    "moon-full": "File:Full Perigee (not Super!) Moon on 1-1-18 (39442516491).jpg",
+    "moon-waning-gibbous": "File:Waning Gibbous Moon.tif",
+    "moon-last-quarter": "File:Last Quarter Moon on 3-27-19 - Flickr - StephenGA.png",
+    "moon-waning-crescent": "File:Waning crescent moon (6362605193).jpg"
   }
 }

@@ -14,7 +14,9 @@ import { shellApi } from './system.js';
 import { createDesktop } from './desktop.js';
 import { layoutFor } from '../core/model.js';
 import { tickerSpan } from './fx.js';
-import { INTERESTS, adaptedPrefs as readAdaptedPrefs } from '../core/adapted.js';
+import { INTERESTS, adaptedPrefs as readAdaptedPrefs, presetFor as adaptedPreset } from '../core/adapted.js';
+/** Autismstöd: det som ändras när föräldern anger om barnet också har IF (svarsalternativ och felhantering). */
+const adaptedIfPatch = (support, intellectual) => { const pr = adaptedPreset(support, intellectual); return { intellectual: pr.intellectual, options: pr.options, errorMode: pr.errorMode }; };
 
 let osEl;
 let screenEl;
@@ -151,7 +153,7 @@ export function profileWizard({ first = false, edit = null, onDone } = {}) {
   const initialBand = ageBandFor(edit || { age: 7 });
   const data = { name: edit?.name || '', ageBand: initialBand.id, avatar: edit?.avatar || '🦊', color: edit?.color || PROFILE_COLORS[5], wallpaper: edit?.wallpaper || 'sky' };
   // Anpassat läge väljs av föräldern (bakom föräldraspärren), se core/adapted.js.
-  const adaptedData = { on: edit?.settings?.adapted === true, interest: readAdaptedPrefs(edit).interest };
+  const adaptedData = { on: edit?.settings?.adapted === true, interest: readAdaptedPrefs(edit).interest, intellectual: readAdaptedPrefs(edit).intellectual };
   let approved = false;
   let submitted = false;
   let step = 0;
@@ -183,9 +185,9 @@ export function profileWizard({ first = false, edit = null, onDone } = {}) {
     return h(
       'div.adapted-choice',
       { class: adaptedData.on ? 'on' : '' },
-      h('div.adapted-choice-head', h('span.adapted-choice-icon', { 'aria-hidden': 'true' }, '🧩'), h('div', h('b#adapted-title', 'Anpassat läge (stöd för autism/intellektuell funktionsnedsättning)'), h('small', 'Korta pass med först–sen-schema, färre svarsalternativ, uppläsning, lugna färger, felfri inlärning, paus-knapp och en belöning efter barnets intresse.')), sw),
+      h('div.adapted-choice-head', h('span.adapted-choice-icon', { 'aria-hidden': 'true' }, '🧩'), h('div', h('b#adapted-title', 'Autismstöd'), h('small', 'Visuellt schema, förvarning före övergångar, pollett-tavla med barnets intresse, ”Hur mår du?”, paus med andningscirkel och lugnare sinnesintryck. Svårigheten följer ålder som vanligt.')), sw),
       adaptedData.on
-        ? h('div.adapted-choice-more', h('span', 'Barnets favoritintresse:'), h('div.adapted-interests', INTERESTS.map((it) => pickButton('button.pick.adapted-interest', `${it.icon} ${it.label}`, adaptedData.interest === it.id, () => { adaptedData.interest = it.id; renderParent(); }))), h('small', 'Fler val (antal frågor, alternativ och ljud) finns under Inställningar → Föräldrar. Läget ersätter inte råd från habiliteringen.'))
+        ? h('div.adapted-choice-more', h('span', 'Barnets favoritintresse:'), h('div.adapted-interests', INTERESTS.map((it) => pickButton('button.pick.adapted-interest', `${it.icon} ${it.label}`, adaptedData.interest === it.id, () => { adaptedData.interest = it.id; renderParent(); }))), h('span', 'Har barnet också en intellektuell funktionsnedsättning?'), h('div.adapted-interests', [['no', 'Nej'], ['yes', 'Ja']].map(([v, label]) => pickButton('button.pick.adapted-interest', label, adaptedData.intellectual === (v === 'yes'), () => { adaptedData.intellectual = v === 'yes'; renderParent(); }))), h('small', 'Stödnivå (standard nivå 2), ljud, animationer och färger ställs in under Inställningar → Föräldrar. Läget ersätter inte råd från habiliteringen.'))
         : null,
     );
   }
@@ -215,10 +217,11 @@ export function profileWizard({ first = false, edit = null, onDone } = {}) {
       if (!profile.ageBand || data.ageBand !== initialBand.id) applyAgeBand(profile, data.ageBand);
       Object.assign(profile, { name: data.name.trim().slice(0, 16), avatar: data.avatar, color: data.color, wallpaper: data.wallpaper });
       profile.settings.adapted = adaptedData.on;
-      profile.settings.adaptedPrefs = { ...readAdaptedPrefs(profile), interest: adaptedData.interest };
+      const prevPrefs = readAdaptedPrefs(profile);
+      profile.settings.adaptedPrefs = { ...prevPrefs, interest: adaptedData.interest, ...(prevPrefs.intellectual !== adaptedData.intellectual ? adaptedIfPatch(prevPrefs.support, adaptedData.intellectual) : {}) };
       kos.saveNow();
       kos.applySettings();
-    } else kos.createProfile({ ...data, age: band().age, name: data.name.trim(), adapted: adaptedData.on, adaptedPrefs: { interest: adaptedData.interest } });
+    } else kos.createProfile({ ...data, age: band().age, name: data.name.trim(), adapted: adaptedData.on, adaptedPrefs: { v: 2, interest: adaptedData.interest, ...adaptedIfPatch(2, adaptedData.intellectual) } });
     kos.sfx('fanfare');
     sheet.close();
     if (onDone) onDone(); else showLock();

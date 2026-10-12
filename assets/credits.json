@@ -404,6 +404,60 @@
   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
   "source": "https://commons.wikimedia.org/wiki/File:FullMoon2010.jpg"
  },
+ "moon-first-quarter": {
+  "author": "Stephen Rahn from Macon, GA, USA",
+  "credit": "First Quarter Moon on 12-15-18",
+  "file": "File:First Quarter Moon on 12-15-18 - Flickr - StephenGA.png",
+  "group": "moon",
+  "license": "CC0",
+  "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+  "source": "https://commons.wikimedia.org/wiki/File:First_Quarter_Moon_on_12-15-18_-_Flickr_-_StephenGA.png"
+ },
+ "moon-full": {
+  "author": "Stephen Rahn from Macon, GA, USA",
+  "credit": "Full Perigee (not Super!) Moon on 1-1-18",
+  "file": "File:Full Perigee (not Super!) Moon on 1-1-18 (39442516491).jpg",
+  "group": "moon",
+  "license": "CC0",
+  "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+  "source": "https://commons.wikimedia.org/wiki/File:Full_Perigee_(not_Super!)_Moon_on_1-1-18_(39442516491).jpg"
+ },
+ "moon-last-quarter": {
+  "author": "Stephen Rahn from Macon, GA, USA",
+  "credit": "Last Quarter Moon on 3-27-19",
+  "file": "File:Last Quarter Moon on 3-27-19 - Flickr - StephenGA.png",
+  "group": "moon",
+  "license": "CC0",
+  "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+  "source": "https://commons.wikimedia.org/wiki/File:Last_Quarter_Moon_on_3-27-19_-_Flickr_-_StephenGA.png"
+ },
+ "moon-waning-gibbous": {
+  "author": "Achituv",
+  "credit": "Own work",
+  "file": "File:Waning Gibbous Moon.tif",
+  "group": "moon",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Waning_Gibbous_Moon.tif"
+ },
+ "moon-waxing-crescent": {
+  "author": "Stephen Rahn from Macon, GA, USA",
+  "credit": "New Year's Even Waxing Crescent Moon.",
+  "file": "File:New Year's Even Waxing Crescent Moon. - Flickr - StephenGA.jpg",
+  "group": "moon",
+  "license": "CC0",
+  "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+  "source": "https://commons.wikimedia.org/wiki/File:New_Year%27s_Even_Waxing_Crescent_Moon._-_Flickr_-_StephenGA.jpg"
+ },
+ "moon-waxing-gibbous": {
+  "author": "Stephen Rahn from Macon, GA, USA",
+  "credit": "Waxing Gibbous Moon on 4-6-17",
+  "file": "File:Waxing Gibbous Moon on 4-6-17 (33757272721).jpg",
+  "group": "moon",
+  "license": "CC0",
+  "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+  "source": "https://commons.wikimedia.org/wiki/File:Waxing_Gibbous_Moon_on_4-6-17_(33757272721).jpg"
+ },
  "muren": {
   "author": "Jakub Hałun",
   "credit": "Own work",

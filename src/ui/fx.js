@@ -16,10 +16,12 @@ export { progressPercent, segmentWords, levelProgress } from './fx-logic.js';
 /** 'full' | 'calm' | 'none' – läses varje gång så att inställningen kan ändras medan appen körs. */
 export function motion() {
   let adapted = '';
+  let motionOff = false;
   try {
     adapted = document.documentElement.dataset.adapted || '';
+    motionOff = document.documentElement.dataset.adaptedMotion === 'off'; // Autismstöd: animationer avstängda
   } catch {}
-  return motionMode({ reduced: reducedMotion(), adapted });
+  return motionMode({ reduced: reducedMotion() || motionOff, adapted });
 }
 
 const raf = (fn) => (typeof requestAnimationFrame === 'function' ? requestAnimationFrame(fn) : setTimeout(fn, 16));

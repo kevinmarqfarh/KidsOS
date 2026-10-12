@@ -1,7 +1,8 @@
-/* Anpassat läge – stöd för barn med autism och/eller intellektuell funktionsnedsättning.
-   Aktiveras med <html data-adapted="on"> (kos.applySettings). Logik: core/adapted.js, ui/adapted-ui.js.
-   Principer (docs/ANPASSAT-LAGE.md): lugnt och förutsägbart, en sak i taget, stora mål,
-   inga skakningar/blixtar/konfetti, mjuka och valbara belöningar. */
+/* Autismstöd (tidigare "Anpassat läge") – stöd för autistiska barn, med eller utan IF.
+   Aktiveras med <html data-adapted="on"> (kos.applySettings). Valbart var för sig:
+   data-adapted-calm (dämpade färger), data-adapted-motion (mjuka animationer eller inga),
+   data-adapted-focus (fokus-hjälp), data-adapted-streak (dölj "dagar i rad").
+   Logik: core/adapted.js, ui/adapted-ui.js. Principer: docs/ANPASSAT-LAGE.md. */
 
 :root[data-adapted='on'] {
   --ad-calm: #f5f3ee;
@@ -10,20 +11,27 @@
   --ad-ok-bg: #e8f6ef;
   --ad-model: #3f7fd8;
   --ad-model-bg: #eaf2fd;
+  --ad-warn: #c98a1b;
+  --ad-warn-bg: #fdf4e3;
 }
 :root[data-adapted='on'][data-ostheme='night'] {
   --ad-calm: #20253f;
   --ad-line: #3a4166;
   --ad-ok-bg: #1d3a32;
   --ad-model-bg: #1f2c4d;
+  --ad-warn-bg: #3d3420;
 }
 
-/* ---------- Lugnare färger och färre rörelser ---------- */
-:root[data-adapted='on'] .os::before {
+/* ---------- Dämpade färger (valbart) och färre rörelser ---------- */
+:root[data-adapted='on'][data-adapted-calm='on'] .os::before {
   filter: saturate(0.55) brightness(1.02);
 }
-:root[data-adapted='on'][data-ostheme='night'] .os::before {
+:root[data-adapted='on'][data-adapted-calm='on'][data-ostheme='night'] .os::before {
   filter: saturate(0.5) brightness(0.5);
+}
+/* Ingen "dagar i rad"-flamma: en bruten svit ska inte kännas som ett misslyckande. */
+:root[data-adapted='on'][data-adapted-streak='hide'] [title='Dagar i rad'] {
+  display: none !important;
 }
 :root[data-adapted='on'] .os *,
 :root[data-adapted='on'] .os *::before,
@@ -35,7 +43,7 @@
 :root[data-adapted='on'] .window {
   transition-duration: 0.15s, 0.15s, 0s;
 }
-:root[data-adapted='on'] .win-content {
+:root[data-adapted='on'][data-adapted-calm='on'] .win-content {
   background: var(--ad-calm);
 }
 :root[data-adapted='on'] .wrong-shake,
@@ -48,8 +56,10 @@
 }
 
 /* ---------- Frågemotorn ---------- */
-.quiz.adapted {
+:root[data-adapted-calm='on'] .quiz.adapted {
   --app: color-mix(in srgb, var(--app) 55%, #8b97a8);
+}
+.quiz.adapted {
   position: relative;
   gap: 14px;
 }
@@ -163,15 +173,71 @@ svg .ad-prompt,
   opacity: 1; /* vid "titta – det här är rätt" ska frågan synas */
 }
 
-/* ---------- Först–sen-remsa (visuellt schema) ---------- */
+/* ---------- Visuellt schema + pollett-tavla + "kvar"-klocka ---------- */
 .ad-strip {
-  display: flex;
-  align-items: stretch;
-  gap: 10px;
+  display: grid;
+  gap: 8px;
   background: var(--card);
   border: 2px solid var(--ad-line);
   border-radius: var(--r-lg);
   padding: 10px;
+}
+.ad-sched {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.ad-step {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px 4px 4px;
+  border-radius: 999px;
+  color: var(--ink-soft);
+  font-weight: 700;
+  font-size: 15px;
+}
+.ad-step-arrow {
+  color: var(--ad-line);
+  font-size: 18px;
+  margin-right: 4px;
+}
+.ad-step-icon {
+  font-size: 22px;
+  line-height: 1;
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--ad-calm);
+}
+.ad-step.now {
+  color: var(--ink);
+  background: var(--ad-model-bg);
+  box-shadow: inset 0 0 0 2px var(--ad-model);
+}
+.ad-step.done {
+  opacity: 0.55;
+}
+.ad-step.done .ad-step-icon::after {
+  content: '✓';
+  position: absolute;
+  font-size: 13px;
+  color: var(--ad-ok);
+  transform: translate(13px, 11px);
+}
+.ad-step.done .ad-step-icon {
+  position: relative;
+}
+.ad-now {
+  display: flex;
+  align-items: stretch;
+  gap: 10px;
 }
 .ad-first,
 .ad-then {
@@ -187,45 +253,70 @@ svg .ad-prompt,
   flex: 1;
   min-width: 0;
 }
-.ad-then {
-  flex: 0 0 auto;
-}
 .ad-ft-label {
   font-family: var(--font-display);
   font-weight: 800;
-  font-size: 20px;
+  font-size: 18px;
   color: var(--ink-soft);
 }
 .ad-strip .q-dots {
   flex: 1;
   justify-content: flex-start;
-  gap: 10px;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 .ad-strip .q-dot {
-  width: 30px;
-  height: 30px;
-  border: 3px solid var(--ad-line);
+  width: 38px;
+  height: 38px;
+  border: 3px dashed var(--ad-line);
   background: var(--card);
+  display: grid;
+  place-items: center;
 }
 .ad-strip .q-dot.ok,
 .ad-strip .q-dot.meh {
-  /* Båda räknas som klara – inga "sämre" prickar i anpassat läge. */
-  background: var(--ad-ok);
-  border-color: var(--ad-ok);
+  /* Båda räknas som klara – varje gjord uppgift ger en pollett, inga "sämre" prickar. */
+  border: 3px solid var(--ad-ok);
+  background: var(--ad-ok-bg);
   transform: none;
 }
-.ad-arrow {
-  align-self: center;
-  font-size: 28px;
-  color: var(--ink-soft);
-}
-.ad-then-icon {
-  font-size: 40px;
+.ad-strip .q-dot.ok::after,
+.ad-strip .q-dot.meh::after {
+  content: var(--ad-token, '★');
+  font-size: 22px;
   line-height: 1;
 }
-.ad-then-name {
-  font-weight: 700;
-  font-size: 17px;
+/* "Kvar"-klocka: en skiva som krymper för varje gjord uppgift (som en Time Timer). */
+.ad-left {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px 6px 6px;
+  border-radius: var(--r);
+  background: var(--ad-calm);
+  border: 3px solid transparent;
+}
+.ad-left-pie {
+  --left: 1;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  border: 3px solid var(--ad-line);
+  background: conic-gradient(var(--ad-model) calc(var(--left) * 360deg), var(--card) 0);
+  transition: background 0.4s ease;
+}
+.ad-left-text {
+  font-family: var(--font-display);
+  font-size: 20px;
+  min-width: 3.6em;
+}
+.ad-left.warn {
+  border-color: var(--ad-warn);
+  background: var(--ad-warn-bg);
+}
+.ad-left.warn .ad-left-pie {
+  background: conic-gradient(var(--ad-warn) calc(var(--left) * 360deg), var(--card) 0);
 }
 .ad-pause {
   flex: 0 0 auto;
@@ -247,22 +338,101 @@ svg .ad-prompt,
   line-height: 1;
 }
 @media (max-width: 560px) {
-  .ad-strip {
+  .ad-now {
     flex-wrap: wrap;
   }
   .ad-first {
     flex: 1 1 100%;
   }
-  .ad-then {
+  .ad-left {
     flex: 1;
   }
-  .ad-arrow {
+  .ad-step-label {
     display: none;
   }
-  .ad-strip .q-dot {
-    width: 22px;
-    height: 22px;
+  .ad-step.now .ad-step-label {
+    display: inline;
   }
+  .ad-strip .q-dot {
+    width: 30px;
+    height: 30px;
+  }
+}
+
+/* ---------- "Hur mår du?" ---------- */
+.ad-checkin {
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+  text-align: center;
+  padding: 12px 8px 20px;
+}
+.ad-checkin-title {
+  font-size: clamp(30px, 5vw, 42px);
+  margin: 4px 0 0;
+}
+.ad-checkin .muted {
+  margin: 0;
+  font-size: 18px;
+}
+.ad-feelings {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 12px;
+  width: min(100%, 680px);
+  margin-top: 6px;
+}
+.ad-feeling {
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+  padding: 14px 6px;
+  min-height: 120px;
+  border-radius: var(--r-lg);
+  border: 3px solid var(--ad-line);
+  background: var(--card);
+  color: var(--ink);
+  font: 700 18px var(--font-body);
+  cursor: pointer;
+}
+.ad-feeling-icon {
+  font-size: clamp(44px, 8vw, 60px);
+  line-height: 1.1;
+}
+.ad-feeling.on {
+  border-color: var(--ad-model);
+  background: var(--ad-model-bg);
+}
+.ad-checkin-answer {
+  min-height: 1.5em;
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+}
+.ad-checkin-say {
+  font-size: 22px;
+  font-weight: 700;
+  margin: 6px 0 0;
+}
+.ad-checkin-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+}
+.ad-checkin-skip {
+  margin-top: 6px;
+}
+@media (max-width: 560px) {
+  .ad-feelings {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* Mjukt "prova en gång till" (inget fel-ljud, ingen röd färg). */
+.quiz.adapted .fb.ad-soft {
+  background: var(--ad-model-bg);
+  border-color: var(--ad-model);
 }
 
 /* ---------- Paus ---------- */
@@ -294,18 +464,44 @@ svg .ad-prompt,
   font-size: 20px;
   margin: 6px 0;
 }
-.ad-breathe {
-  width: 120px;
-  height: 120px;
-  margin: 0 auto 8px;
+/* Andningscirkel: växer vid inandning (4 s) och krymper vid utandning (6 s). Styrs av --s från JS. */
+.ad-breath-ring {
+  --s: 0.55;
+  width: 200px;
+  height: 200px;
+  margin: 10px auto 4px;
   border-radius: 50%;
   display: grid;
   place-items: center;
-  font-size: 54px;
-  background: var(--ad-ok-bg);
-  border: 3px solid var(--ad-ok);
+  background: radial-gradient(circle, var(--ad-ok-bg) 0 58%, transparent 60%);
+  border: 3px dashed var(--ad-line);
 }
-.ad-resume {
+.ad-breath-dot {
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 56px;
+  background: color-mix(in srgb, var(--ad-ok) 22%, var(--card));
+  border: 4px solid var(--ad-ok);
+  transform: scale(var(--s));
+  transition: transform 0.12s linear;
+}
+:root[data-adapted-motion='off'] .ad-breath-dot {
+  transition: none;
+}
+.ad-breath-text {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 28px !important;
+  min-height: 1.3em;
+}
+.ad-pause-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
   margin-top: 14px;
 }
 
@@ -317,6 +513,22 @@ svg .ad-prompt,
 .ad-done {
   font-size: 22px;
   margin: 4px 0 12px;
+}
+.ad-tokens-done {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  font-size: 34px;
+}
+.ad-tokens-done span {
+  width: 54px;
+  height: 54px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--ad-ok-bg);
+  border: 3px solid var(--ad-ok);
 }
 .ad-trophy {
   color: var(--ink-soft);
@@ -436,22 +648,17 @@ svg .ad-prompt,
 
 /* Mjuka, långsamma och förutsägbara rörelser – bara om enheten tillåter rörelse. */
 @media (prefers-reduced-motion: no-preference) {
-  :root[data-adapted='on'] .ad-reward .ad-bubble:not(.popped) {
+  :root[data-adapted='on']:not([data-adapted-motion='off']) .ad-reward .ad-bubble:not(.popped) {
     animation: ad-float 5s ease-in-out infinite !important;
     animation-duration: 5s !important;
     animation-iteration-count: infinite !important;
     animation-delay: calc(var(--k, 0) * -0.6s) !important;
   }
-  :root[data-adapted='on'] .ad-pause-card .ad-breathe {
-    animation: ad-breathe 8s ease-in-out infinite !important;
-    animation-duration: 8s !important;
-    animation-iteration-count: infinite !important;
-  }
-  :root[data-adapted='on'] .ad-reward .ad-friend.hop {
+  :root[data-adapted='on']:not([data-adapted-motion='off']) .ad-reward .ad-friend.hop {
     animation: ad-hop 0.5s ease-out !important;
     animation-duration: 0.5s !important;
   }
-  :root[data-adapted='on'] .quiz.adapted .ad-prompt {
+  :root[data-adapted='on']:not([data-adapted-motion='off']) .quiz.adapted .ad-prompt {
     animation: ad-glow 2.4s ease-in-out infinite !important;
     animation-duration: 2.4s !important;
     animation-iteration-count: infinite !important;
@@ -460,10 +667,6 @@ svg .ad-prompt,
 @keyframes ad-float {
   0%, 100% { translate: 0 0; }
   50% { translate: 0 -10px; }
-}
-@keyframes ad-breathe {
-  0%, 100% { transform: scale(0.85); }
-  50% { transform: scale(1.1); }
 }
 @keyframes ad-hop {
   0% { transform: translateY(0); }
@@ -525,6 +728,18 @@ svg .ad-prompt,
   font-size: 17px;
   border-radius: 16px;
 }
+.adapted-sub {
+  margin: 18px 0 4px;
+  font-size: 15px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--ink-soft);
+}
+.adapted-note {
+  margin: -2px 0 8px;
+  font-size: 14px;
+  line-height: 1.45;
+}
 .adapted-what {
   margin: 4px 0 10px;
 }
@@ -548,4 +763,17 @@ svg .ad-prompt,
     grid-column: 1 / -1;
     justify-self: start;
   }
+}
+
+/* Animationer avstängda (föräldraval): inga övergångar alls i uppgifterna och belöningen. */
+:root[data-adapted='on'][data-adapted-motion='off'] .quiz.adapted *,
+:root[data-adapted='on'][data-adapted-motion='off'] .quiz.adapted *::before,
+:root[data-adapted='on'][data-adapted-motion='off'] .quiz.adapted *::after {
+  transition: none !important;
+  animation: none !important;
+}
+.quiz.adapted .fb.ad-soft {
+  display: flex;
+  align-items: center;
+  gap: 14px;
 }

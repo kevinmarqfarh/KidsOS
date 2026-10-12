@@ -10,7 +10,7 @@ import { curriculumFor, CURRICULUM } from '../core/curriculum.js';
 import { exportBackup, importBackup, wipeAll, deleteDrawingsFor, isPersistent } from '../core/storage.js';
 import { hasSwedishVoice } from '../core/speech.js';
 import { TROPHIES } from '../core/trophies.js';
-import { INTERESTS, REWARDS, ADAPTED_QUESTION_CHOICES, ADAPTED_OPTION_CHOICES, adaptedPrefs } from '../core/adapted.js';
+import { INTERESTS, REWARDS, ADAPTED_QUESTION_CHOICES, ADAPTED_OPTION_CHOICES, SUPPORT_LEVELS, adaptedPrefs, presetFor, supportFor } from '../core/adapted.js';
 
 export function renderSettings(el, { parentGate, profileWizard, showLock, goHome, modal, refresh }) {
   const p = kos.profile;
@@ -105,7 +105,7 @@ export function renderSettings(el, { parentGate, profileWizard, showLock, goHome
     );
   }
 
-  /** Anpassat läge (autism/intellektuell funktionsnedsättning): förklaring + finjusteringar. Se docs/ANPASSAT-LAGE.md. */
+  /** Autismstöd (tidigare "Anpassat läge"): förklaring + finjusteringar. Se docs/ANPASSAT-LAGE.md. */
   function adaptedSection(kp, render) {
     const ap = adaptedPrefs(kp);
     const on = kp.settings.adapted === true;
@@ -115,21 +115,41 @@ export function renderSettings(el, { parentGate, profileWizard, showLock, goHome
       if (kp.id === kos.state.activeId) kos.applySettings();
       render();
     };
+    const sub = (text) => h('h4.adapted-sub', text);
+    const lvl = supportFor(ap);
     const rows = on
       ? [
+          h('div.set-row', h('span', 'Stödbehov (DSM-5)'), seg(SUPPORT_LEVELS.map((s) => [String(s.id), s.label]), String(ap.support), (v) => save(presetFor(Number(v), ap.intellectual)))),
+          h('p.muted.adapted-note', h('b', `${lvl.label}: ${lvl.title}. `), lvl.hint, ' Att byta nivå ställer in rekommenderade standardval, som du sedan kan ändra.'),
+          h('div.set-row', h('span', 'Intellektuell funktionsnedsättning'), seg([['no', 'Nej'], ['yes', 'Ja']], ap.intellectual ? 'yes' : 'no', (v) => {
+            const pr = presetFor(ap.support, v === 'yes');
+            save({ intellectual: pr.intellectual, options: pr.options, errorMode: pr.errorMode });
+          })),
+          h('p.muted.adapted-note', ap.intellectual ? 'Ja: färre svarsalternativ och felfri inlärning (visa rätt och gör om) som standard.' : 'Nej: uppgifterna följer ålder och nivå precis som vanligt. Läget ändrar strukturen runt uppgifterna, inte svårigheten.'),
+          sub('Struktur och förutsägbarhet'),
           h('div.set-row', h('span', 'Frågor per pass'), seg(ADAPTED_QUESTION_CHOICES.map((n) => [String(n), String(n)]), String(ap.questions), (v) => save({ questions: Number(v) }))),
-          h('div.set-row', h('span', 'Svarsalternativ'), seg(ADAPTED_OPTION_CHOICES.map((n) => [String(n), n ? `Högst ${n}` : 'Som vanligt']), String(ap.options), (v) => save({ options: Number(v) }))),
-          h('div.set-row', h('span', 'Ljudeffekter (mjuka)'), toggle(ap.sound, (v) => save({ sound: v }))),
+          h('div.set-row', h('span', '”Hur mår du?” före passet'), toggle(ap.checkin, (v) => save({ checkin: v }))),
+          h('div.set-row', h('span', 'Förvarning (”2 kvar”, ”Sista!”)'), toggle(ap.warnings, (v) => save({ warnings: v }))),
           h('div.set-row', h('span', 'Fokus-hjälp (dimma det som inte behövs just nu)'), toggle(ap.focus, (v) => save({ focus: v }))),
-          h('div.set-row', h('span', 'Favoritintresse'), seg(INTERESTS.map((i) => [i.id, `${i.icon} ${i.label}`]), ap.interest, (v) => save({ interest: v }))),
+          sub('Uppgifterna'),
+          h('div.set-row', h('span', 'Svarsalternativ'), seg(ADAPTED_OPTION_CHOICES.map((n) => [String(n), n ? `Högst ${n}` : 'Som vanligt']), String(ap.options), (v) => save({ options: Number(v) }))),
+          h('div.set-row', h('span', 'När det blir fel'), seg([['retry', 'Prova igen (ledtråd)'], ['errorless', 'Visa rätt och gör om']], ap.errorMode, (v) => save({ errorMode: v }))),
+          sub('Sinnen'),
+          h('div.set-row', h('span', 'Ljudeffekter (mjuka)'), toggle(ap.sound, (v) => save({ sound: v }))),
+          h('div.set-row', h('span', 'Animationer (mjuka och långsamma)'), toggle(ap.motion, (v) => save({ motion: v }))),
+          h('div.set-row', h('span', 'Dämpade färger'), toggle(ap.calm, (v) => save({ calm: v }))),
+          h('div.set-row', h('span', 'Dölj ”dagar i rad”'), toggle(ap.hideStreak, (v) => save({ hideStreak: v }))),
+          sub('Motivation'),
+          h('div.set-row', h('span', 'Favoritintresse (polletter och tema)'), seg(INTERESTS.map((i) => [i.id, `${i.icon} ${i.label}`]), ap.interest, (v) => save({ interest: v }))),
           h('div.set-row', h('span', 'Belöning efter passet'), seg(REWARDS.map((r) => [r.id, `${r.icon} ${r.label}`]), ap.reward, (v) => save({ reward: v }))),
+          h('p.muted.adapted-note', 'Uppläsningen styrs under Uppläsning ovan. Skärmtid per dag ställs in under Tid.'),
         ]
       : [];
     return h(
       'section.set-section.adapted-settings',
-      h('h3', '🧩 Anpassat läge'),
-      h('p.muted', 'För barn med autism och/eller intellektuell funktionsnedsättning. Läget bygger på evidensbaserade arbetssätt (bildstöd, förutsägbar struktur, förstärkning och felfri inlärning) och ersätter inte råd från habiliteringen eller skolan.'),
-      h('div.set-row', h('span', 'Anpassat läge'), toggle(on, (v) => {
+      h('h3', '🧩 Autismstöd'),
+      h('p.muted', 'För autistiska barn. Läget ger tydlig struktur, förvarning före övergångar, lugn sensorik och motivation via barnets intresse. Svårigheten följer ålder och nivå som vanligt. Läget bygger på evidensbaserade arbetssätt och ersätter inte råd från habiliteringen eller skolan.'),
+      h('div.set-row', h('span', 'Autismstöd'), toggle(on, (v) => {
         kp.settings.adapted = v;
         kos.saveNow();
         if (kp.id === kos.state.activeId) kos.applySettings();
@@ -140,12 +160,12 @@ export function renderSettings(el, { parentGate, profileWizard, showLock, goHome
         h('summary', 'Vad gör läget?'),
         h(
           'ul',
-          h('li', 'Först–sen-remsa: ”Först 5 uppgifter ➜ sen belöning”, med synlig progress.'),
-          h('li', 'Korta pass och färre svarsalternativ. Uppläsning är alltid på (om den inte är avstängd).'),
-          h('li', 'Felfri inlärning: efter ett fel visas rätt svar tydligt och frågan görs om. Ingen negativ återkoppling.'),
-          h('li', 'Lugnare färger, inga skakningar, ingen konfetti och inga överraskande popup-rutor.'),
-          h('li', 'Paus-knapp (”Jag behöver en paus”) och ingen tidspress. ”Samma igen” upprepar exakt samma uppgifter.'),
-          h('li', 'Belöningen bygger på barnets favoritintresse: bubblor att trycka på, en stjärnhimmel eller favoriter.'),
+          h('li', 'Visuellt schema för passet: Hur mår du? ➜ uppgifter ➜ belöning ➜ klart.'),
+          h('li', 'Pollett-tavla med barnets intresse och en ”kvar”-klocka. Förvarning när två uppgifter är kvar och vid den sista.'),
+          h('li', '”Hur mår du?” med känslokort och en paus med andningscirkel. Barnet bestämmer själv när det fortsätter.'),
+          h('li', 'Mjuk återkoppling: inget fel-ljud och inget ”fel”. Förutsägbart beröm och en utlovad belöning efter passet.'),
+          h('li', 'Lugnare sinnesintryck: ljud, animationer och färger kan ställas in var för sig. Inga popup-rutor, ingen konfetti och ingen ”dagar i rad”-stress.'),
+          h('li', 'Svårigheten sänks inte. Den följer ålder och den adaptiva nivån som vanligt (om du inte anger intellektuell funktionsnedsättning).'),
         ),
       ),
       ...rows,

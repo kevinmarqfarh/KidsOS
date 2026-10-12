@@ -105,7 +105,7 @@ export const SPACE_QUIZ = [
   { q: 'Varför är det sommar i Sverige?', a: 'jordaxeln lutar mot solen', o: ['jordaxeln lutar mot solen', 'jorden är närmare solen', 'solen brinner mer'], lvl: 3, ex: 'Jordaxeln lutar. På sommaren lutar vår del av jorden mot solen så att solen står högt och dagarna blir långa.' },
   { q: 'Vilken planet ligger på sidan och rullar runt solen?', a: 'Uranus', o: ['Uranus', 'Mars', 'Venus'], lvl: 3, ex: 'Uranus lutar nästan 98 grader – den rullar fram!' },
   { q: 'Vad är ett ljusår?', a: 'hur långt ljuset färdas på ett år', o: ['hur långt ljuset färdas på ett år', 'ett år med mycket sol', 'en lampa i rymden'], lvl: 4, ex: 'Ljuset färdas ungefär 9 500 miljarder kilometer på ett år!' },
-  { q: 'Vad heter månens fas när hela månen lyser?', a: 'fullmåne', o: ['fullmåne', 'nymåne', 'halvmåne'], lvl: 1, ex: 'Vid fullmåne ser vi hela den solbelysta sidan av månen.' },
+  { q: 'Vad heter månens fas när hela månen lyser?', a: 'fullmåne', o: ['fullmåne', 'nymåne', 'halvmåne'], lvl: 1, ex: 'Vid fullmåne ser vi hela den solbelysta sidan av månen.', img: 'moon-full' },
 ];
 
 export function genPlanetOrder(level, rng) {
@@ -126,6 +126,7 @@ export function genSpaceQuiz(level, rng) {
   const item = rng.pick(pool);
   return {
     type: 'choice', prompt: item.q, options: rng.shuffle(item.o).map((o) => ({ id: o, label: o })), answer: item.a,
+    ...(item.img && hasPhoto(item.img) ? { visual: photo(item.img, { alt: '', cls: 'qphoto round' }) } : {}),
     hint: 'Tänk efter – du kan också utforska i Solsystemet.', explain: item.ex,
   };
 }
@@ -146,6 +147,113 @@ export function moonPhaseName(angleDeg) {
 /** Andel av månskivan som är belyst sett från jorden (0–1). */
 export function moonIllumination(angleDeg) {
   return (1 - Math.cos((angleDeg * Math.PI) / 180)) / 2;
+}
+
+/** SVG-väg för den belysta delen av månen. a: 0 = nymåne, 180 = fullmåne. Växande = belyst till höger (norra halvklotet). */
+export function moonPhasePath(a, R = 50, cx = 60, cy = 60) {
+  const ang = ((a % 360) + 360) % 360;
+  const k = Math.cos((ang * Math.PI) / 180); // 1 vid nymåne, -1 vid fullmåne
+  const rx = Math.abs(k) * R;
+  const waxing = ang <= 180;
+  const top = `${cx} ${cy - R}`;
+  const bot = `${cx} ${cy + R}`;
+  const sideSweep = waxing ? 1 : 0; // halvcirkel på den belysta sidan
+  const termSweep = waxing ? (k > 0 ? 0 : 1) : k > 0 ? 1 : 0; // terminatorn buktar mot ljuset vid skära, bort vid nästan full
+  return `M ${top} A ${R} ${R} 0 0 ${sideSweep} ${bot} A ${rx} ${R} 0 0 ${termSweep} ${top} Z`;
+}
+
+/**
+ * Månens åtta faser med riktiga foton (StephenGA m.fl., Wikimedia Commons). Alla foton är tagna från
+ * norra halvklotet och beskurna så att hela måndisken ligger i mitten: växande måne är ljus på HÖGER sida,
+ * avtagande på VÄNSTER. Nymånen syns nästan inte – där visas fullmånefotot nästan helt mörkt.
+ * `angle` är mitten av fasens intervall i moonPhaseName, `short` används i quiz för de yngsta.
+ */
+export const MOON_PHASES = [
+  { id: 'ny', name: 'nymåne', short: 'nymåne', angle: 0, key: 'moon-full', dark: true, lit: 'ingen' },
+  { id: 'vskara', name: 'växande skära', short: 'skära', angle: 45, key: 'moon-waxing-crescent', lit: 'höger' },
+  { id: 'vhalv', name: 'växande halvmåne', short: 'halvmåne', angle: 90, key: 'moon-first-quarter', lit: 'höger' },
+  { id: 'vfull', name: 'växande (nästan full)', short: 'nästan full', angle: 135, key: 'moon-waxing-gibbous', lit: 'höger' },
+  { id: 'full', name: 'fullmåne', short: 'fullmåne', angle: 180, key: 'moon-full', lit: 'hela' },
+  { id: 'afull', name: 'avtagande (nästan full)', short: 'nästan full', angle: 225, key: 'moon-waning-gibbous', lit: 'vänster' },
+  { id: 'ahalv', name: 'avtagande halvmåne', short: 'halvmåne', angle: 270, key: 'moon-last-quarter', lit: 'vänster' },
+  { id: 'askara', name: 'avtagande skära', short: 'skära', angle: 315, key: 'moon-waning-crescent', lit: 'vänster' },
+];
+/** Fasen (ur MOON_PHASES) för en vinkel. */
+export const moonPhaseFor = (angleDeg) => MOON_PHASES.find((p) => p.name === moonPhaseName(angleDeg));
+
+/** Bild av en månfas: riktigt foto om det finns, annars en ritad måne. */
+export function moonPhaseImage(ph, cls = '') {
+  if (hasPhoto(ph.key)) return `<span class="moon-photo${ph.dark ? ' is-new' : ''} ${cls}">${photo(ph.key, { alt: ph.dark ? 'Nymåne – månen syns nästan inte' : `Foto av månen: ${ph.name}` })}</span>`;
+  return `<svg viewBox="0 0 120 120" class="moon-drawn ${cls}" role="img" aria-label="${ph.name}"><circle cx="60" cy="60" r="50" fill="#22284d"/><path d="${moonPhasePath(ph.angle)}" fill="#f2efe4"/></svg>`;
+}
+
+const MOON_FACT = {
+  ny: 'Vid nymåne står månen mellan jorden och solen. Den belysta sidan är vänd bort från oss, så vi ser nästan ingenting.',
+  vskara: 'En smal skära som är ljus på höger sida. Den syns på kvällen strax efter att solen har gått ner.',
+  vhalv: 'Halva månen är ljus – den högra halvan. Månen har gått en fjärdedel av varvet runt jorden.',
+  vfull: 'Nästan hela månen lyser, och den blir större för varje kväll. Om några dagar är det fullmåne.',
+  full: 'Vid fullmåne står jorden mellan solen och månen. Vi ser hela den belysta sidan.',
+  afull: 'Nu krymper det ljusa. Det är den högra kanten som har blivit mörk.',
+  ahalv: 'Den vänstra halvan är ljus. Den här halvmånen syns bäst tidigt på morgonen.',
+  askara: 'En smal skära som är ljus på vänster sida. Snart är det nymåne igen.',
+};
+
+/** Quiz med riktiga månfoton: känn igen fasen, växande eller avtagande, och lägg faserna i ordning. */
+export function genMoonPhase(level, rng) {
+  const lv = Math.max(1, level);
+  const visible = MOON_PHASES.filter((p) => !p.dark);
+  if (lv >= 3 && rng.chance(0.35)) {
+    const waxing = MOON_PHASES.slice(1, 5);
+    const seq = lv >= 4 && rng.chance(0.5) ? MOON_PHASES.slice(4, 8) : waxing;
+    const growing = seq === waxing;
+    return {
+      type: 'order',
+      prompt: growing ? 'Månen växer! Lägg bilderna i ordning – från smal skära till fullmåne.' : 'Månen krymper! Lägg bilderna i ordning – från fullmåne till smal skära.',
+      items: rng.shuffle(seq).map((p) => ({ id: p.id, html: `${moonPhaseImage(p, 'sm')}<span class="lbl">${p.short}</span>`, say: p.name })),
+      answerOrder: seq.map((p) => p.id),
+      hint: growing ? 'Den ljusa delen växer från höger. Börja med den smalaste.' : 'Den ljusa delen krymper. Börja med den runda.',
+      explain: 'Det tar ungefär 29 och en halv dag från en nymåne till nästa. Halvvägs är det fullmåne.',
+    };
+  }
+  if (lv >= 2 && rng.chance(0.45)) {
+    const p = rng.pick(visible.filter((x) => x.id !== 'full'));
+    const growing = p.lit === 'höger';
+    return {
+      type: 'choice',
+      prompt: 'Växer månen eller krymper den? Titta på vilken sida som är ljus.',
+      say: 'Växer månen eller krymper den? Titta på vilken sida som är ljus.',
+      visual: moonPhaseImage(p, 'qmoon'),
+      options: [{ id: 'vaxande', label: 'växande – den blir större' }, { id: 'avtagande', label: 'avtagande – den blir mindre' }],
+      answer: growing ? 'vaxande' : 'avtagande',
+      hint: 'Här i Sverige är en växande måne ljus på höger sida.',
+      explain: `Det här är ${p.name}. ${MOON_FACT[p.id]}`,
+    };
+  }
+  // Nivå 1: fullmåne, halvmåne eller skära? Högre nivåer: hela namnet.
+  if (lv <= 1) {
+    const kinds = ['fullmåne', 'halvmåne', 'skära'];
+    const kind = rng.pick(kinds);
+    const p = rng.pick(visible.filter((x) => x.short === kind));
+    return {
+      type: 'choice', prompt: 'Hur ser månen ut på bilden?', say: 'Hur ser månen ut på bilden? Fullmåne, halvmåne eller skära?',
+      visual: moonPhaseImage(p, 'qmoon'),
+      options: rng.shuffle(kinds).map((k) => ({ id: k, label: k })), answer: kind,
+      hint: 'Är hela månen ljus, halva eller bara en smal bit?',
+      explain: MOON_FACT[p.id],
+    };
+  }
+  const p = rng.pick(visible);
+  // Nivå 2: alternativen har olika form. Från nivå 3 kan samma form åt andra hållet vara med (växande/avtagande halvmåne).
+  const pool = visible.filter((x) => x.id !== p.id && (lv >= 3 || x.short !== p.short));
+  const twin = lv >= 3 ? pool.find((x) => x.short === p.short) : null;
+  const others = twin ? [twin, ...rng.sample(pool.filter((x) => x !== twin), lv >= 4 ? 2 : 1)] : rng.sample(pool, lv >= 4 ? 3 : 2);
+  return {
+    type: 'choice', prompt: 'Vilken fas har månen på bilden?', say: 'Vilken fas har månen på bilden?',
+    visual: moonPhaseImage(p, 'qmoon'),
+    options: rng.shuffle([p, ...others]).map((x) => ({ id: x.id, label: x.name })), answer: p.id,
+    hint: 'Hur mycket är ljust? Och är det höger eller vänster sida?',
+    explain: MOON_FACT[p.id],
+  };
 }
 
 /* ---------- Stjärnbilder ---------- */
@@ -638,7 +746,8 @@ export const spaceApp = {
     { id: 'photos', name: 'Rymdbilder', icon: '📸', minLevel: 0, gen: genSpacePhoto, lgr: ['no-himmel'], photo: () => photo('saturn', { cls: 'tile-photo' }) },
     { id: 'gallery', name: 'Bildgalleri', icon: '🖼️', minLevel: 0, view: 'gallery', lgr: ['no-himmel', 'no-berattelse'], photo: () => photo('pillars', { cls: 'tile-photo' }) },
     { id: 'daynight', name: 'Dag & natt', icon: '🌗', minLevel: 0, view: 'daynight', lgr: ['no-himmel'] },
-    { id: 'moon', name: 'Månens faser', icon: '🌙', minLevel: 1, view: 'moon', lgr: ['no-himmel'] },
+    { id: 'moon', name: 'Månens faser', icon: '🌙', minLevel: 1, view: 'moon', lgr: ['no-himmel'], photo: () => photo('moon-first-quarter', { cls: 'tile-photo' }) },
+    { id: 'moonquiz', name: 'Månen på foto', icon: '🌓', minLevel: 1, gen: genMoonPhase, lgr: ['no-himmel'], photo: () => photo('moon-waxing-crescent', { cls: 'tile-photo' }) },
     { id: 'order', name: 'Planetordning', icon: '🔢', minLevel: 1, gen: genPlanetOrder, lgr: ['no-himmel'] },
     { id: 'stars', name: 'Stjärnbilder', icon: '✨', minLevel: 1, view: 'stars', lgr: ['no-himmel', 'no-berattelse'] },
     { id: 'seasons', name: 'Varför årstider?', icon: '🌍', minLevel: 2, view: 'orbit', lgr: ['no-himmel', 'no-arstid'] },

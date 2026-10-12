@@ -2,8 +2,19 @@
 
 <!-- GENERERAD av scripts/credits-doc.mjs från assets/credits.json – ändra inte för hand. -->
 
-KidsOS innehåller 291 foton från Wikimedia Commons (inklusive NASA). Alla har fria licenser: public domain, CC0, CC BY eller CC BY-SA.
+KidsOS innehåller 297 foton från Wikimedia Commons (inklusive NASA). Alla har fria licenser: public domain, CC0, CC BY eller CC BY-SA.
 Bilderna är förminskade och omkodade till WebP men i övrigt oförändrade. Följ länken för original, fullständig licens och upphov.
+
+## moon (6)
+
+| Nyckel | Fil | Upphov | Licens |
+|---|---|---|---|
+| moon-first-quarter | [First Quarter Moon on 12-15-18 - Flickr - StephenGA.png](https://commons.wikimedia.org/wiki/File:First_Quarter_Moon_on_12-15-18_-_Flickr_-_StephenGA.png) | Stephen Rahn from Macon, GA, USA | [CC0](http://creativecommons.org/publicdomain/zero/1.0/deed.en) |
+| moon-full | [Full Perigee (not Super!) Moon on 1-1-18 (39442516491).jpg](https://commons.wikimedia.org/wiki/File:Full_Perigee_(not_Super!)_Moon_on_1-1-18_(39442516491).jpg) | Stephen Rahn from Macon, GA, USA | [CC0](http://creativecommons.org/publicdomain/zero/1.0/deed.en) |
+| moon-last-quarter | [Last Quarter Moon on 3-27-19 - Flickr - StephenGA.png](https://commons.wikimedia.org/wiki/File:Last_Quarter_Moon_on_3-27-19_-_Flickr_-_StephenGA.png) | Stephen Rahn from Macon, GA, USA | [CC0](http://creativecommons.org/publicdomain/zero/1.0/deed.en) |
+| moon-waning-gibbous | [Waning Gibbous Moon.tif](https://commons.wikimedia.org/wiki/File:Waning_Gibbous_Moon.tif) | Achituv | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) |
+| moon-waxing-crescent | [New Year's Even Waxing Crescent Moon. - Flickr - StephenGA.jpg](https://commons.wikimedia.org/wiki/File:New_Year%27s_Even_Waxing_Crescent_Moon._-_Flickr_-_StephenGA.jpg) | Stephen Rahn from Macon, GA, USA | [CC0](http://creativecommons.org/publicdomain/zero/1.0/deed.en) |
+| moon-waxing-gibbous | [Waxing Gibbous Moon on 4-6-17 (33757272721).jpg](https://commons.wikimedia.org/wiki/File:Waxing_Gibbous_Moon_on_4-6-17_(33757272721).jpg) | Stephen Rahn from Macon, GA, USA | [CC0](http://creativecommons.org/publicdomain/zero/1.0/deed.en) |
 
 ## Rymden (20)
 

@@ -9,6 +9,7 @@ import {
   seriesLeft, supportFor, seriesKey, praiseFor, writeApp, layoutWord,
 } from '../../src/apps/letters.js';
 import { createRng } from '../../src/core/rng.js';
+import { photoKeyForEmoji } from '../../src/core/emoji-photos.js';
 
 const ONLY_SV = /^[a-zåäö]+$/;
 const DOUBLE = /([a-zåäö])\1|ck/;
@@ -19,7 +20,8 @@ test('stavningsorden: minst 250, bara a–ö, unika ord och unika bilder', () =>
     assert.match(x.w, ONLY_SV, `${x.w} innehåller annat än a–ö`);
     assert.ok(x.e && x.e.trim(), `${x.w} saknar emoji`);
     assert.ok(!/[a-zåäö]/i.test(x.e), `${x.w}: emojin innehåller bokstäver`);
-    if (x.photo) assert.equal(x.photo, `obj-${x.w}`);
+    // Fotot hämtas via emoji→foto-mappningen (samma bild som ordet har i resten av appen).
+    if (x.photo) assert.equal(x.photo, photoKeyForEmoji(x.e), `${x.w}: fel fotonyckel`);
   }
   assert.equal(new Set(SPELL_WORDS.map((x) => x.w)).size, SPELL_WORDS.length, 'dubbla ord');
   const seen = new Map();
@@ -77,7 +79,8 @@ test('Stava ord: lyssna och bygg ordet på alla nivåer', () => {
       tiles.forEach((t) => assert.equal(t, level <= 1 ? t.toUpperCase() : t.toLowerCase()));
       assert.ok(q.say.includes(q.sayWord), 'ordet läses upp');
       assert.ok(!q.prompt.includes(q.sayWord), 'ordet står inte i uppgiften');
-      assert.ok(!/undefined|null|NaN/.test(q.explain + q.hint + q.visual));
+      // Fotonas base64-data kan av en slump innehålla t.ex. "NaN" – kontrollera bara texten runt omkring.
+      assert.ok(!/undefined|null|NaN/.test(q.explain + q.hint + String(q.visual).replace(/data:[^"]+/g, '')));
       seen.add(q.sayWord);
     }
     assert.ok(seen.size >= 30, `nivå ${level}: för lite variation (${seen.size})`);

@@ -6,6 +6,7 @@
 // plural). Emojierna ska entydigt avbilda ordet så att en 5-åring förstår.
 // Se tests/unit/svenska.test.mjs för automatiska kontroller av listorna.
 import { photo, hasPhoto } from '../ui/img.js';
+import { photoKeyForEmoji } from '../core/emoji-photos.js';
 
 export const ALPHABET = [
   { l: 'A', word: 'apa', e: '🐒' },
@@ -92,7 +93,7 @@ export const WORDS = [
  *   Nivå 3: dubbelteckning och ck (kort vokal före).
  *   Nivå 4: långa och sammansatta ord.
  * Format "ord emoji". Bara gemener a–ö, varje ord och varje emoji förekommer en gång
- * (kontrolleras i tests/unit/svenska.test.mjs). Fotonyckeln är obj-<ord>.
+ * (kontrolleras i tests/unit/svenska.test.mjs). Fotonyckeln kommer från emojins foto (src/core/emoji-photos.js).
  */
 const SPELL_RAW = [
   // Nivå 0
@@ -106,13 +107,16 @@ const SPELL_RAW = [
   // Nivå 4
   'snögubbe ⛄|pannkaka 🥞|flygplan ✈️|helikopter 🚁|krokodil 🐊|sköldpadda 🐢|nyckelpiga 🐞|papegoja 🦜|flamingo 🦩|enhörning 🦄|regnbåge 🌈|motorcykel 🏍️|hamburgare 🍔|fyrverkeri 🎆|polisbil 🚓|ambulans 🚑|brandbil 🚒|mikrofon 🎤|vattenmelon 🍉|snöflinga ❄️|astronaut 🧑‍🚀|prinsessa 👸|sjöjungfru 🧜‍♀️|trollkarl 🧙|dinosaurie 🦕|trafikljus 🚦|teleskop 🔭|mikroskop 🔬|glasögon 👓|smörgås 🥪|jordnöt 🥜|vitlök 🧄|blåbär 🫐|julgran 🎄|skalbagge 🪲|fladdermus 🦇|tvättbjörn 🦝|isbjörn 🐻‍❄️|kundvagn 🛒|sparkcykel 🛴|skridsko ⛸️|termometer 🌡️|tandborste 🪥|basketboll 🏀|stjärnfall 🌠|fallskärm 🪂|brevlåda 📫|ficklampa 🔦|häftstift 📌|badkar 🛁',
 ];
-// Ord utan meningsfullt foto (färger och tal) får ingen fotonyckel.
+// Ord utan meningsfullt foto (färger och tal) får ingen fotonyckel, även om emojin skulle vara mappad.
 const NO_PHOTO = new Set(['tre', 'sex', 'nio', 'tio', 'sju', 'röd', 'blå', 'gul', 'vit', 'sjuk', 'pil']);
+const spellPhoto = (w, e) => (NO_PHOTO.has(w) ? null : photoKeyForEmoji(e));
 export const SPELL_WORDS = SPELL_RAW.flatMap((row, lvl) =>
   row.split('|').map((pair) => {
     const i = pair.indexOf(' ');
     const w = pair.slice(0, i);
-    return { w, e: pair.slice(i + 1), lvl, ...(NO_PHOTO.has(w) ? {} : { photo: `obj-${w}` }) };
+    const e = pair.slice(i + 1);
+    const photoKey = spellPhoto(w, e);
+    return { w, e, lvl, ...(photoKey ? { photo: photoKey } : {}) };
   }),
 );
 export const spellWordsForLevel = (level) => SPELL_WORDS.filter((x) => x.lvl === Math.max(0, Math.min(4, level)));

@@ -8,7 +8,7 @@
 
 Kör: python3 scripts/fetch_images.py [--force] [nyckel ...]
 """
-import io, json, re, sys, time, html, random, urllib.parse, urllib.request
+import io, json, os, re, sys, time, html, random, urllib.parse, urllib.request
 from pathlib import Path
 from PIL import Image
 
@@ -17,15 +17,21 @@ CATALOG = ROOT / 'assets' / 'image-catalog.json'
 OUT = ROOT / 'assets' / 'img'
 CREDITS = ROOT / 'assets' / 'credits.json'
 UA = 'KidsOS/1.0 (family learning app; contact: kevin.marqfarh@gmail.com)'
-MAX = 480  # ger en rimlig storlek på den fristående HTML-filen (mål < 6 MB)
-# Storlek och kvalitet per grupp: föremål visas som små miniatyrer.
-SIZES = {'objects': (320, 65)}
-THUMB_W = {'objects': 500}  # standardbredder hos Wikimedia (250/330/500/960 …)
+MAX = 560  # motivbilder (mål: hela dist/index.html < 7 MB)
+# Storlek och kvalitet per grupp: föremål och livscykelsteg visas som små miniatyrer.
+SIZES = {'objects': (320, 65), 'lifecycle': (320, 65), 'moon': (400, 70)}
+THUMB_W = {'objects': 500, 'lifecycle': 500, 'moon': 1280}  # standardbredder hos Wikimedia (250/330/500/960 …)
+MIN_GAP = 1.2  # sekunder mellan anrop (Wikimedia delar gränser per IP)
+_last = [0.0]
 FREE = re.compile(r'public domain|^pd|cc0|cc[ -]by', re.I)
 
 def get(url, binary=False, tries=8):
     """GET med User-Agent. Respekterar 429/Retry-After med backoff (Wikimedia delar IP-gränser)."""
     for i in range(tries):
+        gap = time.time() - _last[0]
+        if gap < MIN_GAP:
+            time.sleep(MIN_GAP - gap)
+        _last[0] = time.time()
         try:
             req = urllib.request.Request(url, headers={'User-Agent': UA})
             with urllib.request.urlopen(req, timeout=40) as r:
@@ -34,6 +40,7 @@ def get(url, binary=False, tries=8):
         except urllib.error.HTTPError as e:
             if e.code == 429 or e.code >= 500:
                 wait = int(e.headers.get('Retry-After') or 0) or (5 + i * 8)
+                print(f'  … {e.code}, väntar {wait} s', flush=True)
                 time.sleep(min(wait, 120) + random.uniform(0.5, 3))
                 continue
             raise
@@ -49,7 +56,23 @@ def page_image(lang, title):
             return 'File:' + p['pageimage']
     return None
 
+# Valfri cache (KIDSOS_IMG_CACHE=katalog): sparar bildinfo och originalbytes så att bilder kan
+# beskäras/komprimeras om utan nya anrop till Wikimedia.
+CACHE = os.environ.get('KIDSOS_IMG_CACHE')
+
+def _cache_path(name, ext):
+    return Path(CACHE) / (re.sub(r'[^A-Za-z0-9._-]+', '_', name)[:150] + ext)
+
 def image_info(file_title, width=700):
+    if CACHE and _cache_path(f'{file_title}-{width}', '.json').exists():
+        return json.loads(_cache_path(f'{file_title}-{width}', '.json').read_text())
+    info = _image_info(file_title, width)
+    if CACHE and info:
+        Path(CACHE).mkdir(parents=True, exist_ok=True)
+        _cache_path(f'{file_title}-{width}', '.json').write_text(json.dumps(info))
+    return info
+
+def _image_info(file_title, width=700):
     q = urllib.parse.urlencode({'action': 'query', 'titles': file_title, 'prop': 'imageinfo', 'iiprop': 'url|extmetadata', 'iiurlwidth': width, 'format': 'json'})
     for host in ('commons.wikimedia.org', 'en.wikipedia.org'):
         d = get(f'https://{host}/w/api.php?{q}')
@@ -65,6 +88,43 @@ def clean(s):
 def license_of(info):
     return clean(info.get('extmetadata', {}).get('LicenseShortName', {}).get('value', ''))
 
+def moon_crop(im, key):
+    """Beskär ett månfoto så att hela måndisken (även den mörka delen) hamnar mitt i en kvadrat.
+    Månens kant (limben) på den belysta sidan hittas rad för rad och en cirkel anpassas till punkterna
+    (minsta kvadrat). Växande måne (norra halvklotet) är belyst till höger, avtagande till vänster."""
+    import numpy as np
+    g = np.asarray(im.convert('L'), dtype=np.float32)
+    thr = max(28.0, float(np.percentile(g, 99.5)) * 0.22)
+    mask = g > thr
+    rows = np.where(mask.any(axis=1))[0]
+    if len(rows) < 10:
+        return im
+    side_r = 'waxing' in key or 'first' in key
+    side_l = 'waning' in key or 'last' in key
+    pts = []
+    for y in rows[:: max(1, len(rows) // 400)]:
+        xs = np.where(mask[y])[0]
+        if not side_l:
+            pts.append((xs[-1], y))
+        if not side_r:
+            pts.append((xs[0], y))
+    p = np.array(pts, dtype=np.float64)
+    A = np.c_[p[:, 0], p[:, 1], np.ones(len(p))]
+    bvec = -(p[:, 0] ** 2 + p[:, 1] ** 2)
+    (D, E, F), *_ = np.linalg.lstsq(A, bvec, rcond=None)
+    cx, cy = -D / 2, -E / 2
+    rad = float(np.sqrt(max(cx * cx + cy * cy - F, 1)))
+    side = rad * 2 * 1.1
+    # Fyll utanför originalbilden med bakgrundens färg (medianen i hörnen) så att ingen kant syns.
+    arr = np.asarray(im.convert('RGB'))
+    k = max(4, min(arr.shape[:2]) // 40)
+    corners = np.concatenate([arr[:k, :k].reshape(-1, 3), arr[:k, -k:].reshape(-1, 3), arr[-k:, :k].reshape(-1, 3), arr[-k:, -k:].reshape(-1, 3)])
+    bg = tuple(int(v) for v in np.median(corners, axis=0))
+    out = Image.new('RGB', (int(side), int(side)), bg)
+    l, t = int(cx - side / 2), int(cy - side / 2)
+    out.paste(im.convert('RGB'), (-l, -t))
+    return out
+
 def save_image(key, group, file_title, info, credits, data=None):
     """Konverterar en hämtad bild till WebP och skriver krediten. `data` kan vara redan hämtade bytes."""
     meta = info.get('extmetadata', {})
@@ -72,7 +132,13 @@ def save_image(key, group, file_title, info, credits, data=None):
     if not FREE.search(lic):
         raise RuntimeError(f'icke-fri licens: {lic}')
     if data is None:
-        data = get(info['thumburl'], binary=True)
+        cp = _cache_path(info['thumburl'].rsplit('/', 1)[-1], '.bin') if CACHE else None
+        if cp and cp.exists():
+            data = cp.read_bytes()
+        else:
+            data = get(info['thumburl'], binary=True)
+            if cp:
+                cp.write_bytes(data)
     size, quality = SIZES.get(group, (MAX, 64))
     im = Image.open(io.BytesIO(data))
     if im.mode in ('P', 'LA', 'RGBA', 'PA'):
@@ -81,6 +147,8 @@ def save_image(key, group, file_title, info, credits, data=None):
         bg.paste(im, mask=im.split()[-1])
         im = bg
     im = im.convert('RGB')
+    if group == 'moon':
+        im = moon_crop(im, key)
     im.thumbnail((size, size), Image.LANCZOS)
     target = OUT / f'{key}.webp'
     im.save(target, 'WEBP', quality=quality, method=6)
@@ -128,7 +196,7 @@ def main():
                     file_title = page_image(lang, title)
                     if not file_title:
                         raise RuntimeError('artikeln saknar huvudbild')
-                info = image_info(file_title, THUMB_W.get(group, 700))
+                info = image_info(file_title, THUMB_W.get(group, 960))
                 if not info:
                     raise RuntimeError(f'ingen bildinfo för {file_title}')
                 target, lic = save_image(key, group, file_title, info, credits)

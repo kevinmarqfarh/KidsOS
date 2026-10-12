@@ -810,70 +810,260 @@ export const TURTLE_CHALLENGES = [
   { id: 'free', title: 'Fritt ritande', goal: 'Rita vad du vill! Kan du rita ett hus, en orm eller din första bokstav?', solution: null, maxBlocks: 40, loops: true },
 ];
 
+/* ---------- Datorer omkring oss: in → bearbeta → ut ---------- */
+/** Inmatning (in) och utmatning (ut). Lgr22 teknik 1–3: datorers delar för inmatning, utmatning och lagring. */
+export const INPUT_OUTPUT = [
+  { id: 'tangentbord', e: '⌨️', n: 'tangentbord', bin: 'in' },
+  { id: 'mus', e: '🖱️', n: 'datormus', bin: 'in' },
+  { id: 'mikrofon', e: '🎤', n: 'mikrofon', bin: 'in' },
+  { id: 'kamera', e: '📷', n: 'kamera', bin: 'in' },
+  { id: 'knapp', e: '🔘', n: 'knapp', bin: 'in' },
+  { id: 'skarm', e: '🖥️', n: 'skärm', bin: 'ut' },
+  { id: 'hogtalare', e: '🔊', n: 'högtalare', bin: 'ut' },
+  { id: 'skrivare', e: '🖨️', n: 'skrivare', bin: 'ut' },
+  { id: 'horlurar', e: '🎧', n: 'hörlurar', bin: 'ut' },
+  { id: 'lampa', e: '💡', n: 'lampa', bin: 'ut' },
+];
+/** Sensorer och vad programmet gör (in → program → ut). Ett svar per fråga. */
+export const SENSOR_RULES = [
+  { thing: '🚪 automatisk dörr', sense: 'en rörelsesensor märker någon', act: 'öppnar dörren', wrong: ['spelar musik', 'släcker lampan'] },
+  { thing: '🤖 robotdammsugare', sense: 'en stötsensor känner en vägg', act: 'svänger åt ett annat håll', wrong: ['börjar sjunga', 'kör rakt in i väggen igen'] },
+  { thing: '🚦 trafikljus', sense: 'någon trycker på knappen', act: 'byter till grön gubbe efter en stund', wrong: ['blir blått', 'stänger av sig för alltid'] },
+  { thing: '🌙 gatlampa', sense: 'en ljussensor märker att det blir mörkt', act: 'tänds', wrong: ['släcks', 'blinkar i regnbågens färger'] },
+  { thing: '🔥 brandvarnare', sense: 'en sensor känner rök', act: 'piper högt', wrong: ['kokar kaffe', 'tänder fler lampor'] },
+  { thing: '🧺 tvättmaskin', sense: 'en sensor känner att trumman är full av vatten', act: 'stänger av vattnet', wrong: ['fyller på mer vatten', 'öppnar luckan'] },
+];
+
+export function genComputers(level, rng) {
+  const k = level === 0 ? rng.int(0, 1) : rng.int(0, 2);
+  if (k === 0) {
+    const items = rng.sample(PROGRAMMED_THINGS, level === 0 ? 4 : 6);
+    return {
+      type: 'sort',
+      prompt: 'Vilka saker styrs av ett datorprogram?',
+      say: 'Vilka saker styrs av ett datorprogram? Sortera dem.',
+      bins: [{ id: 'ja', label: 'Har ett program', html: '💻' }, { id: 'nej', label: 'Inget program', html: '🙅' }],
+      items: items.map((i) => ({ id: i.id, html: `<span class="pic sm">${i.e}</span><span class="lbl">${i.n}</span>`, bin: i.bin, say: i.n })),
+      hint: 'Följer saken sparade instruktioner? El ensam betyder inte att något har ett datorprogram.',
+      explain: 'Tvättmaskiner, trafikljus och mobiler har små datorer inuti som följer program som människor har skrivit. En sax eller en boll har inget program.',
+    };
+  }
+  if (k === 1) {
+    const ins = rng.sample(INPUT_OUTPUT.filter((x) => x.bin === 'in'), level === 0 ? 2 : 3);
+    const outs = rng.sample(INPUT_OUTPUT.filter((x) => x.bin === 'ut'), level === 0 ? 2 : 3);
+    return {
+      type: 'sort',
+      prompt: 'In eller ut? Sortera datorns delar.',
+      say: 'Sortera datorns delar. In är delar som tar in information till datorn. Ut är delar där datorn visar eller spelar något.',
+      bins: [{ id: 'in', label: 'In till datorn', html: '⬅️💻' }, { id: 'ut', label: 'Ut från datorn', html: '💻➡️' }],
+      items: rng.shuffle([...ins, ...outs]).map((i) => ({ id: i.id, html: `<span class="pic sm">${i.e}</span><span class="lbl">${i.n}</span>`, bin: i.bin, say: i.n })),
+      hint: 'Tar delen in något från dig (tryck, ljud, bild)? Eller visar och spelar den något för dig?',
+      explain: 'Tangentbord, mus, mikrofon och kamera matar in information. Skärm, högtalare och skrivare visar resultatet. Däremellan bearbetar programmet informationen.',
+    };
+  }
+  const r = rng.pick(SENSOR_RULES);
+  const opts = rng.shuffle([r.act, ...r.wrong.slice(0, level >= 2 ? 2 : 1)]);
+  return {
+    type: 'choice',
+    prompt: `Programmet i en ${r.thing.replace(/^\S+\s/, '')}: OM ${r.sense}, vad gör den då?`,
+    say: `En ${r.thing.replace(/^\S+\s/, '')} har ett program. Om ${r.sense}, vad gör den då?`,
+    visual: `<div class="logic-card"><div class="logic-rule">${r.thing}</div><div class="logic-now">📥 ${r.sense} → 💻 → 📤 ?</div></div>`,
+    options: opts.map((o) => ({ id: o, label: o, say: o })),
+    answer: r.act,
+    noSpeakVisual: true,
+    wide: true,
+    hint: 'Vad är saken till för? Vad vore vettigt att göra?',
+    explain: `Sensorn ger programmet information (in). Programmet bestämmer, och ${r.thing.replace(/^\S+\s/, '')}n ${r.act} (ut). In → bearbeta → ut är hur många maskiner fungerar.`,
+  };
+}
+
+/* ---------- Variabler: följ värdet ---------- */
+const VAR_NAMES = [
+  { n: 'poäng', e: '⭐', inc: 'du tar en stjärna' },
+  { n: 'äpplen', e: '🍎', inc: 'du plockar ett äpple' },
+  { n: 'liv', e: '❤️', inc: 'du hittar ett hjärta' },
+  { n: 'mynt', e: '🪙', inc: 'du hittar ett mynt' },
+];
+/** Nivå 0–2: lådor med bilder (val). Nivå 3: några uppdateringar. Nivå 4: loop som ändrar variabeln. */
+export function genVariables(level, rng) {
+  const v = rng.pick(VAR_NAMES);
+  if (level <= 2) {
+    const start = rng.int(1, 3);
+    const add = rng.int(1, 2);
+    const ans = start + add;
+    const opts = [ans, ans - 1 === start ? ans + 1 : ans - 1, start].filter((x, i, a) => a.indexOf(x) === i && x > 0);
+    return {
+      type: 'choice',
+      prompt: `Lådan heter ${v.n}. Den har ${start}. Sedan lägger programmet till ${add}. Vad finns i lådan nu?`,
+      say: `En variabel är som en låda med ett namn. Lådan heter ${v.n}. Den har ${start}. Sedan lägger programmet till ${add}. Hur många finns i lådan nu?`,
+      visual: `<div class="logic-card"><div class="code-line"><span class="code-chip">📦 ${v.n} = ${start}</span><span class="code-chip">${v.n} = ${v.n} + ${add}</span></div><span class="logic-big">${v.e.repeat(start)}</span></div>`,
+      options: rng.shuffle(opts).map((k) => ({ id: String(k), html: `<span class="logic-big">${v.e.repeat(k)}</span>`, say: String(k) })),
+      answer: String(ans),
+      noSpeakVisual: true,
+      hint: `Börja med ${start} och lägg till ${add}.`,
+      explain: `${v.n} var ${start}. ${start} + ${add} = ${ans}. En variabel minns ett värde som programmet kan ändra.`,
+    };
+  }
+  let val = rng.int(0, 5);
+  const lines = [`${v.n} = ${val}`];
+  if (level >= 4 && rng.chance(0.6)) {
+    const n = rng.int(2, 5);
+    const step = rng.int(1, 3);
+    lines.push(`upprepa ${n} gånger: ${v.n} = ${v.n} + ${step}`);
+    val += n * step;
+    if (rng.chance(0.5)) {
+      lines.push(`${v.n} = ${v.n} - 1`);
+      val -= 1;
+    }
+  } else {
+    for (let k = 0; k < (level >= 4 ? 4 : 3); k++) {
+      const minus = val > 1 && rng.chance(0.3);
+      const d = minus ? rng.int(1, Math.min(3, val)) : rng.int(1, 3);
+      lines.push(`${v.n} = ${v.n} ${minus ? '-' : '+'} ${d}`);
+      val += minus ? -d : d;
+    }
+  }
+  return {
+    type: 'numpad',
+    prompt: `Följ variabeln! Vad är ${v.n} när programmet är klart?`,
+    say: `Följ variabeln ${v.n}. Programmet är: ${lines.map((l) => l.replace(/=/g, 'blir').replace(/-/g, 'minus').replace(/\+/g, 'plus')).join('. ')}. Vad är ${v.n} när programmet är klart?`,
+    visual: `<div class="logic-card"><ol class="logic-rule">${lines.map((l) => `<li><code>${l}</code></li>`).join('')}</ol></div>`,
+    answer: val,
+    hint: 'Skriv upp värdet efter varje rad. Använd det gamla värdet när du räknar ut det nya.',
+    explain: `Värdet ändras rad för rad och blir till slut ${val}. ${v.n} = ${v.n} + 1 betyder: ta det gamla värdet och lägg till 1.`,
+  };
+}
+
+/* ---------- Händelser: när något händer ---------- */
+export function genEvents(level, rng) {
+  if (rng.chance(0.5)) {
+    const taps = rng.int(1, level >= 4 ? 6 : 4);
+    const startOn = rng.chance(0.5);
+    const on = taps % 2 === 0 ? startOn : !startOn;
+    return {
+      type: 'choice',
+      prompt: `När du trycker på knappen: lampan byter (tänd ↔ släckt). Lampan är ${startOn ? 'tänd' : 'släckt'}. Du trycker ${taps} ${taps === 1 ? 'gång' : 'gånger'}. Hur är lampan nu?`,
+      say: `Varje gång du trycker på knappen byter lampan mellan tänd och släckt. Lampan är ${startOn ? 'tänd' : 'släckt'}. Du trycker ${taps} ${taps === 1 ? 'gång' : 'gånger'}. Hur är lampan nu?`,
+      visual: `<div class="logic-card"><div class="code-line"><span class="code-chip">⚡ när knappen trycks</span><span class="code-chip">💡 byt</span></div><div class="logic-now">${startOn ? '💡' : '🌑'} ${'👆'.repeat(taps)}</div></div>`,
+      options: [{ id: 'tänd', html: '<span class="pic">💡</span><span class="lbl">tänd</span>', say: 'tänd' }, { id: 'släckt', html: '<span class="pic">🌑</span><span class="lbl">släckt</span>', say: 'släckt' }],
+      answer: on ? 'tänd' : 'släckt',
+      noSpeakVisual: true,
+      hint: 'Byt för varje tryck: tänd, släckt, tänd …',
+      explain: `Händelsen är knapptrycket. Programmet byter lampan ${taps} ${taps === 1 ? 'gång' : 'gånger'}, så den blir ${on ? 'tänd' : 'släckt'}. Udda antal tryck ger motsatsen, jämnt antal ger samma som förut.`,
+    };
+  }
+  if (level <= 2) return genEvents(level, { ...rng, chance: () => true });
+  return genFunction(level, rng);
+}
+
+/** Varvar en interaktiv generator med begreppsfrågor ur kursen. */
+// På nivå 0–1 används begreppsfrågor bara om de har bildsvar (förläsare).
+const mix = (topic, gen, share = 0.5) => (level, rng) => {
+  const ok = level >= 2 || CODING_QUESTIONS[topic].some((q) => q.minLevel <= level && q.pics);
+  return ok && rng.chance(share) ? genCoding(topic, level, rng) : gen(level, rng);
+};
+const genSequence = (level, rng) => {
+  for (let k = 0; k < 20; k++) {
+    const q = genEveryday(level, rng);
+    if (q.type !== 'sort') return q;
+  }
+  return genEveryday(level, rng);
+};
+const genLoopsMix = (level, rng) => genLoopCount(level, rng);
+const genIfMix = (level, rng) => (level >= 4 && rng.chance(0.4) ? genIfTwo(rng) : genIf(level, rng));
+
 /* ---------- Kodkurs: förstå, pröva, förklara ---------- */
 // Exempel använder läsbar låtsaskod, inte ett särskilt programmeringsspråk.
+// Kursen går i steg: nivå 0 (sekvenser, robot, felsökning) → 1 (loopar) → 2 (villkor, rita med kod)
+// → 3 (variabler) → 4 (händelser och funktioner). Lektions-id:n får inte ändras (lästa lektioner sparas per id).
 export const CODING_LESSONS = [
   { id: 'algorithms', moduleId: 'algorithms', title: 'Tydliga steg', minLevel: 0, steps: [
     { title: 'Vad är kod?', text: 'Kod är instruktioner som en dator kan följa. Människor bestämmer vad programmet ska göra.', example: 'En knapp kan ha instruktionen: spela en ton.' },
-    { title: 'Ordningen spelar roll', text: 'En algoritm är en metod med tydliga steg för att lösa en uppgift. Du kan beskriva den med ord, bilder eller kod.', example: 'Ta en brödskiva → bred smör → lägg på ost.' },
-    { title: 'Var exakt', text: 'När du skriver vanlig kod behöver instruktionerna vara tydliga. Berätta hur långt och åt vilket håll roboten ska gå.', example: 'Gå två rutor åt höger är tydligare än gå dit.' },
+    { title: 'Ordningen spelar roll', text: 'En algoritm är en metod med tydliga steg för att lösa en uppgift. Du kan beskriva den med ord, bilder eller kod.', example: 'Ta en brödskiva → bred smör → lägg på ost. Vad händer om du byter ordning?' },
+    { title: 'Var exakt', text: 'En dator gör exakt det du säger – inte det du menar. Berätta hur långt och åt vilket håll roboten ska gå.', example: 'Gå två rutor åt höger är tydligare än gå dit.' },
   ], takeaway: 'Jag kan dela en uppgift i tydliga steg och lägga dem i rätt ordning.' },
-  { id: 'debugging', moduleId: 'debugging', title: 'Hitta och laga fel', minLevel: 0, steps: [
-    { title: 'Fel är ledtrådar', text: 'Ett programfel kallas ibland bugg. Felsökning betyder att ta reda på varför resultatet blev fel.', example: 'Roboten går tre rutor men målet ligger två rutor bort.' },
-    { title: 'Testa ett steg i taget', text: 'Först gissar du vad som ska hända. Kör sedan långsamt och jämför varje steg med planen.', example: 'Efter första pilen ska roboten stå i rutan bredvid starten.' },
-    { title: 'Ändra och testa igen', text: 'Ändra det steg som verkar fel. Testa både det gamla exemplet och ett nytt så du ser att lösningen fungerar.', example: 'Ta bort den extra pilen och kör igen.' },
+  { id: 'robot-intro', moduleId: 'robot', title: 'Styr roboten', minLevel: 0, steps: [
+    { title: 'Pilar är kommandon', text: 'Varje pil är ett kommando: gå ett steg åt det hållet. Flera kommandon i rad blir ett program.', example: '➡️ ➡️ betyder: gå två steg åt höger.' },
+    { title: 'Planera först', text: 'Titta på banan innan du bygger. Var är roboten? Var är flaggan? Finns det stenar eller vatten i vägen?', example: 'Peka med fingret längs vägen och räkna stegen.' },
+    { title: 'Kör och se', text: 'Tryck ▶ Kör. Roboten gör ett steg för varje block. Om den hamnar fel har programmet en bugg – och buggar går att laga!', example: 'Roboten krockade med en sten. Vilket block ska bytas?' },
+  ], takeaway: 'Jag kan bygga ett program av kommandon och köra det.' },
+  { id: 'predict-intro', moduleId: 'predict', title: 'Läs koden som en dator', minLevel: 0, steps: [
+    { title: 'Datorn läser i ordning', text: 'En dator gör ett kommando i taget, från början till slut. Den hoppar inte över något och gissar inte.', example: 'Läs: ⬆️ ➡️. Först upp, sedan höger.' },
+    { title: 'Förutsäg', text: 'Innan du kör ett program kan du gissa vad som händer. Flytta fingret ett steg för varje kommando.', example: 'Roboten står i mitten. ⬇️ ⬇️ – var hamnar den?' },
+    { title: 'Jämför', text: 'Om resultatet inte blir som du trodde har du lärt dig något. Antingen var gissningen fel – eller programmet.', example: 'Programmerare läser ofta kod i huvudet för att hitta fel.' },
+  ], takeaway: 'Jag kan läsa ett program steg för steg och förutsäga vad det gör.' },
+  { id: 'debugging', moduleId: 'debug', title: 'Hitta och laga fel', minLevel: 0, steps: [
+    { title: 'Fel är ledtrådar', text: 'Ett programfel kallas bugg. Att leta upp och laga buggar kallas att debugga. Alla programmerare gör fel – det är en del av jobbet.', example: 'Roboten går tre rutor men målet ligger två rutor bort.' },
+    { title: 'Testa ett steg i taget', text: 'Gissa först vad som ska hända. Kör sedan långsamt och jämför varje steg med planen. Var blir det fel första gången?', example: 'Efter första pilen ska roboten stå i rutan bredvid starten.' },
+    { title: 'Ändra och testa igen', text: 'Ändra det steg som verkar fel. Testa igen så du ser att lösningen fungerar och att inget annat gick sönder.', example: 'Byt den felaktiga pilen och kör igen.' },
   ], takeaway: 'Jag kan förutsäga, testa, hitta felet och pröva en förbättring.' },
+  { id: 'computers', moduleId: 'everyday', title: 'Datorer omkring oss', minLevel: 0, steps: [
+    { title: 'Små datorer överallt', text: 'Tvättmaskiner, trafikljus, mobiler och robotdammsugare har små datorer inuti som följer program. En sax eller en boll har inget program.', example: 'Hur många saker hemma har en knapp och en display?' },
+    { title: 'In, bearbeta, ut', text: 'En dator tar in information (tangentbord, mikrofon, kamera, sensorer), bearbetar den med ett program och ger ut ett resultat (skärm, högtalare, lampa). Den kan också spara information.', example: 'Du säger något i mikrofonen (in), programmet tolkar (bearbetar), högtalaren svarar (ut).' },
+    { title: 'Sensorer är datorns sinnen', text: 'En sensor känner av något, till exempel rörelse, ljus eller rök. Programmet bestämmer vad som ska hända.', example: 'Om rörelsesensorn märker någon: öppna dörren. Annars: håll den stängd.' },
+  ], takeaway: 'Jag vet att många saker styrs av program och att datorer tar in, bearbetar och ger ut information.' },
   { id: 'loops', moduleId: 'loops', title: 'Upprepa med loopar', minLevel: 1, steps: [
     { title: 'Samma sak flera gånger', text: 'En loop upprepar instruktioner. Du väljer vilka steg som ska upprepas och hur många gånger.', example: 'Upprepa 3 gånger: gå framåt. Det ger tre steg.' },
     { title: 'Hela paketet upprepas', text: 'Alla steg inuti loopen görs i ordning vid varje varv.', example: 'Upprepa 2 gånger: klappa, stampa. Resultat: klappa, stampa, klappa, stampa.' },
-    { title: 'Planera stoppet', text: 'En loop behöver en tydlig regel för när den slutar. Annars kan den fortsätta utan att uppgiften blir klar.', example: 'Upprepa 4 gånger är en tydlig stoppregel.' },
+    { title: 'Planera stoppet', text: 'En loop behöver en tydlig regel för när den slutar. Annars kan den fortsätta utan att uppgiften blir klar.', example: 'Upprepa 4 gånger är en tydlig stoppregel. Prova loopbanorna i Robotbanan!' },
   ], takeaway: 'Jag kan känna igen upprepningar och räkna vad en loop gör.' },
   { id: 'conditions', moduleId: 'conditions', title: 'Om något händer', minLevel: 2, steps: [
-    { title: 'Välj med en regel', text: 'Ett villkor är en fråga som programmet kontrollerar. Svaret avgör vilket steg som körs.', example: 'Om det regnar: ta paraply. Annars: lämna paraplyet.' },
+    { title: 'Välj med en regel', text: 'Ett villkor är en fråga som programmet kontrollerar. Svaret avgör vilket steg som körs.', example: 'Om det regnar: ta paraply. Annars: ta keps.' },
     { title: 'Kontrollera rätt sak', text: 'Programmet behöver information för att kontrollera villkoret, till exempel en knapp eller en sensor.', example: 'En dörr kan öppnas om en sensor märker någon framför den.' },
-    { title: 'Testa båda vägarna', text: 'Prova när villkoret stämmer och när det inte stämmer.', example: 'Testa dörren både med och utan någon framför sensorn.' },
+    { title: 'Testa båda vägarna', text: 'Prova när villkoret stämmer och när det inte stämmer. Ett fel kan gömma sig i bara en av vägarna.', example: 'Testa dörren både med och utan någon framför sensorn.' },
   ], takeaway: 'Jag kan följa en om–annars-regel och testa båda fallen.' },
+  { id: 'turtle-intro', moduleId: 'turtle', title: 'Rita med kod', minLevel: 2, steps: [
+    { title: 'Sköldpaddan ritar', text: 'I Rita med kod drar en sköldpadda ett streck när den går framåt. Sväng höger eller vänster för att byta riktning.', example: '👣 👣 ↷ 👣 👣 ritar ett hörn.' },
+    { title: 'Former är mönster', text: 'En kvadrat är fyra lika sidor med en sväng efter varje. Det är ett mönster som upprepas!', example: 'Upprepa 4 gånger: framåt, framåt, sväng höger. Då blir det en kvadrat.' },
+    { title: 'Kortare kod', text: 'Med loopar blir programmet kortare och lättare att ändra. Vill du ha större kvadrat räcker det att ändra i loopen.', example: 'Hur skulle du rita en trappa? Vilka steg upprepas?' },
+  ], takeaway: 'Jag kan rita former med kod och använda loopar för mönster.' },
   { id: 'variables', moduleId: 'variables', title: 'Kom ihåg ett värde', minLevel: 3, steps: [
-    { title: 'Ett namn för information', text: 'En variabel har ett namn och sparar ett värde som programmet kan använda. Värdet kan ändras.', example: 'poäng = 0' },
+    { title: 'Ett namn för information', text: 'En variabel har ett namn och sparar ett värde som programmet kan använda. Tänk dig en låda med en etikett. Värdet kan ändras.', example: 'poäng = 0' },
     { title: 'Uppdatera värdet', text: 'När en spelare får en stjärna kan programmet öka poängen. Det gamla värdet används för att räkna ut det nya.', example: 'poäng = poäng + 1. Om poäng var 2 blir den 3.' },
     { title: 'Följ förändringen', text: 'Skriv upp värdet efter varje instruktion. Då ser du hur programmet minns saker.', example: 'liv = 3 → förlora ett liv → liv = 2.' },
   ], takeaway: 'Jag kan följa hur ett sparat värde ändras under ett program.' },
   { id: 'events', moduleId: 'events', title: 'Händelser och funktioner', minLevel: 4, steps: [
-    { title: 'Något startar koden', text: 'En händelse kan vara ett knapptryck, en timer eller att två saker krockar i ett spel. Programmet kan reagera på händelsen.', example: 'När hoppknappen trycks: låt figuren hoppa.' },
+    { title: 'Något startar koden', text: 'En händelse kan vara ett knapptryck, en timer eller att två saker krockar i ett spel. Programmet reagerar på händelsen.', example: 'När hoppknappen trycks: låt figuren hoppa.' },
     { title: 'Ge ett paket steg ett namn', text: 'En funktion är ett namngivet paket instruktioner. Att anropa funktionen betyder att köra dess steg.', example: 'hälsa: vinka, säg hej. Anropa hälsa när någon kommer.' },
     { title: 'Bygg och prova', text: 'Dela ett stort program i mindre delar. Testa varje del och sedan hur delarna fungerar tillsammans.', example: 'Testa hoppet för sig. Testa sedan hoppet när knappen trycks.' },
   ], takeaway: 'Jag kan beskriva vad som startar kod och hur funktioner återanvänder steg.' },
 ];
 
-const question = (minLevel, prompt, options, answer, hint, explain) => ({ minLevel, prompt, options, answer, hint, explain });
+const question = (minLevel, prompt, options, answer, hint, explain, pics) => ({ minLevel, prompt, options, answer, hint, explain, pics });
 export const CODING_QUESTIONS = {
   algorithms: [
-    question(0, 'Du ska ta på skor. Vad gör du först?', ['Ta på strumpor', 'Knyt skorna', 'Gå ut'], 0, 'Vad ska sitta under skorna?', 'Strumporna behöver vara på innan skorna. Ordningen gör instruktionen användbar.'),
-    question(0, 'Vilken instruktion är tydligast för roboten?', ['Gå lite', 'Gå två rutor åt höger', 'Gå dit borta'], 1, 'Roboten behöver antal och riktning.', 'Två rutor åt höger berättar både hur långt och åt vilket håll.'),
-    question(1, 'Roboten ska flytta två rutor höger och en ner. Vilket program passar?', ['Höger, höger, ner', 'Höger, ner, ner', 'Ner, vänster, vänster'], 0, 'Räkna pilarna åt varje håll.', 'Två högerpilar och en nerpil ger den önskade förflyttningen.'),
-    question(2, 'Vad är en algoritm?', ['En metod med tydliga steg', 'Bara en sorts robot', 'Ett fel i datorn'], 0, 'Tänk på en instruktion för att lösa en uppgift.', 'En algoritm beskriver en metod. Den kan skrivas som ord, bilder eller kod.'),
+    question(0, 'Du ska ta på skor. Vad gör du först?', ['Ta på strumpor', 'Knyt skorna', 'Gå ut'], 0, 'Vad ska sitta under skorna?', 'Strumporna behöver vara på innan skorna. Ordningen gör instruktionen användbar.', ['🧦', '👟', '🚪']),
+    question(0, 'Vilken instruktion är tydligast för roboten?', ['Gå två rutor åt höger', 'Gå lite', 'Gå dit borta'], 0, 'Roboten behöver antal och riktning.', 'Två rutor åt höger berättar både hur långt och åt vilket håll.', ['➡️➡️', '🤷', '👉']),
+    question(0, 'Vad gör en dator med ett program?', ['Följer stegen exakt', 'Gör vad den själv vill', 'Gissar vad du menar'], 0, 'Datorn följer instruktioner.', 'En dator gör exakt det programmet säger – i exakt den ordningen.', ['📋', '🎲', '🔮']),
+    question(1, 'Roboten ska flytta två rutor höger och en ner. Vilket program passar?', ['Höger, höger, ner', 'Höger, ner, ner', 'Ner, vänster, vänster'], 0, 'Räkna pilarna åt varje håll.', 'Två högerpilar och en nerpil ger den önskade förflyttningen.', ['➡️➡️⬇️', '➡️⬇️⬇️', '⬇️⬅️⬅️']),
+    question(2, 'Vad är en algoritm?', ['En metod med tydliga steg', 'Bara en sorts robot', 'Ett fel i datorn'], 0, 'Tänk på en instruktion för att lösa en uppgift.', 'En algoritm beskriver en metod. Den kan skrivas som ord, bilder eller kod – ett recept är också en algoritm.'),
     question(3, 'Två olika program når samma mål. Vad kan du jämföra?', ['Hur många steg de behöver', 'Vilket som har finast namn', 'Om datorn tycker om det'], 0, 'Båda fungerar. Vilken egenskap går att mäta?', 'Antalet steg hjälper dig jämföra hur mycket arbete programmen gör.'),
+    question(4, 'Du letar efter ett namn i en sorterad klasslista. Vilken metod är snabbast?', ['Öppna i mitten och välj rätt halva, om och om igen', 'Läs varje namn från början', 'Gissa en rad slumpvis'], 0, 'Listan är i bokstavsordning.', 'Att dela listan på mitten varje gång kallas binärsökning. Den hittar rätt mycket snabbare än att läsa allt.'),
   ],
   debugging: [
-    question(0, 'Roboten går åt vänster men målet är åt höger. Vad ändrar du?', ['Pilen till höger', 'Målets färg', 'Robotens namn'], 0, 'Vilken instruktion styr rörelsen?', 'En högerpil ändrar rörelsen åt rätt håll. Färg och namn ändrar inte steget.'),
-    question(0, 'Programmet fungerar inte som du tänkte. Vad är en bra början?', ['Kör ett steg i taget', 'Tryck snabbare', 'Ge upp direkt'], 0, 'Försök se var planen och resultatet skiljer sig.', 'När du testar ett steg i taget kan du hitta den första platsen där något blir fel.'),
-    question(1, 'Målet är tre rutor bort. Programmet går två rutor. Vad saknas?', ['Ett steg framåt', 'Två steg bakåt', 'Ett nytt mål'], 0, 'Jämför tre steg med två.', 'Ett extra steg framåt gör två steg till tre.'),
+    question(0, 'Roboten går åt vänster men målet är åt höger. Vad ändrar du?', ['Pilen till höger', 'Målets färg', 'Robotens namn'], 0, 'Vilken instruktion styr rörelsen?', 'En högerpil ändrar rörelsen åt rätt håll. Färg och namn ändrar inte steget.', ['➡️', '🎨', '🏷️']),
+    question(0, 'Programmet blev fel. Vad är en bra början?', ['Kör ett steg i taget', 'Tryck snabbare', 'Ge upp direkt'], 0, 'Försök se var det blir fel.', 'När du testar ett steg i taget kan du hitta den första platsen där något blir fel.', ['🐢', '⚡', '🏳️']),
+    question(1, 'Målet är tre rutor bort. Programmet går två rutor. Vad saknas?', ['Ett steg framåt', 'Två steg bakåt', 'Ett nytt mål'], 0, 'Jämför tre steg med två.', 'Ett extra steg framåt gör två steg till tre.', ['👣', '🔙', '🏁']),
     question(2, 'Du har lagat en bugg. Vad gör du sedan?', ['Testar programmet igen', 'Vet att allt alltid fungerar', 'Tar bort alla instruktioner'], 0, 'En ändring kan påverka fler steg.', 'Testa igen för att se att felet är löst och att andra delar fortfarande fungerar.'),
+    question(3, 'Varför kallas programfel för buggar?', ['Man har länge kallat tekniska fel så – en gång satt det en riktig mal i en dator', 'Datorer är fulla av insekter', 'Buggar betyder snabba program'], 0, 'Det finns en känd historia om en insekt.', 'Ordet bug användes om tekniska fel redan på 1800-talet. År 1947 hittade datorpionjärer kring Grace Hopper en mal i datorn Mark II och klistrade in den i loggboken.'),
     question(4, 'Du ändrar fem saker samtidigt. Varför blir felsökningen svårare?', ['Du vet inte vilken ändring som hjälpte', 'Datorn blir ledsen', 'Fler ändringar fungerar alltid bättre'], 0, 'Hur kan du koppla ändringen till resultatet?', 'En liten ändring i taget gör det lättare att förstå vad som orsakade förbättringen.'),
   ],
   loops: [
-    question(1, 'Upprepa 3 gånger: klappa. Hur många klappar blir det?', ['3', '1', '6'], 0, 'Varje varv ger en klapp.', 'Tre varv med en klapp i varje ger tre klappar.'),
-    question(1, 'Vilket program betyder höger, höger, höger, höger?', ['Upprepa 4 gånger: höger', 'Upprepa 2 gånger: höger', 'Höger, vänster'], 0, 'Räkna de fyra likadana stegen.', 'En loop kan skriva fyra likadana steg som en instruktion med antal fyra.'),
+    question(0, 'Upprepa 2 gånger: hoppa. Hur många hopp blir det?', ['2', '1', '5'], 0, 'Siffran säger hur många gånger.', 'Loopen gör hoppet två gånger.', ['🦘🦘', '🦘', '🦘🦘🦘🦘🦘']),
+    question(1, 'Upprepa 3 gånger: klappa. Hur många klappar blir det?', ['3', '1', '6'], 0, 'Varje varv ger en klapp.', 'Tre varv med en klapp i varje ger tre klappar.', ['👏👏👏', '👏', '👏👏👏👏👏👏']),
+    question(1, 'Vilket program betyder höger, höger, höger, höger?', ['Upprepa 4 gånger: höger', 'Upprepa 2 gånger: höger', 'Höger, vänster'], 0, 'Räkna de fyra likadana stegen.', 'En loop kan skriva fyra likadana steg som en instruktion med antal fyra.', ['🔁4×➡️', '🔁2×➡️', '➡️⬅️']),
     question(2, 'Upprepa 2 gånger: klappa, stampa. Vad händer?', ['Klappa, stampa, klappa, stampa', 'Klappa, klappa, stampa, stampa', 'Klappa, stampa'], 0, 'Hela paketet körs vid varje varv.', 'Först görs klappa och stampa. Sedan görs båda igen i samma ordning.'),
     question(3, 'Upprepa 3 gånger: gå 2 steg. Hur många steg totalt?', ['6', '5', '3'], 0, 'Lägg ihop 2 + 2 + 2.', 'Tre varv med två steg i varje ger sex steg.'),
-    question(4, 'En loop säger: fortsätt tills poäng är 5. Poäng ändras aldrig från 0. Vad kan hända?', ['Loopen fortsätter utan att nå stoppet', 'Poäng blir automatiskt 5', 'Loopen kör alltid exakt 5 varv'], 0, 'Kan stoppvillkoret bli sant?', 'Om poäng förblir 0 blir villkoret poäng är 5 aldrig sant. Programmet behöver kunna nå stoppet.'),
+    question(4, 'En loop säger: fortsätt tills poäng är 5. Poäng ändras aldrig från 0. Vad kan hända?', ['Loopen fortsätter utan att nå stoppet', 'Poäng blir automatiskt 5', 'Loopen kör alltid exakt 5 varv'], 0, 'Kan stoppvillkoret bli sant?', 'Om poäng förblir 0 blir villkoret poäng är 5 aldrig sant. Det kallas en oändlig loop. Programmet behöver kunna nå stoppet.'),
   ],
   conditions: [
+    question(0, 'Om det regnar: ta paraply. Det regnar. Vad tar du?', ['Paraply', 'Solglasögon'], 0, 'Titta på regeln.', 'Villkoret stämmer – det regnar – så du tar paraply.', ['☂️', '🕶️']),
     question(2, 'Om det regnar: ta paraply. Annars: ta keps. Det regnar. Vad väljs?', ['Paraply', 'Keps', 'Båda alltid'], 0, 'Kontrollera om-regeln.', 'Villkoret det regnar stämmer, så programmet väljer paraply.'),
     question(2, 'Om dörren är låst: använd nyckel. Annars: öppna. Dörren är olåst. Vad händer?', ['Öppna', 'Använd nyckel', 'Lås dörren'], 0, 'Villkoret är inte uppfyllt. Följ annars.', 'Eftersom dörren inte är låst körs annars-steget: öppna.'),
     question(3, 'Om poäng är större än 10: visa medalj. Poäng är 10. Visas medaljen?', ['Nej', 'Ja', 'Alltid'], 0, 'Större än betyder inte lika med.', '10 är lika med 10, men inte större än 10. Medaljen visas därför inte.'),
     question(3, 'Om liv är 0: avsluta spelet. Liv är 1. Vad vet vi?', ['Avsluta-regeln körs inte', 'Spelet avslutas', 'Liv blir automatiskt 0'], 0, 'Jämför värdet 1 med villkoret 0.', 'Liv är inte 0, så just den här regeln avslutar inte spelet.'),
     question(4, 'Du testar en om–annars-regel. Vilka fall behöver du prova?', ['Både när villkoret stämmer och inte stämmer', 'Bara när det stämmer', 'Bara när du vinner'], 0, 'Det finns två möjliga vägar.', 'Båda grenarna behöver testas, eftersom ett fel kan finnas i bara en av dem.'),
+    question(4, 'Om det är helg OCH solen skiner: gå till stranden. Det är helg men det regnar. Vad händer?', ['Ni går inte till stranden', 'Ni går till stranden', 'Det blir automatiskt sol'], 0, 'OCH betyder att båda måste stämma.', 'Med OCH måste båda villkoren vara sanna. Solen skiner inte, så regeln körs inte.'),
   ],
   variables: [
     question(3, 'poäng börjar på 0. Du får en stjärna och ökar poäng med 1. Vad är poäng nu?', ['1', '0', '2'], 0, 'Börja på 0 och lägg till 1.', 'Variabeln poäng ändras från 0 till 1.'),
@@ -894,31 +1084,72 @@ export const CODING_QUESTIONS = {
 export function genCoding(topic, level, rng) {
   const questions = CODING_QUESTIONS[topic];
   const effectiveLevel = Math.max(level, Math.min(...questions.map((item) => item.minLevel)));
-  const eligible = questions.filter((item) => item.minLevel <= effectiveLevel);
+  const all = questions.filter((item) => item.minLevel <= effectiveLevel);
+  const withPics = all.filter((item) => item.pics);
+  const eligible = level <= 1 && withPics.length ? withPics : all;
   // Prefer the newest concepts without hiding earlier foundations.
   const newest = eligible.filter((item) => item.minLevel === Math.max(...eligible.map((item) => item.minLevel)));
   const item = rng.pick(rng.chance(0.7) ? newest : eligible);
+  const usePics = level <= 1 && item.pics && item.pics.length === item.options.length;
   return {
     type: 'choice', prompt: item.prompt, say: item.prompt,
-    options: rng.shuffle(item.options.map((label, i) => ({ id: String(i), label, say: label }))),
-    answer: String(item.answer), hint: item.hint, explain: item.explain,
+    options: rng.shuffle(item.options.map((label, i) => (usePics
+      ? { id: String(i), label, say: label, html: `<span class="pic">${item.pics[i]}</span><span class="lbl">${label}</span>` }
+      : { id: String(i), label, say: label }))),
+    answer: String(item.answer), hint: item.hint, explain: item.explain, wide: !usePics && item.options.some((o) => o.length > 28),
   };
 }
 
+/**
+ * Modul-id som slagits ihop. Barnens statistik flyttas till det nya id:t
+ * (rundor och rätt adderas, bästa betyget behålls). Anropas av kodvyerna.
+ */
+export const CODE_MODULE_ALIASES = { debugging: 'debug', logic: 'loops' };
+export function migrateCodeProfile(profile) {
+  if (!profile) return false;
+  let changed = false;
+  const mods = profile.stats?.code?.modules;
+  for (const [from, to] of Object.entries(CODE_MODULE_ALIASES)) {
+    if (mods && mods[from]) {
+      const a = mods[from];
+      const b = mods[to] || { rounds: 0, best: 0, correct: 0 };
+      mods[to] = { ...b, rounds: (b.rounds || 0) + (a.rounds || 0), correct: (b.correct || 0) + (a.correct || 0), best: Math.max(b.best || 0, a.best || 0) };
+      delete mods[from];
+      changed = true;
+    }
+    const c = profile.counters;
+    if (c) for (const kind of ['rounds', 'perfect']) {
+      const k = `${kind}:code:${from}`;
+      if (c[k]) {
+        const t = `${kind}:code:${to}`;
+        c[t] = (c[t] || 0) + c[k];
+        delete c[k];
+        changed = true;
+      }
+    }
+  }
+  return changed;
+}
+
+const icon = { algorithms: '🧩', debug: '🐞', loops: '🔁', conditions: '🚦', variables: '📦', events: '⚡' };
 export const codeApp = {
   id: 'code',
   name: 'Kodning',
   icon: '🤖',
   color: '#ff7a2f',
   tagline: 'Förstå kod, lös problem och skapa själv',
+  // Ordningen är kursens progression: sekvenser → loopar → villkor → variabler → händelser.
   modules: [
     { id: 'course', name: 'Kodkursen', icon: '📖', minLevel: 0, view: 'course', lgr: ['ma-instr', 'tk-prog'] },
-    ...CODING_LESSONS.map((lesson) => ({ id: lesson.id, name: lesson.title, icon: { algorithms: '🧩', debugging: '🔎', loops: '🔁', conditions: '🚦', variables: '📦', events: '⚡' }[lesson.id], minLevel: lesson.minLevel, gen: (level, rng) => genCoding(lesson.id, level, rng), lgr: ['ma-instr', 'tk-prog'] })),
+    { id: 'algorithms', name: 'Tydliga steg', icon: icon.algorithms, minLevel: 0, gen: mix('algorithms', genSequence, 0.4), lgr: ['ma-instr', 'tk-prog'] },
     { id: 'robot', name: 'Robotbanan', icon: '🤖', minLevel: 0, view: 'robot', lgr: ['ma-instr', 'tk-styr'] },
     { id: 'predict', name: 'Följ koden', icon: '👣', minLevel: 0, gen: genPredict, lgr: ['ma-instr'] },
-    { id: 'everyday', name: 'Program i vardagen', icon: '🏠', minLevel: 0, gen: genEveryday, lgr: ['tk-prog', 'ma-instr'] },
-    { id: 'logic', name: 'Om, loopar & funktioner', icon: '🔀', minLevel: 1, gen: genLogic, lgr: ['ma-instr', 'tk-prog'] },
-    { id: 'debug', name: 'Hitta buggen', icon: '🐞', minLevel: 2, gen: genDebug, lgr: ['ma-instr', 'tk-styr'] },
+    { id: 'debug', name: 'Hitta buggen', icon: icon.debug, minLevel: 0, gen: mix('debugging', genDebug, 0.3), lgr: ['ma-instr', 'tk-styr', 'tk-forbattra'] },
+    { id: 'everyday', name: 'Datorer omkring oss', icon: '🏠', minLevel: 0, gen: genComputers, lgr: ['tk-prog', 'tk-datorer'] },
+    { id: 'loops', name: 'Upprepa med loopar', icon: icon.loops, minLevel: 1, gen: mix('loops', genLoopsMix, 0.35), lgr: ['ma-instr', 'ma-monster', 'tk-prog'] },
+    { id: 'conditions', name: 'Om något händer', icon: icon.conditions, minLevel: 2, gen: mix('conditions', genIfMix, 0.35), lgr: ['ma-instr', 'tk-prog'] },
     { id: 'turtle', name: 'Rita med kod', icon: '🐢', minLevel: 2, view: 'turtle', lgr: ['ma-instr', 'ma-geo', 'ma-monster'] },
+    { id: 'variables', name: 'Kom ihåg ett värde', icon: icon.variables, minLevel: 3, gen: mix('variables', genVariables, 0.35), lgr: ['ma-instr', 'ma-okand'] },
+    { id: 'events', name: 'Händelser och funktioner', icon: icon.events, minLevel: 4, gen: mix('events', genEvents, 0.35), lgr: ['ma-instr', 'tk-prog'] },
   ],
 };

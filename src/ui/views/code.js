@@ -1,6 +1,6 @@
 // Programmering: Robotbanan och Rita med kod (sköldpadda).
 import { h, clear, onTap, wait } from '../dom.js';
-import { ROBOT_LEVELS, ROBOT_STAGES, parseLevel, runProgram, blockCount, CMD_INFO, TURTLE_CHALLENGES, turtleSegments, shapeSignature, parseProgram, DIRS } from '../../apps/code.js';
+import { migrateCodeProfile, ROBOT_LEVELS, ROBOT_STAGES, parseLevel, runProgram, blockCount, CMD_INFO, TURTLE_CHALLENGES, turtleSegments, shapeSignature, parseProgram, DIRS } from '../../apps/code.js';
 import { hasInSet, setSize } from '../../core/model.js';
 
 /* ---------- Gemensam blockredigerare ---------- */
@@ -139,6 +139,7 @@ export function robotView(el, { kos, app, level }) {
   const p = kos.profile;
   let running = false;
   let alive = true;
+  if (migrateCodeProfile(p)) kos.save();
 
   // Barnets nivå (0–4) låser upp motsvarande steg direkt, så att en 9-åring slipper nöta de enklaste banorna.
   const openStage = Math.max(0, (level ?? 0) - 1);

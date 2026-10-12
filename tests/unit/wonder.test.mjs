@@ -20,6 +20,14 @@ import {
   genDebug,
   genLogic,
   genEveryday,
+  genVariables,
+  genEvents,
+  genComputers,
+  INPUT_OUTPUT,
+  SENSOR_RULES,
+  CODING_LESSONS,
+  CODE_MODULE_ALIASES,
+  migrateCodeProfile,
   codeApp,
 } from '../../src/apps/code.js';
 
@@ -170,9 +178,86 @@ test('rita med kod: alla ritutmaningar går att bygga utan loopar i loopar', () 
 
 /* ======================= Programmering: frågegeneratorer ======================= */
 
-test('kodmoduler: nya moduler finns med läroplanskoppling', () => {
+test('kodmoduler: en kurs i progressionsordning, inga dubbletter, och lektionerna pekar på rätt övning', () => {
   const ids = codeApp.modules.map((m) => m.id);
-  for (const id of ['robot', 'predict', 'everyday', 'logic', 'debug', 'turtle']) assert.ok(ids.includes(id), id);
+  for (const id of ['course', 'algorithms', 'robot', 'predict', 'debug', 'everyday', 'loops', 'conditions', 'turtle', 'variables', 'events']) assert.ok(ids.includes(id), id);
+  for (const gone of Object.keys(CODE_MODULE_ALIASES)) assert.ok(!ids.includes(gone), `${gone} ska vara sammanslagen`);
+  // minLevel får aldrig gå ned längs listan (kursens progression 0 → 4)
+  const levels = codeApp.modules.map((m) => m.minLevel);
+  assert.deepEqual(levels, [...levels].sort((a, b) => a - b));
+  for (const l of CODING_LESSONS) {
+    const m = codeApp.modules.find((x) => x.id === l.moduleId);
+    assert.ok(m, `${l.id}: övningen ${l.moduleId} finns inte`);
+    assert.ok(m.minLevel <= l.minLevel, `${l.id}: övningen låses upp efter lektionen`);
+  }
+  assert.deepEqual(CODING_LESSONS.map((l) => l.minLevel), [...CODING_LESSONS.map((l) => l.minLevel)].sort((a, b) => a - b), 'lektionerna i stigande nivå');
+  // de gamla lektions-id:na finns kvar så att lästa lektioner inte försvinner
+  for (const id of ['algorithms', 'debugging', 'loops', 'conditions', 'variables', 'events']) assert.ok(CODING_LESSONS.some((l) => l.id === id), id);
+});
+
+test('kodmoduler: sammanslagna moduler flyttar barnens statistik utan att tappa något', () => {
+  const p = { stats: { code: { modules: { debugging: { rounds: 2, best: 3, correct: 9 }, debug: { rounds: 1, best: 1, correct: 4 }, logic: { rounds: 4, best: 2, correct: 12 } } } }, counters: { 'rounds:code:logic': 4, 'perfect:code:debugging': 1, 'rounds:code:debug': 1 } };
+  assert.equal(migrateCodeProfile(p), true);
+  assert.deepEqual(p.stats.code.modules.debug, { rounds: 3, best: 3, correct: 13 });
+  assert.deepEqual(p.stats.code.modules.loops, { rounds: 4, best: 2, correct: 12 });
+  assert.ok(!p.stats.code.modules.debugging && !p.stats.code.modules.logic);
+  assert.equal(p.counters['rounds:code:loops'], 4);
+  assert.equal(p.counters['perfect:code:debug'], 1);
+  assert.equal(p.counters['rounds:code:debug'], 1);
+  assert.equal(migrateCodeProfile(p), false, 'andra gången händer inget');
+  assert.equal(migrateCodeProfile({ stats: {}, counters: {} }), false);
+});
+
+test('kodmoduler: varje övning ger giltiga frågor, bildsvar för de minsta och rätt uträknade svar', () => {
+  for (const m of codeApp.modules.filter((x) => x.gen)) {
+    for (let lvl = 0; lvl <= 4; lvl++) {
+      for (let s = 0; s < 150; s++) {
+        const q = m.gen(lvl, createRng(s * 101 + lvl));
+        assert.ok(['choice', 'numpad', 'order', 'sort', 'tap'].includes(q.type), `${m.id}: ${q.type}`);
+        if (q.type === 'numpad') assert.ok(lvl >= 2 && Number.isInteger(q.answer) && q.answer >= 0, `${m.id} nivå ${lvl}: siffersvar ${q.answer}`);
+        if (q.type === 'choice' && lvl === 0) assert.ok(q.options.length <= 3, `${m.id}: nivå 0 ska ha få alternativ`);
+        if (q.type === 'choice' && lvl === 0 && m.id !== 'everyday') assert.ok(q.options.every((o) => o.html), `${m.id}: nivå 0 ska ha bildsvar (${q.prompt})`);
+      }
+    }
+  }
+});
+
+test('variabler: svaret följer programmet rad för rad', () => {
+  for (let s = 0; s < 300; s++) {
+    const q = genVariables(3 + (s % 2), createRng(s));
+    const lines = [...q.visual.matchAll(/<code>([^<]+)<\/code>/g)].map((m) => m[1]);
+    let v = 0;
+    for (const line of lines) {
+      const loop = /^upprepa (\d+) gånger: \S+ = \S+ \+ (\d+)$/.exec(line);
+      const set = /^\S+ = (\d+)$/.exec(line);
+      const op = /^\S+ = \S+ ([+-]) (\d+)$/.exec(line);
+      if (loop) v += Number(loop[1]) * Number(loop[2]);
+      else if (set) v = Number(set[1]);
+      else if (op) v += op[1] === '+' ? Number(op[2]) : -Number(op[2]);
+      else assert.fail(line);
+      assert.ok(v >= 0, 'aldrig negativt');
+    }
+    assert.equal(q.answer, v);
+  }
+});
+
+test('händelser: lampan byter läge för varje tryck', () => {
+  for (let s = 0; s < 200; s++) {
+    const q = genEvents(4, createRng(s));
+    if (!q.prompt.startsWith('När du trycker')) continue;
+    const taps = Number(/trycker (\d+)/.exec(q.prompt)[1]);
+    const startOn = q.prompt.includes('Lampan är tänd');
+    assert.equal(q.answer, (taps % 2 === 0) === startOn ? 'tänd' : 'släckt');
+  }
+});
+
+test('datorer omkring oss: in- och utdelar sorteras rätt och sensorfrågor har ett svar', () => {
+  assert.ok(INPUT_OUTPUT.filter((x) => x.bin === 'in').length >= 4 && INPUT_OUTPUT.filter((x) => x.bin === 'ut').length >= 4);
+  for (const r of SENSOR_RULES) assert.ok(!r.wrong.includes(r.act));
+  for (let s = 0; s < 200; s++) {
+    const q = genComputers(s % 5, createRng(s));
+    if (q.type === 'sort') q.items.forEach((it) => assert.ok(q.bins.some((b) => b.id === it.bin)));
+  }
 });
 
 test('följ koden: svaret är dit roboten går, loopar från nivå 3', () => {
@@ -195,7 +280,7 @@ test('hitta buggen: rätt block lagar programmet och inget annat block gör det'
       assert.equal(q.type, 'choice');
       assert.ok(q.options.some((o) => o.id === q.answer));
       if (lvl === 0) assert.ok(q.options.length <= 3, 'nivå 0 ska ha få alternativ');
-      assert.ok(!/undefined|NaN/.test(q.visual + q.explain));
+      assert.ok(!/undefined|NaN/.test(String(q.visual).replace(/data:image\/[^;]+;base64,[A-Za-z0-9+/=]+/g, '') + q.explain)); // base64 kan råka innehålla "NaN"
     }
   }
 });

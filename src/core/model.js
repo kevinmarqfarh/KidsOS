@@ -53,7 +53,7 @@ export function newProfile({ name, age, avatar = '🦊', color = '#4aa8ff', wall
       hiddenApps: [],
       showAllModules: false,
       layout: 'auto', // 'auto' (efter ålder) | 'tablet' | 'desktop'
-      // Anpassat läge (stöd för autism/intellektuell funktionsnedsättning), se core/adapted.js.
+      // Autismstöd (tidigare "Anpassat läge"), se core/adapted.js.
       ...normalizeAdaptedSettings({ adapted, adaptedPrefs }),
     },
   };
