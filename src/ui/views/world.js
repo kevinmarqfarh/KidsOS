@@ -1,5 +1,5 @@
 // Världen – interaktiv världskarta (världsdelar och hav) och Sverigekarta.
-import { h, clear, onTap } from '../dom.js';
+import { h, clear, onTap, interactiveGraphic } from '../dom.js';
 import { CONTINENTS, OCEANS, WORLD_ANIMALS, PLACES, SWEDISH_CITIES, projectSweden, bearing8, clearTargets, worldMapSvg, swedenBase } from '../../apps/world.js';
 import { photo, hasPhoto, creditLine } from '../img.js';
 import { hasInSet } from '../../core/model.js';
@@ -25,7 +25,7 @@ export function continentsView(el, { kos, app, level = 0 }) {
   const findById = (id) => CONTINENTS.find((x) => x.id === id) || OCEANS.find((x) => x.id === id);
   function draw(hl) {
     mapBox.innerHTML = worldMapSvg(hl, { oceans: true, oceanLabels: mode === 'explore' && level >= 1 });
-    mapBox.querySelectorAll('[data-hit]').forEach((g) => g.addEventListener('click', () => tap(g.dataset.hit)));
+    mapBox.querySelectorAll('[data-hit]').forEach((g) => interactiveGraphic(g, [...CONTINENTS, ...OCEANS].find((c) => c.id === g.dataset.hit)?.name || 'Världsdel', () => tap(g.dataset.hit)));
   }
   function explore(id) {
     const c = findById(id);

@@ -111,8 +111,8 @@ test('addStars ger lika många mynt, minus ger inga mynt', () => {
   assert.equal(p.stars, 0);
   // en runda ger bonusstjärnor och därmed mynt
   const before = p.coins;
-  const { bonus } = recordRound(p, 'math', 'add', { correctFirst: 5, total: 5 });
-  assert.equal(p.coins, before + bonus);
+  const res = recordRound(p, 'math', 'add', { correctFirst: 5, total: 5 });
+  assert.equal(p.coins, before + (res.coinsEarned ?? res.bonus));
 });
 
 test('spendCoins nekar vid för lite och drar annars av', () => {

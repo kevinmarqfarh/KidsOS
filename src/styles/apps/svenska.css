@@ -12,8 +12,14 @@
 }
 .rep-pick {
   display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   align-items: center;
   gap: 8px;
+  max-width: 100%;
+}
+.rep-pick .pen-only {
+  min-height: 52px;
 }
 .rep-q {
   font-family: var(--font-display);

@@ -376,3 +376,12 @@
   padding: 0;
   background: none;
 }
+
+/* Effektlager får aldrig ta emot tryck – annars kan en gnista "stjäla" barnets nästa tryck
+   (".overlays > *" sätter annars pointer-events: auto). */
+.overlays > .fx-sparkle-layer,
+.fx-sparkle-layer *,
+.overlays > .fly-star,
+.overlays > canvas.confetti {
+  pointer-events: none !important;
+}

@@ -32,8 +32,10 @@ export function isPersistent() {
 
 function rawGet(key) {
   const s = store();
+  // En misslyckad skrivning är nyare än den gamla versionen på disk.
+  if (memory.has(key)) return memory.get(key);
   try {
-    return s ? s.getItem(key) : memory.get(key) ?? null;
+    return s ? s.getItem(key) : null;
   } catch {
     return memory.get(key) ?? null;
   }
@@ -42,7 +44,7 @@ function rawGet(key) {
 function rawSet(key, value) {
   const s = store();
   try {
-    if (s) s.setItem(key, value);
+    if (s) { s.setItem(key, value); memory.delete(key); }
     else memory.set(key, value);
     return true;
   } catch {
@@ -105,6 +107,7 @@ export function deleteDrawingsFor(pid) {
   rawRemove(DRAW_KEY(pid));
   rawRemove(`kidsos.v1.notes.${pid}`);
   rawRemove(`kidsos.v1.play.${pid}`);
+  rawRemove(`kidsos.v1.studio.${pid}`);
 }
 
 /** Per-profil-data (utöver teckningar) som följer med i säkerhetskopian: nyckelprefix → förväntad typ. */
@@ -117,13 +120,15 @@ export function exportBackup(state) {
   const drawings = {};
   const extras = Object.fromEntries(Object.keys(BACKUP_EXTRAS).map((k) => [k, {}]));
   for (const p of state.profiles) {
-    drawings[p.id] = loadDrawings(p.id).slice(0, 6);
+    drawings[p.id] = loadDrawings(p.id);
     for (const [k, type] of Object.entries(BACKUP_EXTRAS)) {
       const v = loadJSON(`${k}.${p.id}`, null);
       if (typeOk(v, type)) extras[k][p.id] = v;
     }
   }
-  return JSON.stringify({ kidsos: 1, exportedAt: new Date().toISOString(), state, drawings, ...extras });
+  const worlds = {};
+  for (const p of state.profiles) worlds[p.id] = { studio: loadJSON(`studio.${p.id}`, null), play: loadJSON(`play.${p.id}`, null), notes: loadJSON(`notes.${p.id}`, null) };
+  return JSON.stringify({ kidsos: 1, exportedAt: new Date().toISOString(), state, drawings, ...extras, worlds });
 }
 
 /**
@@ -149,6 +154,11 @@ export function importBackup(text) {
     for (const [pid, v] of Object.entries(byPid)) {
       if (pids.has(pid) && typeOk(v, type)) saveJSON(`${k}.${pid}`, v);
     }
+  }
+  for (const profile of state.profiles) {
+    const world = data.worlds?.[profile.id];
+    if (!world || typeof world !== 'object') continue;
+    for (const area of ['studio', 'play', 'notes']) if (world[area] !== null && world[area] !== undefined) saveJSON(`${area}.${profile.id}`, world[area]);
   }
   saveState(state);
   return state;

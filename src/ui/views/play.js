@@ -1,7 +1,7 @@
 // Lekstaden – öppen lekvärld med inbyggt lärande.
 import { h, clear, onTap } from '../dom.js';
 import { loadJSON, saveJSON } from '../../core/storage.js';
-import { spendCoins, addCoins, addToSet, dateKey } from '../../core/model.js';
+import { spendCoins, addCoins, addToSet, hasInSet, dateKey } from '../../core/model.js';
 import {
   SCENES, ITEMS, itemById, SHOP_CATS, shopItems, withArticle, payCoins, changeAllowed, payState, changeOptions, goalProgress, priceQuiz,
   MONEY, fewestCoins, PLANTS, GROW_MINUTES, growTick, capEarn, pantryInfo,
@@ -119,6 +119,7 @@ export function playView(el, { kos }) {
   const bioLevel = lvlOf('biology'); // bondgården
   let alive = true;
   let timers = [];
+  let cancelDrag = null;
   const bar = h('div.play-bar');
   const body = h('div.play-body');
   el.append(h('div.play', bar, body));
@@ -140,18 +141,24 @@ export function playView(el, { kos }) {
     if (speak) kos.say(text);
   }
   const capWarned = new Set();
-  /** Ge mynt. Med capKey räknas de mot dagens tak för den sortens lek. Returnerar antal givna mynt. */
+  /**
+   * Fri lek (upptäckter, recept, hemligheter) ger respons men inga mynt – valutan tjänas genom lärandet.
+   * Lär-uppgifter inne i Lekstaden (capKey: skolan, biblioteket, växel, bondens frågor …) ger mynt upp till ett dagstak.
+   */
   function earn(n, why, capKey) {
-    if (capKey) {
-      n = capEarn(st, capKey, n, dateKey());
-      save();
-      if (!n) {
-        if (!capWarned.has(capKey)) {
-          capWarned.add(capKey);
-          kos.toast('Dagens mynt här är slut. Lär dig något i de andra apparna för fler mynt!', { icon: '🪙', ms: 3200 });
-        }
-        return 0;
+    if (!capKey) {
+      kos.sfx('correct');
+      kos.toast(why, { icon: '✨', ms: 2200 });
+      return 0;
+    }
+    n = capEarn(st, capKey, n, dateKey());
+    save();
+    if (!n) {
+      if (!capWarned.has(capKey)) {
+        capWarned.add(capKey);
+        kos.toast('Dagens mynt här är slut. Lär dig något i de andra apparna för fler mynt!', { icon: '🪙', ms: 3200 });
       }
+      return 0;
     }
     addCoins(p, n);
     kos.save();
@@ -187,6 +194,7 @@ export function playView(el, { kos }) {
     } catch {}
   }
   function clearTimers() {
+    cancelDrag?.();
     timers.forEach(clearInterval);
     timers = [];
   }
@@ -210,6 +218,7 @@ export function playView(el, { kos }) {
     const found = Object.keys(st.secrets).length;
     body.append(
       goalBanner() || h('span'),
+      onTap(h('button.btn.btn-primary.play-studio-open', { type: 'button' }, '🎨 Skapa rum och figurer'), () => el.dispatchEvent(new CustomEvent('kos-open', { bubbles: true, detail: { app: 'play', module: 'studio' } }))),
       map,
       h('div.town-info', h('span', `🔍 Hemligheter: ${found}/${SECRET_COUNT}`), h('span', `🧪 Färger: ${Object.keys(st.colors).length}/${MIXES.length}`), h('span', `🍳 Recept: ${Object.keys(st.recipes).length}/${RECIPES.length}`), h('span', `📚 Böcker: ${Object.keys(st.books).length}/${BOOKS.length}`), h('span', `🏫 Uppgifter: ${st.school.solved}`), h('span', `🏥 Patienter: ${st.patients}`)),
       h('p.muted.town-tip', '🪙 Mynt tjänar du genom att lära dig i de andra apparna – varje stjärna ger ett mynt.'),
@@ -292,7 +301,9 @@ export function playView(el, { kos }) {
       else tap?.(e);
     };
     node.addEventListener('pointerup', end);
-    node.addEventListener('pointercancel', end);
+    node.addEventListener('pointercancel', () => {
+      start = null; moved = false; node.classList.remove('lift');
+    });
   }
   /** Hittar figur/mål nära en punkt. */
   function hitAt(stage, q, selector) {
@@ -405,6 +416,7 @@ export function playView(el, { kos }) {
       });
     }
     function trayDrag(e, it) {
+      cancelDrag?.();
       e.preventDefault();
       const start = { x: e.clientX, y: e.clientY };
       const pl = { uid: `u${Date.now().toString(36)}`, item: it.id, ...pct(stage, e) };
@@ -417,10 +429,17 @@ export function playView(el, { kos }) {
         node.style.top = `${q.y}%`;
         Object.assign(pl, q);
       };
-      const up = (ev) => {
+      const detach = () => {
         window.removeEventListener('pointermove', move);
         window.removeEventListener('pointerup', up);
-        window.removeEventListener('pointercancel', up);
+        window.removeEventListener('pointercancel', cancel);
+        cancelDrag = null;
+      };
+      const cancel = () => { detach(); node.remove(); };
+      cancelDrag = cancel;
+      const up = (ev) => {
+        detach();
+        if (!alive || !stage.isConnected) { node.remove(); return; }
         node.classList.remove('lift');
         const r = stage.getBoundingClientRect();
         const tapped = Math.hypot(ev.clientX - start.x, ev.clientY - start.y) < 10;
@@ -440,7 +459,7 @@ export function playView(el, { kos }) {
       };
       window.addEventListener('pointermove', move);
       window.addEventListener('pointerup', up);
-      window.addEventListener('pointercancel', up);
+      window.addEventListener('pointercancel', cancel);
     }
     renderTray();
     kos.autoSay('Ditt hus! Dra in saker från korgen och lek med figurerna.');
@@ -591,14 +610,11 @@ export function playView(el, { kos }) {
       wrap.appendChild(grid);
       const harvest = Object.entries(st.pantry).filter(([k, n]) => n > 0 && pantryInfo(k));
       if (harvest.length) {
-        wrap.append(h('h4', '🧺 Sälj från trädgården och bondgården (1 🪙 st)'), h('div.chip-row', harvest.map(([k, n]) => {
-          const info = pantryInfo(k);
-          return onTap(h('button.chip-btn', { type: 'button' }, `${info.e} ${info.n} × ${n}`), () => {
-            if (!earn(1, `Sålde ${info.n}`, 'sell')) {
-              kos.say('Marknaden har köpt nog för i dag. Kom tillbaka i morgon!');
-              return;
-            }
+        wrap.append(h('h4', '🧺 Ge bort från trädgården'), h('div.chip-row', harvest.map(([k, n]) => {
+          const ing = INGREDIENTS.find((i) => i.id === k) || { e: '🌻', n: 'solrosfrön' };
+          return onTap(h('button.chip-btn', { type: 'button' }, `${ing.e} ${ing.n} × ${n}`), () => {
             st.pantry[k]--;
+            earn(1, `Gav bort ${ing.n}`);
             save();
             render();
           });
@@ -700,6 +716,7 @@ export function playView(el, { kos }) {
         const best = fewestCoins(it.price, coins);
         const efficient = best && put.length === best.length && level >= 2;
         kos.save();
+        kos.emit('coins', p.coins);
         dlg.remove();
         done();
         if (efficient) earn(1, 'Smart! Så få mynt som möjligt.', 'change');
@@ -843,7 +860,7 @@ export function playView(el, { kos }) {
     function renderRecipe() {
       recipeCard.hidden = false;
       clear(recipeCard).append(
-        h('div.rc-head', h('span', recipe.e), h('b', recipe.n), onTap(h('button.icon-btn', { type: 'button', 'aria-label': 'läs upp' }, '🔊'), () => kos.say(`${recipe.n}. Du behöver ${recipeText(recipe)}.`))),
+        h('div.rc-head', h('span', recipe.e), h('b', recipe.n), onTap(h('button.icon-btn', { type: 'button', 'aria-label': 'läs upp' }, '🔊'), () => kos.read(`${recipe.n}. Du behöver ${recipeText(recipe)}.`))),
         h('ul', Object.entries(recipe.needs).map(([k, n]) => {
           const ing = INGREDIENTS.find((i) => i.id === k);
           const have = bowl[k] || 0;

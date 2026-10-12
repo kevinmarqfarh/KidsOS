@@ -21,7 +21,7 @@ KidsOS ser ut och känns som ett eget operativsystem: varje barn har en egen pro
 | 🧠 **AI** | 10 lektioner och 42 scenarier om AI, data, modeller, faktakontroll, rättvisa, tydliga instruktioner och privatliv. Träna en enkel modell med riktiga djurfoton och testa på andra djur. |
 | 🤖 **Kodning** | Sex lektioner och 30 frågor om instruktioner, felsökning, loopar, villkor, variabler och händelser/funktioner. Dessutom: 20 robotbanor i tre kapitel (pilar → sväng & kör → loopar), följ koden, programmerade saker i vardagen, och rita med kod (sköldpaddsgrafik). |
 | 🌍 **Världen** | Världsdelar, djur, platser, Sverigekartan, väderstreck, historia, högtider och barns rättigheter. |
-| 🏡 **Lekstaden** | Utforska en leksaksstad, bygg, blanda färger och använd mynt som tjänas genom lärandet. |
+| 🏡 **Lekstaden** | Skaparstudio med 80 originalföremål, 10 rumsteman, 9 kursbundna paket, 50 berättelseidéer och egna redigerbara figurer. Kursövningar ger spelmynt; köp, inredning och figurer sparas per barn. Den tidigare leksaksstaden finns kvar. |
 | 🎨 **Rita** | Penslar, stämplar, spegelpensel (symmetri), ångra och ett eget galleri – plus ritidéer som väcker fantasin. |
 | 🤔 **Undra** | 40 stora frågor ("Varför är himlen blå?") där barnet gissar först, får ett svar och en följdfråga att fundera vidare på. En nivåanpassad fråga varje dag på hemskärmen. Nya kort har korta svar för yngre och fördjupning för äldre. |
 | 🏆 **Troféer** | 54 troféer, titlar från "Nyfiken nybörjare" till "Universumets mästare" och samlingar (artkort, planeter, stjärnbilder, bokstäver). |
@@ -31,12 +31,19 @@ Hela kopplingen till läroplanen, modul för modul, finns i [docs/LARANDE.md](do
 
 ## Byggt för barn
 
+**Individuellt stöd:** Under Inställningar → Mitt stöd finns personliga val för
+ljudeffekter, mindre rörelse, belöningsanimationer, rundlängd, plan före rundan och
+lugn återkoppling. Uppläsning kan väljas till ”När jag trycker” eller helt stängas
+av. Frågeövningar och utforskande vyer har hjälp och paus. Skärmtidsgränsen
+förbereds och behåller den öppna aktiviteten om en vuxen ger mer tid.
+Se [föräldraguiden](docs/FORALDRAR.md) och [autismunderlaget](docs/AUTISM-RESEARCH.md).
+
 - **Stora tryckytor:** allt är minst 56 punkter, svarsknappar 88 punkter. Testerna underkänner allt under 44.
 - **Förlåtande touch:** dubbeltryck filtreras bort, knappar har en osynlig extra marginal och allt som kan dras kan också tryckas.
 - **Uppläsning på svenska:** för barn upp till 7 år läses frågor, alternativ och förklaringar upp automatiskt. Äldre barn trycker på 🔊. På iPad används den inbyggda svenska rösten.
 - **Anpassad nivå:** fem rätt i rad ger en svårare nivå, tre missar i rad en lättare.
 - **Inga straff:** fel ger tips, efter två försök visas svaret med en förklaring. Stjärnor och troféer kan aldrig förloras.
-- **Inga annonser och ingen data som lämnar enheten.**
+- **Inga annonser. Profiler och framsteg sparas lokalt.** Bilder bäddas in och typsnitt hämtas inte från externa tjänster.
 
 ## Kom igång
 
@@ -157,3 +164,19 @@ när barnet lär sig. Bakgrundskorten visar samma skalbara landskap som hemskär
 ### Datorläge
 
 Det sammanslagna projektet har också datorläge för äldre barn, med skrivbord och flyttbara fönster. Föräldern kan välja surfplatta eller dator under profilens inställningar. Både kursapparna och profilguiden fungerar med dessa val.
+
+### Skaparstudion och lärandemynt
+
+Lekstaden ligger till vänster om Troféer i nedre menyn. Genvägen öppnar Skaparstudion.
+Barnet kan börja leka direkt i ett mysrum med gratis möbler och två figurer. Saker kan
+väljas och placeras med tryck, flyttas med drag eller piltangenter, vändas och läggas
+tillbaka. Väggar, golv, namn, frisyrer, klädfärger och ansiktsuttryck går att ändra.
+
+Nya temapaket och rum visar vilken kursövning som behövs. Första färdiga rundan i
+en modul ger fem extra spelmynt; repetition ger två. Stjärnornas mynt finns kvar.
+Att behöva flera försök tar inte bort mynt. Frilekens klick skapar inte valuta.
+Inga riktiga pengar eller annonser används. Se [inspiration och belöningsregler](docs/PLAY-REWARD-DESIGN.md).
+
+Studion använder originalillustrationer i SVG. Toca Bocas officiella rum- och
+outfitverktyg har studerats som inspiration för fri lek, kategorier och tydlig
+rumsvy. Spelgrafiken och innehållet är KidsOS eget.

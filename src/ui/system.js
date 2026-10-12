@@ -96,7 +96,7 @@ function renderExplorer(el, { openApp }) {
     const box = h(
       'div.ex-preview',
       h('div.ex-big', { html: f.big }),
-      h('div.ex-info', h('b', f.name), f.text ? h('p', f.text) : null, f.credit ? h('small.credit', f.credit) : null, h('div.row-actions.left', f.say ? onTap(h('button.btn.btn-ghost.btn-sm', { type: 'button' }, '🔊 Läs'), () => kos.say(f.say)) : null, onTap(h('button.btn.btn-primary.btn-sm', { type: 'button' }, '✕ Stäng'), () => box.remove()))),
+      h('div.ex-info', h('b', f.name), f.text ? h('p', f.text) : null, f.credit ? h('small.credit', f.credit) : null, h('div.row-actions.left', f.say ? onTap(h('button.btn.btn-ghost.btn-sm', { type: 'button' }, '🔊 Läs'), () => kos.read(f.say)) : null, onTap(h('button.btn.btn-primary.btn-sm', { type: 'button' }, '✕ Stäng'), () => box.remove()))),
     );
     main.appendChild(box);
     // Förhandsvisningen ligger överst i högerspalten – se till att den syns även om listan var nedskrollad.
@@ -139,7 +139,7 @@ function renderNotes(el) {
   let saveTimer;
   let confirmDel = false;
   const list = h('div.notes-list');
-  const ta = h('textarea.notes-text#notes-text', { placeholder: 'Skriv här …', spellcheck: 'true', lang: 'sv', autocapitalize: 'sentences' });
+  const ta = h('textarea.notes-text#notes-text', { 'aria-label': 'Anteckningens text', placeholder: 'Skriv här …', spellcheck: 'true', lang: 'sv', autocapitalize: 'sentences' });
   const words = h('span.muted');
   const idea = h('div.notes-idea', { 'aria-live': 'polite' });
   const sizes = [22, 28, 36];
@@ -149,7 +149,7 @@ function renderNotes(el) {
   const toolbar = h(
     'div.notes-tools',
     onTap(h('button.btn.btn-ghost.btn-sm', { type: 'button' }, '＋ Ny'), () => newNote(true)),
-    onTap(h('button.btn.btn-ghost.btn-sm', { type: 'button' }, '🔊 Läs upp'), () => kos.say(ta.value.trim() || 'Du har inte skrivit något än.')),
+    onTap(h('button.btn.btn-ghost.btn-sm', { type: 'button' }, '🔊 Läs upp'), () => kos.read(ta.value.trim() || 'Du har inte skrivit något än.')),
     onTap(h('button.btn.btn-ghost.btn-sm', { type: 'button', 'aria-label': 'textstorlek' }, 'Aa'), () => {
       size = (size + 1) % sizes.length;
       ta.style.fontSize = `${sizes[size]}px`;
@@ -160,8 +160,9 @@ function renderNotes(el) {
   );
   el.append(h('div.notes', list, h('div.notes-edit', toolbar, idea, ta)));
   function persist() {
-    // Tomma anteckningar (utom den som är öppen) sparas inte – annars fylls listan av "Ny anteckning".
-    notes = notes.filter((n) => n === cur || (n.text || '').trim());
+    // Nya tomma anteckningar (utom den som är öppen) sparas inte – annars fylls listan av "Ny anteckning".
+    // Anteckningar som redan fanns sparade behålls även om de är tomma.
+    notes = notes.filter((n) => n === cur || (n.text || '').trim() || !n.fresh);
     saveJSON(key, notes);
   }
   function resetDelete() {
@@ -186,7 +187,7 @@ function renderNotes(el) {
     if (focus) ta.focus({ preventScroll: true });
   }
   function makeNote() {
-    return { id: `n${Date.now().toString(36)}${Math.floor(Math.random() * 1e4).toString(36)}`, title: '', text: '', at: new Date().toISOString(), counted: 0 };
+    return { id: `n${Date.now().toString(36)}${Math.floor(Math.random() * 1e4).toString(36)}`, title: '', text: '', at: new Date().toISOString(), counted: 0, fresh: true };
   }
   function newNote(focus) {
     flush();
@@ -287,8 +288,8 @@ function renderNotes(el) {
 function renderCalc(el) {
   let expr = '';
   let result = null;
-  const disp = h('div.calc-expr', { 'aria-live': 'polite' });
-  const res = h('div.calc-res');
+  const disp = h('div.calc-expr');
+  const res = h('div.calc-res', { role: 'status', 'aria-live': 'polite', 'aria-atomic': 'true' });
   const dots = h('div.calc-dots');
   const keys = ['C', '⌫', '÷', '×', '7', '8', '9', '−', '4', '5', '6', '+', '1', '2', '3', '=', '0', ','];
   const labels = { C: 'rensa', '⌫': 'sudda', '÷': 'delat med', '×': 'gånger', '−': 'minus', '+': 'plus', '=': 'lika med', ',': 'komma' };

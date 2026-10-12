@@ -2,7 +2,7 @@
 import { loadState, saveState } from '../core/storage.js';
 import {
   newProfile, recordAnswer, recordRound, addStars, bump, addToSet, touchDay, dateKey,
-  isOverDailyLimit, currentLevel, appStat, addCoins, ageBand,
+  isOverDailyLimit, minutesLeftToday, currentLevel, appStat, addCoins, ageBand,
 } from '../core/model.js';
 import { awardTrophies } from '../core/trophies.js';
 import { rankFor } from '../core/progress.js';
@@ -11,17 +11,35 @@ import { sfx, setSoundEnabled, unlockAudio } from '../core/sound.js';
 import { isPreReader, LEVELS } from '../core/age.js';
 import { h, reducedMotion } from './dom.js';
 import { isAdapted, adaptedPrefs, adaptedSfx } from '../core/adapted.js';
+import { activityPaused, setActivityPaused } from '../core/activity.js';
 
 const listeners = new Map();
 let saveTimer = null;
 let tickTimer = null;
 let lastTick = Date.now();
+let pausedAnimations = [];
 
 export const kos = {
   state: null,
   root: null,
   overlayRoot: null,
-  paused: false,
+  get paused() { return activityPaused(); },
+  set paused(value) {
+    if (!setActivityPaused(value)) return;
+    lastTick = Date.now();
+    if (value) {
+      stopSpeaking();
+      pausedAnimations = (typeof document !== 'undefined' ? document.getAnimations?.() || [] : []).filter(animation => animation.playState === 'running');
+      pausedAnimations.forEach(animation => animation.pause());
+    } else {
+      pausedAnimations.forEach(animation => {
+        if (animation.effect?.target?.isConnected) animation.play();
+      });
+      pausedAnimations = [];
+    }
+    if (this.state && typeof document !== 'undefined') this.applySettings();
+    this.emit('pause', !!value);
+  },
 
   init(root) {
     this.root = root;
@@ -48,11 +66,15 @@ export const kos = {
 
   applySettings() {
     const s = this.state.settings;
-    setSoundEnabled(s.sound);
+    const p = this.profile;
+    setSoundEnabled(!this.paused && (p?.settings.sound ?? s.sound));
     setSpeechRate(s.speechRate);
     document.documentElement.dataset.ostheme = s.theme || 'day';
-    const p = this.profile;
-    setSpeechEnabled(!p || p.settings.readAloud !== 'off');
+    document.documentElement.dataset.reducedMotion = String(!!p?.settings.reducedMotion);
+    document.documentElement.dataset.celebrationEffects = String(p?.settings.celebrationEffects !== false);
+    document.documentElement.dataset.activityPaused = String(this.paused);
+    setSpeechEnabled(!this.paused && (!p || p.settings.readAloud !== 'off'));
+    if (p?.settings.readAloud === 'manual') stopSpeaking();
     if (p) document.documentElement.style.setProperty('--me', p.color);
     document.documentElement.dataset.ageband = p ? ageBand(p.age) : 'mid';
     // Anpassat läge: lugnare färger, färre animationer och fokus-hjälp (styles/apps/adapted.css).
@@ -110,6 +132,7 @@ export const kos = {
     return p;
   },
   login(id) {
+    stopSpeaking();
     this.state.activeId = id;
     const p = this.profile;
     if (p) touchDay(p, dateKey(), 0);
@@ -121,21 +144,31 @@ export const kos = {
   logout() {
     stopSpeaking();
     this.state.activeId = null;
+    this.applySettings();
     this.saveNow();
     this.emit('profile');
   },
 
   /* ---------- tal & ljud ---------- */
   shouldAutoSpeak() {
+    if (this.paused) return false;
     const p = this.profile;
     if (!p) return false;
     if (p.settings.readAloud === 'on') return true;
     if (p.settings.readAloud === 'off') return false;
     if (isAdapted(p)) return true; // anpassat läge: uppläsning alltid på
+    if (p.settings.readAloud === 'manual') return false;
     return isPreReader(p.age) || p.age <= 7;
   },
   say(text, opts) {
-    return speak(text, { force: true, ...opts });
+    if (this.paused) return Promise.resolve();
+    if (['manual', 'off'].includes(this.profile?.settings.readAloud)) return Promise.resolve();
+    return speak(text, { ...opts, force: false });
+  },
+  read(text, opts) {
+    if (this.paused) return Promise.resolve();
+    if (this.profile?.settings.readAloud === 'off') return Promise.resolve();
+    return speak(text, { ...opts, force: false });
   },
   autoSay(text, opts) {
     if (this.shouldAutoSpeak()) return speak(text, opts);
@@ -143,6 +176,7 @@ export const kos = {
   },
   stopSpeaking,
   sfx(name) {
+    if (this.paused) return;
     if (this.adapted) name = adaptedSfx(name, this.adaptedPrefs());
     if (!name) return;
     try {
@@ -167,8 +201,9 @@ export const kos = {
     if (firstTry) {
       addStars(p, 1);
       this.emit('stars', p.stars);
+      this.emit('coins', p.coins);
     }
-    if (change === 'up' && !this.adapted) {
+    if (change === 'up' && !this.adapted && !p.settings.steadyRounds && !p.settings.quietFeedback) {
       this.toast(`<b>Nivå upp!</b> ${LEVELS[appStat(p, appId).level].emoji} Du är redo för lite svårare uppgifter.`, { icon: '🚀' });
       this.sfx('fanfare');
     }
@@ -190,6 +225,7 @@ export const kos = {
     const trophies = this.checkTrophies({ silent: true });
     const after = rankFor(p.stars);
     this.emit('stars', p.stars);
+    this.emit('coins', p.coins);
     this.saveNow();
     return { ...res, trophies, rankUp: after.index > before.index ? after : null };
   },
@@ -205,6 +241,7 @@ export const kos = {
     if (stars) {
       addStars(p, stars);
       this.emit('stars', p.stars);
+      this.emit('coins', p.coins);
       if (!silent) this.flyStar(stars);
     }
     const trophies = this.checkTrophies();
@@ -218,14 +255,20 @@ export const kos = {
     const won = awardTrophies(p);
     if (this.adapted) silent = true; // anpassat läge: inga överraskningspopups
     // Varje ny trofé ger också fem mynt till Lekstaden.
-    if (won.length) addCoins(p, won.length * 5);
-    if (!silent) won.forEach((t, i) => setTimeout(() => this.trophyToast(t), 400 + i * 1600));
+    if (won.length) {
+      addCoins(p, won.length * 5);
+      this.emit('coins', p.coins);
+    }
+    if (!silent && !p.settings.quietFeedback) won.forEach((t, i) => setTimeout(() => {
+      if (this.profile === p) this.trophyToast(t);
+    }, 400 + i * 1600));
     if (won.length) this.emit('trophies', won);
     return won;
   },
 
   /* ---------- notiser & firande ---------- */
   toast(html, { icon = '✨', ms = 3200 } = {}) {
+    if (this.paused) return;
     const layer = this.overlayRoot || document.body;
     const el = h('div.toast', { role: 'status' }, h('span.toast-icon', icon), h('div.toast-text', { html }));
     layer.appendChild(el);
@@ -236,13 +279,14 @@ export const kos = {
     }, ms);
   },
   trophyToast(t) {
-    if (this.adapted) return;
+    if (this.adapted || this.profile?.settings.quietFeedback) return;
     this.sfx('trophy');
     this.toast(`<small>Ny trofé! +5 🪙</small><b>${t.name}</b>`, { icon: t.icon, ms: 3600 });
-    this.say(`Ny trofé! ${t.name}`, { interrupt: false });
+    this.autoSay(`Ny trofé! ${t.name}`, { interrupt: false });
     this.confetti(60);
   },
   flyStar(n = 1) {
+    if (this.paused || this.profile?.settings.celebrationEffects === false) return;
     if (this.adapted) return this.sfx('star');
     if (reducedMotion()) return;
     const layer = this.overlayRoot || document.body;
@@ -262,7 +306,7 @@ export const kos = {
     this.sfx('star');
   },
   confetti(count = 120) {
-    if (reducedMotion() || this.adapted) return; // anpassat läge: ingen konfetti-storm
+    if (this.paused || this.adapted || this.profile?.settings.celebrationEffects === false || reducedMotion()) return; // anpassat läge: ingen konfetti-storm
     const layer = this.overlayRoot || document.body;
     const c = h('canvas.confetti');
     layer.appendChild(c);
@@ -284,6 +328,10 @@ export const kos = {
     }));
     let frame = 0;
     const tick = () => {
+      if (this.paused || this.profile?.settings.celebrationEffects === false || reducedMotion()) {
+        c.remove();
+        return;
+      }
       frame++;
       ctx.clearRect(0, 0, c.width, c.height);
       for (const p of parts) {
@@ -319,6 +367,8 @@ export const kos = {
     touchDay(p, dateKey(), dt);
     this.save();
     this.emit('tick');
+    const left = minutesLeftToday(p);
+    if (left > 0 && left <= 2) this.emit('limit-warning', { minutes: Math.ceil(left) });
     if (isOverDailyLimit(p)) this.emit('limit');
   },
 };

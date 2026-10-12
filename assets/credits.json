@@ -1062,13 +1062,13 @@
   "source": "https://commons.wikimedia.org/wiki/File:Cherry_season_(48216568227).jpg"
  },
  "obj-chestnut": {
-  "author": "Dominicus Johannes Bergsma",
-  "credit": "Own work",
-  "file": "File:Gebarsten bolster van een paardenkastanje (Aesculus) 13-10-2022 (d.j.b.) 02.jpg",
+  "author": "Philip Halling",
+  "credit": "Geograph Britain and Ireland",
+  "file": "File:Horse chestnut conkers - geograph.org.uk - 7621860.jpg",
   "group": "objects",
-  "license": "CC BY-SA 4.0",
-  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
-  "source": "https://commons.wikimedia.org/wiki/File:Gebarsten_bolster_van_een_paardenkastanje_(Aesculus)_13-10-2022_(d.j.b.)_02.jpg"
+  "license": "CC BY-SA 2.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Horse_chestnut_conkers_-_geograph.org.uk_-_7621860.jpg"
  },
  "obj-chicken": {
   "author": "Andrei Niemimäki from Turku, Finland",
@@ -2042,6 +2042,24 @@
   "licenseUrl": "",
   "source": "https://commons.wikimedia.org/wiki/File:Paintbrushes.jpg"
  },
+ "obj-palette": {
+  "author": "Mlaoxve",
+  "credit": "http://en.wikipedia.org/wiki/Image:Oil_painting_palette.jpg",
+  "file": "File:Oil_painting_palette.jpg",
+  "group": "objects",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "source": "https://commons.wikimedia.org/wiki/File:Oil_painting_palette.jpg"
+ },
+ "obj-palm": {
+  "author": "Shishirdasika",
+  "credit": "Own work",
+  "file": "File:Coconut Tree Kappil Beach.jpg",
+  "group": "objects",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Coconut_Tree_Kappil_Beach.jpg"
+ },
  "obj-pancakes": {
   "author": "Mae Mu",
   "credit": "https://www.foodiesfeed.com/free-food-photo/pouring-honey-on-pancakes-with-walnuts/download/",
@@ -2069,6 +2087,15 @@
   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Scarlet_macaw_(Ara_macao_cyanopterus)_Copan.jpg"
  },
+ "obj-peanut": {
+  "author": "TorbeyCharbel",
+  "credit": "Own work",
+  "file": "File:Peanuts in their shells.jpg",
+  "group": "objects",
+  "license": "CC BY 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Peanuts_in_their_shells.jpg"
+ },
  "obj-pear": {
   "author": "Keith Weller",
   "credit": "USDA, Image Number K5299-1.",
@@ -2086,6 +2113,15 @@
   "license": "CC BY-SA 3.0",
   "licenseUrl": "http://creativecommons.org/licenses/by-sa/3.0/",
   "source": "https://commons.wikimedia.org/wiki/File:Doperwt_rijserwt_peulen_Pisum_sativum.jpg"
+ },
+ "obj-pen": {
+  "author": "Trounce",
+  "credit": "Own work",
+  "file": "File:03-BICcristal2008-03-26.jpg",
+  "group": "objects",
+  "license": "CC BY 3.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:03-BICcristal2008-03-26.jpg"
  },
  "obj-pencil": {
   "author": "Original uploader was Dmgerman at en.wikipedia",
@@ -2177,6 +2213,15 @@
   "licenseUrl": "",
   "source": "https://commons.wikimedia.org/wiki/File:Balle-%C3%A0-leunettes_10.jpg"
  },
+ "obj-pushpin": {
+  "author": "Slashme",
+  "credit": "Own work",
+  "file": "File:RedPushPin_(cropped).jpg",
+  "group": "objects",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:RedPushPin_(cropped).jpg"
+ },
  "obj-puzzle": {
   "author": "Profpcde",
   "credit": "Own work",
@@ -2194,6 +2239,24 @@
   "license": "CC BY-SA 4.0",
   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Heimtier_004_2023_08_26.jpg"
+ },
+ "obj-raccoon": {
+  "author": "Darkone",
+  "credit": "Own work",
+  "file": "File:Raccoon (Procyon lotor) 2.jpg",
+  "group": "objects",
+  "license": "CC BY-SA 2.5",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.5",
+  "source": "https://commons.wikimedia.org/wiki/File:Raccoon_(Procyon_lotor)_2.jpg"
+ },
+ "obj-radio": {
+  "author": "ブルーノ・プラス",
+  "credit": "Own work",
+  "file": "File:Transistor radio TR-55 by sony.jpg",
+  "group": "objects",
+  "license": "CC0",
+  "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+  "source": "https://commons.wikimedia.org/wiki/File:Transistor_radio_TR-55_by_sony.jpg"
  },
  "obj-rain": {
   "author": "W.carter",
@@ -2276,6 +2339,15 @@
   "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0",
   "source": "https://commons.wikimedia.org/wiki/File:Rooster_crowing_nsw.jpg"
  },
+ "obj-rope": {
+  "author": "Nevit Dilmen",
+  "credit": "Own work",
+  "file": "File:Coiled rope 03235.jpg",
+  "group": "objects",
+  "license": "CC BY-SA 3.0",
+  "licenseUrl": "http://creativecommons.org/licenses/by-sa/3.0/",
+  "source": "https://commons.wikimedia.org/wiki/File:Coiled_rope_03235.jpg"
+ },
  "obj-rose": {
   "author": "Laitche",
   "credit": "Own work",
@@ -2312,6 +2384,24 @@
   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Sailing_boat_at_sunset,_Ionian_Sea,_Albania.jpg"
  },
+ "obj-salt": {
+  "author": "Paul Goyette",
+  "credit": "https://www.flickr.com/photos/pgoyette/130739790/",
+  "file": "File:Salt, sugar and pepper shakers.jpg",
+  "group": "objects",
+  "license": "CC BY-SA 2.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Salt,_sugar_and_pepper_shakers.jpg"
+ },
+ "obj-sandwich": {
+  "author": "Revital Salomon",
+  "credit": "Own work",
+  "file": "File:Sandwich on a cutting board.jpg",
+  "group": "objects",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Sandwich_on_a_cutting_board.jpg"
+ },
  "obj-satellite": {
   "author": "NASA",
   "credit": "File:ISS-51 CubeSat deployment - A pair of CubeSats.jpg, or https://www.flickr.com/photos/nasa2explore/34354400620/",
@@ -2321,6 +2411,15 @@
   "licenseUrl": "",
   "source": "https://commons.wikimedia.org/wiki/File:Two_3U_CubeSats.jpg"
  },
+ "obj-saw": {
+  "author": "F. D. Richards",
+  "credit": "https://www.flickr.com/photos/50697352@N00/14565144028/",
+  "file": "File:Hand Saws.jpg",
+  "group": "objects",
+  "license": "CC BY-SA 2.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Hand_Saws.jpg"
+ },
  "obj-scale": {
   "author": "Photographie personnelle User:Poussin jean",
   "credit": "objet personnel User:Poussin jean",
@@ -2329,6 +2428,15 @@
   "license": "CC BY-SA 3.0",
   "licenseUrl": "http://creativecommons.org/licenses/by-sa/3.0/",
   "source": "https://commons.wikimedia.org/wiki/File:Balance_%C3%A0_tabac_1850.JPG"
+ },
+ "obj-scarf": {
+  "author": "https://www.kaschmirprodukte.de",
+  "credit": "Own work",
+  "file": "File:100%_Kaschmir_Wolle_vonk_kaschmirprodukte.de.jpg",
+  "group": "objects",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:100%25_Kaschmir_Wolle_vonk_kaschmirprodukte.de.jpg"
  },
  "obj-school": {
   "author": "S. Kleinmichel",
@@ -2347,6 +2455,15 @@
   "license": "CC BY-SA 4.0",
   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Standard_household_scissors.jpg"
+ },
+ "obj-seashell": {
+  "author": "Alessio Sbarbaro User_talk:Yoggysot",
+  "credit": "Own work",
+  "file": "File:Conchiglie_Seashells_01.jpg",
+  "group": "objects",
+  "license": "CC BY-SA 2.5",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.5",
+  "source": "https://commons.wikimedia.org/wiki/File:Conchiglie_Seashells_01.jpg"
  },
  "obj-seedling": {
   "author": "Ksheera Piraati",
@@ -2483,6 +2600,15 @@
   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
   "source": "https://commons.wikimedia.org/wiki/File:Snowman_in_Indiana_2014.jpg"
  },
+ "obj-soap": {
+  "author": "No machine-readable author provided. Lacrimosus assumed (based on copyright claims).",
+  "credit": "No machine-readable source provided. Own work assumed (based on copyright claims).",
+  "file": "File:A bar of soap.jpg",
+  "group": "objects",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "source": "https://commons.wikimedia.org/wiki/File:A_bar_of_soap.jpg"
+ },
  "obj-sock": {
   "author": "Loggie-log",
   "credit": "Own work",
@@ -2546,6 +2672,15 @@
   "licenseUrl": "https://creativecommons.org/licenses/by/3.0",
   "source": "https://commons.wikimedia.org/wiki/File:%D0%A1%D0%B2%D0%B5%D1%82_%D0%BE%D1%82_%D0%B4%D0%B5%D1%80%D0%B5%D0%B2%D0%BD%D0%B8_-_panoramio.jpg"
  },
+ "obj-stop-sign": {
+  "author": "Bidgee",
+  "credit": "Own work",
+  "file": "File:STOP_sign.jpg",
+  "group": "objects",
+  "license": "CC BY 3.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:STOP_sign.jpg"
+ },
  "obj-strawberry": {
   "author": "Ivar Leidus",
   "credit": "Own work",
@@ -2573,6 +2708,24 @@
   "licenseUrl": "https://creativecommons.org/licenses/by/2.5",
   "source": "https://commons.wikimedia.org/wiki/File:Spring_Lake,_New_Jersey_Beach_at_Sunrise.jpg"
  },
+ "obj-table-tennis": {
+  "author": "Santeri Viinamäki",
+  "credit": "Own work",
+  "file": "File:Table tennis bat and ball.jpg",
+  "group": "objects",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Table_tennis_bat_and_ball.jpg"
+ },
+ "obj-tea": {
+  "author": "AntanO",
+  "credit": "Own work",
+  "file": "File:Cup of black tea.JPG",
+  "group": "objects",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Cup_of_black_tea.JPG"
+ },
  "obj-teddy": {
   "author": "Smithsonian Museum of Natural History",
   "credit": "https://www.flickr.com/photos/23165290@N00/7237653442/",
@@ -2590,6 +2743,15 @@
   "license": "CC BY-SA 4.0",
   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Telescope_at_The_Kymin.jpg"
+ },
+ "obj-tennis-ball": {
+  "author": "Miscellaneous contributor",
+  "credit": "Own work",
+  "file": "File:Closeup_of_a_tennis_ball_(2).jpg",
+  "group": "objects",
+  "license": "CC0",
+  "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+  "source": "https://commons.wikimedia.org/wiki/File:Closeup_of_a_tennis_ball_(2).jpg"
  },
  "obj-tent": {
   "author": "Eden Aviv",
@@ -2699,6 +2861,15 @@
   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
   "source": "https://commons.wikimedia.org/wiki/File:Usamljeni_jasen_-_panoramio_(cropped).jpg"
  },
+ "obj-trophy": {
+  "author": "Carlos yo",
+  "credit": "Own work",
+  "file": "File:The FA Cup Trophy.jpg",
+  "group": "objects",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:The_FA_Cup_Trophy.jpg"
+ },
  "obj-tropical-fish": {
   "author": "Ritiks",
   "credit": "Own work",
@@ -2707,6 +2878,15 @@
   "license": "CC BY-SA 3.0",
   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
   "source": "https://commons.wikimedia.org/wiki/File:Clown_fish_in_the_Andaman_Coral_Reef.jpg"
+ },
+ "obj-trumpet": {
+  "author": "Yamaha Corporation",
+  "credit": "JPEG format conversion and re-crop of the freely-licensed Commons TIFF image, File:Yamaha Trumpet YTR-8335LA.tif",
+  "file": "File:Yamaha_Trumpet_YTR-8335LA_crop.jpg",
+  "group": "objects",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Yamaha_Trumpet_YTR-8335LA_crop.jpg"
  },
  "obj-tshirt": {
   "author": "Spreadshirt",
@@ -2761,6 +2941,15 @@
   "license": "CC0",
   "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
   "source": "https://commons.wikimedia.org/wiki/File:Violin_VL100.png"
+ },
+ "obj-volcano": {
+  "author": "NASA's Earth Observatory",
+  "credit": "Eruption of Raung Volcano",
+  "file": "File:Eruption of Raung Volcano (19684852442).jpg",
+  "group": "objects",
+  "license": "CC BY 2.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Eruption_of_Raung_Volcano_(19684852442).jpg"
  },
  "obj-volleyball": {
   "author": "Petar Milošević",

@@ -17,7 +17,7 @@ function featureLabView(el, { kos, app }) {
   const root = h('div.ai-lab.sci');
   el.append(root);
   const button = (text, fn, primary = false) => onTap(h(`button.btn.${primary ? 'btn-primary' : 'btn-ghost'}`, { type: 'button' }, text), fn);
-  const speak = (text) => button('🔊 Läs upp', () => kos.say(text));
+  const speak = (text) => button('🔊 Läs upp', () => kos.read(text));
   function animalCard(animal) {
     return h('div.ai-animal', h('div.ai-photo', { html: photoFigure(animal.id, `Fotografi av ${animal.name}`) }), h('h3', animal.name),
       h('ul.ai-features', AI_FEATURES.map((feature, i) => h('li', `${animal.features[i] ? '✓' : '–'} ${feature}: ${animal.features[i] ? 'ja' : 'nej'}`))));

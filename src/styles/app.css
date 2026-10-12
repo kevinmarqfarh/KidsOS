@@ -1,3 +1,4 @@
+@import "./studio.css";
 @import "./desktop.css";
 @import "./fx.css";
 @import "./apps/math.css";
@@ -57,6 +58,8 @@
   --card: #232949;
   --line: #333a63;
   --shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  --good: #6ee7b7;
+  --try: #ffd19b;
   --good-bg: #173a33;
   --try-bg: #3d2a17;
   --learn-bg: #22284f;
@@ -74,7 +77,9 @@
     --card: #232949;
     --line: #333a63;
     --shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
-    --good-bg: #173a33;
+    --good: #6ee7b7;
+  --try: #ffd19b;
+  --good-bg: #173a33;
     --try-bg: #3d2a17;
     --learn-bg: #22284f;
     --glass: rgba(30, 35, 66, 0.72);
@@ -3926,6 +3931,36 @@ small {
   }
 }
 
+html[data-reduced-motion="true"] *,
+html[data-reduced-motion="true"] *::before,
+html[data-reduced-motion="true"] *::after {
+  animation: none !important;
+  transition: none !important;
+  scroll-behavior: auto !important;
+}
+html[data-celebration-effects="false"] .sum-star,
+html[data-celebration-effects="false"] .sum-emoji,
+html[data-celebration-effects="false"] .sum-trophy {
+  animation: none !important;
+}
+.q-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 12px; }
+.q-status { margin: 0; font-weight: 700; }
+.q-support-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.activity-support { display: flex; gap: 8px; flex-wrap: wrap; padding: 12px; }
+.activity-help { padding: 16px; margin: 12px; border: 2px solid var(--line); border-radius: 18px; background: var(--card); }
+.activity-content { min-width: 0; }
+.time-warning { padding: 12px; margin: 8px; border: 2px solid var(--line); border-radius: 14px; background: var(--card); color: var(--ink); font-weight: 700; }
+dialog.limit-screen { width: 100%; height: 100%; max-width: none; max-height: none; margin: 0; border: 0; }
+html[data-activity-paused="true"] *, html[data-activity-paused="true"] *::before, html[data-activity-paused="true"] *::after { animation-play-state: paused !important; }
+.q-help-panel, .quiz-plan { padding: 18px; border: 2px solid var(--line); border-radius: 20px; background: var(--card); margin-bottom: 12px; }
+.quiz-plan li { margin-block: 12px; }
+.quiz-plan .btn { margin: 6px; }
+.sort-item:focus-visible, .sort-bin:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; }
+.quiz-pause-dialog { max-width: min(440px, calc(100vw - 48px)); box-sizing: border-box; border: 2px solid var(--line); border-radius: 24px; padding: 28px; background: var(--card); color: var(--ink); }
+.quiz-pause-dialog::backdrop { background: #182238aa; }
+.dialog-fallback { position: fixed; inset: 0; margin: auto; height: fit-content; z-index: 1000; box-shadow: 0 0 0 100vmax #182238aa; }
+.support-settings { padding-inline: 0; }
+
 /* Verkliga referensbilder: hela motivet syns utan beskärning. */
 .photo-figure { margin: 0 auto; width: min(100%, 420px); }
 .learning-photo { display: block; width: 100%; height: auto; max-height: 280px; object-fit: contain; border-radius: 18px; background: #edf2f4; }
@@ -4014,3 +4049,87 @@ small {
 .story-evidence summary { cursor: pointer; min-height: 44px; display: flex; align-items: center; font-weight: 700; }
 .story-feedback { margin-top: 18px; }
 .story-feedback .story-next { margin-top: 14px; }
+
+.learn-play-reward { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; padding: 18px; margin: 20px auto; max-width: 700px; background: #fff1cc; border: 2px solid #ead29f; border-radius: 22px; text-align: left; }
+.learn-play-reward > div { flex: 1 1 220px; }
+.learn-play-reward p { font-size: 15px; line-height: 1.5; margin: 6px 0; }
+.learn-play-coin { font-size: 36px; }
+.learn-play-open { margin: auto; }
+.play-studio-open { margin: 8px 0 22px; }
+
+@media(max-width:480px){.dock{width:calc(100% - 24px);max-width:420px;gap:4px;padding:8px}.dock-item{min-width:0;flex:1;font-size:12px}.dock-icon{font-size:30px}}
+/* Svar bredvid en bild behöver rymligare kolumner på liggande skärmar. */
+.q-top,.q-bottom{min-width:0}.choice-label{max-width:100%;overflow-wrap:anywhere}
+@media(min-width:900px) and (min-aspect-ratio:5/4){.q-body.has-visual .choices.n4:not(.long),.q-body.has-visual .choices.n5:not(.long){--cols:2}}
+
+.app-fullscreen-toggle{border:0;border-radius:12px;background:#ffffff30;color:inherit;min-width:44px;min-height:44px;font-size:28px;cursor:pointer;flex-shrink:0}
+.win-head .app-fullscreen-toggle{color:#fff}.app-fullscreen-toggle:focus-visible{outline:3px solid #fff;outline-offset:3px}
+.os:fullscreen{width:100vw;height:100dvh}.os.app-focus-mode>.statusbar,.os.app-focus-mode .dock,.os.app-focus-mode .taskbar{visibility:hidden}
+.window.app-fullscreen,.dwin.app-fullscreen{position:fixed!important;inset:0!important;width:100vw!important;height:100dvh!important;max-width:none!important;max-height:none!important;transform:none!important;border-radius:0!important;z-index:50!important;background:var(--paper)}
+.dwin.app-fullscreen .dwin-grip{display:none}
+@media(max-width:480px){.win-head{gap:6px}.win-head .level-chip{font-size:12px;padding:6px}.app-fullscreen-toggle{min-width:44px}}
+.dwin.app-fullscreen{z-index:2147483000!important}
+
+/* Innehållet anpassas också till smala datorfönster på en stor skärm. */
+.win-content { container-type: inline-size; min-width: 0; }
+@container (max-width: 700px) {
+  .course-layout { grid-template-columns: 1fr; }
+  .course-stage { grid-row: 1; }
+  .course-list { grid-row: 2; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .course { padding: 12px; }
+  .q-body.has-visual { display: flex; flex-direction: column; }
+}
+@container (max-width: 620px) { .ai-grid { grid-template-columns: 1fr; } }
+@container (max-width: 380px) { .course-list { grid-template-columns: 1fr; } }
+.sheet { overflow-y: auto; }
+.sheet-panel { flex-shrink: 0; }
+@media (max-width: 480px) { .dwin-bar { gap: 4px; padding-inline: 6px; } .dwin-bar .lvl-slot { display: none; } }
+
+@container (max-width: 560px) { .rocket-build { grid-template-columns: 1fr; } }
+/* Profilens skärmläge och positionsriktig skriftlig beräkning. */
+.profile-choice { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+.profile-choice .seg-btn { min-height: 48px; padding: 8px 14px; }
+.column-work { max-width: 100%; margin: auto; }
+.column-work table { border-collapse: collapse; margin: auto; font-variant-numeric: tabular-nums; }
+.column-work th { font-size: 13px; padding: 6px; }
+.column-work td { text-align: center; font-size: 36px; min-width: 48px; padding: 5px; }
+.column-work .column-note { width: 48px; min-height: 48px; text-align: center; border: 2px dashed #678; border-radius: 8px; font: inherit; font-size: 22px; background: var(--card, white); color: inherit; }
+.column-result { border-top: 3px solid currentColor; }
+.column-work p { font-size: 15px; max-width: 360px; }
+.writing-options { width: 100%; max-width: 900px; display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+.writing-options p { flex-basis: 100%; margin: 0; }
+.writing-options .seg-btn { min-height: 48px; white-space: normal; }
+.writing-options .seg-btn[aria-pressed="true"] { background: var(--app); color: white; }
+.writing-progress { max-width: 900px; width: 100%; font-weight: 700; margin: 0; }
+.tmpl.faded { opacity: .3; }
+.drawing-brief { padding: 18px; background: var(--card); border-radius: 20px; margin-bottom: 18px; }
+.drawing-brief .btn { margin: 6px; }
+.spelling-word { font-size: 32px; font-weight: 700; letter-spacing: .08em; }
+
+/* Tillgänglighet: tydligt fokus även på färgade ytor och SVG-knappar. */
+:is(button, a, input, select, textarea, [tabindex]):focus-visible {
+  outline: 3px solid #152644;
+  outline-offset: 3px;
+  box-shadow: 0 0 0 6px #fff;
+}
+svg [role="button"]:focus-visible { outline: 3px solid #152644; filter: drop-shadow(0 0 3px #fff); }
+textarea:focus-visible { outline: 3px solid #152644; outline-offset: 3px; }
+.btn-primary { background: #294e86; color: #fff; }
+.btn-danger { background: #b52b36; }
+:root { --good: #087849; --try: #98500c; }
+button, [role="button"], input, select, textarea { scroll-margin-block: 90px; }
+@media (forced-colors: active) {
+  :is(button, a, input, select, textarea, [tabindex]):focus-visible { outline: 3px solid Highlight; }
+  button, input, select, textarea { border: 1px solid ButtonText; }
+}
+
+@media (max-width: 380px) {
+  /* Nivån finns kvar för hjälpmedel men lämnar plats för aktivitetens titel. */
+  .win-head > span:last-of-type { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  .win-title { font-size: 20px; gap: 5px; }
+}
+
+/* Smala skärmar: inga element får skjuta ut i sidled. */
+.trace-top { flex-wrap: wrap; }
+.win-title { overflow: hidden; }
+.win-title > span:last-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }

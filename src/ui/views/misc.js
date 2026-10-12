@@ -1,5 +1,5 @@
 // Övriga vyer: kroppen, berättelser, Undra och Rita.
-import { h, clear, onTap, wait } from '../dom.js';
+import { h, clear, onTap, interactiveGraphic, wait } from '../dom.js';
 import { bodySvg, BODY_PARTS, ORGANS } from '../../apps/biology.js';
 import { STORIES } from '../../apps/svenska.js';
 import { WONDERS, WONDER_CATS, randomFact, eligibleWonders, wonderAnswer } from '../../apps/wonder.js';
@@ -27,7 +27,7 @@ export function bodyView(el, { kos, app, level }) {
   }
   function render(hl) {
     pic.innerHTML = bodySvg({ organs, highlight: hl });
-    pic.querySelectorAll('[data-hit]').forEach((n) => n.addEventListener('click', () => pick(n.getAttribute('data-hit'))));
+    pic.querySelectorAll('[data-hit]').forEach((n) => interactiveGraphic(n, [...BODY_PARTS, ...ORGANS].find(part => part.id === n.getAttribute('data-hit'))?.name || 'Kroppsdel', () => pick(n.getAttribute('data-hit'))));
   }
   function pick(id) {
     const part = [...BODY_PARTS, ...ORGANS].find((x) => x.id === id);
@@ -36,7 +36,7 @@ export function bodyView(el, { kos, app, level }) {
     const r = kos.reward({ app: app.id, set: 'bodyParts', item: id, stars: hasInSet(p, 'bodyParts', id) ? 0 : 1 });
     kos.sfx('pop');
     const nm = part.name[0].toUpperCase() + part.name.slice(1);
-    clear(card).append(h('div.pi-card', h('h3', nm, r.isNew ? h('span.new-tag', 'Ny!') : null), h('p.pi-fact', part.fn), onTap(h('button.btn.btn-ghost.btn-sm', { type: 'button' }, '🔊 Läs'), () => kos.say(`${nm}. ${part.fn}`))));
+    clear(card).append(h('div.pi-card', h('h3', nm, r.isNew ? h('span.new-tag', 'Ny!') : null), h('p.pi-fact', part.fn), onTap(h('button.btn.btn-ghost.btn-sm', { type: 'button' }, '🔊 Läs'), () => kos.read(`${nm}. ${part.fn}`))));
     kos.autoSay(`${nm}. ${part.fn}`);
     renderFound();
   }
@@ -83,10 +83,10 @@ export function storiesView(el, { kos, app, level }) {
         'p.story-line',
         t.split(/(\s+)/).map((w) => {
           if (!w.trim()) return w;
-          const span = h('span.word', w);
-          span.addEventListener('click', () => {
+          const span = h('span.word', { role: 'button', tabindex: '0', 'aria-label': `Läs ordet ${w}` }, w);
+          onTap(span, () => {
             span.classList.add('said');
-            kos.say(w.replace(/[^\p{L}\p{N}]/gu, ''), { slow: true });
+            kos.read(w.replace(/[^\p{L}\p{N}]/gu, ''), { slow: true });
             setTimeout(() => span.classList.remove('said'), 800);
           });
           return span;
@@ -112,7 +112,7 @@ export function storiesView(el, { kos, app, level }) {
         ln.classList.add('reading');
         ln.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
         // fx: ord-för-ord-markering medan raden läses (koppling ljud–skrift).
-        await speakAlong(ln, (t, o) => kos.say(t, o));
+        await speakAlong(ln, (t, o) => kos.read(t, o));
         ln.classList.remove('reading');
         await wait(250);
       }
@@ -302,7 +302,11 @@ export function drawView(el, { kos, app }) {
   const ctxOf = () => canvas.getContext('2d');
   let W = 600;
   let H = 400;
+  let alive = true;
+  let resizeVersion = 0;
   function setup() {
+    if (!alive || !el.isConnected || el.clientWidth <= 8) return;
+    const version = ++resizeVersion;
     const prev = W > 0 && canvas.width ? canvas.toDataURL() : null;
     W = Math.floor(Math.min(el.clientWidth - 8, 1100));
     H = Math.floor(Math.max(260, Math.min(window.innerHeight * 0.55, W * 0.8)));
@@ -317,7 +321,7 @@ export function drawView(el, { kos, app }) {
     ctx.fillRect(0, 0, W, H);
     if (prev) {
       const img = new Image();
-      img.onload = () => ctx.drawImage(img, 0, 0, W, H);
+      img.onload = () => { if (alive && version === resizeVersion) ctx.drawImage(img, 0, 0, W, H); };
       img.src = prev;
     }
   }
@@ -500,5 +504,5 @@ export function drawView(el, { kos, app }) {
   renderStamps();
   newPrompt();
   requestAnimationFrame(setup);
-  return () => window.removeEventListener('resize', onResize);
+  return () => { alive = false; window.removeEventListener('resize', onResize); };
 }

@@ -20,6 +20,36 @@ Intervallet är godkänt när barnet börjar fylla i sin profil och kan inte än
 
 Nivån anpassas automatiskt, men du kan låsa den per app om ett barn behöver mer utmaning eller mer trygghet. **Visa alla moduler** låser upp allt för ett barn som vill utforska fritt.
 
+## Individuellt stöd
+
+Under **Inställningar → Mitt stöd** väljer barnet eller den vuxne ljudeffekter,
+mindre rörelse, belöningsanimationer och rundlängd. Samma stödval finns i
+föräldradelen för varje profil. Valen kräver ingen diagnos.
+
+- **Uppläsning → När jag trycker** läser vid tryck på läs- och lyssnaknappar samt ord i berättelser. Frågor och återkoppling läses inte automatiskt.
+- **Uppläsning → Av** stänger av all uppläsning, även läsknappar. Ljudeffekter väljs separat.
+- **Mindre rörelse** stänger av gränssnittets animationer, konfetti och rörliga planetbanor. Vatten visas med stilla partiklar, kälken visar resultatet direkt och ”Visa hur” i Skriv ABC visar hela linjen utan rörlig penna. Dag och natt kan ändras stegvis. Kodning kan fortfarande visa separata steg i ett program.
+- **Fira med animationer → Av** tar bort konfetti, flygande stjärnor och stjärnornas animation i rundresultatet. Framsteg och belöningar sparas.
+- **Frågor per runda** kan vara 3, 5, 8 eller följa åldern. Valet gäller frågeövningar, från nästa runda.
+- **Samma nivå hela rundan** behåller rundans startnivå för frågorna. Den automatiska anpassningen kan påverka nästa runda; en föräldralåst nivå gäller fortsatt.
+- **Visa plan före rundan** visar antalet frågor och hur rundan går till innan barnet trycker på Starta rundan. Planen kan läsas upp. Symbol- och fotoplaner efter barnets förståelse återstår att pröva.
+- **Lugn återkoppling** tar bort trofénotiser och nivåfirande under övningen. Belöningar och framsteg sparas.
+
+**Hjälp** kan användas före ett svar utan poängavdrag. Utforskande vyer har också
+hjälp och paus. **Paus** stoppar tal och ljudeffekter och håller tidsstyrda steg.
+I frågeövningar återgår **Fortsätt** till samma fråga utan automatisk uppläsning.
+Utforskande vyer fortsätter sitt pågående steg; en kommande återkoppling kan
+läsas upp om automatisk uppläsning är vald. **Avsluta** behåller det barnet redan
+tjänat, men en ofärdig aktivitet kan börja om nästa gång. En ofärdig runda sparas
+inte över omladdning eller stängning.
+
+När högst två minuter återstår av skärmtiden visas en förvarning. Vid gränsen
+pausas den öppna aktiviteten. Om en vuxen ger 15 minuter till finns aktiviteten
+kvar. Byt användare avslutar den öppna aktiviteten.
+
+Pröva valen tillsammans med barnet och ändra efter behov. Underlaget och
+fortsatta utvecklingsförslag finns i [AUTISM-KRAV-OCH-EVIDENS.md](AUTISM-KRAV-OCH-EVIDENS.md).
+
 ## Rapporten
 
 Under **Föräldrainställningar** finns en rapport per barn:

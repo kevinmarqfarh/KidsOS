@@ -2,7 +2,7 @@
 
 <!-- GENERERAD av scripts/credits-doc.mjs från assets/credits.json – ändra inte för hand. -->
 
-KidsOS innehåller 342 foton från Wikimedia Commons (inklusive NASA). Alla har fria licenser: public domain, CC0, CC BY eller CC BY-SA.
+KidsOS innehåller 365 foton från Wikimedia Commons (inklusive NASA). Alla har fria licenser: public domain, CC0, CC BY eller CC BY-SA.
 Bilderna är förminskade och omkodade till WebP men i övrigt oförändrade. Följ länken för original, fullständig licens och upphov.
 
 ## feelings (4)
@@ -118,7 +118,7 @@ Bilderna är förminskade och omkodade till WebP men i övrigt oförändrade. F�
 | vikingaskepp | [Osebergskipet_2016.jpg](https://commons.wikimedia.org/wiki/File:Osebergskipet_2016.jpg) | Petter Ulleland | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) |
 | visby | [Visby_ringmur_June_2026.jpg](https://commons.wikimedia.org/wiki/File:Visby_ringmur_June_2026.jpg) | ArildV | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) |
 
-## Föremål, djur och mat (ersätter emoji) (254)
+## Föremål, djur och mat (ersätter emoji) (277)
 
 | Nyckel | Fil | Upphov | Licens |
 |---|---|---|---|
@@ -181,7 +181,7 @@ Bilderna är förminskade och omkodade till WebP men i övrigt oförändrade. F�
 | obj-chair | [Set_of_fourteen_side_chairs_MET_DP110780.jpg](https://commons.wikimedia.org/wiki/File:Set_of_fourteen_side_chairs_MET_DP110780.jpg) | Thomas Chippendale | [CC0](http://creativecommons.org/publicdomain/zero/1.0/deed.en) |
 | obj-cheese | [Block of Muenster cheese.jpg](https://commons.wikimedia.org/wiki/File:Block_of_Muenster_cheese.jpg) | No machine-readable author provided. Brion VIBBER assumed (based on copyright claims). | [CC BY-SA 3.0](http://creativecommons.org/licenses/by-sa/3.0/) |
 | obj-cherries | [Cherry_season_(48216568227).jpg](https://commons.wikimedia.org/wiki/File:Cherry_season_(48216568227).jpg) | spurekar | [CC BY 2.0](https://creativecommons.org/licenses/by/2.0) |
-| obj-chestnut | [Gebarsten bolster van een paardenkastanje (Aesculus) 13-10-2022 (d.j.b.) 02.jpg](https://commons.wikimedia.org/wiki/File:Gebarsten_bolster_van_een_paardenkastanje_(Aesculus)_13-10-2022_(d.j.b.)_02.jpg) | Dominicus Johannes Bergsma | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) |
+| obj-chestnut | [Horse chestnut conkers - geograph.org.uk - 7621860.jpg](https://commons.wikimedia.org/wiki/File:Horse_chestnut_conkers_-_geograph.org.uk_-_7621860.jpg) | Philip Halling | [CC BY-SA 2.0](https://creativecommons.org/licenses/by-sa/2.0) |
 | obj-chicken | [Male_and_female_chicken_sitting_together.jpg](https://commons.wikimedia.org/wiki/File:Male_and_female_chicken_sitting_together.jpg) | Andrei Niemimäki from Turku, Finland | [CC BY-SA 2.0](https://creativecommons.org/licenses/by-sa/2.0) |
 | obj-chocolate | [Green_and_Black's_dark_chocolate_bar_2.jpg](https://commons.wikimedia.org/wiki/File:Green_and_Black%27s_dark_chocolate_bar_2.jpg) | Mx. Granger | [CC0](http://creativecommons.org/publicdomain/zero/1.0/deed.en) |
 | obj-church | [Husby-Sjuhundra_kyrka.jpg](https://commons.wikimedia.org/wiki/File:Husby-Sjuhundra_kyrka.jpg) | Atleett | [CC0](http://creativecommons.org/publicdomain/zero/1.0/deed.en) |
@@ -290,11 +290,15 @@ Bilderna är förminskade och omkodade till WebP men i övrigt oförändrade. F�
 | obj-orange | [Oranges_-_whole-halved-segment.jpg](https://commons.wikimedia.org/wiki/File:Oranges_-_whole-halved-segment.jpg) | Ivar Leidus | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) |
 | obj-padlock | [Solex 99 30 padlock with keys (DSCF2659).jpg](https://commons.wikimedia.org/wiki/File:Solex_99_30_padlock_with_keys_(DSCF2659).jpg) | Trougnouf | [CC BY 4.0](https://creativecommons.org/licenses/by/4.0) |
 | obj-paintbrush | [Paintbrushes.jpg](https://commons.wikimedia.org/wiki/File:Paintbrushes.jpg) | Krestavilis at English Wikipedia | Public domain |
+| obj-palette | [Oil_painting_palette.jpg](https://commons.wikimedia.org/wiki/File:Oil_painting_palette.jpg) | Mlaoxve | Public domain |
+| obj-palm | [Coconut Tree Kappil Beach.jpg](https://commons.wikimedia.org/wiki/File:Coconut_Tree_Kappil_Beach.jpg) | Shishirdasika | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) |
 | obj-pancakes | [Foodiesfeed.com_pouring-honey-on-pancakes-with-walnuts.jpg](https://commons.wikimedia.org/wiki/File:Foodiesfeed.com_pouring-honey-on-pancakes-with-walnuts.jpg) | Mae Mu | [CC0](http://creativecommons.org/publicdomain/zero/1.0/deed.en) |
 | obj-paperclip | [Wanzijia.jpg](https://commons.wikimedia.org/wiki/File:Wanzijia.jpg) | Hawyih | Public domain |
 | obj-parrot | [Scarlet_macaw_(Ara_macao_cyanopterus)_Copan.jpg](https://commons.wikimedia.org/wiki/File:Scarlet_macaw_(Ara_macao_cyanopterus)_Copan.jpg) | Charles J. Sharp | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) |
+| obj-peanut | [Peanuts in their shells.jpg](https://commons.wikimedia.org/wiki/File:Peanuts_in_their_shells.jpg) | TorbeyCharbel | [CC BY 4.0](https://creativecommons.org/licenses/by/4.0) |
 | obj-pear | [Pears.jpg](https://commons.wikimedia.org/wiki/File:Pears.jpg) | Keith Weller | Public domain |
 | obj-peas | [Doperwt_rijserwt_peulen_Pisum_sativum.jpg](https://commons.wikimedia.org/wiki/File:Doperwt_rijserwt_peulen_Pisum_sativum.jpg) | Rasbak | [CC BY-SA 3.0](http://creativecommons.org/licenses/by-sa/3.0/) |
+| obj-pen | [03-BICcristal2008-03-26.jpg](https://commons.wikimedia.org/wiki/File:03-BICcristal2008-03-26.jpg) | Trounce | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0) |
 | obj-pencil | [Pencils_hb.jpg](https://commons.wikimedia.org/wiki/File:Pencils_hb.jpg) | Original uploader was Dmgerman at en.wikipedia | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0) |
 | obj-piano | [Steinway_Vienna_002.JPG](https://commons.wikimedia.org/wiki/File:Steinway_Vienna_002.JPG) | Gryffindor | [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0) |
 | obj-pig | [Pig_farm_Vampula_1.jpg](https://commons.wikimedia.org/wiki/File:Pig_farm_Vampula_1.jpg) | kallerna | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) |
@@ -305,8 +309,12 @@ Bilderna är förminskade och omkodade till WebP men i övrigt oförändrade. F�
 | obj-potato | [Patates.jpg](https://commons.wikimedia.org/wiki/File:Patates.jpg) | Scott Bauer, USDA ARS | Public domain |
 | obj-potted-plant | [Orkide_i_finstua_mot_vest.jpg](https://commons.wikimedia.org/wiki/File:Orkide_i_finstua_mot_vest.jpg) | Øyvind Holmstad | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) |
 | obj-pumpkin | [Balle-à-leunettes_10.jpg](https://commons.wikimedia.org/wiki/File:Balle-%C3%A0-leunettes_10.jpg) | Man vyi | Public domain |
+| obj-pushpin | [RedPushPin_(cropped).jpg](https://commons.wikimedia.org/wiki/File:RedPushPin_(cropped).jpg) | Slashme | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) |
 | obj-puzzle | [Red jigsaw puzzle pieces 2.jpg](https://commons.wikimedia.org/wiki/File:Red_jigsaw_puzzle_pieces_2.jpg) | Profpcde | [CC0](http://creativecommons.org/publicdomain/zero/1.0/deed.en) |
 | obj-rabbit | [Heimtier_004_2023_08_26.jpg](https://commons.wikimedia.org/wiki/File:Heimtier_004_2023_08_26.jpg) | Friedrich Haag | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) |
+| obj-raccoon | [Raccoon (Procyon lotor) 2.jpg](https://commons.wikimedia.org/wiki/File:Raccoon_(Procyon_lotor)_2.jpg) | Darkone | [CC BY-SA 2.5](https://creativecommons.org/licenses/by-sa/2.5) |
+| obj-radio | [Transistor radio TR-55 by sony.jpg](https://commons.wikimedia.org/wiki/File:Transistor_radio_TR-55_by_sony.jpg) | ブルーノ・プラス | [CC0](http://creativecommons.org/publicdomain/zero/1.0/deed.en) |
+| obj-rain | [Hard_rain_on_a_roof.jpg](https://commons.wikimedia.org/wiki/File:Hard_rain_on_a_roof.jpg) | W.carter | [CC0](http://creativecommons.org/publicdomain/zero/1.0/deed.en) |
 | obj-rainbow | [Double-alaskan-rainbow.jpg](https://commons.wikimedia.org/wiki/File:Double-alaskan-rainbow.jpg) | Eric Rolph at English Wikipedia | [CC BY-SA 2.5](https://creativecommons.org/licenses/by-sa/2.5) |
 | obj-rat | [Brown_Rat_(Rattus_norvegicus).jpg](https://commons.wikimedia.org/wiki/File:Brown_Rat_(Rattus_norvegicus).jpg) | Dunpharlain | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) |
 | obj-rice | [Meshi_001.jpg](https://commons.wikimedia.org/wiki/File:Meshi_001.jpg) | Ocdp | [CC0](http://creativecommons.org/publicdomain/zero/1.0/deed.en) |
@@ -315,17 +323,24 @@ Bilderna är förminskade och omkodade till WebP men i övrigt oförändrade. F�
 | obj-rock | [A fine granite pebble - geograph.org.uk - 3082058.jpg](https://commons.wikimedia.org/wiki/File:A_fine_granite_pebble_-_geograph.org.uk_-_3082058.jpg) | Stanley Howe | [CC BY-SA 2.0](https://creativecommons.org/licenses/by-sa/2.0) |
 | obj-rocket | [Soyuz_TMA-9_launch.jpg](https://commons.wikimedia.org/wiki/File:Soyuz_TMA-9_launch.jpg) | Bill Ingalls | Public domain |
 | obj-rooster | [Rooster crowing nsw.jpg](https://commons.wikimedia.org/wiki/File:Rooster_crowing_nsw.jpg) | Steev Selby from Wollongong, Australia | [CC BY-SA 2.0](https://creativecommons.org/licenses/by-sa/2.0) |
+| obj-rope | [Coiled rope 03235.jpg](https://commons.wikimedia.org/wiki/File:Coiled_rope_03235.jpg) | Nevit Dilmen | [CC BY-SA 3.0](http://creativecommons.org/licenses/by-sa/3.0/) |
 | obj-rose | [Red rose with black background.jpg](https://commons.wikimedia.org/wiki/File:Red_rose_with_black_background.jpg) | Laitche | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) |
 | obj-ruler | [20-cm-Holzlineal PGH Seiffener Volkskunst diagonal 2021.jpg](https://commons.wikimedia.org/wiki/File:20-cm-Holzlineal_PGH_Seiffener_Volkskunst_diagonal_2021.jpg) | VSchagow | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) |
 | obj-safety-pin | [Safety_Pin.jpg](https://commons.wikimedia.org/wiki/File:Safety_Pin.jpg) | Haragayato | [CC BY-SA 3.0](http://creativecommons.org/licenses/by-sa/3.0/) |
 | obj-sailboat | [Sailing boat at sunset, Ionian Sea, Albania.jpg](https://commons.wikimedia.org/wiki/File:Sailing_boat_at_sunset,_Ionian_Sea,_Albania.jpg) | Liridon | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) |
+| obj-salt | [Salt, sugar and pepper shakers.jpg](https://commons.wikimedia.org/wiki/File:Salt,_sugar_and_pepper_shakers.jpg) | Paul Goyette | [CC BY-SA 2.0](https://creativecommons.org/licenses/by-sa/2.0) |
+| obj-sandwich | [Sandwich on a cutting board.jpg](https://commons.wikimedia.org/wiki/File:Sandwich_on_a_cutting_board.jpg) | Revital Salomon | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) |
 | obj-satellite | [Two_3U_CubeSats.jpg](https://commons.wikimedia.org/wiki/File:Two_3U_CubeSats.jpg) | NASA | Public domain |
+| obj-saw | [Hand Saws.jpg](https://commons.wikimedia.org/wiki/File:Hand_Saws.jpg) | F. D. Richards | [CC BY-SA 2.0](https://creativecommons.org/licenses/by-sa/2.0) |
 | obj-scale | [Balance_à_tabac_1850.JPG](https://commons.wikimedia.org/wiki/File:Balance_%C3%A0_tabac_1850.JPG) | Photographie personnelle User:Poussin jean | [CC BY-SA 3.0](http://creativecommons.org/licenses/by-sa/3.0/) |
+| obj-scarf | [100%_Kaschmir_Wolle_vonk_kaschmirprodukte.de.jpg](https://commons.wikimedia.org/wiki/File:100%25_Kaschmir_Wolle_vonk_kaschmirprodukte.de.jpg) | https://www.kaschmirprodukte.de | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) |
 | obj-school | [Школа_№2_г._Краснотурьинска.jpg](https://commons.wikimedia.org/wiki/File:%D0%A8%D0%BA%D0%BE%D0%BB%D0%B0_%E2%84%962_%D0%B3._%D0%9A%D1%80%D0%B0%D1%81%D0%BD%D0%BE%D1%82%D1%83%D1%80%D1%8C%D0%B8%D0%BD%D1%81%D0%BA%D0%B0.jpg) | S. Kleinmichel | [CC BY 4.0](https://creativecommons.org/licenses/by/4.0) |
 | obj-scissors | [Standard_household_scissors.jpg](https://commons.wikimedia.org/wiki/File:Standard_household_scissors.jpg) | Doggerelblogger | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) |
+| obj-seashell | [Conchiglie_Seashells_01.jpg](https://commons.wikimedia.org/wiki/File:Conchiglie_Seashells_01.jpg) | Alessio Sbarbaro User_talk:Yoggysot | [CC BY-SA 2.5](https://creativecommons.org/licenses/by-sa/2.5) |
 | obj-seedling | [Young seedling of tomato emerging from soil - India.jpg](https://commons.wikimedia.org/wiki/File:Young_seedling_of_tomato_emerging_from_soil_-_India.jpg) | Ksheera Piraati | [CC BY 4.0](https://creativecommons.org/licenses/by/4.0) |
 | obj-shark | [White_shark.jpg](https://commons.wikimedia.org/wiki/File:White_shark.jpg) | Pterantula (Terry Goss) at en.wikipedia | [CC BY 2.5](https://creativecommons.org/licenses/by/2.5) |
 | obj-sheep | [Jacob lamb in pasture, Hoveton Hall - geograph.org.uk - 777511.jpg](https://commons.wikimedia.org/wiki/File:Jacob_lamb_in_pasture,_Hoveton_Hall_-_geograph.org.uk_-_777511.jpg) | Evelyn Simak | [CC BY-SA 2.0](https://creativecommons.org/licenses/by-sa/2.0) |
+| obj-ship | [Icon_of_the_Seas_Puerto_Rico_2025_(cropped).jpg](https://commons.wikimedia.org/wiki/File:Icon_of_the_Seas_Puerto_Rico_2025_(cropped).jpg) | Corey Seeman | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) |
 | obj-shoe | [Air_Jordan_1_Banned.jpg](https://commons.wikimedia.org/wiki/File:Air_Jordan_1_Banned.jpg) | HI 622 | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) |
 | obj-shopping-bag | [Albert Heijn paper shopping bag (2019) 05.jpg](https://commons.wikimedia.org/wiki/File:Albert_Heijn_paper_shopping_bag_(2019)_05.jpg) | Donald Trung Quoc Don (Chữ Hán: 徵國單) - Wikimedia Commons.(Want to use this image?) | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) |
 | obj-shopping-cart | [Frau_mit_Einkaufswagen_(37939692236).jpg](https://commons.wikimedia.org/wiki/File:Frau_mit_Einkaufswagen_(37939692236).jpg) | Tim Reckmann from Hamm, Deutschland | [CC BY 2.0](https://creativecommons.org/licenses/by/2.0) |
@@ -337,17 +352,22 @@ Bilderna är förminskade och omkodade till WebP men i övrigt oförändrade. F�
 | obj-snake | [Grass_snake_(Natrix_natrix)_Pieniny.jpg](https://commons.wikimedia.org/wiki/File:Grass_snake_(Natrix_natrix)_Pieniny.jpg) | Charles J. Sharp | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) |
 | obj-snowflake | [Snowflake_(lumehelves).jpg](https://commons.wikimedia.org/wiki/File:Snowflake_(lumehelves).jpg) | Janek Lass | [CC BY 4.0](https://creativecommons.org/licenses/by/4.0) |
 | obj-snowman | [Snowman_in_Indiana_2014.jpg](https://commons.wikimedia.org/wiki/File:Snowman_in_Indiana_2014.jpg) | GutMaze | [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0) |
+| obj-soap | [A bar of soap.jpg](https://commons.wikimedia.org/wiki/File:A_bar_of_soap.jpg) | No machine-readable author provided. Lacrimosus assumed (based on copyright claims). | Public domain |
 | obj-sock | [HandKnittedWhiteLaceSock.jpg](https://commons.wikimedia.org/wiki/File:HandKnittedWhiteLaceSock.jpg) | Loggie-log | Public domain |
 | obj-sofa | [EFTA00001223 - Modern living room features a white sofa a large ottoman with a fur throw and a stylish black-and-white patterned rug A desk area is visible in the background.jpg](https://commons.wikimedia.org/wiki/File:EFTA00001223_-_Modern_living_room_features_a_white_sofa_a_large_ottoman_with_a_fur_throw_and_a_stylish_black-and-white_patterned_rug_A_desk_area_is_visible_in_the_background.jpg) | Federal Bureau of Investigation | Public domain |
 | obj-soup | [Asparagus_soup_(spargelsuppe).jpg](https://commons.wikimedia.org/wiki/File:Asparagus_soup_(spargelsuppe).jpg) | Petar Milošević | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) |
 | obj-spaghetti | [Liat Portal for Foodie Disorder - Spaghetti with Tomato Sauce.jpg](https://commons.wikimedia.org/wiki/File:Liat_Portal_for_Foodie_Disorder_-_Spaghetti_with_Tomato_Sauce.jpg) | HaJunkiyada | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) |
 | obj-sponge | [Éponge_type_3_(1).jpg](https://commons.wikimedia.org/wiki/File:%C3%89ponge_type_3_(1).jpg) | Lionel Allorge | [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0) |
 | obj-spoon | [Soup_Spoon.jpg](https://commons.wikimedia.org/wiki/File:Soup_Spoon.jpg) | Donovan Govan. | [CC BY-SA 3.0](http://creativecommons.org/licenses/by-sa/3.0/) |
+| obj-stop-sign | [STOP_sign.jpg](https://commons.wikimedia.org/wiki/File:STOP_sign.jpg) | Bidgee | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0) |
 | obj-strawberry | [Garden_strawberry_(Fragaria_×_ananassa)_single2.jpg](https://commons.wikimedia.org/wiki/File:Garden_strawberry_(Fragaria_%C3%97_ananassa)_single2.jpg) | Ivar Leidus | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) |
 | obj-sunflower | [Fasciated sunflower - 2026-08-14 - Andy Mabbett.jpg](https://commons.wikimedia.org/wiki/File:Fasciated_sunflower_-_2026-08-14_-_Andy_Mabbett.jpg) | Andy Mabbett | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) |
 | obj-sunrise | [Spring_Lake,_New_Jersey_Beach_at_Sunrise.jpg](https://commons.wikimedia.org/wiki/File:Spring_Lake,_New_Jersey_Beach_at_Sunrise.jpg) | Nick Harris | [CC BY 2.5](https://creativecommons.org/licenses/by/2.5) |
+| obj-table-tennis | [Table tennis bat and ball.jpg](https://commons.wikimedia.org/wiki/File:Table_tennis_bat_and_ball.jpg) | Santeri Viinamäki | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) |
+| obj-tea | [Cup of black tea.JPG](https://commons.wikimedia.org/wiki/File:Cup_of_black_tea.JPG) | AntanO | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) |
 | obj-teddy | [Teddy_bear_early_1900s_-_Smithsonian_Museum_of_Natural_History.jpg](https://commons.wikimedia.org/wiki/File:Teddy_bear_early_1900s_-_Smithsonian_Museum_of_Natural_History.jpg) | Smithsonian Museum of Natural History | [CC BY-SA 2.0](https://creativecommons.org/licenses/by-sa/2.0) |
 | obj-telescope | [Telescope at The Kymin.jpg](https://commons.wikimedia.org/wiki/File:Telescope_at_The_Kymin.jpg) | Photograph by Mike Peel (www.mikepeel.net). | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) |
+| obj-tennis-ball | [Closeup_of_a_tennis_ball_(2).jpg](https://commons.wikimedia.org/wiki/File:Closeup_of_a_tennis_ball_(2).jpg) | Miscellaneous contributor | [CC0](http://creativecommons.org/publicdomain/zero/1.0/deed.en) |
 | obj-tent | [Camping tent on tarp.jpg](https://commons.wikimedia.org/wiki/File:Camping_tent_on_tarp.jpg) | Eden Aviv | [CC0](http://creativecommons.org/publicdomain/zero/1.0/deed.en) |
 | obj-test-tube | [Two_small_test_tubes_held_in_spring_clamps.jpg](https://commons.wikimedia.org/wiki/File:Two_small_test_tubes_held_in_spring_clamps.jpg) | Amitchell125 at English Wikipedia | [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0) |
 | obj-thermometer | [Mercury_Thermometer.jpg](https://commons.wikimedia.org/wiki/File:Mercury_Thermometer.jpg) | Anonimski | [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0) |
@@ -360,13 +380,16 @@ Bilderna är förminskade och omkodade till WebP men i övrigt oförändrade. F�
 | obj-traffic-light | [Modern_British_LED_Traffic_Light.jpg](https://commons.wikimedia.org/wiki/File:Modern_British_LED_Traffic_Light.jpg) | Unisouth | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0) |
 | obj-train | [Поезд_на_фоне_горы_Шатрище._Воронежская_область.jpg](https://commons.wikimedia.org/wiki/File:%D0%9F%D0%BE%D0%B5%D0%B7%D0%B4_%D0%BD%D0%B0_%D1%84%D0%BE%D0%BD%D0%B5_%D0%B3%D0%BE%D1%80%D1%8B_%D0%A8%D0%B0%D1%82%D1%80%D0%B8%D1%89%D0%B5._%D0%92%D0%BE%D1%80%D0%BE%D0%BD%D0%B5%D0%B6%D1%81%D0%BA%D0%B0%D1%8F_%D0%BE%D0%B1%D0%BB%D0%B0%D1%81%D1%82%D1%8C.jpg) | Алексей Задонский | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) |
 | obj-tree | [Usamljeni_jasen_-_panoramio_(cropped).jpg](https://commons.wikimedia.org/wiki/File:Usamljeni_jasen_-_panoramio_(cropped).jpg) | menergo | [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0) |
+| obj-trophy | [The FA Cup Trophy.jpg](https://commons.wikimedia.org/wiki/File:The_FA_Cup_Trophy.jpg) | Carlos yo | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) |
 | obj-tropical-fish | [Clown_fish_in_the_Andaman_Coral_Reef.jpg](https://commons.wikimedia.org/wiki/File:Clown_fish_in_the_Andaman_Coral_Reef.jpg) | Ritiks | [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0) |
+| obj-trumpet | [Yamaha_Trumpet_YTR-8335LA_crop.jpg](https://commons.wikimedia.org/wiki/File:Yamaha_Trumpet_YTR-8335LA_crop.jpg) | Yamaha Corporation | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) |
 | obj-tshirt | [Woman_in_a_V-Neck_T-Shirt.jpg](https://commons.wikimedia.org/wiki/File:Woman_in_a_V-Neck_T-Shirt.jpg) | Spreadshirt | [CC BY 2.0](https://creativecommons.org/licenses/by/2.0) |
 | obj-tulip | [צבעונים.JPG](https://commons.wikimedia.org/wiki/File:%D7%A6%D7%91%D7%A2%D7%95%D7%A0%D7%99%D7%9D.JPG) | Dina L | [CC0](http://creativecommons.org/publicdomain/zero/1.0/deed.en) |
 | obj-turtle | [A._gigantea_Aldabra_Giant_Tortoise.jpg](https://commons.wikimedia.org/wiki/File:A._gigantea_Aldabra_Giant_Tortoise.jpg) | Childzy at en.wikipedia | [CC BY-SA 3.0](http://creativecommons.org/licenses/by-sa/3.0/) |
 | obj-tv | [A flat-screen television.jpg](https://commons.wikimedia.org/wiki/File:A_flat-screen_television.jpg) | EvanProdromou | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) |
 | obj-umbrella | [M0354_000727-005_1.jpg](https://commons.wikimedia.org/wiki/File:M0354_000727-005_1.jpg) | MONNIN Jacques | [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0) |
 | obj-violin | [Violin_VL100.png](https://commons.wikimedia.org/wiki/File:Violin_VL100.png) | Just plain Bill | [CC0](http://creativecommons.org/publicdomain/zero/1.0/deed.en) |
+| obj-volcano | [Eruption of Raung Volcano (19684852442).jpg](https://commons.wikimedia.org/wiki/File:Eruption_of_Raung_Volcano_(19684852442).jpg) | NASA's Earth Observatory | [CC BY 2.0](https://creativecommons.org/licenses/by/2.0) |
 | obj-volleyball | [Mikasa_VLS300_official_beach_volleyball.jpg](https://commons.wikimedia.org/wiki/File:Mikasa_VLS300_official_beach_volleyball.jpg) | Petar Milošević | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) |
 | obj-water-drop | [Water_drop_light_art_vijayanrajapuram_01.jpg](https://commons.wikimedia.org/wiki/File:Water_drop_light_art_vijayanrajapuram_01.jpg) | Vijayanrajapuram | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) |
 | obj-watermelon | [Taiwan_2009_Tainan_City_Organic_Farm_Watermelon_FRD_7962.jpg](https://commons.wikimedia.org/wiki/File:Taiwan_2009_Tainan_City_Organic_Farm_Watermelon_FRD_7962.jpg) | Fred Hsu (Wikipedia:User:Fred Hsu on en.wikipedia) | [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0) |

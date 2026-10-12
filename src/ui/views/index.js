@@ -1,3 +1,5 @@
+import { studioView } from './studio.js';
+import { drawingMissionsView } from './drawing-missions.js';
 import { courseView } from './course.js';
 import { aiLabView } from './ai.js';
 import { traceView } from './trace.js';
@@ -13,6 +15,8 @@ import { SPACE_PHOTOS } from '../../apps/space.js';
 const spaceGalleryView = (el, ctx) => galleryView(el, { ...ctx, items: SPACE_PHOTOS, title: 'Riktiga bilder från rymden' });
 
 export const VIEWS = {
+  drawingMissions: drawingMissionsView,
+  studio: studioView,
   course: courseView,
   aiLab: aiLabView,
   trace: traceView,

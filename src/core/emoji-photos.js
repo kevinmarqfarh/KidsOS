@@ -356,9 +356,6 @@ export const EMOJI_PHOTOS = {
   "📌": 'obj-pushpin',
   "🦕": 'obj-dinosaur',
   "🌙": 'moon-waxing-crescent',
-  "🐥": 'lc-kyckling',
-  "🐤": 'lc-kyckling',
-  "🐣": 'lc-klacks',
 };
 
 /** Alt-text (svenska, obestämd form) per fotonyckel. */

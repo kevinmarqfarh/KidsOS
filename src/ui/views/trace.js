@@ -7,7 +7,7 @@
 //
 // "Stava ord": barnet hör ordet och skriver det bokstav för bokstav – med mall
 // (spåra) eller utan (skriv själv).
-import { h, clear, onTap } from '../dom.js';
+import { h, clear, onTap, reducedMotion } from '../dom.js';
 import {
   GLYPHS, UPPER, LOWER, DIGITS, GUIDES, layoutWord, scoreTrace, strokeHints, WRITE_WORDS,
   letterSpeech, REPEAT_CHOICES, normalizeRepeat, newSeries, seriesAdvance, seriesLeft, supportFor, seriesKey, praiseFor,
@@ -16,8 +16,8 @@ import { ALPHABET, SPELL_WORDS, spellWordsForLevel, spellTip } from '../../apps/
 import { hasInSet, count } from '../../core/model.js';
 import { photo, hasPhoto, pic } from '../img.js';
 
-const SET_KEYS = { upper: 'traced:upper', lower: 'traced:lower', digits: 'traced:digits', name: 'tracedNameSet', words: 'traced:words', spell: 'traced:spell' };
-const SERIES_SETS = new Set(['upper', 'lower', 'digits']);
+const SET_KEYS = { pairs: 'traced:pairs', upper: 'traced:upper', lower: 'traced:lower', digits: 'traced:digits', name: 'tracedNameSet', words: 'traced:words', spell: 'traced:spell' };
+const SERIES_SETS = new Set(['pairs', 'upper', 'lower', 'digits']);
 const NUM_WORDS = ['noll', 'en', 'två', 'tre', 'fyra', 'fem', 'sex', 'sju', 'åtta', 'nio', 'tio'];
 
 export function traceView(el, { kos, app, module: mod, level }) {
@@ -49,6 +49,7 @@ export function traceView(el, { kos, app, module: mod, level }) {
   };
 
   function itemsFor(s) {
+    if (s === 'pairs') return UPPER.flatMap((ch) => [ch, ch.toLowerCase()]); // stor och liten bokstav i par
     if (s === 'upper') return UPPER;
     if (s === 'lower') return LOWER;
     if (s === 'digits') return DIGITS;
@@ -86,7 +87,15 @@ export function traceView(el, { kos, app, module: mod, level }) {
   });
   const repDots = h('div.rep-dots', { role: 'progressbar', 'aria-valuemin': '0' });
   const repLeft = h('div.rep-left');
-  const repBar = h('div.rep-bar', h('div.rep-pick', h('span.rep-q', 'Hur många gånger?'), ...repChoices), h('div.rep-progress', repDots, repLeft));
+  // Endast penna: handflatan på skärmen ritar inte (Apple Pencil). Sparas per profil.
+  const penOnly = h('button.seg-btn.pen-only', { type: 'button', 'aria-pressed': String(!!p.settings.writingPenOnly) }, '✒️ Endast penna');
+  onTap(penOnly, () => {
+    p.settings.writingPenOnly = !p.settings.writingPenOnly;
+    penOnly.setAttribute('aria-pressed', String(p.settings.writingPenOnly));
+    kos.saveNow();
+    kos.say(p.settings.writingPenOnly ? 'Nu ritar bara pennan. Handen kan vila på skärmen.' : 'Nu kan du rita med fingret igen.');
+  });
+  const repBar = h('div.rep-bar', h('div.rep-pick', h('span.rep-q', 'Hur många gånger?'), ...repChoices, penOnly), h('div.rep-progress', repDots, repLeft));
   const againBtn = h('button.btn.btn-ghost.rep-big', { type: 'button' }, '🔁 En serie till');
   const nextLetterBtn = h('button.btn.btn-primary.rep-big', { type: 'button' }, 'Nästa ➜');
   const spellBtn = h('button.btn.btn-primary.rep-big.rep-spell', { type: 'button' }, '🔡 Stava ord');
@@ -128,7 +137,13 @@ export function traceView(el, { kos, app, module: mod, level }) {
       onTap(b, () => select(i));
       strip.appendChild(b);
     });
-    strip.children[idx]?.scrollIntoView({ inline: 'center', block: 'nearest', behavior: 'smooth' });
+    // Flytta bara bokstavslisten i sidled – skrivytan ska inte glida vertikalt.
+    const chip = strip.children[idx];
+    if (chip && strip.scrollTo) {
+      const cr = chip.getBoundingClientRect();
+      const sr = strip.getBoundingClientRect();
+      strip.scrollTo({ left: Math.max(0, strip.scrollLeft + cr.left - sr.left - (strip.clientWidth - cr.width) / 2), behavior: reducedMotion() ? 'auto' : 'smooth' });
+    }
   }
 
   function renderRepeat() {
@@ -209,7 +224,7 @@ export function traceView(el, { kos, app, module: mod, level }) {
 
   function sayItem() {
     const t = itemText();
-    if (set === 'upper' || set === 'lower') {
+    if (set === 'pairs' || set === 'upper' || set === 'lower') {
       const tip = mode === 'trace' ? 'Följ linjen från den gröna pricken.' : 'Skriv själv!';
       kos.autoSay(`${letterSpeech(t, letterWord(t))} ${tip} Vi skriver den ${NUM_WORDS[series.target] || series.target} gånger.`);
     } else if (set === 'digits') kos.autoSay(`Siffran ${t}. Skriv den ${NUM_WORDS[series.target] || series.target} gånger.`);
@@ -260,7 +275,7 @@ export function traceView(el, { kos, app, module: mod, level }) {
     const t = items[idx];
     clear(caption);
     const hear = h('button.trace-hear', { type: 'button', 'aria-label': 'Lyssna' }, '🔊');
-    if (set === 'upper' || set === 'lower') {
+    if (set === 'pairs' || set === 'upper' || set === 'lower') {
       const a = ALPHABET.find((x) => x.l === t.toUpperCase());
       onTap(hear, () => kos.say(letterSpeech(t, a.word)));
       caption.append(h('span.trace-pic', a.e), h('span', h('b', `${t.toUpperCase()} ${t.toLowerCase()}`), ` som i ${a.word}`), hear);
@@ -327,27 +342,40 @@ export function traceView(el, { kos, app, module: mod, level }) {
     const r = canvas.getBoundingClientRect();
     return [(e.clientX - r.left) / unitPx, (e.clientY - r.top) / unitPx];
   };
+  let activePointer = null;
   canvas.addEventListener('pointerdown', (e) => {
     e.preventDefault();
-    if (busy) return;
+    if (busy || kos.paused || activePointer !== null) return;
+    if (e.pointerType === 'mouse' && e.button !== 0) return;
+    if (p.settings.writingPenOnly && e.pointerType !== 'pen') return; // handflatan ritar inte
+    activePointer = e.pointerId;
+    kos.stopSpeaking(); // ett skrivdrag avbryter uppläsningen
     cancelDemo();
     canvas.setPointerCapture?.(e.pointerId);
     current = [toUnit(e)];
     redrawInk();
   });
   canvas.addEventListener('pointermove', (e) => {
-    if (!current) return;
-    const evs = e.getCoalescedEvents ? e.getCoalescedEvents() : [e];
+    if (!current || e.pointerId !== activePointer) return;
+    const coalesced = e.getCoalescedEvents?.();
+    const evs = coalesced?.length ? coalesced : [e];
     for (const ev of evs) current.push(toUnit(ev));
     redrawInk();
   });
-  const end = () => {
+  const end = (e) => {
+    if (e.pointerId !== activePointer) return;
+    activePointer = null;
     if (current && current.length) strokes.push(current);
     current = null;
     redrawInk();
   };
   canvas.addEventListener('pointerup', end);
-  canvas.addEventListener('pointercancel', end);
+  canvas.addEventListener('pointercancel', (e) => {
+    if (e.pointerId !== activePointer) return;
+    activePointer = null;
+    current = null;
+    redrawInk();
+  });
 
   /* ---------- knappar ---------- */
   onTap(clearBtn, () => {
@@ -419,7 +447,7 @@ export function traceView(el, { kos, app, module: mod, level }) {
   function check() {
     if (busy) return;
     if (!strokes.length) {
-      kos.say('Rita först med fingret!');
+      kos.say('Skriv först med pennan eller fingret!');
       return;
     }
     const sup = support();
@@ -552,6 +580,17 @@ export function traceView(el, { kos, app, module: mod, level }) {
     cancelDemo();
     const all = layout.strokes;
     const ns = 'http://www.w3.org/2000/svg';
+    if (reducedMotion()) {
+      // Mindre rörelse: visa hela formen direkt i stället för en animerad penna.
+      for (const st of all) {
+        const poly = document.createElementNS(ns, 'polyline');
+        poly.setAttribute('class', 'demo-path');
+        poly.setAttribute('points', st.map(([a, b]) => `${a * 100},${b * 100}`).join(' '));
+        svg.appendChild(poly);
+      }
+      later(cancelDemo, 2500);
+      return;
+    }
     const pen = document.createElementNS(ns, 'circle');
     pen.setAttribute('r', '4');
     pen.setAttribute('class', 'demo-pen');
@@ -588,13 +627,15 @@ export function traceView(el, { kos, app, module: mod, level }) {
   const onResize = () => setup();
   window.addEventListener('resize', onResize);
   renderStrip();
-  requestAnimationFrame(() => {
+  const setupRaf = requestAnimationFrame(() => {
     if (!alive) return;
     setup();
     sayItem();
   });
   return () => {
     alive = false;
+    cancelAnimationFrame(setupRaf);
+    kos.stopSpeaking();
     timers.forEach(clearTimeout);
     cancelDemo();
     window.removeEventListener('resize', onResize);
