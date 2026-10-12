@@ -1,3 +1,4 @@
+import { pairsView, numberWorkshopView, fractionKitchenView, storyAtelierView, wordSceneView, mapJourneyView } from './workshops.js';
 import { studioView } from './studio.js';
 import { drawingMissionsView } from './drawing-missions.js';
 import { courseView } from './course.js';
@@ -14,6 +15,12 @@ import { SPACE_PHOTOS } from '../../apps/space.js';
 const spaceGalleryView = (el, ctx) => galleryView(el, { ...ctx, items: SPACE_PHOTOS, title: 'Riktiga bilder från rymden' });
 
 export const VIEWS = {
+  pairs: pairsView,
+  numberWorkshop: numberWorkshopView,
+  fractionKitchen: fractionKitchenView,
+  storyAtelier: storyAtelierView,
+  wordScene: wordSceneView,
+  mapJourney: mapJourneyView,
   drawingMissions: drawingMissionsView,
   studio: studioView,
   course: courseView,

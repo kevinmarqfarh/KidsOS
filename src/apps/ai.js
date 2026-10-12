@@ -1,3 +1,5 @@
+import { deckPick } from '../core/questions.js';
+import { EXTRA_AI_SCENARIOS } from './ai-question-enrichment.js';
 // Educational content, not a live AI service. Sources checked 2026-10-09:
 // https://www.unicef.org/innocenti/reports/policy-guidance-ai-children
 // https://nvlpubs.nist.gov/nistpubs/ai/NIST.AI.600-1.pdf
@@ -62,10 +64,12 @@ export const AI_SCENARIOS = {
   ],
 };
 
-export function genAIQuiz(topic, level, rng) {
-  const row = rng.pick(AI_SCENARIOS[topic].filter((item) => item[0] <= level));
+for (const [topic, rows] of Object.entries(EXTRA_AI_SCENARIOS)) AI_SCENARIOS[topic].push(...rows);
+
+export function genAIQuiz(topic, level, rng, ctx = {}) {
+  const row = deckPick(AI_SCENARIOS[topic].filter(item => item[0] <= level),rng,ctx,`ai:${topic}`);
   const [, prompt, answer, distractors, hint, explain] = row;
-  return { type: 'choice', prompt, options: rng.shuffle([answer, ...distractors]).map((label) => ({ id: label, label })), answer, hint, explain };
+  return { questionId: `ai:${topic}:${prompt}`, type: 'choice', prompt, options: rng.shuffle([answer, ...distractors]).map((label) => ({ id: label, label })), answer, hint, explain };
 }
 
 const topics = [
@@ -151,6 +155,6 @@ export const aiApp = {
   modules: [
     { id: 'course', name: 'AI-kursen', icon: '📖', minLevel: 0, view: 'course', lgr: ['tk-prog', 'fsk-utforska'] },
     { id: 'lab', name: 'Träna en modell', icon: '🧪', minLevel: 1, view: 'aiLab', lgr: ['ma-monster', 'no-metod'] },
-    ...topics.map(([id, name, icon, minLevel, lgr]) => ({ id, name, icon, minLevel, lgr, gen: (level, rng) => genAIQuiz(id, level, rng) })),
+    ...topics.map(([id, name, icon, minLevel, lgr]) => ({ id, name, icon, minLevel, lgr, gen: (level, rng, ctx) => genAIQuiz(id, level, rng, ctx) })),
   ],
 };

@@ -4116,3 +4116,56 @@ button, [role="button"], input, select, textarea { scroll-margin-block: 90px; }
   .win-head > span:last-of-type { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
   .win-title { font-size: 20px; gap: 5px; }
 }
+
+/* Egna verkstäder: stabila arbetsytor, tydliga val och stora tryckytor. */
+.workshop { max-width: 1040px; margin: auto; padding: clamp(12px, 2vw, 24px); color: var(--ink); }
+.workshop-head { border-radius: 24px; padding: 22px; background: var(--card); border: 2px solid var(--line); margin-bottom: 18px; }
+.workshop-head h2 { font-size: clamp(26px, 4vw, 38px); }
+.workshop-kicker { font-size: 12px; letter-spacing: .08em; color: var(--ink-soft); }
+.workshop-work { display: grid; gap: 18px; }
+.workshop-tools { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; }
+.workshop-button { min-height: 56px; min-width: 56px; border: 2px solid var(--ink-soft); padding: 12px 16px; border-radius: 16px; background: var(--card); color: var(--ink); font: inherit; font-weight: 700; box-shadow: 0 3px 0 var(--line); }
+.workshop-button[aria-pressed='true'], .workshop-button.is-here { background: var(--learn-bg); border-color: var(--ink); box-shadow: inset 0 0 0 2px var(--ink); }
+.workshop-button:disabled { cursor: default; opacity: .65; }
+.workshop-button.is-matched { opacity: 1; border-color: var(--good); }
+.workshop-button.is-matched::after { content: ' ✓'; color: var(--good); }
+.workshop-status { min-height: 2em; margin-top: 18px; padding: 14px; border-radius: 16px; background: var(--learn-bg); }
+.workshop-status:empty { padding: 0; background: transparent; }
+.workshop-field { display: grid; gap: 8px; }
+.workshop-field:has(input[type='checkbox']) { display: flex; align-items: center; flex-wrap: wrap; min-height: 56px; }
+.workshop-field input[type='checkbox'] { width: 28px; height: 28px; }
+.workshop-field select, .workshop select, .workshop textarea { font: inherit; color: var(--ink); background: var(--card); border: 2px solid var(--ink-soft); padding: 12px; border-radius: 12px; min-height: 56px; max-width: 100%; }
+.workshop textarea { width: 100%; resize: vertical; }
+.workshop-pairs { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 130px), 1fr)); gap: 14px; }
+.workshop-pairs .workshop-button { min-height: 112px; font-size: 26px; overflow-wrap: anywhere; }
+.workshop-value { padding: 22px; border-radius: 24px; background: var(--learn-bg); display: grid; gap: 8px; text-align: center; }
+.workshop-value strong { font-size: 64px; }
+.workshop-pieces { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; background: var(--card); padding: 18px; border-radius: 18px; }
+.piece-row { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 10px; }
+.one-piece, .ten-piece { display: grid; place-items: center; background: #dceaff; color: #152644; border: 2px solid #294e86; border-radius: 8px; font-weight: 700; }
+.one-piece { width: 32px; height: 32px; }
+.ten-piece { width: 32px; height: 96px; }
+.fraction-tray { display: grid; grid-template-columns: repeat(var(--parts), minmax(0, 1fr)); border: 3px solid var(--ink); padding: 6px; gap: 6px; border-radius: 24px; background: var(--card); }
+.fraction-tray .workshop-button { min-width: 0; min-height: 90px; font-size: 16px; padding: 8px 2px; box-shadow: none; }
+.fraction-tray .is-filled { background: #e8c875; color: #152644; border-color: #152644; }
+.workshop-goal { font-size: 22px; font-weight: 700; padding: 18px; border-radius: 16px; background: var(--learn-bg); }
+.workshop-choice { display: flex; flex-wrap: wrap; gap: 10px; padding: 16px; border: 2px solid var(--line); border-radius: 18px; background: var(--card); }
+.workshop-choice legend { font-weight: 700; padding-inline: 8px; }
+.story-scene { border: 2px solid var(--line); border-radius: 24px; padding: 24px; background: var(--card); font-size: 24px; overflow-wrap: anywhere; }
+.scene-number { display: inline-grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; background: var(--learn-bg); margin-bottom: 12px; }
+.atelier-illustration { height: 140px; text-align: center; }
+.atelier-illustration svg { height: 100%; max-width: 100%; }
+.word-scene-slots { display: flex; flex-wrap: wrap; gap: 10px; min-height: 100px; background: var(--learn-bg); border: 2px dashed var(--ink-soft); border-radius: 20px; padding: 18px; }
+.word-slot { display: grid; place-items: center; min-height: 56px; padding: 12px; }
+.can-drag { touch-action: none; }
+.is-dragging { outline: 4px solid var(--ink); }
+.journey-map { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px; max-width: 660px; }
+.journey-map .workshop-button { min-width: 0; min-height: 64px; padding: 6px; font-size: 22px; }
+.map-legend { display: flex; flex-wrap: wrap; gap: 16px; padding: 12px; border-radius: 12px; background: var(--card); }
+@container (max-width: 480px) { .workshop { padding: 8px; } .workshop-head { padding: 16px; } .workshop-pieces { grid-template-columns: 1fr; } .workshop-pairs { grid-template-columns: repeat(2, minmax(0, 1fr)); } .journey-map .workshop-button { font-size: 18px; } }
+@media (max-width: 480px) { .workshop { padding: 8px; } .workshop-head { padding: 16px; } .workshop-pairs { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.scene-character { display: block; font-size: 64px; margin-bottom: 16px; }
+.workshop-pairs .learning-photo.compact { width: 100%; height: 90px; object-fit: contain; }
+.workshop-gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 130px), 1fr)); gap: 12px; }
+.workshop-gallery img { width: 100%; height: 100px; object-fit: contain; }
+.story-drawing { display: block; max-width: 100%; max-height: 360px; object-fit: contain; border-radius: 20px; background: var(--card); }

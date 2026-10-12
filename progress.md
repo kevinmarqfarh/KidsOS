@@ -65,3 +65,11 @@ Lagt till reglage för solens och månens dragaktiviteter, inklistring och läsb
 ## 2026-10-11 — Publicerad app testad i ansluten Chrome
 
 Användaren angav kids.kevinmarquez.se. Testat start, vuxenspärr, profilguide, hemskärm, Matte/quiz, hjälp, paus och Escape, inklusive 320 CSS-px. Bekräftat fokus bakom vuxendialog och bakom öppet appfönster. Rättat lokal hemskärmsisolering/appfokus och titelutrymme vid smal bredd; regressionsprov tillagt. Skärmbilder och fynd i docs/CHROME-WCAG-GRANSKNING.md. Ingen publicering i detta varv; verklig VoiceOver och full AA kvarstår.
+
+## 2026-10-12 — Skolplus: inspirationskartläggning
+
+Granskat offentliga ämneskataloger, raketprogression och lärarmaterial; öppnat matematik/svenska samt två fria aktivitetslänkar i Chrome. Jämfört med aktuella KidsOS-moduler. Dokumenterat 15 egna aktivitetsförslag, tre byggpaket, modern interaktion och stödbehov i docs/SKOLPLUS-INSPIRATION.md. Betalmaterial är endast kataloggranskat; inget fullständigt speltest eller ny appimplementation i detta varv.
+
+## 2026-10-12 — Interaktiva verkstäder byggda
+
+Åtta nya moduler: tal-/bokstavs-/naturpar, Talverkstaden, Bråkköket, Berättelseateljén, Ordscenen och Min kartresa. Egna upplägg och befintliga KidsOS-tillgångar; inga Skolplus-speltillgångar kopierade. Stabila kort, synligt stöd, förhandsplan, paus, egna teckningar, valbar dragning med penna/finger och knappväg för kärnfunktioner. Berättelser sparas per profil, följer backup och profilborttagning. Modeller och DOM-flöden testade; riktig penn-/iPad- och visuell verifiering efter publicering återstår. Dokumenterat i docs/VERKSTADER-KIDSOS.md.

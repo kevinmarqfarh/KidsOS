@@ -108,6 +108,7 @@ export function deleteDrawingsFor(pid) {
   rawRemove(`kidsos.v1.notes.${pid}`);
   rawRemove(`kidsos.v1.play.${pid}`);
   rawRemove(`kidsos.v1.studio.${pid}`);
+  rawRemove(`kidsos.v1.story.${pid}`);
 }
 
 /** Säkerhetskopia som text (JSON) – fungerar även där nedladdning är spärrad. */
@@ -115,7 +116,7 @@ export function exportBackup(state) {
   const drawings = {};
   for (const p of state.profiles) drawings[p.id] = loadDrawings(p.id);
   const worlds = {};
-  for (const p of state.profiles) worlds[p.id] = { studio: loadJSON(`studio.${p.id}`, null), play: loadJSON(`play.${p.id}`, null), notes: loadJSON(`notes.${p.id}`, null) };
+  for (const p of state.profiles) worlds[p.id] = { studio: loadJSON(`studio.${p.id}`, null), play: loadJSON(`play.${p.id}`, null), notes: loadJSON(`notes.${p.id}`, null), story: loadJSON(`story.${p.id}`, null) };
   return JSON.stringify({ kidsos: 1, exportedAt: new Date().toISOString(), state, drawings, worlds });
 }
 
@@ -129,7 +130,7 @@ export function importBackup(text) {
   for (const profile of state.profiles) {
     const world = data.worlds?.[profile.id];
     if (!world || typeof world !== 'object') continue;
-    for (const area of ['studio', 'play', 'notes']) if (world[area] !== null && world[area] !== undefined) saveJSON(`${area}.${profile.id}`, world[area]);
+    for (const area of ['studio', 'play', 'notes', 'story']) if (world[area] !== null && world[area] !== undefined) saveJSON(`${area}.${profile.id}`, world[area]);
   }
   saveState(state);
   return state;

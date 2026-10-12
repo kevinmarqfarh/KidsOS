@@ -1,3 +1,5 @@
+import { deckPick } from '../core/questions.js';
+import { EXTRA_ACTIVITY_BANKS } from './question-enrichment.js';
 // Egenförfattade aktiviteter. Inspiration och läroplanskoppling:
 // docs/COURSE-RESEARCH.md och docs/PRACTICE-ACTIVITIES.md.
 import { numberOptions } from '../core/rng.js';
@@ -69,16 +71,14 @@ export const ACTIVITY_BANKS = {
   ],
 };
 
+for (const [topic, rows] of Object.entries(EXTRA_ACTIVITY_BANKS)) ACTIVITY_BANKS[topic].push(...rows);
+
 export function genActivity(topic, level, rng, ctx = {}) {
   const bank = ACTIVITY_BANKS[topic].filter(row => row[0] <= level);
   const newest = Math.max(...bank.map(row => row[0]));
   const pool = bank.filter(row => row[0] === newest);
-  // Undvik omedelbar upprepning inom samma runda.
-  const lastKey = `activityLast:${topic}`;
-  const alternatives = pool.filter(row => row[1] !== ctx[lastKey]);
-  const row = rng.pick(alternatives.length ? alternatives : pool);
-  ctx[lastKey] = row[1];
-  return { type: 'choice', prompt: row[1], options: rng.shuffle([row[2], row[3], row[4]]).map(label => ({ id: label, label })), answer: row[2], hint: row[5], explain: row[6] };
+  const row = deckPick(pool,rng,ctx,`activity:${topic}`);
+  return { questionId: `activity:${topic}:${row[1]}`, type: 'choice', prompt: row[1], options: rng.shuffle([row[2], row[3], row[4]]).map(label => ({ id: label, label })), answer: row[2], hint: row[5], explain: row[6] };
 }
 
 export function genShopping(level, rng) {
@@ -98,15 +98,21 @@ export function genShopping(level, rng) {
   };
 }
 
-const SPELL_WORDS = [['sol','is','ö'],['sol','bil','hus'],['katt','hund','måne'],['äpple','blomma','skola'],['stjärna','hjärta','skjorta']];
-export function genSpelling(level, rng) {
-  const word = rng.pick(SPELL_WORDS[level]);
-  return { type: 'build', prompt: 'Lyssna och bygg ordet', say: `Skriv ordet ${word}. ${word}.`, sayWord: word, word, tiles: rng.shuffle([...word]), showWordSupport: true,
+export const SPELL_WORDS = [
+ ['sol','is','ö','ko','bi','se','vi','ål','ås','ur','ro','en'],
+ ['sol','bil','hus','mus','bok','tak','ben','nål','ris','rep','säl','moln'],
+ ['katt','hund','måne','fisk','boll','båt','glas','lampa','igelkott','krona','bord','sko'],
+ ['äpple','blomma','skola','stol','spegel','nyckel','fågel','kanin','cykel','robot','penna','träd'],
+ ['stjärna','hjärta','skjorta','sjö','ljus','hjul','stjärnor','kanske','choklad','sked','klocka','regn'],
+];
+export function genSpelling(level, rng, ctx = {}) {
+  const word = deckPick(SPELL_WORDS[level],rng,ctx,'spelling',word=>word);
+  return { questionId: `spelling:${word}`, type: 'build', prompt: 'Lyssna och bygg ordet', say: `Skriv ordet ${word}. ${word}.`, sayWord: word, word, tiles: rng.shuffle([...word]), showWordSupport: true,
     hint: `Säg ${word} långsamt. Lyssna på ljuden och välj bokstäverna i ordning.`, explain: `Ordet skrivs ${word}. Läs det högt och jämför ljuden med bokstäverna.` };
 }
 
 export function genCodeMachine(level, rng) {
-  const loops = rng.int(2, level >= 4 ? 6 : 3);
+  const loops = rng.int(1, level <= 1 ? 10 : 6);
   const step = level <= 1 ? 1 : rng.int(2, level >= 4 ? 5 : 3);
   const start = level >= 3 ? rng.int(1, 10) : 0;
   const answer = start + loops * step;

@@ -275,3 +275,88 @@ test('surfplattefönster isolerar hemskärmen och återställer den vid Hem',asy
     goHome();assert.equal(screen.hasAttribute('inert'),false);assert.equal(screen.hasAttribute('aria-hidden'),false);assert.equal(win.hasAttribute('inert'),true);
   } finally {cleanup();}
 });
+
+const workshopHost=()=>({content:el(),setHead(){},close(){}});
+const workshopControl=key=>el().querySelector(`[data-key="${key}"]`);
+const tapWorkshop=key=>{const node=workshopControl(key);assert.ok(node,key);node.click();};
+
+test('parverkstad visar stabila kort och väntar efter olika kort',()=>{
+  const instance=mountApp(workshopHost(),'math','pair-workshop');
+  const initial=[...el().querySelectorAll('.workshop-pairs [data-key]')].map(n=>n.dataset.key);
+  tapWorkshop('0-a');tapWorkshop('1-b');assert.ok(workshopControl('retry'));
+  assert.deepEqual([...el().querySelectorAll('.workshop-pairs [data-key]')].map(n=>n.dataset.key),initial);
+  tapWorkshop('retry');tapWorkshop('0-a');tapWorkshop('0-b');assert.equal(workshopControl('0-a').disabled,true);
+  tapWorkshop('1-a');tapWorkshop('1-b');assert.match(el().querySelector('.workshop-status').textContent,/Alla par/);
+  assert.equal(kos.profile.stars,1);tapWorkshop('restart');tapWorkshop('0-a');tapWorkshop('0-b');tapWorkshop('1-a');tapWorkshop('1-b');assert.equal(kos.profile.stars,1);
+  instance.destroy();
+});
+
+test('talverkstad växlar utan att ändra mängden och låter barnet kontrollera',()=>{
+  kos.profile.levelOverride.math=1;
+  const instance=mountApp(workshopHost(),'math','number-workshop');tapWorkshop('target-12');
+  for(let i=0;i<12;i++)tapWorkshop('add-one');tapWorkshop('bundle');
+  assert.match(el().querySelector('.workshop-value').textContent,/1 tiotal \+ 2 ental/);
+  tapWorkshop('split');assert.match(el().querySelector('.workshop-value').textContent,/0 tiotal \+ 12 ental/);
+  tapWorkshop('check');assert.equal(kos.profile.stars,1);instance.destroy();
+});
+
+test('bråkkök accepterar två fjärdedelar som en halv',()=>{
+  const instance=mountApp(workshopHost(),'math','fraction-kitchen');
+  const select=el().querySelector('select');Object.defineProperty(select,'value',{configurable:true,writable:true,value:'4'});select.dispatchEvent(new Event('change'));
+  tapWorkshop('part-0');tapWorkshop('part-1');tapWorkshop('check');assert.match(el().querySelector('.workshop-status').textContent,/2\/4 är lika mycket som 1\/2/);
+  assert.equal(kos.profile.stars,1);instance.destroy();
+});
+
+test('berättelseateljé autosparar text och återställer den efter navigation',()=>{
+  let instance=mountApp(workshopHost(),'svenska','story-atelier');
+  const text=el().querySelector('textarea');text.value='Vännen hittade ett hemligt brev.';text.dispatchEvent(new Event('input'));instance.destroy();el().replaceChildren();
+  instance=mountApp(workshopHost(),'svenska','story-atelier');assert.equal(el().querySelector('textarea').value,'Vännen hittade ett hemligt brev.');assert.equal(kos.profile.stars,0);instance.destroy();
+});
+
+test('ordscenen och kartresan går att slutföra med vanliga knappar',()=>{
+  let instance=mountApp(workshopHost(),'svenska','word-scene');
+  for(const word of ['Katten','leker','i skogen']){assert.equal(workshopControl(`word-${word}`).tagName,'BUTTON');tapWorkshop(`word-${word}`);}tapWorkshop('check');assert.match(el().querySelector('.workshop-status').textContent,/Meningen fungerar/);
+  instance.destroy();el().replaceChildren();instance=mountApp(workshopHost(),'world','map-journey');
+  for(const direction of ['east','east'])tapWorkshop(direction);tapWorkshop('check');
+  for(const direction of ['north','north'])tapWorkshop(direction);tapWorkshop('check');
+  for(const direction of ['east','east'])tapWorkshop(direction);tapWorkshop('check');
+  assert.match(el().querySelector('.workshop-status').textContent,/Resan är klar/);instance.destroy();
+});
+
+test('touchpenna ignorerar annan pekare och avbrutet drag ändrar inte meningen',()=>{
+  const instance=mountApp(workshopHost(),'svenska','word-scene');const mode=el().querySelector('input[type="checkbox"]');mode.checked=true;mode.dispatchEvent(new Event('change'));
+  const word=workshopControl('word-Katten');
+  const pointer=(type,id,x,primary=true)=>{const event=new Event(type,{bubbles:true,cancelable:true});Object.assign(event,{pointerId:id,clientX:x,clientY:50,isPrimary:primary,button:0,pointerType:'pen'});word.dispatchEvent(event);};
+  pointer('pointerdown',2,0,false);pointer('pointerup',2,50,false);assert.equal(el().querySelectorAll('.word-scene-slots button').length,0);
+  pointer('pointerdown',1,0);pointer('pointermove',3,100);pointer('pointermove',1,30);pointer('pointercancel',1,30);word.click();assert.equal(el().querySelectorAll('.word-scene-slots button').length,0);
+  instance.destroy();
+});
+
+test('verkstadens förhandsplan och paus bevarar uppgiften',()=>{
+  kos.profile.settings.previewRounds=true;const instance=mountApp(workshopHost(),'math','number-workshop');
+  assert.ok(el().querySelector('.workshop-plan'));assert.equal(workshopControl('add-one'),null);tapWorkshop('start');tapWorkshop('add-one');
+  clickNamed(el().querySelector('.activity-support'),'Paus');assert.equal(kos.paused,true);clickNamed(overlays(),'Fortsätt');
+  assert.match(el().querySelector('.workshop-value').textContent,/1 ental/);instance.destroy();
+});
+
+test('drag med finger och penna lägger till ett ord exakt en gång',()=>{
+  const oldHit=document.elementFromPoint;
+  try {
+    for(const pointerType of ['touch','pen']){
+      const instance=mountApp(workshopHost(),'svenska','word-scene');const mode=el().querySelector('input[type="checkbox"]');mode.checked=true;mode.dispatchEvent(new Event('change'));
+      const node=workshopControl('word-Roboten');document.elementFromPoint=()=>el().querySelector('[data-word-drop]');
+      for(const [type,x] of [['pointerdown',0],['pointermove',40],['pointerup',40]]){
+        const event=new Event(type,{bubbles:true,cancelable:true});Object.assign(event,{pointerId:1,clientX:x,clientY:50,isPrimary:true,button:0,pointerType});node.dispatchEvent(event);
+      }
+      node.click();assert.equal(el().querySelectorAll('.word-scene-slots button').length,1,pointerType);
+      instance.destroy();el().replaceChildren();
+    }
+  } finally {document.elementFromPoint=oldHit;}
+});
+
+test('ateljén använder sparad teckning utan att duplicera bilddata i berättelsen',async()=>{
+  const {saveDrawing,loadJSON}=await import('../../src/core/storage.js');const list=saveDrawing(kos.profile.id,'data:image/png;base64,AAAA');
+  const instance=mountApp(workshopHost(),'svenska','story-atelier');tapWorkshop('gallery');tapWorkshop('drawing-0');
+  assert.equal(el().querySelector('.story-drawing').getAttribute('src'),'data:image/png;base64,AAAA');
+  assert.equal(loadJSON(`story.${kos.profile.id}`,null)[0].drawing,list[0].id);instance.destroy();
+});

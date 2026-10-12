@@ -20,19 +20,19 @@ KidsOS har fem nivåer. Startnivån sätts av barnets ålder och anpassas sedan 
 
 | App | Moduler | Frågerundor | Interaktiva vyer |
 |---|---|---|---|
-| 🔢 Matte | 17 | 17 | 0 |
-| 📖 Svenska | 13 | 12 | 1 |
-| ✏️ Skriv ABC | 5 | 0 | 5 |
-| 🔬 Vetenskap | 11 | 4 | 7 |
-| 🌿 Biologi | 9 | 8 | 1 |
-| 🚀 Rymden | 10 | 3 | 7 |
-| 🌍 Världen | 8 | 6 | 2 |
-| 🧠 AI | 9 | 7 | 2 |
-| 🤖 Kodning | 11 | 8 | 3 |
-| 🎨 Rita | 1 | 0 | 1 |
-| 🤔 Undra | 1 | 0 | 1 |
-| 🏡 Lekstaden | 2 | 0 | 2 |
-| **Totalt** | **97** | **65** | **32** |
+| 🔢 Matte | 23 | 19 | 4 |
+| 📖 Svenska | 18 | 13 | 5 |
+| ✏️ Skriv ABC | 7 | 0 | 7 |
+| 🔬 Vetenskap | 13 | 5 | 8 |
+| 🌿 Biologi | 12 | 9 | 3 |
+| 🚀 Rymden | 12 | 4 | 8 |
+| 🌍 Världen | 11 | 7 | 4 |
+| 🧠 AI | 11 | 8 | 3 |
+| 🤖 Kodning | 13 | 9 | 4 |
+| 🎨 Rita | 3 | 0 | 3 |
+| 🤔 Undra | 3 | 1 | 2 |
+| 🏡 Lekstaden | 4 | 1 | 3 |
+| **Totalt** | **130** | **76** | **54** |
 
 Skaparstudion innehåller 80 originalföremål, 10 rumsteman, 9 kurskopplade paket och 50 berättelseidéer. Intjänade spelmynt och avklarade moduler styr upplåsningen.
 
@@ -42,12 +42,13 @@ Dessutom: 20 robotbanor, 14 berättelser med läsförståelsefrågor, 25 artkort
 
 | Modul | Från nivå | Typ | Läroplanen (Lgr22) |
 |---|---|---|---|
+| 🧮 Uppställning | Nivå 3 | Frågerunda | *Taluppfattning och tals användning:* Hur positionssystemet kan användas för att beskriva naturliga tal.<br>*Taluppfattning och tals användning:* Beräkna naturliga tal med huvudräkning, överslag och skriftliga räknemetoder. (Sammanfattning av Lgr22.)<br>*Taluppfattning och tals användning:* De fyra räknesättens egenskaper och samband samt användning i olika situationer. |
 | 🍎 Räkna | Nivå 1 (max Nivå 3) | Frågerunda | *Taluppfattning och tals användning:* Naturliga tal och deras egenskaper samt hur talen kan delas upp och användas för att ange antal och ordning. |
 | 🐊 Störst & minst | Nivå 1 | Frågerunda | *Taluppfattning och tals användning:* Naturliga tal och deras egenskaper samt hur talen kan delas upp och användas för att ange antal och ordning. |
 | 🔴 Mönster | Nivå 1 | Frågerunda | *Algebra:* Hur enkla mönster i talföljder och enkla geometriska mönster kan konstrueras, beskrivas och uttryckas. |
 | 🔺 Former | Nivå 1 | Frågerunda | *Geometri:* Grundläggande geometriska tvådimensionella objekt samt objekten klot, kon, cylinder och rätblock. |
 | 🤝 Tiokompisar | Nivå 1 | Frågerunda | *Taluppfattning och tals användning:* Naturliga tal och deras egenskaper samt hur talen kan delas upp och användas för att ange antal och ordning.<br>*Taluppfattning och tals användning:* De fyra räknesättens egenskaper och samband samt användning i olika situationer. |
-| ➕ Plus & minus | Nivå 1 | Frågerunda | *Taluppfattning och tals användning:* De fyra räknesättens egenskaper och samband samt användning i olika situationer.<br>*Taluppfattning och tals användning:* Centrala metoder för beräkningar med naturliga tal, vid huvudräkning och överslagsräkning. |
+| ➕ Plus & minus | Nivå 1 | Frågerunda | *Taluppfattning och tals användning:* De fyra räknesättens egenskaper och samband samt användning i olika situationer.<br>*Taluppfattning och tals användning:* Beräkna naturliga tal med huvudräkning, överslag och skriftliga räknemetoder. (Sammanfattning av Lgr22.) |
 | 🐾 Talföljder | Nivå 1 | Frågerunda | *Taluppfattning och tals användning:* Naturliga tal och deras egenskaper samt hur talen kan delas upp och användas för att ange antal och ordning.<br>*Algebra:* Hur enkla mönster i talföljder och enkla geometriska mönster kan konstrueras, beskrivas och uttryckas. |
 | ⏰ Klockan | Nivå 1 | Frågerunda | *Geometri:* Mätning av längd, massa, volym och tid med vanliga nutida och äldre måttenheter. (Här: tid – klockan.) |
 | 🐸 Hemliga talet | Nivå 2 | Frågerunda | *Algebra:* Matematiska likheter och likhetstecknets betydelse.<br>*Algebra:* Obekanta tal och hur de kan betecknas med en symbol. |
@@ -56,9 +57,14 @@ Dessutom: 20 robotbanor, 14 berättelser med läsförståelsefrågor, 25 artkort
 | 📊 Diagram | Nivå 2 | Frågerunda | *Sannolikhet och statistik:* Enkla tabeller och diagram och hur de kan användas för att sortera data och beskriva resultat från enkla undersökningar. |
 | 🧱 Tiotal & ental | Nivå 3 | Frågerunda | *Taluppfattning och tals användning:* Hur positionssystemet kan användas för att beskriva naturliga tal. |
 | ✖️ Gånger & delat | Nivå 3 | Frågerunda | *Taluppfattning och tals användning:* De fyra räknesättens egenskaper och samband samt användning i olika situationer. |
-| 🛒 Vardagsklur | Nivå 1 | Frågerunda | *Taluppfattning och tals användning:* De fyra räknesättens egenskaper och samband samt användning i olika situationer.<br>*Taluppfattning och tals användning:* Centrala metoder för beräkningar med naturliga tal, vid huvudräkning och överslagsräkning. |
+| 🛒 Vardagsklur | Nivå 1 | Frågerunda | *Taluppfattning och tals användning:* De fyra räknesättens egenskaper och samband samt användning i olika situationer.<br>*Taluppfattning och tals användning:* Beräkna naturliga tal med huvudräkning, överslag och skriftliga räknemetoder. (Sammanfattning av Lgr22.) |
 | 🍓 Lika delar & bråk | Nivå 3 | Frågerunda | *Taluppfattning och tals användning:* Naturliga tal och deras egenskaper samt hur talen kan delas upp och användas för att ange antal och ordning.<br>*Samband och förändring:* Proportionella samband, däribland dubbelt och hälften.<br>*Taluppfattning och tals användning:* De fyra räknesättens egenskaper och samband samt användning i olika situationer. |
 | 🎲 Chans | Nivå 3 | Frågerunda | *Sannolikhet och statistik:* Slumpmässiga händelser i konkreta situationer. |
+| 🛍️ Min låtsasbutik | Nivå 1 | Frågerunda | *Taluppfattning och tals användning:* De fyra räknesättens egenskaper och samband samt användning i olika situationer.<br>*Taluppfattning och tals användning:* Beräkna naturliga tal med huvudräkning, överslag och skriftliga räknemetoder. (Sammanfattning av Lgr22.) |
+| 🧩 Parverkstaden | Nivå 1 | Interaktiv | *Taluppfattning och tals användning:* Naturliga tal och deras egenskaper samt hur talen kan delas upp och användas för att ange antal och ordning. |
+| 🧱 Talverkstaden | Nivå 1 | Interaktiv | *Taluppfattning och tals användning:* Hur positionssystemet kan användas för att beskriva naturliga tal. |
+| 🍽️ Bråkköket | Nivå 2 | Interaktiv | *Taluppfattning och tals användning:* Naturliga tal och deras egenskaper samt hur talen kan delas upp och användas för att ange antal och ordning.<br>*Samband och förändring:* Proportionella samband, däribland dubbelt och hälften. |
+| 📖 Upptäck & lär | Nivå 1 | Interaktiv | *Taluppfattning och tals användning:* Naturliga tal och deras egenskaper samt hur talen kan delas upp och användas för att ange antal och ordning.<br>*Taluppfattning och tals användning:* Hur positionssystemet kan användas för att beskriva naturliga tal.<br>*Taluppfattning och tals användning:* Beräkna naturliga tal med huvudräkning, överslag och skriftliga räknemetoder. (Sammanfattning av Lgr22.) |
 
 ## 📖 Svenska – Ljud, bokstäver, ord och sagor
 
@@ -77,16 +83,23 @@ Dessutom: 20 robotbanor, 14 berättelser med läsförståelsefrågor, 25 artkort
 | 💬 Ord i vardagen | Nivå 1 | Frågerunda | *Språkbruk:* Ord och begrepp för att på ett varierat sätt uttrycka känslor, kunskaper och åsikter.<br>*Texter:* Hur en berättande text kan organiseras med inledning, händelseförlopp och avslutning samt personbeskrivningar. |
 | 🔎 Textens ledtrådar | Nivå 1 | Frågerunda | *Texter:* Hur en berättande text kan organiseras med inledning, händelseförlopp och avslutning samt personbeskrivningar. |
 | 💎 Ordskatten | Nivå 3 | Frågerunda | *Språkbruk:* Ord och begrepp för att på ett varierat sätt uttrycka känslor, kunskaper och åsikter. |
+| 🔊 Lyssna & stava | Nivå 1 | Frågerunda | *Läsa och skriva:* Sambandet mellan ljud och bokstav.<br>*Läsa och skriva:* Strategier för att skriva ord, meningar och olika typer av texter. |
+| 🧩 Bokstavspar | Nivå 1 | Interaktiv | *Läsa och skriva:* Sambandet mellan ljud och bokstav.<br>*Läsa och skriva:* Grundläggande skrivregler, med gemener och versaler, de vanligaste skiljetecknen samt stavning av vanligt förekommande ord. |
+| 🎬 Berättelseateljén | Nivå 1 | Interaktiv | *Läsa och skriva:* Strategier för att skriva ord, meningar och olika typer av texter. |
+| 💬 Ordscenen | Nivå 2 | Interaktiv | *Läsa och skriva:* Grundläggande skrivregler, med gemener och versaler, de vanligaste skiljetecknen samt stavning av vanligt förekommande ord. |
+| 📖 Upptäck & lär | Nivå 1 | Interaktiv | *Läsa och skriva:* Sambandet mellan ljud och bokstav.<br>*Läsa och skriva:* Strategier för att avkoda, förstå och tolka ord, begrepp och texter. |
 
 ## ✏️ Skriv ABC – Rita bokstäver och siffror
 
 | Modul | Från nivå | Typ | Läroplanen (Lgr22) |
 |---|---|---|---|
+| ✍️ Öva A och a | Nivå 1 | Interaktiv | *Läsa och skriva:* Handstil och att skriva med digitala verktyg.<br>*Läsa och skriva:* Sambandet mellan ljud och bokstav.<br>*Läsa och skriva:* Grundläggande skrivregler, med gemener och versaler, de vanligaste skiljetecknen samt stavning av vanligt förekommande ord. |
 | A Stora bokstäver | Nivå 1 | Interaktiv | *Läsa och skriva:* Handstil och att skriva med digitala verktyg.<br>*Läsa och skriva:* Grundläggande skrivregler, med gemener och versaler, de vanligaste skiljetecknen samt stavning av vanligt förekommande ord. |
 | 1 Siffror | Nivå 1 | Interaktiv | *Taluppfattning och tals användning:* Naturliga tal och deras egenskaper samt hur talen kan delas upp och användas för att ange antal och ordning. |
 | 🙋 Mitt namn | Nivå 1 | Interaktiv | *Läsa och skriva:* Handstil och att skriva med digitala verktyg. |
 | a Små bokstäver | Nivå 2 | Interaktiv | *Läsa och skriva:* Handstil och att skriva med digitala verktyg.<br>*Läsa och skriva:* Grundläggande skrivregler, med gemener och versaler, de vanligaste skiljetecknen samt stavning av vanligt förekommande ord. |
 | 📝 Skriv ord | Nivå 3 | Interaktiv | *Läsa och skriva:* Handstil och att skriva med digitala verktyg.<br>*Läsa och skriva:* Strategier för att skriva ord, meningar och olika typer av texter. |
+| 📖 Upptäck & lär | Nivå 1 | Interaktiv | *Läsa och skriva:* Handstil och att skriva med digitala verktyg.<br>*Språk och kommunikation:* Bokstäver och andra symboler för att förmedla budskap.<br>*Läsa och skriva:* Strategier för att skriva ord, meningar och olika typer av texter.<br>*Läsa och skriva:* Grundläggande skrivregler, med gemener och versaler, de vanligaste skiljetecknen samt stavning av vanligt förekommande ord. |
 
 ## 🔬 Vetenskap – Experimentera och undersök
 
@@ -103,6 +116,8 @@ Dessutom: 20 robotbanor, 14 berättelser med läsförståelsefrågor, 25 artkort
 | ⚖️ Gungbrädan | Nivå 2 | Interaktiv | *Kraft och rörelse:* Balans, tyngdpunkt och jämvikt som kan observeras i lek och rörelse, till exempel vid balansgång och på gungbrädor. |
 | 🛝 Rutschkanan | Nivå 3 | Interaktiv | *Kraft och rörelse:* Tyngdkraft och friktion som kan observeras i lek och rörelse, till exempel i gungor och rutschbanor. |
 | 🧪 Blanda & separera | Nivå 3 | Interaktiv | *Material och ämnen i vår omgivning:* Enkla lösningar och blandningar och hur de kan delas upp i sina beståndsdelar, till exempel genom avdunstning och filtrering.<br>*Metoder och arbetssätt:* Enkla naturvetenskapliga undersökningar. Dokumentation av undersökningar med text, bild och andra uttrycksformer. |
+| 🔬 Undersök & förklara | Nivå 1 | Frågerunda | *Metoder och arbetssätt:* Enkla naturvetenskapliga undersökningar. Dokumentation av undersökningar med text, bild och andra uttrycksformer.<br>*Material och ämnen i vår omgivning:* Materials egenskaper och hur material och föremål kan sorteras efter egenskaperna utseende, magnetism, ledningsförmåga och om de flyter eller sjunker i vatten. |
+| 📖 Upptäck & lär | Nivå 1 | Interaktiv | *Metoder och arbetssätt:* Enkla naturvetenskapliga undersökningar. Dokumentation av undersökningar med text, bild och andra uttrycksformer.<br>*Material och ämnen i vår omgivning:* Materials egenskaper och hur material och föremål kan sorteras efter egenskaperna utseende, magnetism, ledningsförmåga och om de flyter eller sjunker i vatten. |
 
 ## 🌿 Biologi – Kroppen, djuren och naturen
 
@@ -117,6 +132,9 @@ Dessutom: 20 robotbanor, 14 berättelser med läsförståelsefrågor, 25 artkort
 | 🐾 Djurgrupper | Nivå 2 | Frågerunda | *Året runt i naturen:* Djur, växter och svampar i närmiljön, hur de kan grupperas samt namn på några vanligt förekommande arter. |
 | 🦊 Näringskedjor | Nivå 2 | Frågerunda | *Året runt i naturen:* Enkla näringskedjor som beskriver samband mellan organismer i ekosystem. |
 | 💪 Må bra | Nivå 2 | Frågerunda | *Kropp och hälsa:* Betydelsen av mat, sömn, hygien, motion och sociala relationer för att må bra. |
+| 🌿 Naturdetektiven | Nivå 1 | Frågerunda | *Året runt i naturen:* Djur, växter och svampar i närmiljön, hur de kan grupperas samt namn på några vanligt förekommande arter.<br>*Året runt i naturen:* Enkla näringskedjor som beskriver samband mellan organismer i ekosystem.<br>*Metoder och arbetssätt:* Enkla naturvetenskapliga undersökningar. Dokumentation av undersökningar med text, bild och andra uttrycksformer. |
+| 🌿 Naturens par | Nivå 1 | Interaktiv | *Året runt i naturen:* Djur, växter och svampar i närmiljön, hur de kan grupperas samt namn på några vanligt förekommande arter. |
+| 📖 Upptäck & lär | Nivå 1 | Interaktiv | *Året runt i naturen:* Djur, växter och svampar i närmiljön, hur de kan grupperas samt namn på några vanligt förekommande arter.<br>*Året runt i naturen:* Enkla näringskedjor som beskriver samband mellan organismer i ekosystem. |
 
 ## 🚀 Rymden – Planeter, månen och stjärnor
 
@@ -132,6 +150,8 @@ Dessutom: 20 robotbanor, 14 berättelser med läsförståelsefrågor, 25 artkort
 | 🔢 Planetordning | Nivå 2 | Frågerunda | *Året runt i naturen:* Jordens, solens och månens rörelser i förhållande till varandra. Månens olika faser. Stjärnbilder och stjärnhimlens utseende vid olika tider på året. |
 | ✨ Stjärnbilder | Nivå 2 | Interaktiv | *Året runt i naturen:* Jordens, solens och månens rörelser i förhållande till varandra. Månens olika faser. Stjärnbilder och stjärnhimlens utseende vid olika tider på året.<br>*Berättelser om natur och naturvetenskap:* Berättelser om äldre tiders naturvetenskap och om olika kulturers strävan att förstå och förklara fenomen i naturen. |
 | 🌍 Varför årstider? | Nivå 3 | Interaktiv | *Året runt i naturen:* Jordens, solens och månens rörelser i förhållande till varandra. Månens olika faser. Stjärnbilder och stjärnhimlens utseende vid olika tider på året.<br>*Året runt i naturen:* Årstidsväxlingar i naturen och hur man känner igen årstider. |
+| 🌗 Rymddetektiven | Nivå 1 | Frågerunda | *Året runt i naturen:* Jordens, solens och månens rörelser i förhållande till varandra. Månens olika faser. Stjärnbilder och stjärnhimlens utseende vid olika tider på året. |
+| 📖 Upptäck & lär | Nivå 1 | Interaktiv | *Året runt i naturen:* Jordens, solens och månens rörelser i förhållande till varandra. Månens olika faser. Stjärnbilder och stjärnhimlens utseende vid olika tider på året.<br>*Året runt i naturen:* Årstidsväxlingar i naturen och hur man känner igen årstider. |
 
 ## 🌍 Världen – Länder, kartor, djur och förr i tiden
 
@@ -145,6 +165,9 @@ Dessutom: 20 robotbanor, 14 berättelser med läsförståelsefrågor, 25 artkort
 | ⏳ Förr i tiden | Nivå 1 | Frågerunda | *Att undersöka verkligheten:* Tidslinjer och tidsbegreppen dåtid, nutid och framtid.<br>*Att leva i världen:* Människors levnadsvillkor under stenålder, bronsålder och järnålder. |
 | 🎉 Högtider | Nivå 2 | Frågerunda | *Att leva i världen:* Några högtider, symboler och berättelser inom kristendom, islam och judendom. |
 | 🤝 Barnens rättigheter | Nivå 2 | Frågerunda | *Att leva i världen:* Mänskliga rättigheter inklusive alla människors lika värde och barnets rättigheter i enlighet med barnkonventionen. |
+| 🗺️ Kartor & ledtrådar | Nivå 1 | Frågerunda | *Att undersöka verkligheten:* Jordgloben, analoga och digitala kartor samt storleksrelationer och väderstreck.<br>*Att undersöka verkligheten:* Tidslinjer och tidsbegreppen dåtid, nutid och framtid.<br>*Att leva i världen:* Mänskliga rättigheter inklusive alla människors lika värde och barnets rättigheter i enlighet med barnkonventionen. |
+| 🧭 Min kartresa | Nivå 1 | Interaktiv | *Att undersöka verkligheten:* Jordgloben, analoga och digitala kartor samt storleksrelationer och väderstreck. |
+| 📖 Upptäck & lär | Nivå 1 | Interaktiv | *Att undersöka verkligheten:* Jordgloben, analoga och digitala kartor samt storleksrelationer och väderstreck.<br>*Att leva i världen:* Namn och läge på platser i närmiljön och andra platser som är betydelsefulla för eleven. |
 
 ## 🧠 AI – Förstå, undersök och använd AI klokt
 
@@ -159,6 +182,8 @@ Dessutom: 20 robotbanor, 14 berättelser med läsförståelsefrågor, 25 artkort
 | 💬 Tydliga frågor | Nivå 1 | Frågerunda | *Språkbruk:* Ord och begrepp för att på ett varierat sätt uttrycka känslor, kunskaper och åsikter.<br>*Algebra:* Hur entydiga stegvisa instruktioner kan konstrueras, beskrivas och följas som grund för programmering. Hur symboler används vid stegvisa instruktioner. |
 | 🔐 Skydda det privata | Nivå 1 | Frågerunda | *Natur, teknik och samhälle:* Olika sätt att utforska företeelser och samband i natur, teknik och samhälle, genom observationer, mätningar och samtal. |
 | 🤝 Människan bestämmer | Nivå 1 | Frågerunda | *Tekniska lösningar:* Föremål i elevernas vardag som styrs med hjälp av programmering, till exempel hushållsmaskiner och smarta telefoner.<br>*Natur, teknik och samhälle:* Olika sätt att utforska företeelser och samband i natur, teknik och samhälle, genom observationer, mätningar och samtal. |
+| 🔎 Granska & välj hjälp | Nivå 1 | Frågerunda | *Läsa och skriva:* Handstil och att skriva med digitala verktyg.<br>*Läsa och skriva:* Strategier för att avkoda, förstå och tolka ord, begrepp och texter. |
+| 📖 Upptäck & lär | Nivå 1 | Interaktiv | *Läsa och skriva:* Strategier för att avkoda, förstå och tolka ord, begrepp och texter.<br>*Läsa och skriva:* Handstil och att skriva med digitala verktyg. |
 
 ## 🤖 Kodning – Förstå kod, lös problem och skapa själv
 
@@ -175,18 +200,24 @@ Dessutom: 20 robotbanor, 14 berättelser med läsförståelsefrågor, 25 artkort
 | 👣 Följ koden | Nivå 1 | Frågerunda | *Algebra:* Hur entydiga stegvisa instruktioner kan konstrueras, beskrivas och följas som grund för programmering. Hur symboler används vid stegvisa instruktioner. |
 | 🏠 Program i vardagen | Nivå 1 | Frågerunda | *Tekniska lösningar:* Föremål i elevernas vardag som styrs med hjälp av programmering, till exempel hushållsmaskiner och smarta telefoner.<br>*Algebra:* Hur entydiga stegvisa instruktioner kan konstrueras, beskrivas och följas som grund för programmering. Hur symboler används vid stegvisa instruktioner. |
 | 🐢 Rita med kod | Nivå 3 | Interaktiv | *Algebra:* Hur entydiga stegvisa instruktioner kan konstrueras, beskrivas och följas som grund för programmering. Hur symboler används vid stegvisa instruktioner.<br>*Geometri:* Grundläggande geometriska tvådimensionella objekt samt objekten klot, kon, cylinder och rätblock.<br>*Algebra:* Hur enkla mönster i talföljder och enkla geometriska mönster kan konstrueras, beskrivas och uttryckas. |
+| 🔁 Robotens talhopp | Nivå 1 | Frågerunda | *Algebra:* Hur entydiga stegvisa instruktioner kan konstrueras, beskrivas och följas som grund för programmering. Hur symboler används vid stegvisa instruktioner.<br>*Arbetsmetoder:* Styrning av föremål med programmering. |
+| 📖 Upptäck & lär | Nivå 1 | Interaktiv | *Algebra:* Hur entydiga stegvisa instruktioner kan konstrueras, beskrivas och följas som grund för programmering. Hur symboler används vid stegvisa instruktioner.<br>*Arbetsmetoder:* Styrning av föremål med programmering. |
 
 ## 🎨 Rita – Måla, stämpla och skapa
 
 | Modul | Från nivå | Typ | Läroplanen (Lgr22) |
 |---|---|---|---|
 | 🎨 Rita | Nivå 1 | Interaktiv | *Bildframställning:* Framställning av berättande bilder, till exempel sagobilder och serier. Teckning, måleri, modellering och konstruktion.<br>*Geometri:* Symmetri, till exempel i bilder och i naturen, och hur symmetri kan konstrueras. |
+| 🎨 Bildverkstaden | Nivå 1 | Interaktiv | *Bildframställning:* Framställning av berättande bilder, till exempel sagobilder och serier. Teckning, måleri, modellering och konstruktion. |
+| 📖 Upptäck & lär | Nivå 1 | Interaktiv | *Bildframställning:* Framställning av berättande bilder, till exempel sagobilder och serier. Teckning, måleri, modellering och konstruktion. |
 
 ## 🤔 Undra – Stora frågor om allt
 
 | Modul | Från nivå | Typ | Läroplanen (Lgr22) |
 |---|---|---|---|
 | 🤔 Frågekort | Nivå 1 | Interaktiv | *Natur, teknik och samhälle:* Olika sätt att utforska företeelser och samband i natur, teknik och samhälle, genom observationer, mätningar och samtal.<br>*Berättelser om natur och naturvetenskap:* Berättelser om äldre tiders naturvetenskap och om olika kulturers strävan att förstå och förklara fenomen i naturen. |
+| 💡 Fråga & undersök | Nivå 1 | Frågerunda | *Metoder och arbetssätt:* Enkla naturvetenskapliga undersökningar. Dokumentation av undersökningar med text, bild och andra uttrycksformer.<br>*Natur, teknik och samhälle:* Olika sätt att utforska företeelser och samband i natur, teknik och samhälle, genom observationer, mätningar och samtal. |
+| 📖 Upptäck & lär | Nivå 1 | Interaktiv | *Natur, teknik och samhälle:* Olika sätt att utforska företeelser och samband i natur, teknik och samhälle, genom observationer, mätningar och samtal.<br>*Metoder och arbetssätt:* Enkla naturvetenskapliga undersökningar. Dokumentation av undersökningar med text, bild och andra uttrycksformer. |
 
 ## 🏡 Lekstaden – Lek, bygg och upptäck
 
@@ -194,6 +225,8 @@ Dessutom: 20 robotbanor, 14 berättelser med läsförståelsefrågor, 25 artkort
 |---|---|---|---|
 | 🎨 Skaparstudion | Nivå 1 | Interaktiv | *Bildframställning:* Framställning av berättande bilder, till exempel sagobilder och serier. Teckning, måleri, modellering och konstruktion.<br>*Texter:* Hur en berättande text kan organiseras med inledning, händelseförlopp och avslutning samt personbeskrivningar.<br>*Taluppfattning och tals användning:* Naturliga tal och deras egenskaper samt hur talen kan delas upp och användas för att ange antal och ordning. |
 | 🏡 Lekstaden | Nivå 1 | Interaktiv | *Taluppfattning och tals användning:* Naturliga tal och deras egenskaper samt hur talen kan delas upp och användas för att ange antal och ordning.<br>*Taluppfattning och tals användning:* De fyra räknesättens egenskaper och samband samt användning i olika situationer.<br>*Året runt i naturen:* Några djurs och växters livscykler och anpassningar till olika livsmiljöer och årstider.<br>*Året runt i naturen:* Djur, växter och svampar i närmiljön, hur de kan grupperas samt namn på några vanligt förekommande arter.<br>*Läsa och skriva:* Strategier för att avkoda, förstå och tolka ord, begrepp och texter.<br>*Bildframställning:* Framställning av berättande bilder, till exempel sagobilder och serier. Teckning, måleri, modellering och konstruktion. |
+| 🤝 Samarbeta & planera | Nivå 1 | Frågerunda | *Språkbruk:* Ord och begrepp för att på ett varierat sätt uttrycka känslor, kunskaper och åsikter.<br>*Taluppfattning och tals användning:* De fyra räknesättens egenskaper och samband samt användning i olika situationer. |
+| 📖 Upptäck & lär | Nivå 1 | Interaktiv | *Bildframställning:* Framställning av berättande bilder, till exempel sagobilder och serier. Teckning, måleri, modellering och konstruktion.<br>*Språkbruk:* Ord och begrepp för att på ett varierat sätt uttrycka känslor, kunskaper och åsikter.<br>*Taluppfattning och tals användning:* De fyra räknesättens egenskaper och samband samt användning i olika situationer.<br>*Taluppfattning och tals användning:* Beräkna naturliga tal med huvudräkning, överslag och skriftliga räknemetoder. (Sammanfattning av Lgr22.) |
 
 ## Troféer
 
@@ -228,7 +261,7 @@ Dessutom: 20 robotbanor, 14 berättelser med läsförståelsefrågor, 25 artkort
 | `ma-tal` | Matematik | Taluppfattning och tals användning | Naturliga tal och deras egenskaper samt hur talen kan delas upp och användas för att ange antal och ordning. |
 | `ma-pos` | Matematik | Taluppfattning och tals användning | Hur positionssystemet kan användas för att beskriva naturliga tal. |
 | `ma-rakna` | Matematik | Taluppfattning och tals användning | De fyra räknesättens egenskaper och samband samt användning i olika situationer. |
-| `ma-metod` | Matematik | Taluppfattning och tals användning | Centrala metoder för beräkningar med naturliga tal, vid huvudräkning och överslagsräkning. |
+| `ma-metod` | Matematik | Taluppfattning och tals användning | Beräkna naturliga tal med huvudräkning, överslag och skriftliga räknemetoder. (Sammanfattning av Lgr22.) |
 | `ma-likhet` | Matematik | Algebra | Matematiska likheter och likhetstecknets betydelse. |
 | `ma-okand` | Matematik | Algebra | Obekanta tal och hur de kan betecknas med en symbol. |
 | `ma-monster` | Matematik | Algebra | Hur enkla mönster i talföljder och enkla geometriska mönster kan konstrueras, beskrivas och uttryckas. |

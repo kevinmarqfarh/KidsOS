@@ -1,3 +1,4 @@
+import { questionSession, variedQuestion } from '../core/questions.js';
 import { learningPlayReward } from './play-rewards.js';
 // Generell frågemotor som kör en runda med frågor från en generator.
 import { h, clear, onTap, wait, openDialog } from './dom.js';
@@ -16,7 +17,7 @@ export function effectiveLevel(app, mod) {
 
 export function runQuiz(el, { app, module: mod, onExit, seed = Date.now(), count }) {
   const p = kos.profile;
-  const total = count || p?.settings.roundLength || roundLength(p?.age ?? 7);
+  let total = count || p?.settings.roundLength || roundLength(p?.age ?? 7);
   const steadyLevel = p?.settings.steadyRounds ? effectiveLevel(app, mod) : null;
   const rng = createRng(seed);
   let index = 0;
@@ -28,7 +29,10 @@ export function runQuiz(el, { app, module: mod, onExit, seed = Date.now(), count
   let quizPaused = false;
   let narrationEpoch = 0;
   let toggleHelp = () => {};
-  const ctx = { found: p?.sets?.species || {} };
+  const session = questionSession(p?.id, app.id, mod.id);
+  const ctx = session.ctx;
+  ctx.found = p?.sets?.species || {};
+  const roundSeen = new Set();
 
   const dots = h('div.q-dots', Array.from({ length: total }, () => h('span.q-dot')));
   const stage = h('div.q-stage');
@@ -78,12 +82,17 @@ export function runQuiz(el, { app, module: mod, onExit, seed = Date.now(), count
     progress.textContent = `Nu: fråga ${index + 1} av ${total} · Sedan: ${index + 1 === total ? 'klar' : 'nästa fråga'}`;
     let q;
     try {
-      q = mod.gen(level, rng, ctx);
+      q = variedQuestion(() => mod.gen(level, rng, ctx), session, roundSeen);
     } catch (e) {
       console.error(e);
       q = null;
     }
-    if (!q) return finish();
+    if (!q) {
+      // En begränsad bank ger en kortare fullföljd runda i stället för dubbletter.
+      if (index > 0) { total = index; return finish(); }
+      clear(stage).append(h('p', 'Det finns inga fler frågor för den här nivån just nu.'), onTap(h('button.btn.btn-ghost', {type:'button'}, 'Tillbaka'), () => onExit?.()));
+      return;
+    }
     q.level = level;
     if (window.kidsos) window.kidsos.q = q; // testkrok: aktuell fråga
     renderQuestion(q);

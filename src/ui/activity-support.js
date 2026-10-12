@@ -1,6 +1,12 @@
 import { h, onTap, openDialog } from './dom.js';
 
 const HELP = {
+  pairs: 'Välj två kort som hör ihop. Visa alla kort om du vill ha stöd. Efter två olika kort väljer du själv när du provar igen.',
+  numberWorkshop: 'Lägg till ental och tiotal. Växla mellan dem med knapparna. Kontrollera när talet matchar målet.',
+  fractionKitchen: 'Välj hur många lika stora delar portionen har. Tryck på delar för att välja dem och jämför med målet.',
+  storyAtelier: 'Välj början, sedan och slutet. Välj idéer och skriv eller berätta med en vuxen. Din text sparas när du skriver.',
+  wordScene: 'Tryck på vem, vad som händer och var. Tryck på ett valt ord för att ta bort det. Dragning går att slå på om du vill.',
+  mapJourney: 'Följ ledtråden med riktningsknappar eller angränsande rutor. Norr är uppåt. Kontrollera när du är framme.',
   course: 'Välj en lektion. Läs eller lyssna på en del i taget. Tryck på Nästa del när du vill fortsätta.',
   robot: 'Välj pilar för att bygga en instruktion. Tryck på Kör för att prova. Du kan ändra och prova igen.',
   trace: 'Välj en bokstav eller siffra. Följ linjen med pennan eller fingret, eller tryck på Visa hur. Du kan börja om. I Öva A och a sparas varje godkänd skrivning.',

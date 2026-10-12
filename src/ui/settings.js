@@ -244,6 +244,7 @@ export function renderSettings(el, { parentGate, profileWizard, showLock, goHome
   }
 
   function moduleTouched(kp, appId, m) {
+    if (Object.keys(kp.sets?.[`workshops:${m.id}`] || {}).length) return true;
     const map = { trace: `traced:${m.set}`, robot: 'robotLevels', turtle: 'turtle', solar: 'planets', moon: 'moonPhases', stars: 'constellations', daynight: 'daynight', body: 'bodyParts', stories: 'stories', wonder: 'wonders' };
     if (m.view === 'draw') return (kp.counters?.drawings || 0) > 0;
     if (m.view === 'rocket') return (kp.counters?.rocketLaunch || 0) > 0;
