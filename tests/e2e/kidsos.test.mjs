@@ -172,7 +172,7 @@ test('första start: föräldern skapar en profil med guiden', async () => {
   await page.getByRole('button', { name: 'Skapa ✨' }).click();
   await page.locator('.who-bubble', { hasText: 'Testbarn' }).click();
   await page.waitForSelector('.home');
-  assert.equal(await page.locator('.app-icon').count(), 12);
+  assert.equal(await page.locator('.app-icon').count(), 13); // 12 + Känslor & jag (autismstödet)
   assert.match(await page.locator('.home-hello h1').innerText(), /Testbarn/);
   const s = await state(page);
   assert.equal(s.profiles[0].age, 7);

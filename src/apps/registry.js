@@ -11,7 +11,8 @@ import { drawApp } from './draw.js';
 import { wonderApp } from './wonder.js';
 import { worldApp } from './world.js';
 import { playApp } from './play.js';
+import { feelingsApp } from './feelings.js';
 
-export const APPS = [mathApp, svenskaApp, writeApp, scienceApp, biologyApp, spaceApp, worldApp, aiApp, codeApp, drawApp, wonderApp, playApp];
+export const APPS = [mathApp, svenskaApp, writeApp, scienceApp, biologyApp, spaceApp, worldApp, aiApp, codeApp, drawApp, wonderApp, playApp, feelingsApp];
 export const appById = (id) => APPS.find((a) => a.id === id);
 export const moduleById = (app, id) => app?.modules.find((m) => m.id === id);

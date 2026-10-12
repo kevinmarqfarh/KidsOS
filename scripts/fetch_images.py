@@ -63,7 +63,25 @@ CACHE = os.environ.get('KIDSOS_IMG_CACHE')
 def _cache_path(name, ext):
     return Path(CACHE) / (re.sub(r'[^A-Za-z0-9._-]+', '_', name)[:150] + ext)
 
+_PREFETCHED = {}
+
+def prefetch_infos(titles_by_width):
+    """Hämtar bildinfo för många filer i samma anrop (40 åt gången) – sparar på Wikimedias anropsgräns."""
+    for width, titles in titles_by_width.items():
+        todo = sorted({t for t in titles if (t, width) not in _PREFETCHED})
+        for i in range(0, len(todo), 40):
+            chunk = todo[i:i + 40]
+            q = urllib.parse.urlencode({'action': 'query', 'titles': '|'.join(chunk), 'prop': 'imageinfo', 'iiprop': 'url|extmetadata|size', 'iiurlwidth': width, 'format': 'json'})
+            d = get(f'https://commons.wikimedia.org/w/api.php?{q}')['query']
+            names = {x['to']: x['from'] for x in d.get('normalized', [])}
+            for p in d['pages'].values():
+                if 'imageinfo' in p:
+                    _PREFETCHED[(names.get(p['title'], p['title']), width)] = p['imageinfo'][0]
+                    _PREFETCHED[(p['title'], width)] = p['imageinfo'][0]
+
 def image_info(file_title, width=700):
+    if (file_title, width) in _PREFETCHED:
+        return _PREFETCHED[(file_title, width)]
     if CACHE and _cache_path(f'{file_title}-{width}', '.json').exists():
         return json.loads(_cache_path(f'{file_title}-{width}', '.json').read_text())
     info = _image_info(file_title, width)
@@ -73,7 +91,7 @@ def image_info(file_title, width=700):
     return info
 
 def _image_info(file_title, width=700):
-    q = urllib.parse.urlencode({'action': 'query', 'titles': file_title, 'prop': 'imageinfo', 'iiprop': 'url|extmetadata', 'iiurlwidth': width, 'format': 'json'})
+    q = urllib.parse.urlencode({'action': 'query', 'titles': file_title, 'prop': 'imageinfo', 'iiprop': 'url|extmetadata|size', 'iiurlwidth': width, 'format': 'json'})
     for host in ('commons.wikimedia.org', 'en.wikipedia.org'):
         d = get(f'https://{host}/w/api.php?{q}')
         for p in d['query']['pages'].values():
@@ -114,7 +132,7 @@ def moon_crop(im, key):
     (D, E, F), *_ = np.linalg.lstsq(A, bvec, rcond=None)
     cx, cy = -D / 2, -E / 2
     rad = float(np.sqrt(max(cx * cx + cy * cy - F, 1)))
-    side = rad * 2 * 1.1
+    side = rad * 2 * 1.18
     # Fyll utanför originalbilden med bakgrundens färg (medianen i hörnen) så att ingen kant syns.
     arr = np.asarray(im.convert('RGB'))
     k = max(4, min(arr.shape[:2]) // 40)
@@ -132,11 +150,13 @@ def save_image(key, group, file_title, info, credits, data=None):
     if not FREE.search(lic):
         raise RuntimeError(f'icke-fri licens: {lic}')
     if data is None:
-        cp = _cache_path(info['thumburl'].rsplit('/', 1)[-1], '.bin') if CACHE else None
+        # Be aldrig om en miniatyr som är större än originalet (Wikimedia svarar då 429) – ta originalet.
+        src_url = info['url'] if info.get('width') and info.get('thumbwidth', 0) >= info['width'] else info['thumburl']
+        cp = _cache_path(src_url.rsplit('/', 1)[-1], '.bin') if CACHE else None
         if cp and cp.exists():
             data = cp.read_bytes()
         else:
-            data = get(info['thumburl'], binary=True)
+            data = get(src_url, binary=True)
             if cp:
                 cp.write_bytes(data)
     size, quality = SIZES.get(group, (MAX, 64))
@@ -179,6 +199,17 @@ def main():
     credits = load_credits()
     OUT.mkdir(parents=True, exist_ok=True)
     failed = []
+    want = {}
+    for group, items in catalog.items():
+        if groups and group not in groups:
+            continue
+        for key, src in items.items():
+            if src.startswith('File:') and (not only or key in only) and (force or not ((OUT / f'{key}.webp').exists() and key in credits)):
+                want.setdefault(THUMB_W.get(group, 960), []).append(src)
+    try:
+        prefetch_infos(want)
+    except Exception as e:  # faller tillbaka på ett anrop per bild
+        print(f'  (förhämtning misslyckades: {e})', flush=True)
     for group, items in catalog.items():
         if groups and group not in groups:
             continue

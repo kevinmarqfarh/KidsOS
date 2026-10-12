@@ -7,6 +7,8 @@ import {
   interestFor, rewardFor, firstThenText, rewardCount, REWARDS, FEELINGS, feelingResponse, scheduleSteps,
   tasksLeft, leftLabel, remainingCue, breathPhase, BREATH,
 } from '../core/adapted.js';
+import { logAdapted, markPlan, breakPicker } from './calm-kit.js';
+import { planNextButton } from './adapted-home.js';
 
 /** Vad "sen" visar: belöningens ikon, eller favoritintresset för "Mina favoriter". */
 function thenVisual(prefs) {
@@ -95,6 +97,8 @@ export function adaptedCheckin({ stage, prefs, host, onStart }) {
     FEELINGS.map((f) =>
       onTap(h('button.ad-feeling', { type: 'button', dataset: { feeling: f.id }, 'aria-label': f.label }, h('span.ad-feeling-icon', { 'aria-hidden': 'true' }, f.icon), h('span', f.label)), () => {
         cards.querySelectorAll('.ad-feeling').forEach((b) => b.classList.toggle('on', b.dataset.feeling === f.id));
+        if (!cards.dataset.logged) logAdapted('mood', f.id); // förälderns lokala logg (en gång per pass)
+        cards.dataset.logged = '1';
         const r = feelingResponse(f.id);
         kos.say(r.say);
         if (!r.calm) {
@@ -126,6 +130,7 @@ export function showPause(host, { prefs, onResume } = {}) {
   if (!host || host.querySelector('.ad-pause-screen')) return;
   kos.stopSpeaking();
   kos.paused = true;
+  logAdapted('pause');
   const ring = h('div.ad-breath-ring', h('div.ad-breath-dot', { 'aria-hidden': 'true' }, interestFor(prefs).icon));
   const text = h('p.ad-breath-text', { 'aria-live': 'polite' }, 'Andas in …');
   let t0 = Date.now();
@@ -165,8 +170,11 @@ export function showPause(host, { prefs, onResume } = {}) {
 }
 
 /** Tydlig avslutning: "Klart! 🎉", alla polletter samlade och sedan den utlovade belöningen ("sen"). */
-export function adaptedFinish({ stage, res, total, prefs, onExit, again, fresh, strip }) {
+export function adaptedFinish({ stage, res, total, prefs, onExit, again, fresh, strip, app }) {
   clear(stage);
+  // Förälderns logg + dagens plan: passet är gjort (bockas av i planen om appen finns där).
+  logAdapted('pass', app);
+  if (app) markPlan(app);
   setStripStep(strip, 'reward');
   if (strip) setStripLeft(strip, total, total, prefs);
   const interest = interestFor(prefs);
@@ -201,6 +209,7 @@ export function adaptedFinish({ stage, res, total, prefs, onExit, again, fresh, 
     res?.trophies?.length ? h('p.ad-trophy', res.trophies.map((t) => `${t.icon} ${t.name}`).join(' · ')) : null,
     play,
     pickRow,
+    afterPassExtras(prefs),
     h(
       'div.sum-actions',
       onTap(h('button.btn.btn-ghost', { type: 'button' }, '🏁 Sluta för nu'), () => {
@@ -216,6 +225,32 @@ export function adaptedFinish({ stage, res, total, prefs, onExit, again, fresh, 
   renderPick();
   clear(play).appendChild(rewardPlay(rewardId, interest));
   kos.autoSay(`Klart! Du samlade ${total} polletter. ${rewardFor(rewardId).say}`);
+  kos.emit('adapted:passdone', { app });
+}
+
+let breakIndex = new Date().getDate();
+/**
+ * Efter passet: erbjud en rörelsepaus (valbar, aldrig ett krav) och visa nästa steg i dagens plan.
+ * Rörelsepausen öppnas på plats i kortet; "Hoppa över" stänger den.
+ */
+function afterPassExtras(prefs) {
+  const box = h('div.ad-after');
+  const next = planNextButton();
+  if (prefs?.breaks !== false && next?.dataset?.step !== 'move') {
+    const slot = h('div.ad-break-slot');
+    const offer = onTap(h('button.btn.btn-ghost.ad-break-offer', { type: 'button' }, '🤸 Rörelsepaus?'), () => {
+      offer.hidden = true;
+      breakPicker(slot, {
+        index: breakIndex++,
+        title: 'Rörelsepaus',
+        onDone: () => { clear(slot).append(h('p.ad-break-done', '✓ Bra rört!')); },
+        onSkip: () => { clear(slot); offer.hidden = false; },
+      });
+    });
+    box.append(offer, slot);
+  }
+  if (next) box.append(next);
+  return box.childNodes.length ? box : null;
 }
 
 /* Fasta positioner (procent) – samma varje gång, förutsägbart. */

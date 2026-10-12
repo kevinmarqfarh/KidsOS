@@ -230,7 +230,7 @@ export function runQuiz(el, { app, module: mod, onExit, seed = Date.now(), count
     const res = kos.roundDone(app.id, mod.id, correctFirst, total);
     if (adapted) {
       // Tydlig avslutning + utlovad belöning. "Samma igen" ger exakt samma uppgifter (samma frö).
-      return adaptedFinish({ stage, res, total, prefs: ap, onExit, strip, again: () => runQuiz(el, { app, module: mod, onExit, seed, count }), fresh: () => runQuiz(el, { app, module: mod, onExit }) });
+      return adaptedFinish({ stage, res, total, prefs: ap, onExit, strip, app: app.id, again: () => runQuiz(el, { app, module: mod, onExit, seed, count }), fresh: () => runQuiz(el, { app, module: mod, onExit }) });
     }
     const best = moduleStat(kos.profile, app.id, mod.id).best;
     clear(stage);

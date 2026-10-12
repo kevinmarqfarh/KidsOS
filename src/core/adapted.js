@@ -72,6 +72,9 @@ export function presetFor(support = 2, intellectual = false) {
   };
 }
 
+/** Dagens plan som standard (föräldern ändrar ordningen). Appar anges med app-id, pauser med PLAN_SPECIAL-id. */
+export const DEFAULT_PLAN = Object.freeze(['math', 'move', 'svenska']);
+
 export const ADAPTED_DEFAULTS = Object.freeze({
   v: PREFS_VERSION,
   ...presetFor(2, false),
@@ -79,12 +82,17 @@ export const ADAPTED_DEFAULTS = Object.freeze({
   motion: true, // mjuka, långsamma animationer
   calm: true, // dämpade färger
   hideStreak: true, // ingen "dagar i rad"-flamma (undviker streak-stress)
+  themeTasks: true, // intresset blir tema i uppgifterna (t.ex. raketer i stället för äpplen)
+  breaks: true, // erbjud rörelsepaus mellan passen (alltid valbar)
+  screenWarn: true, // visuell förvarning 2 minuter innan dagens skärmtid tar slut
+  plan: DEFAULT_PLAN,
+  after: 'build', // "Vad gör jag sen?" – aktivitet borta från skärmen
   interest: 'animals',
   reward: 'bubbles',
 });
 
 export function defaultAdaptedPrefs() {
-  return { ...ADAPTED_DEFAULTS };
+  return { ...ADAPTED_DEFAULTS, plan: [...ADAPTED_DEFAULTS.plan] };
 }
 
 const bool = (v, fallback) => (typeof v === 'boolean' ? v : fallback);
@@ -108,7 +116,9 @@ export function normalizeAdaptedPrefs(raw) {
     else if (Number.isFinite(o)) out.options = Math.max(2, Math.min(4, o));
   }
   if (ERROR_MODES.includes(r.errorMode)) out.errorMode = r.errorMode;
-  for (const k of ['sound', 'motion', 'calm', 'focus', 'checkin', 'warnings', 'hideStreak']) out[k] = bool(r[k], out[k]);
+  for (const k of ['sound', 'motion', 'calm', 'focus', 'checkin', 'warnings', 'hideStreak', 'themeTasks', 'breaks', 'screenWarn']) out[k] = bool(r[k], out[k]);
+  if (Array.isArray(r.plan)) out.plan = normalizePlan(r.plan);
+  if (AFTER_ACTIVITIES.some((a) => a.id === r.after)) out.after = r.after;
   if (INTERESTS.some((i) => i.id === r.interest)) out.interest = r.interest;
   if (REWARDS.some((i) => i.id === r.reward)) out.reward = r.reward;
   out.v = PREFS_VERSION;
@@ -182,7 +192,7 @@ export function adaptQuestion(q, prefs) {
   if (p.options && q.type === 'choice' && Array.isArray(q.options) && !q.multi) {
     out.options = reduceOptions(q.options, q.answer, p.options);
   }
-  return out;
+  return p.themeTasks ? themeQuestion(out, p) : out;
 }
 
 /**
@@ -309,4 +319,228 @@ export function rewardCount(rewardId) {
   if (rewardId === 'stars') return 10;
   if (rewardId === 'friends') return INTERESTS[0].items.length;
   return 8;
+}
+
+/* =====================================================================================
+ * Runda 2 (oktober 2026): intresset som tema i uppgifterna, dagens plan, skärmtidens
+ * visuella timer och avslutning, "Vad gör jag sen?" och rörelsepauser. Se docs/ANPASSAT-LAGE.md.
+ * ===================================================================================== */
+
+/**
+ * Neutrala räkneobjekt som matte-generatorerna använder (emoji → plural). Bara de här byts mot
+ * intressets objekt – ord som "äter", "kakor till fikat" eller barn i en textuppgift rörs aldrig.
+ */
+export const NEUTRAL_COUNTERS = Object.freeze({
+  '🍎': 'äpplen', '🐞': 'nyckelpigor', '⭐': 'stjärnor', '🐟': 'fiskar', '🍓': 'jordgubbar', '🚗': 'bilar',
+  '🎈': 'ballonger', '🐥': 'kycklingar', '🌸': 'blommor', '🍪': 'kakor', '⚽': 'bollar', '🦋': 'fjärilar',
+});
+
+/** Intressets räkneobjekt (emoji, plural). Konkreta och lätta att räkna – inga varumärken. */
+export const THEME_COUNTERS = Object.freeze({
+  animals: [['🐶', 'hundar'], ['🐱', 'katter'], ['🐰', 'kaniner'], ['🐸', 'grodor']],
+  space: [['🚀', 'raketer'], ['🪐', 'planeter'], ['⭐', 'stjärnor'], ['🌙', 'månar']],
+  vehicles: [['🚂', 'tåg'], ['🚗', 'bilar'], ['🚌', 'bussar'], ['✈️', 'flygplan']],
+  dinos: [['🦕', 'dinosaurier'], ['🥚', 'ägg'], ['🌋', 'vulkaner'], ['🌴', 'palmer']],
+  blocks: [['🟫', 'klossar'], ['💎', 'diamanter'], ['🏠', 'hus'], ['🌳', 'träd']],
+  ocean: [['🐠', 'fiskar'], ['🐙', 'bläckfiskar'], ['🐢', 'sköldpaddor'], ['🦀', 'krabbor']],
+  music: [['🥁', 'trummor'], ['🎸', 'gitarrer'], ['🎺', 'trumpeter'], ['🎵', 'toner']],
+});
+
+const reEsc = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+const EG_ITEM = /<span class="eg-item([^"]*)">([^<]+)<\/span>/g;
+const TEXT_KEYS = ['prompt', 'say', 'hint', 'explain'];
+
+/** Fraser där räkneordet är neutralt ("Hur många äpplen ser du?"). Allt annat lämnas orört. */
+function safePhrases(noun) {
+  const n = reEsc(noun);
+  return [
+    new RegExp(`Hur många ${n} ser du\\?`, 'g'),
+    new RegExp(`Var finns det flest ${n}\\?`, 'g'),
+    new RegExp(`grupper med (\\d+) ${n} i varje`, 'g'),
+    new RegExp(`Hur många ${n} är det\\?`, 'g'),
+  ];
+}
+
+/** Alla html-strängar i en fråga där räkneobjekt kan finnas (bilden och bildsvar). */
+function htmlParts(q) {
+  const parts = [];
+  if (typeof q.visual === 'string') parts.push(q.visual);
+  if (Array.isArray(q.options)) for (const o of q.options) if (typeof o?.html === 'string') parts.push(o.html);
+  return parts;
+}
+
+/**
+ * Byter neutrala räkneobjekt mot barnets intresse (🍎 → 🚀, "äpplen" → "raketer").
+ * Görs bara när det är helt säkert: exakt ett slags objekt, objektet finns bara i räknegrupperna och
+ * ordet finns bara i neutrala fraser. Antal, svar och svårighet ändras aldrig. Returnerar en ny fråga.
+ */
+export function themeQuestion(q, prefs) {
+  if (!q || typeof q !== 'object') return q;
+  const list = THEME_COUNTERS[interestFor(prefs).id];
+  const html = htmlParts(q);
+  if (!list || !html.length) return q;
+  const found = new Set();
+  for (const part of html) for (const m of part.matchAll(EG_ITEM)) found.add(m[2]);
+  if (found.size !== 1) return q;
+  const [from] = found;
+  const noun = NEUTRAL_COUNTERS[from];
+  if (!noun) return q;
+  // Objektet får inte finnas någon annanstans (t.ex. i text eller i ett annat sammanhang i bilden).
+  const inSpans = html.reduce((n, part) => n + [...part.matchAll(EG_ITEM)].length, 0);
+  const total = html.reduce((n, part) => n + part.split(from).length - 1, 0);
+  if (inSpans !== total) return q;
+  const texts = TEXT_KEYS.map((k) => (typeof q[k] === 'string' ? q[k] : ''));
+  if (Array.isArray(q.options)) for (const o of q.options) texts.push(String(o?.label ?? ''), String(o?.say ?? ''));
+  const nounRe = new RegExp(`(^|[^a-zåäöA-ZÅÄÖ])${reEsc(noun)}(?![a-zåäöA-ZÅÄÖ])`);
+  for (const t of texts) {
+    if (t.includes(from)) return q;
+    let rest = t;
+    for (const re of safePhrases(noun)) rest = rest.replace(re, '');
+    if (nounRe.test(rest)) return q;
+  }
+  const idx = Object.keys(NEUTRAL_COUNTERS).indexOf(from);
+  const [to, toNoun] = list[idx % list.length];
+  if (to === from) return q;
+  const swapHtml = (s) => s.replace(EG_ITEM, (m, cls, e) => (e === from ? `<span class="eg-item${cls}">${to}</span>` : m));
+  const swapText = (s) => {
+    let out = s;
+    for (const re of safePhrases(noun)) out = out.replace(re, (m) => m.replace(noun, toNoun));
+    return out;
+  };
+  const out = { ...q, themed: { from, to } };
+  if (typeof q.visual === 'string') out.visual = swapHtml(q.visual);
+  if (Array.isArray(q.options)) out.options = q.options.map((o) => (typeof o?.html === 'string' ? { ...o, html: swapHtml(o.html) } : o));
+  for (const k of TEXT_KEYS) if (typeof q[k] === 'string') out[k] = swapText(q[k]);
+  return out;
+}
+
+/* ---------- Dagens plan ---------- */
+
+/** Steg i dagens plan som inte är appar. App-steg anges med app-id och slås upp i registret av gränssnittet. */
+export const PLAN_SPECIAL = Object.freeze([
+  { id: 'move', icon: '🤸', label: 'Rörelsepaus', app: 'feelings', module: 'move' },
+  { id: 'story', icon: '📖', label: 'Berättelse', app: 'feelings', module: 'stories' },
+  { id: 'calm', icon: '🧰', label: 'Lugn stund', app: 'feelings', module: 'tools' },
+  { id: 'faces', icon: '🙂', label: 'Läsa ansikten', app: 'feelings', module: 'faces' },
+]);
+export const PLAN_MAX = 6;
+
+/** Lagar en plan: bara korta id:n (a–z, 0–9, -), inga dubbletter i rad, högst PLAN_MAX steg. */
+export function normalizePlan(raw) {
+  if (!Array.isArray(raw)) return [...DEFAULT_PLAN];
+  const out = [];
+  for (const id of raw) {
+    if (typeof id !== 'string' || !/^[a-z][a-z0-9-]{1,20}$/.test(id)) continue;
+    if (out[out.length - 1] === id) continue;
+    out.push(id);
+    if (out.length >= PLAN_MAX) break;
+  }
+  return out;
+}
+
+/** Flyttar ett steg i planen (föräldern bestämmer ordningen). Returnerar en ny plan. */
+export function movePlanStep(plan, index, delta) {
+  const p = normalizePlan(plan);
+  const j = index + delta;
+  if (index < 0 || index >= p.length || j < 0 || j >= p.length) return p;
+  [p[index], p[j]] = [p[j], p[index]];
+  return p;
+}
+
+/** Aktiviteter borta från skärmen ("Vad gör jag sen?"). Emojin blir ett riktigt foto när det finns. */
+export const AFTER_ACTIVITIES = Object.freeze([
+  { id: 'build', icon: '🧱', label: 'Bygga med klossar', noPhoto: true }, // fotot för 🧱 är en tegelsten
+  { id: 'draw', icon: '🖍️', label: 'Rita på papper' },
+  { id: 'book', icon: '📚', label: 'Läsa en bok' },
+  { id: 'outside', icon: '🌳', label: 'Gå ut och leka' },
+  { id: 'snack', icon: '🍎', label: 'Äta mellanmål' },
+  { id: 'puzzle', icon: '🧩', label: 'Lägga pussel' },
+  { id: 'music', icon: '🎵', label: 'Lyssna på musik' },
+  { id: 'bike', icon: '🚲', label: 'Cykla' },
+  { id: 'toys', icon: '🧸', label: 'Leka med leksaker' },
+  { id: 'rest', icon: '🛋️', label: 'Vila en stund' },
+]);
+export function afterFor(prefsOrId) {
+  const id = typeof prefsOrId === 'string' ? prefsOrId : prefsOrId?.after;
+  return AFTER_ACTIVITIES.find((a) => a.id === id) || AFTER_ACTIVITIES[0];
+}
+
+/* ---------- Skärmtid: visuell timer, förvarning och avslutning ---------- */
+
+/** Förvarning (minuter) före att dagens skärmtid tar slut. */
+export const SCREEN_WARN_MIN = 2;
+/** Längsta väntan på en naturlig paus (passet tar slut) innan avslutningen visas. */
+export const LIMIT_GRACE_MS = 3 * 60 * 1000;
+
+/**
+ * Den krympande cirkeln för skärmtid. `left` = minuter kvar (Infinity = ingen gräns), `total` = dagens
+ * minuter (gräns + bonus). Returnerar andel kvar (0–1), etikett och om förvarningen gäller.
+ */
+export function screenTimer(left, total) {
+  if (!Number.isFinite(left)) return { unlimited: true, frac: 1, label: 'Ingen gräns', warn: false, over: false };
+  const l = Math.max(0, Number(left) || 0);
+  const t = Math.max(1, Number(total) || 1);
+  const frac = Math.max(0, Math.min(1, l / t));
+  const mins = Math.ceil(l);
+  const label = l <= 0 ? 'Slut' : `${mins} min kvar`;
+  return { unlimited: false, frac, label, warn: l > 0 && l <= SCREEN_WARN_MIN, over: l <= 0, mins };
+}
+
+/** Ska förvarningen visas nu? Bara en gång per dag och aldrig om föräldern stängt av den. */
+export function shouldWarnScreen(left, prefs, alreadyWarned) {
+  const p = normalizeAdaptedPrefs(prefs);
+  if (!p.screenWarn || alreadyWarned || !Number.isFinite(left)) return false;
+  return left > 0 && left <= SCREEN_WARN_MIN;
+}
+
+/** Texterna i förvarningen och avslutningsritualen. Konkreta och utan skuld ("Tiden är slut", inte "Du måste"). */
+export function screenWarnText(prefs) {
+  const a = afterFor(prefs);
+  return { title: '2 minuter kvar', text: `Sen är skärmtiden slut för i dag. Sen: ${a.label.toLowerCase()}.`, say: `Två minuter kvar. Sen är skärmtiden slut för i dag. Sen: ${a.label.toLowerCase()}.` };
+}
+
+/**
+ * Avslutningsritualen när dagens skärmtid är slut: samma steg i samma ordning varje gång.
+ * Barnet trycker själv på "Hej då" (tekniken avslutar, inte en vuxen som tar plattan).
+ */
+export function endingSteps(prefs) {
+  const a = afterFor(prefs);
+  return [
+    { id: 'done', icon: '⏳', title: 'Skärmtiden är slut för i dag', say: 'Skärmtiden är slut för i dag.' },
+    { id: 'saved', icon: '✅', title: 'Allt du har gjort är sparat', say: 'Allt du har gjort är sparat. Du kan fortsätta i morgon.' },
+    { id: 'breathe', icon: '🌬️', title: 'Andas ut en gång, långsamt', say: 'Andas ut en gång, långsamt.' },
+    { id: 'next', icon: a.icon, title: `Sen: ${a.label}`, say: `Sen: ${a.label.toLowerCase()}.` },
+  ];
+}
+
+/* ---------- Rörelsepauser (brain breaks) ---------- */
+
+/**
+ * Korta rörelsepauser (cirka 30–60 sekunder). "calm" = tung, lugnande rörelse (tryck, kram, sträck),
+ * "energy" = pigg rörelse (hopp, marsch). Alla går att göra bredvid en stol, utan redskap.
+ */
+export const BRAIN_BREAKS = Object.freeze([
+  { id: 'jump', icon: '🦘', title: 'Hoppa 5 gånger', say: 'Hoppa jämfota fem gånger. Räkna högt.', count: 5, kind: 'energy' },
+  { id: 'reach', icon: '🙆', title: 'Sträck dig mot taket', say: 'Sträck armarna mot taket. Stå på tå. Håll kvar medan vi räknar till fem.', count: 5, kind: 'calm' },
+  { id: 'wall', icon: '🧱', title: 'Tryck på väggen', say: 'Ställ dig vid en vägg. Tryck med båda händerna, som om du vill flytta väggen. Fem gånger.', count: 5, kind: 'calm' },
+  { id: 'march', icon: '🥁', title: 'Marschera på stället', say: 'Marschera på stället och lyft knäna högt. Tio steg.', count: 10, kind: 'energy' },
+  { id: 'shake', icon: '👐', title: 'Skaka loss', say: 'Skaka händerna, sen armarna, sen benen. Vi räknar till fem.', count: 5, kind: 'energy' },
+  { id: 'tree', icon: '🌳', title: 'Stå som ett träd', say: 'Stå på ett ben som ett träd. Räkna till fem. Byt sedan ben.', count: 5, kind: 'calm' },
+  { id: 'hug', icon: '🤗', title: 'Bamsekram', say: 'Krama dig själv hårt med båda armarna. Håll kvar och räkna till fem. Släpp långsamt.', count: 5, kind: 'calm' },
+  { id: 'shoulders', icon: '🔄', title: 'Rulla axlarna', say: 'Rulla axlarna bakåt, långsamt. Fem gånger.', count: 5, kind: 'calm' },
+  { id: 'starjump', icon: '⭐', title: 'Stjärnhopp', say: 'Gör fem stjärnhopp. Hoppa isär med armar och ben, och ihop igen.', count: 5, kind: 'energy' },
+  { id: 'press', icon: '🙏', title: 'Handtryck', say: 'Tryck handflatorna hårt mot varandra. Räkna till fem. Släpp.', count: 5, kind: 'calm' },
+]);
+
+/** Tre förslag att välja mellan (barnet väljer själv). Roterar förutsägbart och blandar lugnt och piggt. */
+export function breakChoices(index = 0) {
+  const calm = BRAIN_BREAKS.filter((b) => b.kind === 'calm');
+  const energy = BRAIN_BREAKS.filter((b) => b.kind === 'energy');
+  const i = Math.abs(Math.round(Number(index) || 0));
+  return [energy[i % energy.length], calm[i % calm.length], calm[(i + 1) % calm.length]];
+}
+
+/** Räknar högt på svenska under rörelsepausen ("ett", "två" …). */
+export function countWord(n) {
+  return ['noll', 'ett', 'två', 'tre', 'fyra', 'fem', 'sex', 'sju', 'åtta', 'nio', 'tio'][n] ?? String(n);
 }

@@ -287,6 +287,42 @@
   "licenseUrl": "",
   "source": "https://commons.wikimedia.org/wiki/File:Kangur.rudy.drs.jpg"
  },
+ "kansla-acklad": {
+  "author": "Close up of a man's face which is expressing disgust.",
+  "credit": "https://www.flickr.com/photos/iamagenious/2490996809",
+  "file": "File:Disgust expression cropped.jpg",
+  "group": "feelings",
+  "license": "CC BY 2.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Disgust_expression_cropped.jpg"
+ },
+ "kansla-arg": {
+  "author": "Lara604",
+  "credit": "https://www.flickr.com/photos/lara604/2369412952/",
+  "file": "File:Angry woman.jpg",
+  "group": "feelings",
+  "license": "CC BY 2.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Angry_woman.jpg"
+ },
+ "kansla-glad": {
+  "author": "Leroy Skalstad",
+  "credit": "https://pixabay.com/en/people-portrait-man-men-male-2442565/ archive copy at the Wayback Machine",
+  "file": "File:Black bearded man smiling, 2442565.jpg",
+  "group": "feelings",
+  "license": "CC0",
+  "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+  "source": "https://commons.wikimedia.org/wiki/File:Black_bearded_man_smiling,_2442565.jpg"
+ },
+ "kansla-trott": {
+  "author": "Wheeler Cowperthwaite",
+  "credit": "https://www.flickr.com/photos/wcowperthwaite/54257456743/",
+  "file": "File:Yawning woman.jpg",
+  "group": "feelings",
+  "license": "CC BY 2.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Yawning_woman.jpg"
+ },
  "kejsarpingvin": {
   "author": "lin padgham",
   "credit": "https://www.flickr.com/photos/linpadgham/2589167851/",
@@ -503,6 +539,15 @@
   "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0",
   "source": "https://commons.wikimedia.org/wiki/File:United_A320_N405UA_at_BOS_(33787222465).jpg"
  },
+ "obj-alarm-clock": {
+  "author": "Sun Ladder",
+  "credit": "Own work",
+  "file": "File:2010-07-20_Black_windup_alarm_clock_face.jpg",
+  "group": "objects",
+  "license": "CC BY-SA 3.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:2010-07-20_Black_windup_alarm_clock_face.jpg"
+ },
  "obj-ambulance": {
   "author": "AleWi",
   "credit": "Own work",
@@ -511,6 +556,15 @@
   "license": "CC BY-SA 4.0",
   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Stockholm,_ambulans,_2014,_21.jpg"
+ },
+ "obj-anchor": {
+  "author": "Radomil",
+  "credit": "Own work",
+  "file": "File:Kotwica_SS_Poznań.JPG",
+  "group": "objects",
+  "license": "CC BY-SA 3.0",
+  "licenseUrl": "http://creativecommons.org/licenses/by-sa/3.0/",
+  "source": "https://commons.wikimedia.org/wiki/File:Kotwica_SS_Pozna%C5%84.JPG"
  },
  "obj-apple": {
   "author": "Abhijit Tembhekar from Mumbai, India",
@@ -529,6 +583,15 @@
   "license": "CC BY 3.0",
   "licenseUrl": "https://creativecommons.org/licenses/by/3.0",
   "source": "https://commons.wikimedia.org/wiki/File:Momiji_%E7%B4%85%E8%91%89%E3%81%99%E3%82%8B%E3%83%A4%E3%83%9E%E3%83%A2%E3%83%9F%E3%82%B8_B221212.JPG"
+ },
+ "obj-avocado": {
+  "author": "B.navez",
+  "credit": "Own work",
+  "file": "File:Persea_americana_fruit_2.JPG",
+  "group": "objects",
+  "license": "CC BY-SA 3.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Persea_americana_fruit_2.JPG"
  },
  "obj-axe": {
   "author": "タクナワン",
@@ -602,6 +665,15 @@
   "licenseUrl": "http://creativecommons.org/licenses/by-sa/3.0/",
   "source": "https://commons.wikimedia.org/wiki/File:Clawfoot_bathtub.jpg"
  },
+ "obj-battery": {
+  "author": "Lead holder",
+  "credit": "Own work",
+  "file": "File:AA_matchstick-1.jpg",
+  "group": "objects",
+  "license": "CC BY-SA 3.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:AA_matchstick-1.jpg"
+ },
  "obj-beach": {
   "author": "Daniel Dudek",
   "credit": "https://www.flickr.com/photos/dansapples/9530477943/",
@@ -610,6 +682,15 @@
   "license": "CC BY 2.0",
   "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
   "source": "https://commons.wikimedia.org/wiki/File:Beach_at_Fort_Lauderdale.jpg"
+ },
+ "obj-beaver": {
+  "author": "Bouke ten Cate",
+  "credit": "Own work",
+  "file": "File:Bever - Eurasian beaver - Castor fiber 6.jpg",
+  "group": "objects",
+  "license": "CC BY 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Bever_-_Eurasian_beaver_-_Castor_fiber_6.jpg"
  },
  "obj-bed": {
   "author": "Liz Lawley",
@@ -628,6 +709,24 @@
   "license": "CC BY-SA 2.5",
   "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.5",
   "source": "https://commons.wikimedia.org/wiki/File:Apis_mellifera_Western_honey_bee.jpg"
+ },
+ "obj-beetle": {
+  "author": "Chrumps",
+  "credit": "Own work",
+  "file": "File:Cetonia-aurata.jpg",
+  "group": "objects",
+  "license": "CC BY-SA 3.0",
+  "licenseUrl": "http://creativecommons.org/licenses/by-sa/3.0/",
+  "source": "https://commons.wikimedia.org/wiki/File:Cetonia-aurata.jpg"
+ },
+ "obj-bell-pepper": {
+  "author": "AntanO",
+  "credit": "Own work",
+  "file": "File:Red bell pepper.jpg",
+  "group": "objects",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Red_bell_pepper.jpg"
  },
  "obj-bicycle": {
   "author": "齐健 from Peking, People's Republic of China",
@@ -673,6 +772,15 @@
   "license": "CC BY 2.0",
   "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
   "source": "https://commons.wikimedia.org/wiki/File:SanDiegoCityCollegeLearningResource_-_bookshelf.jpg"
+ },
+ "obj-boot": {
+  "author": "Abc10",
+  "credit": "Own work",
+  "file": "File:Sievi_Boots_(2).jpg",
+  "group": "objects",
+  "license": "CC BY-SA 3.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Sievi_Boots_(2).jpg"
  },
  "obj-bottle": {
   "author": "Aurélien Mole",
@@ -728,6 +836,24 @@
   "licenseUrl": "",
   "source": "https://commons.wikimedia.org/wiki/File:Brick.jpg"
  },
+ "obj-bridge": {
+  "author": "Arild Vågen",
+  "credit": "Own work",
+  "file": "File:Älvsborgsbron September 2015 01.jpg",
+  "group": "objects",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:%C3%84lvsborgsbron_September_2015_01.jpg"
+ },
+ "obj-broccoli": {
+  "author": "U.S. Department of Agriculture",
+  "credit": "20160802-RD-LSC-0526",
+  "file": "File:Fire-Tuscarora Organic Growers - Broccoli head.jpg",
+  "group": "objects",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "source": "https://commons.wikimedia.org/wiki/File:Fire-Tuscarora_Organic_Growers_-_Broccoli_head.jpg"
+ },
  "obj-bucket": {
   "author": "Wolfgang Sauber",
   "credit": "Own work",
@@ -763,6 +889,15 @@
   "license": "CC BY-SA 3.0",
   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
   "source": "https://commons.wikimedia.org/wiki/File:Peacock_butterfly_(Aglais_io)_2.jpg"
+ },
+ "obj-cactus": {
+  "author": "WClarke",
+  "credit": "Own work",
+  "file": "File:Carnegiea_gigantea_in_Saguaro_National_Park_near_Tucson,_Arizona_during_November_(58).jpg",
+  "group": "objects",
+  "license": "CC BY-SA 3.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Carnegiea_gigantea_in_Saguaro_National_Park_near_Tucson,_Arizona_during_November_(58).jpg"
  },
  "obj-cake": {
   "author": "Scheinwerfermann",
@@ -827,6 +962,15 @@
   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Farbenfrohe_Lollipops,_Austria.jpg"
  },
+ "obj-canoe": {
+  "author": "Vincent Mugaba | Kwezi Outdoors",
+  "credit": "Own work",
+  "file": "File:Canoe on Lake Mburo in Lake Mburo National Park.jpg",
+  "group": "objects",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Canoe_on_Lake_Mburo_in_Lake_Mburo_National_Park.jpg"
+ },
  "obj-cap": {
   "author": "Ulrich Waack",
   "credit": "Own work",
@@ -881,6 +1025,15 @@
   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Chenille_de_Grand_porte_queue_(macaon).jpg"
  },
+ "obj-chain": {
+  "author": "Toni Lozano",
+  "credit": "https://www.flickr.com/photos/quiero-un-pantano/176909201",
+  "file": "File:Broad_chain_closeup.jpg",
+  "group": "objects",
+  "license": "CC BY 2.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Broad_chain_closeup.jpg"
+ },
  "obj-chair": {
   "author": "Thomas Chippendale",
   "credit": "This file was donated to Wikimedia Commons as part of a project by the Metropolitan Museum of Art. See the Image and Data Resources Open Access Policy",
@@ -889,6 +1042,15 @@
   "license": "CC0",
   "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
   "source": "https://commons.wikimedia.org/wiki/File:Set_of_fourteen_side_chairs_MET_DP110780.jpg"
+ },
+ "obj-cheese": {
+  "author": "No machine-readable author provided. Brion VIBBER assumed (based on copyright claims).",
+  "credit": "No machine-readable source provided. Own work assumed (based on copyright claims).",
+  "file": "File:Block of Muenster cheese.jpg",
+  "group": "objects",
+  "license": "CC BY-SA 3.0",
+  "licenseUrl": "http://creativecommons.org/licenses/by-sa/3.0/",
+  "source": "https://commons.wikimedia.org/wiki/File:Block_of_Muenster_cheese.jpg"
  },
  "obj-cherries": {
   "author": "spurekar",
@@ -900,13 +1062,13 @@
   "source": "https://commons.wikimedia.org/wiki/File:Cherry_season_(48216568227).jpg"
  },
  "obj-chestnut": {
-  "author": "Philip Halling",
-  "credit": "Geograph Britain and Ireland",
-  "file": "File:Horse chestnut conkers - geograph.org.uk - 7621860.jpg",
+  "author": "Dominicus Johannes Bergsma",
+  "credit": "Own work",
+  "file": "File:Gebarsten bolster van een paardenkastanje (Aesculus) 13-10-2022 (d.j.b.) 02.jpg",
   "group": "objects",
-  "license": "CC BY-SA 2.0",
-  "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0",
-  "source": "https://commons.wikimedia.org/wiki/File:Horse_chestnut_conkers_-_geograph.org.uk_-_7621860.jpg"
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Gebarsten_bolster_van_een_paardenkastanje_(Aesculus)_13-10-2022_(d.j.b.)_02.jpg"
  },
  "obj-chicken": {
   "author": "Andrei Niemimäki from Turku, Finland",
@@ -953,6 +1115,15 @@
   "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
   "source": "https://commons.wikimedia.org/wiki/File:Polo_Ralph_Lauren_winter_jacket,_red_and_black_plaid.jpg"
  },
+ "obj-coconut": {
+  "author": "Chandrika Nair from Cochin, India",
+  "credit": "Coconut (halved)",
+  "file": "File:Coconut (halved) (3330701660).jpg",
+  "group": "objects",
+  "license": "CC BY 2.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Coconut_(halved)_(3330701660).jpg"
+ },
  "obj-coffee": {
   "author": "Jeffrey Wegrzyn jeffreymwegrzyn",
   "credit": "https://unsplash.com/photos/R22d5ErIWY8 Image at the Wayback Machine Gallery at the Wayback Machine",
@@ -970,6 +1141,15 @@
   "license": "CC BY-SA 4.0",
   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Old_coin,_1_krona,_1973,_first_side,_Jin_Zan.jpg"
+ },
+ "obj-comet": {
+  "author": "Philipp Salzgeber",
+  "credit": "http://salzgeber.at/astro/pics/9703293.html",
+  "file": "File:Comet-Hale-Bopp-29-03-1997 hires adj.jpg",
+  "group": "objects",
+  "license": "CC BY-SA 2.0 at",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0/at/deed.en",
+  "source": "https://commons.wikimedia.org/wiki/File:Comet-Hale-Bopp-29-03-1997_hires_adj.jpg"
  },
  "obj-compass": {
   "author": "Jacek Halicki",
@@ -998,6 +1178,15 @@
   "licenseUrl": "https://creativecommons.org/licenses/by/2.5",
   "source": "https://commons.wikimedia.org/wiki/File:Choco_chip_cookie.png"
  },
+ "obj-corn": {
+  "author": "Daderot",
+  "credit": "Own work",
+  "file": "File:Corn on the cob - Massachusetts.jpg",
+  "group": "objects",
+  "license": "CC0",
+  "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+  "source": "https://commons.wikimedia.org/wiki/File:Corn_on_the_cob_-_Massachusetts.jpg"
+ },
  "obj-cow": {
   "author": "Kim Hansen",
   "credit": "Own work",
@@ -1006,6 +1195,24 @@
   "license": "CC BY-SA 3.0",
   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
   "source": "https://commons.wikimedia.org/wiki/File:Cow_(Fleckvieh_breed)_Oeschinensee_Slaunger_2009-07-07.jpg"
+ },
+ "obj-crab": {
+  "author": "Hans Hillewaert",
+  "credit": "Own work",
+  "file": "File:Carcinus maenas.jpg",
+  "group": "objects",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Carcinus_maenas.jpg"
+ },
+ "obj-crane": {
+  "author": "Rodhullandemu",
+  "credit": "Own work",
+  "file": "File:Crane on Leeds Street, Liverpool.jpg",
+  "group": "objects",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Crane_on_Leeds_Street,_Liverpool.jpg"
  },
  "obj-crayon": {
   "author": "Jorge Barrios",
@@ -1088,6 +1295,15 @@
   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
   "source": "https://commons.wikimedia.org/wiki/File:6sided_dice_(cropped).jpg"
  },
+ "obj-dinosaur": {
+  "author": "ScottRobertAnselmo",
+  "credit": "Own work",
+  "file": "File:CM_Diplodocus.jpg",
+  "group": "objects",
+  "license": "CC BY-SA 3.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:CM_Diplodocus.jpg"
+ },
  "obj-dog": {
   "author": "Dietmar Rabich",
   "credit": "Own work",
@@ -1151,6 +1367,15 @@
   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Elefante_africano_de_sabana_(Loxodonta_africana),_parque_nacional_de_Amboseli,_Kenia,_2024-05-22,_DD_07.jpg"
  },
+ "obj-envelope": {
+  "author": "okänd",
+  "credit": "",
+  "file": "File:Envelope_-_Boonville_Address-000.jpg",
+  "group": "objects",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "source": "https://commons.wikimedia.org/wiki/File:Envelope_-_Boonville_Address-000.jpg"
+ },
  "obj-feather": {
   "author": "Joao Estevao Andrade de Freitas",
   "credit": "http://www.sxc.hu/browse.phtml?f=view&id=85259Uploaded to the EN wiki by Chris 73",
@@ -1168,6 +1393,15 @@
   "license": "CC BY-SA 3.0",
   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
   "source": "https://commons.wikimedia.org/wiki/File:Campfire_Pinecone.png"
+ },
+ "obj-fire-engine": {
+  "author": "Gunnar Creutz",
+  "credit": "Own work",
+  "file": "File:Röd brandbil Scania P360 årsmodell 2012 - 6219.jpg",
+  "group": "objects",
+  "license": "CC BY-SA 3.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:R%C3%B6d_brandbil_Scania_P360_%C3%A5rsmodell_2012_-_6219.jpg"
  },
  "obj-fireworks": {
   "author": "Rob Chandler",
@@ -1223,6 +1457,15 @@
   "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
   "source": "https://commons.wikimedia.org/wiki/File:Common_house_fly,_Musca_domestica.jpg"
  },
+ "obj-fog": {
+  "author": "Abdul Momin",
+  "credit": "Own work",
+  "file": "File:A_foggy_winter_morning.jpg",
+  "group": "objects",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:A_foggy_winter_morning.jpg"
+ },
  "obj-fried-egg": {
   "author": "Matthew Murdoch",
   "credit": "https://www.flickr.com/photos/54423233@N05/13916201522/",
@@ -1249,6 +1492,15 @@
   "license": "Public domain",
   "licenseUrl": "",
   "source": "https://commons.wikimedia.org/wiki/File:SNES-Controller-in-Hand.jpg"
+ },
+ "obj-garlic": {
+  "author": "Ivar Leidus",
+  "credit": "Own work",
+  "file": "File:Garlic bulbs and cloves.jpg",
+  "group": "objects",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Garlic_bulbs_and_cloves.jpg"
  },
  "obj-gem": {
   "author": "Robert M. Lavinsky / Robert M. Lavinsky",
@@ -1358,6 +1610,15 @@
   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
   "source": "https://commons.wikimedia.org/wiki/File:RedDot_Burger.jpg"
  },
+ "obj-hammer": {
+  "author": "Evan-Amos",
+  "credit": "Own work",
+  "file": "File:Claw-hammer.jpg",
+  "group": "objects",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "source": "https://commons.wikimedia.org/wiki/File:Claw-hammer.jpg"
+ },
  "obj-hamster": {
   "author": "Adamjennison111 at English Wikipedia",
   "credit": "Transferred from en.wikipedia to Commons by Sreejithk2000 using CommonsHelper.",
@@ -1385,6 +1646,15 @@
   "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
   "source": "https://commons.wikimedia.org/wiki/File:VH-SUF_Taking_Off.jpg"
  },
+ "obj-helmet": {
+  "author": "Ashley Pomeroy",
+  "credit": "Own work",
+  "file": "File:Bicycle_Helmet_0085.jpg",
+  "group": "objects",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Bicycle_Helmet_0085.jpg"
+ },
  "obj-herb": {
   "author": "Lauren 240",
   "credit": "Own work",
@@ -1402,6 +1672,15 @@
   "license": "Public domain",
   "licenseUrl": "",
   "source": "https://commons.wikimedia.org/wiki/File:Runny_hunny.jpg"
+ },
+ "obj-hook": {
+  "author": "daniel jaeger",
+  "credit": "http://9686.openphoto.net",
+  "file": "File:Fishing hooks on white surface.jpg",
+  "group": "objects",
+  "license": "CC BY-SA 2.5",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.5",
+  "source": "https://commons.wikimedia.org/wiki/File:Fishing_hooks_on_white_surface.jpg"
  },
  "obj-horse": {
   "author": "Nokota_Horses.jpg: François Marchal derivative work: Dana boomer (talk)",
@@ -1448,6 +1727,15 @@
   "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.5",
   "source": "https://commons.wikimedia.org/wiki/File:Ice_cubes_openphoto.jpg"
  },
+ "obj-ice-skate": {
+  "author": "AHA",
+  "credit": "Own work",
+  "file": "File:Ice Skates ABC-fabrikerna.jpeg",
+  "group": "objects",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Ice_Skates_ABC-fabrikerna.jpeg"
+ },
  "obj-icecream": {
   "author": "TheCulinaryGeek from Chicago, USA",
   "credit": "Strawberry Ice Cream Cone Uploaded by Mindmatrix",
@@ -1474,6 +1762,15 @@
   "license": "CC BY 4.0",
   "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Solex_99_30_padlock_with_keys_(DSCF2659).jpg"
+ },
+ "obj-kick-scooter": {
+  "author": "Armin Kleiner",
+  "credit": "Own work",
+  "file": "File:Children's kick scooter, Bologna (40133).jpg",
+  "group": "objects",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Children%27s_kick_scooter,_Bologna_(40133).jpg"
  },
  "obj-lamp": {
   "author": "KMJ, alpha masking by Edokter",
@@ -1511,6 +1808,15 @@
   "licenseUrl": "",
   "source": "https://commons.wikimedia.org/wiki/File:Lacerta_agilis_male_2014_G1.jpg"
  },
+ "obj-lobster": {
+  "author": "Olivier Dugornay (Ifremer)",
+  "credit": "Homard (Homarus gammarus)",
+  "file": "File:Homard (Homarus gammarus) (Ifremer 00737-84856 - 40917).jpg",
+  "group": "objects",
+  "license": "CC BY 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Homard_(Homarus_gammarus)_(Ifremer_00737-84856_-_40917).jpg"
+ },
  "obj-magnet": {
   "author": "Maciej J. Mrowinski",
   "credit": "Own work",
@@ -1529,6 +1835,15 @@
   "licenseUrl": "http://creativecommons.org/licenses/by-sa/3.0/",
   "source": "https://commons.wikimedia.org/wiki/File:Mag_glass_request.jpg"
  },
+ "obj-mailbox": {
+  "author": "Bo Andersson",
+  "credit": "Postmuseum",
+  "file": "File:Brevlåda svart 2.jpg",
+  "group": "objects",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "source": "https://commons.wikimedia.org/wiki/File:Brevl%C3%A5da_svart_2.jpg"
+ },
  "obj-map": {
   "author": "Gerard van Schagen",
   "credit": "This image is made up of six separate images downloaded from Helmink.com and stitched together.",
@@ -1537,6 +1852,24 @@
   "license": "Public domain",
   "licenseUrl": "",
   "source": "https://commons.wikimedia.org/wiki/File:World_Map_1689.JPG"
+ },
+ "obj-medal": {
+  "author": "Christophe95",
+  "credit": "Own work",
+  "file": "File:1964_Winter_Olympics_medals.JPG",
+  "group": "objects",
+  "license": "CC BY-SA 3.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:1964_Winter_Olympics_medals.JPG"
+ },
+ "obj-melon": {
+  "author": "USDA photo by Scott Bauer. Image Number K7355-11.",
+  "credit": "http://www.ars.usda.gov/is/graphics/photos/k7388-11.htm",
+  "file": "File:Cucumis melo var. reticulatus (photo by Scott Bauer).jpg",
+  "group": "objects",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "source": "https://commons.wikimedia.org/wiki/File:Cucumis_melo_var._reticulatus_(photo_by_Scott_Bauer).jpg"
  },
  "obj-microphone": {
   "author": "Holger.Ellgaard",
@@ -1592,6 +1925,15 @@
   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Ubud_Monkey_Family.jpg"
  },
+ "obj-moped": {
+  "author": "Fons Heijnsbroek",
+  "credit": "Own work",
+  "file": "File:2023, Amsterdam close-up photo - outdoor still life of a moped parked on the sidewalk in front of a brick house wall with light reflections in the wind screen; free download street photography by Fons Heijnsbroek, CCO.jpg",
+  "group": "objects",
+  "license": "CC0",
+  "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+  "source": "https://commons.wikimedia.org/wiki/File:2023,_Amsterdam_close-up_photo_-_outdoor_still_life_of_a_moped_parked_on_the_sidewalk_in_front_of_a_brick_house_wall_with_light_reflections_in_the_wind_screen;_free_download_street_photography_by_Fons_Heijnsbroek,_CCO.jpg"
+ },
  "obj-motorcycle": {
   "author": "Devanand.j",
   "credit": "Own work",
@@ -1619,6 +1961,33 @@
   "licenseUrl": "",
   "source": "https://commons.wikimedia.org/wiki/File:Mouse_white_background.jpg"
  },
+ "obj-needle": {
+  "author": "W.carter",
+  "credit": "Own work",
+  "file": "File:Sewing needle with two threads.jpg",
+  "group": "objects",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Sewing_needle_with_two_threads.jpg"
+ },
+ "obj-newspaper": {
+  "author": "Charles Ransom Miller",
+  "credit": "The New York Times;Version 3 downloaded from https://newspaperarchive.com/new-york-times-nov-11-1918-p-1/",
+  "file": "File:NYTimes-Page1-11-11-1918.jpg",
+  "group": "objects",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "source": "https://commons.wikimedia.org/wiki/File:NYTimes-Page1-11-11-1918.jpg"
+ },
+ "obj-noodles": {
+  "author": "Corn cheese",
+  "credit": "Own work",
+  "file": "File:Chilli ramen noodles.jpg",
+  "group": "objects",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Chilli_ramen_noodles.jpg"
+ },
  "obj-octopus": {
   "author": "albert kok",
   "credit": "Own work",
@@ -1627,6 +1996,15 @@
   "license": "CC BY-SA 3.0",
   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
   "source": "https://commons.wikimedia.org/wiki/File:Octopus2.jpg"
+ },
+ "obj-olive": {
+  "author": "David Monniaux",
+  "credit": "Own work",
+  "file": "File:Olives au marche de Toulon p1040238.jpg",
+  "group": "objects",
+  "license": "CC BY-SA 3.0",
+  "licenseUrl": "http://creativecommons.org/licenses/by-sa/3.0/",
+  "source": "https://commons.wikimedia.org/wiki/File:Olives_au_marche_de_Toulon_p1040238.jpg"
  },
  "obj-onion": {
   "author": "Colin",
@@ -1645,6 +2023,24 @@
   "license": "CC BY-SA 4.0",
   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Oranges_-_whole-halved-segment.jpg"
+ },
+ "obj-padlock": {
+  "author": "Trougnouf",
+  "credit": "Own work",
+  "file": "File:Solex 99 30 padlock with keys (DSCF2659).jpg",
+  "group": "objects",
+  "license": "CC BY 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Solex_99_30_padlock_with_keys_(DSCF2659).jpg"
+ },
+ "obj-paintbrush": {
+  "author": "Krestavilis at English Wikipedia",
+  "credit": "Transferred from en.wikipedia to Commons. Transfer was stated to be made by User:Storkk.",
+  "file": "File:Paintbrushes.jpg",
+  "group": "objects",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "source": "https://commons.wikimedia.org/wiki/File:Paintbrushes.jpg"
  },
  "obj-pancakes": {
   "author": "Mae Mu",

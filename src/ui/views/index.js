@@ -7,6 +7,7 @@ import { solarView, rocketView, dayNightView, moonView, starsView, orbitView } f
 import { bodyView, storiesView, wonderView, drawView } from './misc.js';
 import { continentsView, swedenView, galleryView } from './world.js';
 import { playView } from './play.js';
+import { socialStoriesView, bodyMapView, calmToolsView, moveBreakView } from './feelings.js';
 import { SPACE_PHOTOS } from '../../apps/space.js';
 
 const spaceGalleryView = (el, ctx) => galleryView(el, { ...ctx, items: SPACE_PHOTOS, title: 'Riktiga bilder från rymden' });
@@ -38,4 +39,8 @@ export const VIEWS = {
   sweden: swedenView,
   gallery: spaceGalleryView,
   play: playView,
+  socialStories: socialStoriesView,
+  bodyMap: bodyMapView,
+  calmTools: calmToolsView,
+  moveBreak: moveBreakView,
 };

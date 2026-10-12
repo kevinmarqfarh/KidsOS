@@ -11,6 +11,7 @@ import { exportBackup, importBackup, wipeAll, deleteDrawingsFor, isPersistent } 
 import { hasSwedishVoice } from '../core/speech.js';
 import { TROPHIES } from '../core/trophies.js';
 import { INTERESTS, REWARDS, ADAPTED_QUESTION_CHOICES, ADAPTED_OPTION_CHOICES, SUPPORT_LEVELS, adaptedPrefs, presetFor, supportFor } from '../core/adapted.js';
+import { adaptedParentRows } from './adapted-parent.js';
 
 export function renderSettings(el, { parentGate, profileWizard, showLock, goHome, modal, refresh }) {
   const p = kos.profile;
@@ -143,6 +144,7 @@ export function renderSettings(el, { parentGate, profileWizard, showLock, goHome
           h('div.set-row', h('span', 'Favoritintresse (polletter och tema)'), seg(INTERESTS.map((i) => [i.id, `${i.icon} ${i.label}`]), ap.interest, (v) => save({ interest: v }))),
           h('div.set-row', h('span', 'Belöning efter passet'), seg(REWARDS.map((r) => [r.id, `${r.icon} ${r.label}`]), ap.reward, (v) => save({ reward: v }))),
           h('p.muted.adapted-note', 'Uppläsningen styrs under Uppläsning ovan. Skärmtid per dag ställs in under Tid.'),
+          ...adaptedParentRows(kp, { ap, save, sub, seg, toggle, render }), // runda 2: dagens plan, övergångar, logg
         ]
       : [];
     return h(

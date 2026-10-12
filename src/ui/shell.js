@@ -15,6 +15,7 @@ import { createDesktop } from './desktop.js';
 import { layoutFor } from '../core/model.js';
 import { tickerSpan } from './fx.js';
 import { INTERESTS, adaptedPrefs as readAdaptedPrefs, presetFor as adaptedPreset } from '../core/adapted.js';
+import { installAdapted, adaptedHomeSection, adaptedTimeChip, adaptedLimit } from './adapted-home.js';
 /** Autismstöd: det som ändras när föräldern anger om barnet också har IF (svarsalternativ och felhantering). */
 const adaptedIfPatch = (support, intellectual) => { const pr = adaptedPreset(support, intellectual); return { intellectual: pr.intellectual, options: pr.options, errorMode: pr.errorMode }; };
 
@@ -37,6 +38,7 @@ export function mountShell(root) {
   clear(root).appendChild(osEl);
   Object.assign(shellApi, { parentGate, profileWizard, showLock, goHome, modal, confirmSwitch });
   desktop = createDesktop(deskEl, { osEl, confirmSwitch, showLock, modal });
+  installAdapted({ goHome, openApp, closeWindow, showLock, parentGate }); // Autismstöd: dagens plan, förvarning, avslutning
   kos.on('stars', renderStatus);
   kos.on('tick', renderStatus);
   kos.on('limit', showLimit);
@@ -68,7 +70,7 @@ function renderStatus() {
     h('span.sb-time', time),
     h(
       'span.sb-right',
-      Number.isFinite(left) ? h('span.sb-chip.sb-timeleft', { title: 'Tid kvar i dag' }, `⏳ ${Math.ceil(left)} min`) : null,
+      kos.adapted ? adaptedTimeChip(p) : Number.isFinite(left) ? h('span.sb-chip.sb-timeleft', { title: 'Tid kvar i dag' }, `⏳ ${Math.ceil(left)} min`) : null,
       p.streak?.count > 1 ? h('span.sb-chip', { title: 'Dagar i rad' }, `🔥 ${p.streak.count}`) : null,
       h('span.sb-chip.sb-stars', { title: 'Stjärnor' }, '⭐ ', tickerSpan(`sb-stars:${p.id}`, p.stars)),
     ),
@@ -317,6 +319,7 @@ export function goHome() {
         h('button.wallet-chip', { type: 'button', onClick: () => openApp('play') }, h('span', '🪙'), h('b', tickerSpan(`home-coins:${p.id}`, p.coins || 0)), h('small', 'mynt')),
         h('div.rank', h('span.rank-emoji', rank.emoji), h('div.rank-text', h('b', rank.title), h('span.rank-bar', h('i', { style: { width: `${Math.round(rank.progress * 100)}%` } })), h('small', rank.next ? `${rank.toNext} ⭐ till ${rank.next.title}` : 'Högsta titeln!'))),
       ),
+      kos.adapted ? adaptedHomeSection() : null,
       h('div.home-cards', wonderCard, trophyCard),
       grid,
       dock,
@@ -495,6 +498,7 @@ export function parentGate(onOk) {
 
 /* ---------------- Skärmtid ---------------- */
 function showLimit() {
+  if (kos.adapted) return adaptedLimit(); // Autismstöd: gör klart passet, sen lugn avslutning (adapted-home.js)
   if (document.querySelector('.limit-screen')) return;
   closeWindow(true);
   kos.paused = true;
