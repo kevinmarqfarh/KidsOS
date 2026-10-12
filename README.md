@@ -129,12 +129,19 @@ Privat familjeprojekt.
 
 ### Fotografier i lärmaterialet
 
-Artkort, djursortering, näringskedjor och solsystemets faktakort använder lokalt
-inbäddade referensfotografier där de finns i bildkatalogen. Övriga motiv behåller
-sina illustrationer. Fotografierna fungerar utan nätverk och visas utan beskärning.
-Källor och licenser finns i appens samlingar och i [bildförteckningen](docs/photo-credits.md).
-Efter ändringar av bilderna eller `src/assets/photos/credits.json`, kör
-`node scripts/embed-photos.mjs` före bygget.
+Alla foton kommer från Wikimedia Commons (fria licenser) och bäddas in i den fristående
+HTML-filen så att de fungerar utan nätverk. Ett enda system:
+
+1. `assets/image-catalog.json` – nyckel → `File:…` (eller `sv:Artikel`). Gruppen `objects` är
+   föremål/djur/mat som ersätter emoji i frågor (`src/core/emoji-photos.js`).
+2. `python3 scripts/fetch_images.py [--group=objects] [nyckel …]` hämtar, kontrollerar licensen och
+   sparar WebP i `assets/img/` samt upphov i `assets/credits.json`.
+3. `node scripts/gen-images.mjs` (körs av `test:unit`/bygget) skriver `src/generated/images.js` och
+   `docs/BILDKALLOR.md`.
+4. I koden: `photo`, `hasPhoto`, `pic`, `photoize` från `src/ui/img.js`. `src/ui/photos.js` är ett
+   tunt kompatibilitetslager.
+
+Källor och licenser visas under Inställningar → Om bilderna och i [BILDKALLOR.md](docs/BILDKALLOR.md).
 
 ### AI och Kodning
 

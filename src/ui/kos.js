@@ -10,6 +10,7 @@ import { speak, stopSpeaking, setSpeechRate, setSpeechEnabled, initSpeech } from
 import { sfx, setSoundEnabled, unlockAudio } from '../core/sound.js';
 import { isPreReader, LEVELS } from '../core/age.js';
 import { h, reducedMotion } from './dom.js';
+import { isAdapted, adaptedPrefs, adaptedSfx } from '../core/adapted.js';
 import { activityPaused, setActivityPaused } from '../core/activity.js';
 
 const listeners = new Map();
@@ -76,6 +77,27 @@ export const kos = {
     if (p?.settings.readAloud === 'manual') stopSpeaking();
     if (p) document.documentElement.style.setProperty('--me', p.color);
     document.documentElement.dataset.ageband = p ? ageBand(p.age) : 'mid';
+    // Anpassat läge: lugnare färger, färre animationer och fokus-hjälp (styles/apps/adapted.css).
+    const root = document.documentElement.dataset;
+    if (p && isAdapted(p)) {
+      const ap = adaptedPrefs(p);
+      root.adapted = 'on';
+      root.adaptedFocus = ap.focus ? 'on' : 'off';
+      root.adaptedCalm = ap.calm ? 'on' : 'off'; // dämpade färger (valbart)
+      root.adaptedMotion = ap.motion ? 'on' : 'off'; // mjuka animationer eller inga alls
+      root.adaptedStreak = ap.hideStreak ? 'hide' : 'show'; // ingen "dagar i rad"-stress
+      root.interest = ap.interest;
+    } else {
+      for (const k of ['adapted', 'adaptedFocus', 'adaptedCalm', 'adaptedMotion', 'adaptedStreak', 'interest']) delete root[k];
+    }
+  },
+
+  /** Är anpassat läge på för den aktiva profilen? */
+  get adapted() {
+    return isAdapted(this.profile);
+  },
+  adaptedPrefs() {
+    return adaptedPrefs(this.profile);
   },
 
   on(evt, fn) {
@@ -134,6 +156,7 @@ export const kos = {
     if (!p) return false;
     if (p.settings.readAloud === 'on') return true;
     if (p.settings.readAloud === 'off') return false;
+    if (isAdapted(p)) return true; // anpassat läge: uppläsning alltid på
     if (p.settings.readAloud === 'manual') return false;
     return isPreReader(p.age) || p.age <= 7;
   },
@@ -154,6 +177,8 @@ export const kos = {
   stopSpeaking,
   sfx(name) {
     if (this.paused) return;
+    if (this.adapted) name = adaptedSfx(name, this.adaptedPrefs());
+    if (!name) return;
     try {
       sfx[name]?.();
     } catch {}
@@ -178,7 +203,7 @@ export const kos = {
       this.emit('stars', p.stars);
       this.emit('coins', p.coins);
     }
-    if (change === 'up' && !p.settings.steadyRounds && !p.settings.quietFeedback) {
+    if (change === 'up' && !this.adapted && !p.settings.steadyRounds && !p.settings.quietFeedback) {
       this.toast(`<b>Nivå upp!</b> ${LEVELS[appStat(p, appId).level].emoji} Du är redo för lite svårare uppgifter.`, { icon: '🚀' });
       this.sfx('fanfare');
     }
@@ -228,6 +253,7 @@ export const kos = {
     const p = this.profile;
     if (!p) return [];
     const won = awardTrophies(p);
+    if (this.adapted) silent = true; // anpassat läge: inga överraskningspopups
     // Varje ny trofé ger också fem mynt till Lekstaden.
     if (won.length) {
       addCoins(p, won.length * 5);
@@ -253,14 +279,16 @@ export const kos = {
     }, ms);
   },
   trophyToast(t) {
-    if (this.profile?.settings.quietFeedback) return;
+    if (this.adapted || this.profile?.settings.quietFeedback) return;
     this.sfx('trophy');
     this.toast(`<small>Ny trofé! +5 🪙</small><b>${t.name}</b>`, { icon: t.icon, ms: 3600 });
     this.autoSay(`Ny trofé! ${t.name}`, { interrupt: false });
     this.confetti(60);
   },
   flyStar(n = 1) {
-    if (this.paused || this.profile?.settings.celebrationEffects === false || reducedMotion()) return;
+    if (this.paused || this.profile?.settings.celebrationEffects === false) return;
+    if (this.adapted) return this.sfx('star');
+    if (reducedMotion()) return;
     const layer = this.overlayRoot || document.body;
     const target = [...document.querySelectorAll('.tb-stars, .sb-stars')].find((n) => n.offsetParent !== null);
     const tr = target?.getBoundingClientRect();
@@ -278,7 +306,7 @@ export const kos = {
     this.sfx('star');
   },
   confetti(count = 120) {
-    if (this.paused || this.profile?.settings.celebrationEffects === false || reducedMotion()) return;
+    if (this.paused || this.adapted || this.profile?.settings.celebrationEffects === false || reducedMotion()) return; // anpassat läge: ingen konfetti-storm
     const layer = this.overlayRoot || document.body;
     const c = h('canvas.confetti');
     layer.appendChild(c);

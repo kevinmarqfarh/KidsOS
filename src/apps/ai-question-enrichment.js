@@ -1,6 +1,27 @@
 // Nya konkreta introduktionsfall, med egenförfattade svar och förklaringar.
-const a=(prompt,answer,x,y,explain)=>[0,prompt,answer,[x,y],'Titta på vad som händer i just den här situationen.',explain];
+const a=(prompt,answer,x,y,explain)=>[0,prompt,answer,[x,y],'Titta på vad som händer i just den här situationen.',explain,['💬','💬','💬']];
 export const EXTRA_AI_SCENARIOS={
+ everyday:[
+  a('En telefon föreslår nästa ord. Vad är det?','Ett förslag från programmet','En order','Någon som läser dina tankar','Du väljer själv om du vill använda ordet som föreslås.'),
+  a('En talapp skriver fel namn. Vad kan du göra?','Rätta texten','Tro att ditt namn har ändrats','Sluta använda ditt namn','Taligenkänning kan göra fel. En människa behöver kontrollera texten.'),
+  a('En musikapp föreslår en sång. Måste du lyssna?','Nej, du väljer','Ja, alltid','Bara om telefonen är stor','En rekommendation är ett förslag, inte något du måste följa.'),
+  a('En översättningsapp ger ett konstigt ord. Vem kan hjälpa?','En vuxen som kan språket','Telefonens laddare','Ingen kan kontrollera','Översättningar kan behöva granskas av någon som förstår språket.'),
+  a('En timer ringer efter en minut. Är den alltid AI?','Nej, den kan följa en enkel regel','Ja, allt som låter är AI','Ja, alla klockor tänker','Vanliga program kan följa bestämda regler utan att använda AI.'),
+ ],
+ feelings:[
+  a('Du saknar en vän. Vem kan vara en riktig vän?','En människa','En rad text','En laddare','Relationer till människor bygger på att dela upplevelser och bry sig om varandra.'),
+  a('En chatt skriver att den är ledsen. Har programmet känslor?','Nej, det kan skapa sådana ord','Ja, precis som du','Ja, om skärmen är blå','AI kan skapa ord om känslor utan att uppleva känslorna.'),
+  a('Du blir orolig av ett svar. Vad kan du göra?','Prata med en vuxen du litar på','Hålla det hemligt','Låta programmet bestämma','Människor du litar på kan lyssna och hjälpa dig när något känns svårt.'),
+  a('Datorn säger hej. Vad kommer hälsningen från?','Ett program','En liten person i skärmen','Ett djur i sladden','Ett vänligt språk gör inte datorprogrammet till en människa.'),
+  a('En app vill att du ska fortsätta när du vill vila. Vad får du göra?','Ta en paus','Aldrig sluta','Fråga laddaren om lov','Du och dina vuxna bestämmer över din tid. Du får ta en paus.'),
+ ],
+ create:[
+  a('AI föreslår en sagotitel. Vem får ändra den?','Du','Bara datorn','Ingen','Förslag kan ändras. Du kan använda ditt eget tänkande och dina idéer.'),
+  a('En AI-bild har ett konstigt öga. Vad kan du göra?','Granska och ändra din idé','Låtsas att alla ögon ser så ut','Tro att bilden bevisar något','Skapade bilder kan innehålla fel. Människor behöver titta på resultatet.'),
+  a('Du vill ha en idé till en teckning. Vad kan du göra sedan?','Rita och välja själv','Låta datorn bestämma allt','Sluta ha egna idéer','Ett förslag kan vara en början. Du utvecklar bilden med dina egna val.'),
+  a('AI föreslår något du inte tycker om. Får du säga nej?','Ja','Nej','Bara om skärmen är av','Du behöver inte följa ett förslag som inte passar dig.'),
+  a('Du har fått hjälp med en bildidé. Vad kan du berätta?','Hur idén kom till','Att du aldrig fick hjälp','Att datorn är konstnären i din kropp','Att berätta om hjälpen gör det tydligare hur du skapade ditt arbete.'),
+ ],
  meaning:[
   a('En bildapp föreslår ett djurnamn. Vad är förslaget?','Programmets bedömning','Ett löfte att alltid ha rätt','Djurets egna ord','Bildigenkänning kan ge förslag som människor behöver kontrollera.'),
   a('AI skapar en saga. Vad har du fått?','En skapad text','Ett bevis på att sagan har hänt','En riktig resa genom skärmen','Skapad text behöver inte beskriva verkliga händelser.'),

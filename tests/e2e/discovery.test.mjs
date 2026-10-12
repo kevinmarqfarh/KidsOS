@@ -2,6 +2,8 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { existsSync } from 'node:fs';
 import { chromium } from 'playwright-core';
+import { tmpdir } from 'node:os';
+const tmpShot = (name) => `${tmpdir()}/${name}`;
 const executablePath = [process.env.CHROME_PATH, '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', '/usr/bin/chromium'].filter(Boolean).find(existsSync);
 
 test('profile layout choices persist, lessons navigate to practice, columns fit mobile', async () => {
@@ -34,16 +36,16 @@ test('profile layout choices persist, lessons navigate to practice, columns fit 
       await page.locator('.course-practice').click();
       assert.equal(await page.locator('.course').count(), 0);
     }
-    await page.evaluate(() => window.kidsos.openApp('math', 'column'));
+    await page.evaluate(() => window.kidsos.openApp('math', 'column-notes'));
     await page.waitForTimeout(500);
     await page.locator('.column-note').last().fill('1');
     assert.equal(await page.locator('.column-note').last().inputValue(), '1');
     const overflow = await page.locator('.column-work').evaluate(el => { const r=el.getBoundingClientRect(); return r.right > innerWidth + 1 || r.left < -1; });
-    await page.screenshot({ path: '/private/tmp/kids-column-mobile.png' });
+    await page.screenshot({ path: tmpShot('kids-column-mobile.png') });
     assert.equal(overflow, false, await page.locator('.column-work').evaluate(el => JSON.stringify({left:el.getBoundingClientRect().left,right:el.getBoundingClientRect().right,width:innerWidth})));
     await page.setViewportSize({ width: 1280, height: 900 });
     await page.evaluate(() => window.kidsos.openApp('science', 'discover-course'));
-    await page.screenshot({ path: '/private/tmp/kids-course-wide.png' });
+    await page.screenshot({ path: tmpShot('kids-course-wide.png') });
     assert.deepEqual(errors, []);
   } finally { await browser.close(); }
 });

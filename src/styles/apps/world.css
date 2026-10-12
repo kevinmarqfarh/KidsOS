@@ -1,0 +1,225 @@
+/* Extra stilar för world (Världen): hav på världskartan, små Sverigekartor i frågor, pengar och röstning. */
+
+/* ----- Världskartan: tryckbara hav ----- */
+.world-svg .ocean {
+  fill: rgba(255, 255, 255, 0.16);
+  stroke: rgba(255, 255, 255, 0.75);
+  stroke-width: 0.8;
+  stroke-dasharray: 3 2.5;
+  cursor: pointer;
+  transition: fill 0.2s;
+}
+.world-svg .ocean.hl {
+  fill: rgba(255, 255, 255, 0.5);
+  animation: breathe 1s infinite;
+  transform-origin: center;
+  transform-box: fill-box;
+}
+.world-svg .ocean-name {
+  font-family: var(--font-display);
+  font-size: 7px;
+  font-weight: 800;
+  fill: #0b3d63;
+  paint-order: stroke;
+  stroke: rgba(255, 255, 255, 0.8);
+  stroke-width: 1.6px;
+}
+.world-svg .hit-right,
+.world-svg .hit-wrong {
+  stroke-width: 1.6;
+}
+.q-visual .world-svg {
+  max-width: 720px;
+}
+
+/* ----- Världsdelskortet: djur och platser utan foto ----- */
+.world-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+.world-chip {
+  background: var(--paper-2);
+  border-radius: 999px;
+  padding: 6px 12px;
+  font-weight: 700;
+  font-size: 15px;
+}
+
+/* ----- Sverigekartan (vyn) ----- */
+.sweden-map {
+  width: min(100%, 320px);
+}
+.sweden-map .map-img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.city-pin.label-left .city-name {
+  left: auto;
+  right: 34px;
+}
+
+/* ----- Liten Sverigekarta i frågor ----- */
+.smap {
+  position: relative;
+  width: min(46vw, 190px);
+  margin: 0 auto;
+  border-radius: 14px;
+  overflow: hidden;
+  background: #bfe3f7;
+  box-shadow: var(--shadow);
+}
+.smap .smap-img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.smap-n {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 13px;
+  background: var(--card);
+  border-radius: 8px;
+  padding: 1px 6px;
+}
+.smap-pin {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+.smap-pin i {
+  display: block;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #ef4444;
+  border: 3px solid #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
+}
+.smap-pin.alt i {
+  background: #2563eb;
+}
+.smap-pin b {
+  position: absolute;
+  top: -2px;
+  left: 16px;
+  white-space: nowrap;
+  font-family: var(--font-display);
+  font-size: 13px;
+  color: #1f2a44;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 6px;
+  padding: 0 4px;
+}
+
+/* ----- Flaggor ----- */
+.pic.flag,
+.pic-big.flag {
+  font-family: 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', sans-serif;
+}
+
+/* ----- Pengar ----- */
+.money-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  max-width: 560px;
+  margin: 0 auto;
+}
+.wcoin {
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  font-family: var(--font-display);
+  font-weight: 800;
+  color: #4a3a12;
+  background: radial-gradient(circle at 35% 30%, #fff6c9, #e2b93b 60%, #b88a18);
+  box-shadow: inset 0 0 0 3px rgba(120, 90, 20, 0.35), 0 3px 6px rgba(0, 0, 0, 0.18);
+}
+.wcoin.c1 {
+  width: 50px;
+  height: 50px;
+  font-size: 20px;
+  color: #3c3f45;
+  background: radial-gradient(circle at 35% 30%, #ffffff, #c4c8cf 60%, #8c939e);
+  box-shadow: inset 0 0 0 3px rgba(80, 85, 95, 0.35), 0 3px 6px rgba(0, 0, 0, 0.18);
+}
+.wcoin.c2 {
+  width: 56px;
+  height: 56px;
+  font-size: 22px;
+}
+.wcoin.c5 {
+  width: 62px;
+  height: 62px;
+  font-size: 24px;
+}
+.wcoin.c10 {
+  width: 54px;
+  height: 54px;
+  font-size: 22px;
+}
+.wnote {
+  display: grid;
+  place-items: center;
+  min-width: 96px;
+  height: 52px;
+  padding: 0 10px;
+  border-radius: 8px;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 20px;
+  color: #1f2a44;
+  border: 2px solid rgba(31, 42, 68, 0.25);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+}
+.wnote.n20 { background: #e9d5ff; }
+.wnote.n50 { background: #fde68a; }
+.wnote.n100 { background: #bfdbfe; }
+.wnote.n200 { background: #bbf7d0; }
+.wnote.n500 { background: #fecaca; }
+.shop-q {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+}
+.price-tag {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 24px;
+  background: #fff7d6;
+  border: 2px dashed #e0a800;
+  border-radius: 10px;
+  padding: 4px 12px;
+}
+
+/* ----- Röstning ----- */
+.votes {
+  display: grid;
+  gap: 8px;
+  max-width: 520px;
+  margin: 0 auto;
+}
+.vrow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--card);
+  border-radius: 14px;
+  padding: 4px 12px;
+  box-shadow: var(--shadow);
+}
+.vrow .hands {
+  font-size: 28px;
+  letter-spacing: 2px;
+  word-break: break-all;
+}

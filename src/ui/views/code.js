@@ -1,10 +1,10 @@
 // Programmering: Robotbanan och Rita med kod (sköldpadda).
 import { h, clear, onTap, wait } from '../dom.js';
-import { ROBOT_LEVELS, parseLevel, runProgram, blockCount, CMD_INFO, TURTLE_CHALLENGES, turtleSegments, shapeSignature, parseProgram, DIRS } from '../../apps/code.js';
+import { migrateCodeProfile, ROBOT_LEVELS, ROBOT_STAGES, parseLevel, runProgram, blockCount, CMD_INFO, TURTLE_CHALLENGES, turtleSegments, shapeSignature, parseProgram, DIRS } from '../../apps/code.js';
 import { hasInSet, setSize } from '../../core/model.js';
 
 /* ---------- Gemensam blockredigerare ---------- */
-function programEditor({ cmds, loops, maxBlocks, onChange }) {
+function programEditor({ cmds, loops, maxBlocks, onChange, cycle = false }) {
   const program = [];
   let target = program; // lista där nya block hamnar
   let uid = 0;
@@ -46,8 +46,12 @@ function programEditor({ cmds, loops, maxBlocks, onChange }) {
           parentEl.appendChild(loopEl);
         } else {
           const el = h('button.prog-block', { type: 'button', dataset: { ref: b.ref }, 'aria-label': CMD_INFO[b.cmd].name }, CMD_INFO[b.cmd].label, h('span.blk-x', '×'));
-          onTap(el, () => {
-            list.splice(i, 1);
+          onTap(el, (e) => {
+            // I buggläget byter ett tryck på blocket riktning; krysset tar bort.
+            if (cycle && !e?.target?.closest?.('.blk-x')) {
+              b.cmd = cmds[(cmds.indexOf(b.cmd) + 1) % cmds.length];
+              navigator.vibrate?.(8);
+            } else list.splice(i, 1);
             render();
           });
           parentEl.appendChild(el);
@@ -90,12 +94,22 @@ function programEditor({ cmds, loops, maxBlocks, onChange }) {
     exitLoop.hidden = true;
     render();
   });
+  if (cycle) strip.classList.add('bugmode');
   render();
   return {
     el: h('div.prog-editor', h('div.prog-head', h('b', 'Mitt program'), counter, exitLoop), strip, palette),
     program,
     clear() {
       program.length = 0;
+      target = program;
+      exitLoop.hidden = true;
+      render();
+    },
+    /** Lägger in ett färdigt program (används för buggbanor). */
+    load(prog) {
+      program.length = 0;
+      const withRefs = (list) => list.map((p) => (p.cmd === 'loop' ? { cmd: 'loop', n: p.n, body: withRefs(p.body), ref: `b${uid++}` } : { cmd: p.cmd, ref: `b${uid++}` }));
+      program.push(...withRefs(prog));
       target = program;
       exitLoop.hidden = true;
       render();
@@ -125,15 +139,25 @@ export function robotView(el, { kos, app, level }) {
   const p = kos.profile;
   let running = false;
   let alive = true;
+  if (migrateCodeProfile(p)) kos.save();
+
+  // Barnets nivå (0–4) låser upp motsvarande steg direkt, så att en 9-åring slipper nöta de enklaste banorna.
+  const openStage = Math.max(0, (level ?? 0) - 1);
 
   function showMenu() {
     clear(el);
     const done = setSize(p, 'robotLevels');
     const grid = h('div.level-grid');
+    let lastStage = -1;
     ROBOT_LEVELS.forEach((L, i) => {
+      if (L.stage !== lastStage) {
+        lastStage = L.stage;
+        const st = ROBOT_STAGES.find((x) => x.stage === L.stage);
+        if (st) grid.appendChild(h('h4.stage-head', `${st.icon} ${st.name}`, h('small', st.desc)));
+      }
       const isDone = hasInSet(p, 'robotLevels', L.id);
-      const open = L.id <= done + 2 || isDone || p.settings.showAllModules;
-      const chapter = L.loops ? '🔁' : L.mode === 'rel' ? '↷' : '➡️';
+      const open = L.id <= done + 2 || isDone || (L.stage ?? 0) <= openStage || p.settings.showAllModules;
+      const chapter = L.bug ? '🐞' : L.loops ? '🔁' : L.mode === 'rel' ? '↷' : '➡️';
       const b = h('button.level-btn', { type: 'button', class: `${isDone ? 'done' : ''} ${open ? '' : 'locked'}`, style: { '--i': i } }, h('span.lv-n', String(L.id)), h('span.lv-ch', chapter), h('span.lv-t', L.title), isDone ? h('span.lv-ok', '✓') : open ? null : h('span.lv-lock', '🔒'));
       onTap(b, () => {
         if (!open) {
@@ -147,7 +171,7 @@ export function robotView(el, { kos, app, level }) {
     el.append(
       h(
         'div.robot-menu',
-        h('div.chapter-legend', h('span', '➡️ Pilar'), h('span', '↷ Sväng & kör'), h('span', '🔁 Loopar')),
+        h('div.chapter-legend', h('span', '➡️ Pilar'), h('span', '↷ Sväng & kör'), h('span', '🔁 Loopar'), h('span', '🐞 Hitta buggen')),
         h('p.muted', `${done} av ${ROBOT_LEVELS.length} banor klara. Ett program är instruktioner i rätt ordning – precis som ett recept.`),
         grid,
       ),
@@ -175,10 +199,12 @@ export function robotView(el, { kos, app, level }) {
     place(parsed.start.x, parsed.start.y, parsed.dir);
 
     const cmds = L.mode === 'rel' ? ['F', 'V', 'H'] : ['U', 'R', 'D', 'L'];
-    const editor = programEditor({ cmds, loops: !!L.loops, maxBlocks: L.maxBlocks });
+    const editor = programEditor({ cmds, loops: !!L.loops, maxBlocks: L.maxBlocks, cycle: !!L.bug });
+    const loadBug = () => L.bug && editor.load(parseProgram(L.bug));
+    loadBug();
     const status = h('div.robot-status', { 'aria-live': 'polite' });
     const runBtn = h('button.btn.btn-primary.btn-run', { type: 'button' }, '▶ Kör');
-    const resetBtn = h('button.btn.btn-ghost', { type: 'button' }, '↺ Rensa');
+    const resetBtn = h('button.btn.btn-ghost', { type: 'button' }, L.bug ? '↺ Börja om' : '↺ Rensa');
     const menuBtn = h('button.btn.btn-ghost', { type: 'button' }, '☰ Banor');
     const teach = h('div.teach', h('span.teach-icon', '💡'), h('span', L.teach));
     const speak = onTap(h('button.icon-btn', { type: 'button', 'aria-label': 'läs upp' }, '🔊'), () => kos.read(L.teach));
@@ -196,6 +222,7 @@ export function robotView(el, { kos, app, level }) {
     onTap(resetBtn, () => {
       if (running) return;
       editor.clear();
+      loadBug();
       place(parsed.start.x, parsed.start.y, parsed.dir);
       board.querySelectorAll('.rb-cell.star').forEach((c) => (c.textContent = '⭐'));
       status.textContent = '';
@@ -244,11 +271,12 @@ export function robotView(el, { kos, app, level }) {
         const usesLoop = editor.program.some((b) => b.cmd === 'loop');
         kos.reward({ app: app.id, stars: first ? 3 : 1, set: 'robotLevels', item: L.id });
         if (usesLoop) kos.reward({ counter: 'loopWins', silent: true });
+        if (L.bug && first) kos.reward({ counter: 'bugFixes', silent: true });
         kos.sfx('fanfare');
         kos.confetti(90);
         status.className = 'robot-status ok';
-        status.textContent = `🎉 Det fungerade! Programmet hade ${blockCount(editor.program)} block.`;
-        kos.say('Det fungerade! Bra programmerat!');
+        status.textContent = L.bug ? '🐞 Buggen är fixad! Nu fungerar programmet.' : `🎉 Det fungerade! Programmet hade ${blockCount(editor.program)} block.`;
+        kos.say(L.bug ? 'Buggen är fixad! Bra debuggat!' : 'Det fungerade! Bra programmerat!');
         const nextL = ROBOT_LEVELS.find((x) => x.id === L.id + 1);
         if (nextL) {
           const nb = onTap(h('button.btn.btn-primary', { type: 'button' }, `Nästa bana ➜`), () => play(nextL));

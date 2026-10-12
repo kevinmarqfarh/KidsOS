@@ -1,7 +1,16 @@
 // Koppling till läroplanerna. Citaten är hämtade ur Skolverkets Lgr22
 // (centralt innehåll i årskurs 1–3 resp. förskoleklassen) och Lpfö 18.
 // Se docs/RESEARCH.md för källor.
-export const CURRICULUM = {
+import math from './lgr/math.js';
+import svenska from './lgr/svenska.js';
+import no from './lgr/no.js';
+import space from './lgr/space.js';
+import world from './lgr/world.js';
+import wonder from './lgr/wonder.js';
+import play from './lgr/play.js';
+import platform from './lgr/platform.js';
+
+const BASE = {
   // Matematik åk 1–3
   'ma-tal': { subject: 'Matematik', area: 'Taluppfattning och tals användning', text: 'Naturliga tal och deras egenskaper samt hur talen kan delas upp och användas för att ange antal och ordning.' },
   'ma-pos': { subject: 'Matematik', area: 'Taluppfattning och tals användning', text: 'Hur positionssystemet kan användas för att beskriva naturliga tal.' },
@@ -67,6 +76,8 @@ export const CURRICULUM = {
   'bi-skapa': { subject: 'Bild', area: 'Bildframställning', text: 'Framställning av berättande bilder, till exempel sagobilder och serier. Teckning, måleri, modellering och konstruktion.' },
   'fsk-utforska': { subject: 'Förskoleklass', area: 'Natur, teknik och samhälle', text: 'Olika sätt att utforska företeelser och samband i natur, teknik och samhälle, genom observationer, mätningar och samtal.' },
 };
+
+export const CURRICULUM = { ...BASE, ...math, ...svenska, ...no, ...space, ...world, ...wonder, ...play, ...platform };
 
 export function curriculumFor(ids = []) {
   return ids.map((id) => ({ id, ...CURRICULUM[id] })).filter((c) => c.text);

@@ -4,6 +4,8 @@ import { existsSync } from 'node:fs';
 import { chromium } from 'playwright-core';
 import { APPS } from '../../src/apps/registry.js';
 import { GLYPHS } from '../../src/apps/letters.js';
+import { tmpdir } from 'node:os';
+const tmpShot = (name) => `${tmpdir()}/${name}`;
 const executablePath = [process.env.CHROME_PATH, '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', '/usr/bin/chromium'].filter(Boolean).find(existsSync);
 
 async function setup(viewport) {
@@ -15,18 +17,21 @@ async function setup(viewport) {
   return {browser,page,errors};
 }
 
-test('stylus: repeated upper/lower writing, palm filtering, progressive guides and persistence', {timeout:90000}, async()=>{
+test('stylus: serier om 5 eller 10 för stor och liten bokstav, handflatefilter, avtagande mall och sparat läge', {timeout:120000}, async()=>{
   const {browser,page,errors}=await setup({width:768,height:1024});
   try {
-    const count=ch=>page.evaluate(ch=>window.kidsos.kos.profile.counters[`writing:${ch}`]||0,ch);
-    await page.getByRole('button',{name:'✒️ Endast penna på skrivytan',exact:true}).click();
+    const series=ch=>page.evaluate(ch=>window.kidsos.kos.profile.counters[`writeSeries:pairs:${ch}`]||0,ch);
+    const doneDots=()=>page.locator('.rep-dot.done').count();
+    await page.getByRole('button',{name:'5 gånger',exact:true}).click();
+    await page.getByRole('button',{name:'👀 Spåra',exact:true}).click();
+    await page.getByRole('button',{name:'✒️ Endast penna',exact:true}).click();
     const canvas=page.locator('.trace-ink');
-    // A touch or mouse alone must not produce accepted ink in pen-only mode.
+    // Ett finger eller en mus får inte rita när bara pennan gäller (handflatan vilar på skärmen).
     const rect=await canvas.boundingBox();
     await page.mouse.move(rect.x+rect.width*.5,rect.y+rect.height*.12);await page.mouse.down();
     await page.mouse.move(rect.x+rect.width*.18,rect.y+rect.height*.82);await page.mouse.up();
     await page.getByRole('button',{name:'Klar ✓',exact:true}).click();
-    assert.equal(await count('A'),0);
+    assert.equal(await doneDots(),0);
     const cdp=await page.context().newCDPSession(page);
     async function write(ch) {
       await canvas.scrollIntoViewIfNeeded();
@@ -34,39 +39,34 @@ test('stylus: repeated upper/lower writing, palm filtering, progressive guides a
       for (const stroke of GLYPHS[ch]) {
         const [x,y]=stroke[0];
         await cdp.send('Input.dispatchMouseEvent',{type:'mousePressed',x:r.x+x*r.width,y:r.y+y*r.height,button:'left',clickCount:1,pointerType:'pen'});
+        // en samtidig handflata (touch) ska ignoreras
         await canvas.evaluate(el=>el.dispatchEvent(new PointerEvent('pointerdown',{pointerId:77,pointerType:'touch',clientX:10,clientY:10,bubbles:true})));
         for (const [px,py] of stroke.slice(1)) await cdp.send('Input.dispatchMouseEvent',{type:'mouseMoved',x:r.x+px*r.width,y:r.y+py*r.height,buttons:1,pointerType:'pen'});
         const [ex,ey]=stroke.at(-1);
         await cdp.send('Input.dispatchMouseEvent',{type:'mouseReleased',x:r.x+ex*r.width,y:r.y+ey*r.height,button:'left',clickCount:1,pointerType:'pen'});
       }
-      await page.waitForTimeout(360);
+      await page.waitForTimeout(200);
       await page.getByRole('button',{name:'Klar ✓',exact:true}).click();
-      await page.waitForTimeout(360);
+      await page.waitForTimeout(1150); // kort paus mellan två gånger i en serie
     }
-    for(let i=1;i<=8;i++) {
+    for(let i=1;i<=5;i++) {
       await write('A');
-      if(await count('A')!==i) await page.screenshot({path:'/private/tmp/kids-writing-failure.png'});
-      assert.equal(await count('A'),i,await page.locator('.trace-msg').innerText());
-      assert.equal(await page.locator('.trace-chip').filter({hasText:/^A$/}).getAttribute('class').then(s=>s.includes('done')),i>=8);
-      if(i<8) {
-        await page.getByRole('button',{name:'Skriv igen ➜',exact:true}).click();
-        if(i===3) assert.ok(await page.locator('.tmpl.faded').count()>0);
-        if(i===6) assert.equal(await page.locator('.trace-guide .tmpl').count(),0);
-      }
+      assert.equal(await doneDots(),i,await page.locator('.trace-msg').innerText());
+      // stödet minskar: tydlig mall → prickad → svag
+      if(i===2) assert.ok(await page.locator('.trace-guide .tmpl.dashed').count()>0,'prickad mall efter två gånger');
+      if(i===4) assert.ok(await page.locator('.trace-guide .tmpl.faint').count()>0,'svag mall mot slutet');
     }
+    assert.equal(await series('A'),1);
+    assert.match(await page.locator('.trace-msg').innerText(),/Hela serien klar/);
     await page.getByRole('button',{name:'Nästa bokstav ➜',exact:true}).click();
-    assert.match(await page.locator('.writing-progress').innerText(),/Liten bokstav a: 0 av 8/);
-    await write('a');assert.equal(await count('a'),1);
+    assert.equal(await page.locator('.trace-chip.on').innerText(),'a');
     await page.reload();
     await page.evaluate(()=>window.kidsos.openApp('write','letter-practice'));
-    await page.waitForFunction(()=>document.querySelector('.writing-progress')?.textContent.includes('Liten bokstav a'));
-    assert.match(await page.locator('.writing-progress').innerText(),/Liten bokstav a: 1 av 8/);
-    assert.equal(await page.getByRole('button',{name:'✒️ Endast penna på skrivytan',exact:true}).getAttribute('aria-pressed'),'true');
-    await page.getByRole('combobox',{name:'Skrivningar per bokstavsform'}).selectOption('10');
-    await page.locator('.trace-chip').filter({hasText:/^A$/}).click();
-    assert.match(await page.locator('.writing-progress').innerText(),/8 av 10/);
-    assert.equal(await page.locator('.trace-chip').filter({hasText:/^A$/}).getAttribute('class').then(s=>s.includes('done')),false);
-    await page.screenshot({path:'/private/tmp/kids-writing-practice.png'});
+    await page.waitForSelector('.rep-bar');
+    assert.equal(await page.getByRole('button',{name:'✒️ Endast penna',exact:true}).getAttribute('aria-pressed'),'true');
+    assert.equal(await page.getByRole('button',{name:'5 gånger',exact:true}).getAttribute('aria-pressed'),'true');
+    await page.getByRole('button',{name:'10 gånger',exact:true}).click();
+    assert.equal(await page.locator('.rep-dot').count(),10);
     assert.deepEqual(errors,[]);
   } finally {await browser.close();}
 });
@@ -101,7 +101,7 @@ test('all new activities render and accept answers at every age level on mobile;
     await page.getByRole('button',{name:'Byt uppdrag',exact:true}).click();
     assert.notEqual(await page.locator('.drawing-brief h2').innerText(),title);
     assert.equal(await ink(),before);
-    await page.screenshot({path:'/private/tmp/kids-drawing-mission-mobile.png'});
+    await page.screenshot({path:tmpShot('kids-drawing-mission-mobile.png')});
     assert.deepEqual(errors,[]);
   } finally {await browser.close();}
 });

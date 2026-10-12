@@ -2,11 +2,12 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { APPS } from '../../src/apps/registry.js';
 import { CURRICULUM } from '../../src/core/curriculum.js';
-import { genColumn } from '../../src/apps/math.js';
+import { genColumnNotes as genColumn } from '../../src/apps/math.js';
 import { normalizeProfile, newProfile, layoutFor } from '../../src/core/model.js';
 
 test('every app has accessible discovery lessons linked to real practice and curriculum', () => {
-  for (const app of APPS) {
+  // Känslor & jag är ett stödprogram (autismstöd) utan skolämneslektioner.
+  for (const app of APPS.filter((a) => a.id !== 'feelings')) {
     assert.equal(app.lessons.length, 2);
     assert.equal(app.lessons[0].minLevel, 0);
     assert.ok(app.modules.some(m => m.id === 'discover-course' && m.view === 'course'));

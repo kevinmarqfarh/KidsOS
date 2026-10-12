@@ -1,5 +1,17 @@
 @import "./studio.css";
 @import "./desktop.css";
+@import "./fx.css";
+@import "./apps/math.css";
+@import "./apps/svenska.css";
+@import "./apps/no.css";
+@import "./apps/space.css";
+@import "./apps/world.css";
+@import "./apps/wonder.css";
+@import "./apps/play.css";
+@import "./apps/platform.css";
+@import "./apps/photos.css";
+@import "./apps/adapted.css";
+
 /* KidsOS – touch-först gränssnitt för barn 4–10 år.
    Layout: ett "operativsystem" med statusrad, hemskärm med appikoner och docka,
    och appfönster som växer fram ur ikonen. Allt interaktivt ≥ 56 px (≈1,1 cm på iPad),
@@ -3932,7 +3944,7 @@ html[data-celebration-effects="false"] .sum-trophy {
   animation: none !important;
 }
 .q-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 12px; }
-.q-progress { margin: 0; font-weight: 700; }
+.q-status { margin: 0; font-weight: 700; }
 .q-support-actions { display: flex; gap: 8px; flex-wrap: wrap; }
 .activity-support { display: flex; gap: 8px; flex-wrap: wrap; padding: 12px; }
 .activity-help { padding: 16px; margin: 12px; border: 2px solid var(--line); border-radius: 18px; background: var(--card); }
@@ -4169,3 +4181,7 @@ button, [role="button"], input, select, textarea { scroll-margin-block: 90px; }
 .workshop-gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 130px), 1fr)); gap: 12px; }
 .workshop-gallery img { width: 100%; height: 100px; object-fit: contain; }
 .story-drawing { display: block; max-width: 100%; max-height: 360px; object-fit: contain; border-radius: 20px; background: var(--card); }
+/* Smala skärmar: inga element får skjuta ut i sidled. */
+.trace-top { flex-wrap: wrap; }
+.win-title { overflow: hidden; }
+.win-title > span:last-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }

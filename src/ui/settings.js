@@ -3,12 +3,15 @@ import { wallpaperButton } from './wallpapers.js';
 import { h, clear, onTap } from './dom.js';
 import { kos } from './kos.js';
 import { APPS } from '../apps/registry.js';
-import { AVATARS, WALLPAPERS, LEVELS, profileAgeLabel } from '../core/age.js';
-import { appStat, currentLevel, dateKey, secondsToday } from '../core/model.js';
+import { AVATARS, WALLPAPERS, LEVELS, schoolLabelForAge, profileAgeLabel } from '../core/age.js';
+import { appStat, currentLevel, dateKey, secondsToday, learningSummary, relativeDay } from '../core/model.js';
+import { allCredits, creditLine, photo } from './img.js';
 import { curriculumFor, CURRICULUM } from '../core/curriculum.js';
 import { exportBackup, importBackup, wipeAll, deleteDrawingsFor, isPersistent } from '../core/storage.js';
 import { hasSwedishVoice } from '../core/speech.js';
 import { TROPHIES } from '../core/trophies.js';
+import { INTERESTS, REWARDS, ADAPTED_QUESTION_CHOICES, ADAPTED_OPTION_CHOICES, SUPPORT_LEVELS, adaptedPrefs, presetFor, supportFor } from '../core/adapted.js';
+import { adaptedParentRows } from './adapted-parent.js';
 
 export function renderSettings(el, { parentGate, profileWizard, showLock, goHome, modal, refresh }) {
   const p = kos.profile;
@@ -65,9 +68,9 @@ export function renderSettings(el, { parentGate, profileWizard, showLock, goHome
         })), onTap(h('button.chip-btn', { type: 'button' }, '＋ Ny profil'), () => profileWizard({ onDone: () => render() }))),
       );
       if (kidP) {
-        wrap.append(reportSection(kidP), profileSection(kidP, render), supportSection(kidP, render), levelSection(kidP, render), timeSection(kidP, render), appsSection(kidP, render));
+        wrap.append(learnedSection(kidP), reportSection(kidP), profileSection(kidP, render), supportSection(kidP, render), adaptedSection(kidP, render), levelSection(kidP, render), timeSection(kidP, render), appsSection(kidP, render));
       }
-      wrap.append(globalSection(render), backupSection(), aboutSection());
+      wrap.append(globalSection(render), backupSection(), photoCreditsSection(), aboutSection());
     };
     render();
   }
@@ -106,6 +109,74 @@ export function renderSettings(el, { parentGate, profileWizard, showLock, goHome
           ]),
         ),
       ),
+    );
+  }
+
+  /** Autismstöd (tidigare "Anpassat läge"): förklaring + finjusteringar. Se docs/ANPASSAT-LAGE.md. */
+  function adaptedSection(kp, render) {
+    const ap = adaptedPrefs(kp);
+    const on = kp.settings.adapted === true;
+    const save = (patch) => {
+      kp.settings.adaptedPrefs = { ...ap, ...patch };
+      kos.saveNow();
+      if (kp.id === kos.state.activeId) kos.applySettings();
+      render();
+    };
+    const sub = (text) => h('h4.adapted-sub', text);
+    const lvl = supportFor(ap);
+    const rows = on
+      ? [
+          h('div.set-row', h('span', 'Stödbehov (DSM-5)'), seg(SUPPORT_LEVELS.map((s) => [String(s.id), s.label]), String(ap.support), (v) => save(presetFor(Number(v), ap.intellectual)))),
+          h('p.muted.adapted-note', h('b', `${lvl.label}: ${lvl.title}. `), lvl.hint, ' Att byta nivå ställer in rekommenderade standardval, som du sedan kan ändra.'),
+          h('div.set-row', h('span', 'Intellektuell funktionsnedsättning'), seg([['no', 'Nej'], ['yes', 'Ja']], ap.intellectual ? 'yes' : 'no', (v) => {
+            const pr = presetFor(ap.support, v === 'yes');
+            save({ intellectual: pr.intellectual, options: pr.options, errorMode: pr.errorMode });
+          })),
+          h('p.muted.adapted-note', ap.intellectual ? 'Ja: färre svarsalternativ och felfri inlärning (visa rätt och gör om) som standard.' : 'Nej: uppgifterna följer ålder och nivå precis som vanligt. Läget ändrar strukturen runt uppgifterna, inte svårigheten.'),
+          sub('Struktur och förutsägbarhet'),
+          h('div.set-row', h('span', 'Frågor per pass'), seg(ADAPTED_QUESTION_CHOICES.map((n) => [String(n), String(n)]), String(ap.questions), (v) => save({ questions: Number(v) }))),
+          h('div.set-row', h('span', '”Hur mår du?” före passet'), toggle(ap.checkin, (v) => save({ checkin: v }))),
+          h('div.set-row', h('span', 'Förvarning (”2 kvar”, ”Sista!”)'), toggle(ap.warnings, (v) => save({ warnings: v }))),
+          h('div.set-row', h('span', 'Fokus-hjälp (dimma det som inte behövs just nu)'), toggle(ap.focus, (v) => save({ focus: v }))),
+          sub('Uppgifterna'),
+          h('div.set-row', h('span', 'Svarsalternativ'), seg(ADAPTED_OPTION_CHOICES.map((n) => [String(n), n ? `Högst ${n}` : 'Som vanligt']), String(ap.options), (v) => save({ options: Number(v) }))),
+          h('div.set-row', h('span', 'När det blir fel'), seg([['retry', 'Prova igen (ledtråd)'], ['errorless', 'Visa rätt och gör om']], ap.errorMode, (v) => save({ errorMode: v }))),
+          sub('Sinnen'),
+          h('div.set-row', h('span', 'Ljudeffekter (mjuka)'), toggle(ap.sound, (v) => save({ sound: v }))),
+          h('div.set-row', h('span', 'Animationer (mjuka och långsamma)'), toggle(ap.motion, (v) => save({ motion: v }))),
+          h('div.set-row', h('span', 'Dämpade färger'), toggle(ap.calm, (v) => save({ calm: v }))),
+          h('div.set-row', h('span', 'Dölj ”dagar i rad”'), toggle(ap.hideStreak, (v) => save({ hideStreak: v }))),
+          sub('Motivation'),
+          h('div.set-row', h('span', 'Favoritintresse (polletter och tema)'), seg(INTERESTS.map((i) => [i.id, `${i.icon} ${i.label}`]), ap.interest, (v) => save({ interest: v }))),
+          h('div.set-row', h('span', 'Belöning efter passet'), seg(REWARDS.map((r) => [r.id, `${r.icon} ${r.label}`]), ap.reward, (v) => save({ reward: v }))),
+          h('p.muted.adapted-note', 'Uppläsningen styrs under Uppläsning ovan. Skärmtid per dag ställs in under Tid.'),
+          ...adaptedParentRows(kp, { ap, save, sub, seg, toggle, render }), // runda 2: dagens plan, övergångar, logg
+        ]
+      : [];
+    return h(
+      'section.set-section.adapted-settings',
+      h('h3', '🧩 Autismstöd'),
+      h('p.muted', 'För autistiska barn. Läget ger tydlig struktur, förvarning före övergångar, lugn sensorik och motivation via barnets intresse. Svårigheten följer ålder och nivå som vanligt. Läget bygger på evidensbaserade arbetssätt och ersätter inte råd från habiliteringen eller skolan.'),
+      h('div.set-row', h('span', 'Autismstöd'), toggle(on, (v) => {
+        kp.settings.adapted = v;
+        kos.saveNow();
+        if (kp.id === kos.state.activeId) kos.applySettings();
+        render();
+      })),
+      h(
+        'details.adapted-what',
+        h('summary', 'Vad gör läget?'),
+        h(
+          'ul',
+          h('li', 'Visuellt schema för passet: Hur mår du? ➜ uppgifter ➜ belöning ➜ klart.'),
+          h('li', 'Pollett-tavla med barnets intresse och en ”kvar”-klocka. Förvarning när två uppgifter är kvar och vid den sista.'),
+          h('li', '”Hur mår du?” med känslokort och en paus med andningscirkel. Barnet bestämmer själv när det fortsätter.'),
+          h('li', 'Mjuk återkoppling: inget fel-ljud och inget ”fel”. Förutsägbart beröm och en utlovad belöning efter passet.'),
+          h('li', 'Lugnare sinnesintryck: ljud, animationer och färger kan ställas in var för sig. Inga popup-rutor, ingen konfetti och ingen ”dagar i rad”-stress.'),
+          h('li', 'Svårigheten sänks inte. Den följer ålder och den adaptiva nivån som vanligt (om du inte anger intellektuell funktionsnedsättning).'),
+        ),
+      ),
+      ...rows,
     );
   }
 
@@ -241,6 +312,90 @@ export function renderSettings(el, { parentGate, profileWizard, showLock, goHome
       h('p.muted', 'Områden som barnet har övat på i KidsOS. Det här är ett komplement till skolan – inte en bedömning.'),
       curr,
     );
+  }
+
+  /** Kort, lättläst översikt: vad har barnet gjort och lärt sig, per app. */
+  function learnedSection(kp) {
+    const rows = learningSummary(kp, APPS);
+    const coins = kp.coins || 0;
+    const summary = h(
+      'div.pf-learn-totals',
+      h('span.pf-pill', `⭐ ${kp.stars} stjärnor`),
+      h('span.pf-pill', `🪙 ${coins} mynt`),
+      h('span.pf-pill', `🔥 ${kp.streak?.count || 0} dagar i rad`),
+    );
+    const body = rows.length
+      ? h(
+          'ul.pf-learn',
+          rows.map((r) =>
+            h(
+              'li.pf-learn-row',
+              h('span.pf-learn-icon', { 'aria-hidden': 'true' }, r.icon),
+              h(
+                'div.pf-learn-main',
+                h('b', r.name),
+                h(
+                  'small',
+                  [
+                    r.level !== null ? `${LEVELS[r.level].emoji} ${LEVELS[r.level].short} (${LEVELS[r.level].school})` : 'Utforskat',
+                    r.correct ? `${r.correct} rätt direkt` : null,
+                    r.rounds ? `${r.rounds} ${r.rounds === 1 ? 'runda' : 'rundor'}` : null,
+                  ]
+                    .filter(Boolean)
+                    .join(' · '),
+                ),
+              ),
+              h('span.pf-learn-last', relativeDay(r.last)),
+            ),
+          ),
+        )
+      : h('p.muted', `${kp.name} har inte börjat i någon app än.`);
+    return h(
+      'section.set-section',
+      h('h3', `🌱 Vad har ${kp.name} lärt sig?`),
+      h('p.muted', 'Nivå, antal rätt på första försöket och när appen användes senast. Senast använda står först. Stjärnor visar vad barnet lärt sig, mynt kan användas i Lekstaden.'),
+      summary,
+      body,
+    );
+  }
+
+  /** Upphov och licens för alla foton (krav i CC BY/CC BY-SA). Listan byggs först när den öppnas. */
+  function photoCreditsSection() {
+    const credits = Object.entries(allCredits() || {}).sort(([a, x], [b, y]) => String(x.g || '').localeCompare(String(y.g || '')) || a.localeCompare(b));
+    const list = h('ul.pf-credits');
+    const det = h('details.pf-credits-wrap', h('summary', `Visa alla ${credits.length} bilder`), list);
+    det.addEventListener('toggle', () => {
+      if (!det.open || list.childElementCount) return;
+      list.append(
+        ...credits.map(([key, c]) =>
+          h(
+            'li.pf-credit',
+            h('span.pf-credit-thumb', { html: photo(key, { alt: '', cls: 'pf-credit-img', fallback: '🖼️' }) }),
+            h(
+              'div.pf-credit-text',
+              h('b', prettyKey(key)),
+              h('small', creditLine(key) || `${c.a || 'Okänd'} · ${c.l || 'okänd licens'}`),
+              safeUrl(c.u) ? h('a.pf-credit-link', { href: c.u, target: '_blank', rel: 'noopener noreferrer' }, 'Källa på Wikimedia Commons ↗') : null,
+            ),
+          ),
+        ),
+      );
+    });
+    return h(
+      'section.set-section',
+      h('h3', '📷 Om bilderna'),
+      h('p.muted', 'Fotona kommer från Wikimedia Commons och NASA och har fria licenser (public domain eller Creative Commons). Här står vem som tog varje bild och under vilken licens.'),
+      credits.length ? det : h('p.muted', 'Inga foton är inlagda än.'),
+    );
+  }
+
+  function prettyKey(key) {
+    const t = String(key).replace(/[_-]+/g, ' ').trim();
+    return t.charAt(0).toUpperCase() + t.slice(1);
+  }
+
+  function safeUrl(u) {
+    return typeof u === 'string' && /^https:\/\//i.test(u);
   }
 
   function moduleTouched(kp, appId, m) {

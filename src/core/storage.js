@@ -111,21 +111,50 @@ export function deleteDrawingsFor(pid) {
   rawRemove(`kidsos.v1.story.${pid}`);
 }
 
+/** Per-profil-data (utöver teckningar) som följer med i säkerhetskopian: nyckelprefix → förväntad typ. */
+export const BACKUP_EXTRAS = { notes: 'array', play: 'object' };
+
+const typeOk = (v, type) => (type === 'array' ? Array.isArray(v) : !!v && typeof v === 'object' && !Array.isArray(v));
+
 /** Säkerhetskopia som text (JSON) – fungerar även där nedladdning är spärrad. */
 export function exportBackup(state) {
   const drawings = {};
-  for (const p of state.profiles) drawings[p.id] = loadDrawings(p.id);
+  const extras = Object.fromEntries(Object.keys(BACKUP_EXTRAS).map((k) => [k, {}]));
+  for (const p of state.profiles) {
+    drawings[p.id] = loadDrawings(p.id);
+    for (const [k, type] of Object.entries(BACKUP_EXTRAS)) {
+      const v = loadJSON(`${k}.${p.id}`, null);
+      if (typeOk(v, type)) extras[k][p.id] = v;
+    }
+  }
   const worlds = {};
   for (const p of state.profiles) worlds[p.id] = { studio: loadJSON(`studio.${p.id}`, null), play: loadJSON(`play.${p.id}`, null), notes: loadJSON(`notes.${p.id}`, null), story: loadJSON(`story.${p.id}`, null) };
-  return JSON.stringify({ kidsos: 1, exportedAt: new Date().toISOString(), state, drawings, worlds });
+  return JSON.stringify({ kidsos: 1, exportedAt: new Date().toISOString(), state, drawings, ...extras, worlds });
 }
 
+/**
+ * Läser en säkerhetskopia. Äldre kopior (utan anteckningar och Lekstaden) fungerar också –
+ * då lämnas den datan orörd på enheten. Bara data för profiler som finns i kopian återställs.
+ */
 export function importBackup(text) {
-  const data = JSON.parse(text);
-  if (!data || data.kidsos !== 1 || !data.state) throw new Error('Det här ser inte ut som en KidsOS-säkerhetskopia.');
+  let data;
+  try {
+    data = JSON.parse(text);
+  } catch {
+    data = null;
+  }
+  if (!data || data.kidsos !== 1 || !data.state || typeof data.state !== 'object') throw new Error('Det här ser inte ut som en KidsOS-säkerhetskopia.');
   const state = normalizeState(data.state);
+  const pids = new Set(state.profiles.map((p) => p.id));
   for (const [pid, list] of Object.entries(data.drawings || {})) {
-    if (Array.isArray(list)) rawSet(DRAW_KEY(pid), JSON.stringify(list));
+    if (pids.has(pid) && Array.isArray(list)) rawSet(DRAW_KEY(pid), JSON.stringify(list.filter((d) => d && typeof d.data === 'string')));
+  }
+  for (const [k, type] of Object.entries(BACKUP_EXTRAS)) {
+    const byPid = data[k];
+    if (!byPid || typeof byPid !== 'object') continue;
+    for (const [pid, v] of Object.entries(byPid)) {
+      if (pids.has(pid) && typeOk(v, type)) saveJSON(`${k}.${pid}`, v);
+    }
   }
   for (const profile of state.profiles) {
     const world = data.worlds?.[profile.id];

@@ -227,6 +227,76 @@ export function strokeHints(strokes) {
   });
 }
 
+/* ---------- Bokstävernas namn och ljud (för uppläsning) ---------- */
+// name = så som bokstaven heter (skrivet så att talsyntesen uttalar det rätt).
+// sound = ett utdraget ljud för bokstäver som går att dra ut (vokaler och m, s, f …).
+// Klusiler (b, d, g, k, p, t) går inte att dra ut – där säger vi "som i början av …".
+export const LETTER_INFO = {
+  A: { name: 'a', sound: 'aaa' }, B: { name: 'be' }, C: { name: 'se', sound: 'sss' }, D: { name: 'de' },
+  E: { name: 'e', sound: 'eee' }, F: { name: 'eff', sound: 'fff' }, G: { name: 'ge' }, H: { name: 'hå', sound: 'hhh' },
+  I: { name: 'i', sound: 'iii' }, J: { name: 'ji', sound: 'jjj' }, K: { name: 'kå' }, L: { name: 'ell', sound: 'lll' },
+  M: { name: 'emm', sound: 'mmm' }, N: { name: 'enn', sound: 'nnn' }, O: { name: 'o', sound: 'ooo' }, P: { name: 'pe' },
+  Q: { name: 'ku' }, R: { name: 'ärr', sound: 'rrr' }, S: { name: 'ess', sound: 'sss' }, T: { name: 'te' },
+  U: { name: 'u', sound: 'uuu' }, V: { name: 've', sound: 'vvv' }, W: { name: 'dubbel-ve', sound: 'vvv' }, X: { name: 'eks' },
+  Y: { name: 'y', sound: 'yyy' }, Z: { name: 'säta', sound: 'sss' }, Å: { name: 'å', sound: 'ååå' }, Ä: { name: 'ä', sound: 'äää' },
+  Ö: { name: 'ö', sound: 'ööö' },
+};
+
+/** Det som läses upp för en bokstav: namn, ljud och ett exempelord. */
+export function letterSpeech(ch, exampleWord) {
+  const info = LETTER_INFO[ch.toUpperCase()];
+  if (!info) return ch;
+  const ex = exampleWord ? `, som i ${exampleWord}` : '';
+  const sound = info.sound ? `Den låter ${info.sound}${ex}.` : exampleWord ? `Lyssna på början av ${exampleWord}.` : '';
+  return `${ch.toUpperCase()}. Bokstaven heter ${info.name}. ${sound}`.trim();
+}
+
+/* ---------- Repetera samma bokstav flera gånger (ren logik) ---------- */
+export const REPEAT_CHOICES = [5, 10];
+export const DEFAULT_REPEAT = 5;
+export const normalizeRepeat = (n) => (REPEAT_CHOICES.includes(Number(n)) ? Number(n) : DEFAULT_REPEAT);
+
+/** Ny serie: barnet ska skriva samma tecken `target` gånger i rad. */
+export function newSeries(target = DEFAULT_REPEAT) {
+  return { target: Math.max(1, Math.round(target)), done: 0, tries: 0, complete: false };
+}
+
+/**
+ * Registrerar ett försök. Bara godkända försök räknas, och en klar serie ändras inte.
+ * Returnerar en ny serie (muterar inte den gamla).
+ */
+export function seriesAdvance(series, passed) {
+  if (series.complete) return series;
+  const done = series.done + (passed ? 1 : 0);
+  return { ...series, done, tries: series.tries + 1, complete: done >= series.target };
+}
+
+export const seriesLeft = (series) => Math.max(0, series.target - series.done);
+
+/**
+ * Stöd som gradvis minskar (fading): de första gångerna en tydlig mall med
+ * startpunkt och pil, sedan en prickad mall med bara startpunkt och sist en svag
+ * mall utan hjälppunkter. i = vilken gång i serien (0-baserad), n = seriens längd.
+ */
+export function supportFor(i, n) {
+  if (n <= 1) return { stage: 'full', template: 'solid', startDots: true, arrows: true };
+  const f = Math.max(0, i) / n;
+  if (f < 0.4) return { stage: 'full', template: 'solid', startDots: true, arrows: true };
+  if (f < 0.8) return { stage: 'dotted', template: 'dotted', startDots: true, arrows: false };
+  return { stage: 'faint', template: 'faint', startDots: false, arrows: false };
+}
+
+/** Räknarnyckel för antal klara serier per tecken, t.ex. "writeSeries:upper:A". */
+export const seriesKey = (set, ch) => `writeSeries:${set}:${ch}`;
+
+export const PRAISE = ['Bra!', 'Snyggt!', 'Jättebra!', 'Precis så!', 'Du kan!', 'Wow!', 'Fint skrivet!', 'Toppen!', 'Heja!', 'Strålande!'];
+/** Beröm efter gång nummer `done` (1-baserad). Sista gången får extra beröm. */
+export function praiseFor(done, target) {
+  if (done >= target) return `Klart! ${target} av ${target}!`;
+  const left = target - done;
+  return `${PRAISE[(done - 1) % PRAISE.length]} ${left === 1 ? 'En gång kvar!' : `${left} kvar.`}`;
+}
+
 export const WRITE_WORDS = [
   { w: 'sol', e: '☀️' }, { w: 'mamma', e: '👩' }, { w: 'pappa', e: '👨' }, { w: 'katt', e: '🐱' }, { w: 'hund', e: '🐶' },
   { w: 'bil', e: '🚗' }, { w: 'hus', e: '🏠' }, { w: 'glass', e: '🍦' }, { w: 'boll', e: '⚽' }, { w: 'måne', e: '🌙' },
@@ -245,6 +315,7 @@ export const writeApp = {
     { id: 'digits', name: 'Siffror', icon: '1', minLevel: 0, view: 'trace', set: 'digits', lgr: ['ma-tal'] },
     { id: 'name', name: 'Mitt namn', icon: '🙋', minLevel: 0, view: 'trace', set: 'name', lgr: ['sv-handstil'] },
     { id: 'lower', name: 'Små bokstäver', icon: 'a', minLevel: 1, view: 'trace', set: 'lower', lgr: ['sv-handstil', 'sv-regler'] },
+    { id: 'spell', name: 'Stava ord', icon: '🔡', minLevel: 0, view: 'trace', set: 'spell', lgr: ['sv-handstil', 'sv-skriva', 'sv-ljud'] },
     { id: 'words', name: 'Skriv ord', icon: '📝', minLevel: 2, view: 'trace', set: 'words', lgr: ['sv-handstil', 'sv-skriva'] },
   ],
 };

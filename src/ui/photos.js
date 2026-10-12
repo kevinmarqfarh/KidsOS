@@ -1,19 +1,29 @@
-// Lokala fotografier fungerar även i den fristående offline-versionen.
-import { PHOTOS } from '../assets/photos/catalog.js';
+// Kompatibilitetslager för det gamla fotosystemet (src/assets/photos). Alla bilder ligger nu i
+// assets/img och bäddas in via src/ui/img.js – använd hellre photo/hasPhoto/creditLine direkt.
+import { photo, hasPhoto, photoCredit, creditLine, allCredits } from './img.js';
 import { esc } from './visuals.js';
 
+// Gamla id:n som fick nya nycklar när systemen slogs ihop.
+const ALIAS = { solen: 'sun', merkurius: 'mercury', neptunus: 'neptune' };
+export const photoKey = (id) => ALIAS[id] || id;
+
 export function photoImage(id, alt = 'Fotografi av en art', compact = false) {
-  const photo = PHOTOS[id];
-  if (!photo) return '';
-  return `<img class="learning-photo${compact ? ' compact' : ''}" src="${photo.data}" alt="${esc(alt)}" decoding="async" width="330" height="280">`;
+  const key = photoKey(id);
+  if (!hasPhoto(key)) return '';
+  return photo(key, { alt, cls: `learning-photo${compact ? ' compact' : ''}` });
 }
 
 export function photoFigure(id, alt = 'Fotografi av en art') {
-  const photo = PHOTOS[id];
-  if (!photo) return '';
-  return `<figure class="photo-figure">${photoImage(id, alt)}<figcaption>Foto: ${esc(photo.artist)} · ${esc(photo.license)}<details><summary>Bildkälla och licens</summary><a href="${esc(photo.source)}" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a> · <a href="${esc(photo.licenseUrl || photo.source)}" target="_blank" rel="noopener noreferrer">${esc(photo.license)}</a><span> Bilden visas i mindre storlek.</span></details></figcaption></figure>`;
+  const key = photoKey(id);
+  if (!hasPhoto(key)) return '';
+  const c = photoCredit(key) || {};
+  const src = c.u ? `<a href="${esc(c.u)}" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a> · ` : '';
+  return `<figure class="photo-figure">${photoImage(id, alt)}<figcaption>${esc(creditLine(key))}<details><summary>Bildkälla och licens</summary>${src}${esc(c.l || '')}<span> Bilden visas i mindre storlek.</span></details></figcaption></figure>`;
 }
 
 export function photoCredits() {
-  return `<details class="photo-credits"><summary>Bildkällor</summary>${Object.values(PHOTOS).map(photo => `<p>${esc(photo.artist)} · <a href="${esc(photo.source)}" target="_blank" rel="noopener noreferrer">${esc(photo.title)}</a> · <a href="${esc(photo.licenseUrl || photo.source)}" target="_blank" rel="noopener noreferrer">${esc(photo.license)}</a></p>`).join('')}<p>Bilderna visas i mindre storlek.</p></details>`;
+  const rows = Object.entries(allCredits())
+    .map(([, c]) => `<p>${esc(String(c.a || 'Okänd').replace(/^Foto:\s*/i, ''))} · ${c.u ? `<a href="${esc(c.u)}" target="_blank" rel="noopener noreferrer">källa</a>` : 'Wikimedia Commons'} · ${esc(c.l || '')}</p>`)
+    .join('');
+  return `<details class="photo-credits"><summary>Bildkällor</summary>${rows}<p>Bilderna visas i mindre storlek.</p></details>`;
 }

@@ -1,12 +1,22 @@
 import { photoFigure } from '../photos.js';
 // Rymden – interaktiva vyer.
 import { h, clear, onTap, interactiveGraphic, wait, reducedMotion } from '../dom.js';
-import { PLANETS, SUN, CONSTELLATIONS, moonPhaseName, GBG_DAYLIGHT, MONTHS, seasonForMonth } from '../../apps/space.js';
+import { PLANETS, SUN, CONSTELLATIONS, moonPhaseName, moonPhasePath, moonPhaseFor, moonPhaseImage, GBG_DAYLIGHT, MONTHS, seasonForMonth } from '../../apps/space.js';
 import { hasInSet } from '../../core/model.js';
 import { createRng } from '../../core/rng.js';
-import { photo, creditLine } from '../img.js';
+import { photo, creditLine, hasPhoto, photoUrl } from '../img.js';
 
 /* ---------- Solsystemet ---------- */
+/** En planet i banvyn: riktigt foto (klippt till en cirkel) om det finns, annars en färgad cirkel. */
+function planetBody(pl, r) {
+  if (!hasPhoto(pl.img)) return `${pl.id === 'saturnus' ? `<ellipse rx="${r * 1.9}" ry="${r * 0.55}" fill="none" stroke="#e8d08a" stroke-width="3"/>` : ''}<circle r="${r}" fill="${pl.color}"/>`;
+  const href = photoUrl(pl.img);
+  // Saturnusfotot är brett med ringarna: klotet är ungefär 40 % av bildens bredd.
+  if (pl.id === 'saturnus') return `<image href="${href}" x="${-r * 2.45}" y="${-r * 0.98}" width="${r * 4.9}" height="${r * 1.96}" preserveAspectRatio="xMidYMid meet"/>`;
+  const sz = r * 2.3;
+  return `<clipPath id="pc-${pl.id}"><circle r="${r}"/></clipPath><image href="${href}" x="${-sz / 2}" y="${-sz / 2}" width="${sz}" height="${sz}" clip-path="url(#pc-${pl.id})" preserveAspectRatio="xMidYMid slice"/>`;
+}
+
 export function solarView(el, { kos, app }) {
   const p = kos.profile;
   let alive = true;
@@ -39,7 +49,7 @@ export function solarView(el, { kos, app }) {
     s += `<g class="body" data-id="solen"><circle cx="300" cy="300" r="44" fill="url(#sunG)"/><circle cx="300" cy="300" r="56" fill="transparent"/></g>`;
     PLANETS.forEach((pl, i) => {
       const r = Math.max(7, Math.min(20, 5 + Math.sqrt(pl.size) * 4.5));
-      s += `<g class="body planet" data-id="${pl.id}"><circle class="hitzone" r="26" fill="transparent"/>${pl.id === 'saturnus' ? `<ellipse rx="${r * 1.9}" ry="${r * 0.55}" fill="none" stroke="#e8d08a" stroke-width="3"/>` : ''}<circle r="${r}" fill="${pl.color}"/></g>`;
+      s += `<g class="body planet" data-id="${pl.id}"><circle class="hitzone" r="26" fill="transparent"/>${planetBody(pl, r)}</g>`;
       void i;
     });
     s += '</svg>';
@@ -64,7 +74,8 @@ export function solarView(el, { kos, app }) {
     const row = h('div.size-row');
     PLANETS.forEach((pl) => {
       const d = Math.max(6, (pl.size / maxD) * 150);
-      const b = h('button.size-planet', { type: 'button', style: { '--d': `${d}px`, '--c': pl.color } }, h('span.sp-ball'), h('small', pl.name));
+      const ball = hasPhoto(pl.img) ? h('span.sp-ball.has-photo', { html: photo(pl.img, { alt: pl.name }) }) : h('span.sp-ball');
+      const b = h('button.size-planet', { type: 'button', style: { '--d': `${d}px`, '--c': pl.color } }, ball, h('small', pl.name));
       onTap(b, () => select(pl.id));
       row.appendChild(b);
     });
@@ -237,7 +248,10 @@ export function dayNightView(el, { kos, app }) {
   const wrap = h('div.dn-wrap');
   const readout = h('div.sci-readout');
   const missions = h('div.teach', h('span.teach-icon', '🌍'), h('span', 'Snurra jorden med fingret. Gör så att det blir natt i Göteborg – och sedan dag igen!'));
-  el.append(h('div.sci', missions, wrap, readout, h('div.row-actions', onTap(h('button.btn.btn-ghost', { type: 'button' }, reducedMotion() ? 'Nästa tid på dygnet' : '▶ Snurra ett dygn'), spinDay))));
+  // Riktiga foton av Göteborg på dagen och på natten, bredvid modellen.
+  const dnPhoto = h('figure.dn-photo.real-photo');
+  const hasDnPhotos = hasPhoto('dn-gbg-dag') && hasPhoto('dn-gbg-natt');
+  el.append(h('div.sci', missions, hasDnPhotos ? h('div.photo-side', wrap, dnPhoto) : wrap, readout, h('div.row-actions', onTap(h('button.btn.btn-ghost', { type: 'button' }, reducedMotion() ? 'Nästa tid på dygnet' : '▶ Snurra ett dygn'), spinDay))));
   const done = new Set();
   function timeFor(t) {
     let hrs = (12 + (t - 180) / 15) % 24;
@@ -264,6 +278,11 @@ export function dayNightView(el, { kos, app }) {
     const mm = Math.round((hrs - hh) * 60 / 15) * 15 % 60;
     readout.innerHTML = `I Göteborg är klockan ungefär <b>${String(hh).padStart(2, '0')}:${String(mm).padStart(2, '0')}</b> – det är <b>${isDay ? 'dag ☀️' : 'natt 🌙'}</b>. ${isDay ? 'Göteborg är vänt mot solen.' : 'Göteborg är vänt bort från solen.'}`;
     const key = isDay ? 'dag' : 'natt';
+    if (hasDnPhotos && dnPhoto.dataset.k !== key) {
+      dnPhoto.dataset.k = key;
+      const pk = `dn-gbg-${key}`;
+      dnPhoto.innerHTML = `${photo(pk, { alt: `Göteborg ${isDay ? 'på dagen' : 'på natten'}` })}<figcaption><b>Göteborg ${isDay ? 'på dagen ☀️' : 'på natten 🌙'}</b><small class="credit">${creditLine(pk)}</small></figcaption>`;
+    }
     if (!started) return;
     if (!done.has(key) && !(key === initialKey && !done.size)) {
       done.add(key);
@@ -321,20 +340,8 @@ export function dayNightView(el, { kos, app }) {
 }
 
 /* ---------- Månens faser ---------- */
-export function moonPhasePath(a, R = 50, cx = 60, cy = 60) {
-  // a: 0 = nymåne, 180 = fullmåne. Växande = belyst till höger (norra halvklotet).
-  const ang = ((a % 360) + 360) % 360;
-  const k = Math.cos((ang * Math.PI) / 180); // 1 vid nymåne, -1 vid fullmåne
-  const rx = Math.abs(k) * R;
-  const waxing = ang <= 180;
-  const top = `${cx} ${cy - R}`;
-  const bot = `${cx} ${cy + R}`;
-  // halvcirkel på den belysta sidan
-  const sideSweep = waxing ? 1 : 0;
-  // terminatorns båge: buktar mot den belysta sidan vid skära (k>0), bort vid gibbous (k<0)
-  const termSweep = waxing ? (k > 0 ? 0 : 1) : k > 0 ? 1 : 0;
-  return `M ${top} A ${R} ${R} 0 0 ${sideSweep} ${bot} A ${rx} ${R} 0 0 ${termSweep} ${top} Z`;
-}
+// moonPhasePath ligger nu i apps/space.js (används även av månquizet); exporteras vidare här.
+export { moonPhasePath };
 
 export function moonView(el, { kos, app }) {
   let a = 45;
@@ -351,16 +358,24 @@ export function moonView(el, { kos, app }) {
     const my = 200 - Math.sin(rad) * 130;
     let rays = '';
     for (let i = 0; i < 6; i++) rays += `<line x1="6" y1="${70 + i * 52}" x2="40" y2="${70 + i * 52}" stroke="#ffc93c" stroke-width="4" stroke-linecap="round"/>`;
-    // månen sedd uppifrån: alltid belyst på vänster (mot solen)
-    wrap.innerHTML = `<svg viewBox="0 0 400 400" class="moon-svg"><rect width="400" height="400" fill="#0d1030" rx="24"/>${rays}<text x="10" y="40" fill="#ffc93c" font-size="15">☀️ Solen</text>
+    // Jorden och månen sedda uppifrån (riktiga foton om de finns): alltid belysta på vänster sida, mot solen.
+    const earthBody = hasPhoto('earth') ? `<image href="${photoUrl('earth')}" x="160" y="160" width="80" height="80" clip-path="url(#mEarthClip)" preserveAspectRatio="xMidYMid slice"/>` : '<circle cx="200" cy="200" r="40" fill="#3d8bfd"/>';
+    const moonBody = hasPhoto('moon-full') ? `<image href="${photoUrl('moon-full')}" x="-18" y="-18" width="36" height="36" clip-path="url(#mMoonClip)" preserveAspectRatio="xMidYMid slice"/>` : '<circle r="18" fill="#d9d6cc"/>';
+    wrap.innerHTML = `<svg viewBox="0 0 400 400" class="moon-svg"><defs><clipPath id="mEarthClip"><circle cx="200" cy="200" r="40"/></clipPath><clipPath id="mMoonClip"><circle r="18"/></clipPath></defs><rect width="400" height="400" fill="#0d1030" rx="24"/>${rays}<text x="10" y="40" fill="#ffc93c" font-size="15">☀️ Solen</text>
       <circle cx="200" cy="200" r="130" fill="none" stroke="rgba(255,255,255,.2)" stroke-dasharray="5 7"/>
-      <circle cx="200" cy="200" r="40" fill="#3d8bfd"/><path d="M200 160 A40 40 0 0 1 200 240 Z" fill="rgba(5,8,30,.6)"/><text x="200" y="256" fill="#fff" font-size="12" text-anchor="middle">Jorden</text>
-      <g transform="translate(${mx} ${my})"><circle r="30" fill="transparent"/><circle r="18" fill="#d9d6cc"/><path d="M0 -18 A18 18 0 0 1 0 18 Z" fill="rgba(5,8,30,.75)"/></g></svg>`;
+      ${earthBody}<path d="M200 160 A40 40 0 0 1 200 240 Z" fill="rgba(5,8,30,.62)"/><text x="200" y="256" fill="#fff" font-size="12" text-anchor="middle">Jorden</text>
+      <g transform="translate(${mx} ${my})"><circle r="30" fill="transparent"/>${moonBody}<path d="M0 -18 A18 18 0 0 1 0 18 Z" fill="rgba(5,8,30,.78)"/></g></svg>`;
     const nm = moonPhaseName(a);
     position.value = String(a);
     position.setAttribute('aria-valuetext', `${Math.round(a)} grader, ${nm}`);
-    phaseBox.innerHTML = `<small>Så ser vi månen från jorden</small><svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="50" fill="#22284d"/><path d="${moonPhasePath(a)}" fill="#f2efe4"/></svg><b>${nm}</b>`;
-    name.innerHTML = `<b>${nm[0].toUpperCase() + nm.slice(1)}.</b> ${a < 20 || a > 340 ? 'Månen står mellan jorden och solen – den belysta sidan är vänd bort från oss.' : a > 160 && a < 200 ? 'Jorden står mellan solen och månen – vi ser hela den belysta sidan.' : 'Vi ser bara en del av den belysta sidan.'}`;
+    const ph = moonPhaseFor(a);
+    if (phaseBox.dataset.phase !== ph.id) {
+      // Byt bara bild när fasen ändras – annars flimrar fotot medan man drar.
+      phaseBox.dataset.phase = ph.id;
+      const credit = hasPhoto(ph.key) ? `<small class="credit">${creditLine(ph.key)}</small>` : '';
+      phaseBox.innerHTML = `<small>Så ser vi månen från jorden</small>${moonPhaseImage(ph, 'big')}<b>${nm}</b>${credit}`;
+    }
+    name.innerHTML = `<b>${nm[0].toUpperCase() + nm.slice(1)}.</b> ${a < 20 || a > 340 ? 'Månen står mellan jorden och solen – den belysta sidan är vänd bort från oss.' : a > 160 && a < 200 ? 'Jorden står mellan solen och månen – vi ser hela den belysta sidan.' : 'Vi ser bara en del av den belysta sidan.'}${ph.lit === 'höger' ? ' Ljuset är på höger sida – månen växer.' : ph.lit === 'vänster' ? ' Ljuset är på vänster sida – månen krymper.' : ''}`;
     const found = nm === 'nymåne' ? 'nymåne' : nm.includes('halvmåne') ? 'halvmåne' : nm === 'fullmåne' ? 'fullmåne' : null;
     if (found) {
       const r = kos.reward({ app: app.id, set: 'moonPhases', item: found });
@@ -411,7 +426,14 @@ export function starsView(el, { kos, app }) {
   const chips = h('div.chip-row');
   const sky = h('div.sky');
   const story = h('div.sky-story');
-  el.append(h('div.sci', chips, h('p.sci-q', '✨ Tryck på stjärnorna i ordning – börja på den som blinkar.'), sky, story));
+  const skyPhoto = h('figure.sky-photo.real-photo');
+  el.append(h('div.sci', chips, h('p.sci-q', '✨ Tryck på stjärnorna i ordning – börja på den som blinkar.'), h('div.photo-side', sky, skyPhoto), story));
+  function renderPhoto() {
+    const key = `sky-${c.id}`;
+    skyPhoto.hidden = !hasPhoto(key);
+    if (skyPhoto.hidden) return;
+    skyPhoto.innerHTML = `${photo(key, { alt: `Foto av ${c.name} på natthimlen` })}<figcaption><b>${c.name} på riktigt</b> – så här ser det ut på natthimlen.<small class="credit">${creditLine(key)}</small></figcaption>`;
+  }
   const bg = (() => {
     const rng = createRng(42);
     let s = '';
@@ -454,13 +476,15 @@ export function starsView(el, { kos, app }) {
     kos.reward({ app: app.id, set: 'constellations', item: c.id, stars: first ? 2 : 0 });
     kos.sfx('fanfare');
     clear(story).append(h('div.fb.fb-ok', h('span.fb-icon', '🌌'), h('div.fb-text', h('b', `${c.name} (${c.also}). `), c.story)));
-    kos.say(`${c.name}! ${c.story}`);
+    if (c.culture) story.append(h('div.sky-culture', h('span.fb-icon', '🌍'), h('div', h('b', 'Andra kulturer: '), c.culture)));
+    kos.say(`${c.name}! ${c.story}${c.culture ? ` ${c.culture}` : ''}`);
     renderChips();
   }
   function start() {
     renderChips();
     clear(story);
     render();
+    renderPhoto();
     kos.autoSay(`${c.name}. Tryck på stjärnorna i ordning.`);
   }
   start();
@@ -479,7 +503,10 @@ export function orbitView(el, { kos, app }) {
   ];
   const doneSet = new Set();
   const goalEl = h('div.chip-row', goals.map((g) => h('span.chip-btn.static', { dataset: { g: g.id } }, `○ ${g.label}`)));
-  el.append(h('div.sci', h('div.teach', h('span.teach-icon', '🌍'), h('span', 'Flytta jorden runt solen med reglaget. Se vad som händer i Göteborg!')), goalEl, wrap, slider, readout));
+  const seasonPhoto = h('figure.season-photo.real-photo');
+  const SEASON_KEY = { vinter: 'season-vinter', vår: 'season-var', sommar: 'season-sommar', höst: 'season-host' };
+  const hasSeasonPhotos = Object.values(SEASON_KEY).every(hasPhoto);
+  el.append(h('div.sci', h('div.teach', h('span.teach-icon', '🌍'), h('span', 'Flytta jorden runt solen med reglaget. Se vad som händer i Göteborg!')), goalEl, hasSeasonPhotos ? h('div.photo-side', wrap, seasonPhoto) : wrap, slider, readout));
   function render() {
     // dec = vänster, jun = höger
     const ang = ((month - 11.7) / 12) * Math.PI * 2 + Math.PI;
@@ -497,6 +524,11 @@ export function orbitView(el, { kos, app }) {
       <text x="200" y="385" fill="#9fd0ff" font-size="12" text-anchor="middle">Jordaxeln lutar alltid åt samma håll i rymden</text></svg>`;
     const hrs = GBG_DAYLIGHT[month];
     const season = seasonForMonth(month);
+    if (hasSeasonPhotos && seasonPhoto.dataset.s !== season) {
+      seasonPhoto.dataset.s = season;
+      const pk = SEASON_KEY[season];
+      seasonPhoto.innerHTML = `${photo(pk, { alt: `Svensk natur på ${season}en` })}<figcaption><b>${season[0].toUpperCase() + season.slice(1)} i Sverige</b><small class="credit">${creditLine(pk)}</small></figcaption>`;
+    }
     const hh = Math.floor(hrs);
     const mm = Math.round((hrs - hh) * 60);
     readout.innerHTML = `<b>${MONTHS[month][0].toUpperCase() + MONTHS[month].slice(1)}</b> – det är <b>${season}</b> i Sverige. I Göteborg är det ljust ungefär <b>${hh} timmar${mm ? ` och ${mm} minuter` : ''}</b> per dygn. <div class="daybar"><i style="width:${(hrs / 24) * 100}%"></i></div>${month >= 4 && month <= 7 ? 'Norra halvklotet lutar mot solen: solen står högt och dagarna är långa.' : month >= 10 || month <= 1 ? 'Norra halvklotet lutar bort från solen: solen står lågt och dagarna är korta.' : 'Ingen halva lutar mot solen – dag och natt är ungefär lika långa.'}`;

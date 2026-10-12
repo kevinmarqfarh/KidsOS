@@ -172,7 +172,7 @@ test('första start: föräldern skapar en profil med guiden', async () => {
   await page.getByRole('button', { name: 'Skapa ✨' }).click();
   await page.locator('.who-bubble', { hasText: 'Testbarn' }).click();
   await page.waitForSelector('.home');
-  assert.equal(await page.locator('.app-icon').count(), 12);
+  assert.equal(await page.locator('.app-icon').count(), 13); // 12 + Känslor & jag (autismstödet)
   assert.match(await page.locator('.home-hello h1').innerText(), /Testbarn/);
   const s = await state(page);
   assert.equal(s.profiles[0].age, 7);
@@ -337,17 +337,20 @@ test('skriv ABC: att spåra bokstaven A med fingret godkänns, klotter underkän
   await page.getByRole('button', { name: 'Klar ✓' }).click();
   await page.waitForSelector('.trace-msg.try');
   await page.getByRole('button', { name: '🧽 Sudda' }).click();
-  // spåra A längs mallen
+  // spåra A längs mallen (mät om – meddelandet kan ha flyttat skrivytan)
+  await page.locator('.trace-ink').scrollIntoViewIfNeeded();
+  const b2 = await page.locator('.trace-ink').boundingBox();
+  Object.assign(box, b2);
   const unit = box.height;
   for (const stroke of GLYPHS.A) {
-    await page.mouse.move(box.x + stroke[0][0] * unit, box.y + stroke[0][1] * unit);
+    await page.mouse.move(box.x + stroke[0][0] * box.width, box.y + stroke[0][1] * unit);
     await page.mouse.down();
-    for (const [x, y] of stroke) await page.mouse.move(box.x + x * unit, box.y + y * unit);
+    for (const [x, y] of stroke) await page.mouse.move(box.x + x * box.width, box.y + y * unit);
     await page.mouse.up();
   }
   await page.screenshot({ path: join(SHOTS, 'ipad-skriv-abc.png') });
   await page.getByRole('button', { name: 'Klar ✓' }).click();
-  await page.waitForSelector('.trace-msg.ok');
+  await page.waitForSelector('.trace-msg.ok', { timeout: 5000 }).catch(async (e) => { throw new Error('trace-msg: ' + (await page.locator('.trace-msg').innerText()) + ' class=' + (await page.locator('.trace-msg').getAttribute('class'))); });
   const p = (await state(page)).profiles[1];
   assert.ok(p.sets['traced:upper'].A);
   assert.ok(p.trophies['trace-1']);
@@ -795,7 +798,7 @@ test('sifferskrivning avbryter köat tal och startar inte rösten under ritandet
     } });
   });
   await openModule(page, 'write', 'digits');
-  assert.deepEqual(await page.evaluate(() => window.__traceSpeech), ['Siffran 0.']);
+  assert.deepEqual(await page.evaluate(() => window.__traceSpeech.map((t) => t.split('.')[0] + '.')), ['Siffran 0.']);
   const canvas = page.locator('.trace-ink');
   let box = await canvas.boundingBox();
   for (let stroke = 0; stroke < 3; stroke++) {
@@ -806,16 +809,16 @@ test('sifferskrivning avbryter köat tal och startar inte rösten under ritandet
     await page.mouse.up();
   }
   await page.setViewportSize({ width: 400, height: 844 });
-  assert.deepEqual(await page.evaluate(() => window.__traceSpeech), ['Siffran 0.']);
+  assert.deepEqual(await page.evaluate(() => window.__traceSpeech.map((t) => t.split('.')[0] + '.')), ['Siffran 0.']);
   await page.locator('.trace-chip').filter({ hasText: /^2$/ }).click();
-  assert.deepEqual(await page.evaluate(() => window.__traceSpeech), ['Siffran 0.', 'Siffran 2.']);
+  assert.deepEqual(await page.evaluate(() => window.__traceSpeech.map((t) => t.split('.')[0] + '.')), ['Siffran 0.', 'Siffran 2.']);
   box = await canvas.boundingBox();
   await page.mouse.move(box.x + box.width * .4, box.y + box.height * .4);
   await page.mouse.down();
   await page.mouse.move(box.x + box.width * .6, box.y + box.height * .6, { steps: 10 });
   await page.mouse.up();
   assert.equal(await page.evaluate(() => window.__tracePending), null);
-  assert.deepEqual(await page.evaluate(() => window.__traceSpeech), ['Siffran 0.', 'Siffran 2.']);
+  assert.deepEqual(await page.evaluate(() => window.__traceSpeech.map((t) => t.split('.')[0] + '.')), ['Siffran 0.', 'Siffran 2.']);
   assert.deepEqual(errors, []);
   await ctx.close();
 });
@@ -835,7 +838,7 @@ test('Mitt stöd: profilval, manuell uppläsning, paus och förutsägbar runda',
     });
     await openModule(page, 'math', 'count');
     assert.equal(await page.locator('.q-dot').count(), 3);
-    assert.match(await page.locator('.q-progress').innerText(), /fråga 1 av 3/);
+    assert.match(await page.locator('.q-status').innerText(), /fråga 1 av 3/);
     assert.equal(await page.evaluate(() => window.spokenTexts.length), 0);
     await page.locator('.q-speak').click();
     assert.equal(await page.evaluate(() => window.spokenTexts.length), 1);

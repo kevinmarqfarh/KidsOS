@@ -1,0 +1,1551 @@
+/* Autismstöd (tidigare "Anpassat läge") – stöd för autistiska barn, med eller utan IF.
+   Aktiveras med <html data-adapted="on"> (kos.applySettings). Valbart var för sig:
+   data-adapted-calm (dämpade färger), data-adapted-motion (mjuka animationer eller inga),
+   data-adapted-focus (fokus-hjälp), data-adapted-streak (dölj "dagar i rad").
+   Logik: core/adapted.js, ui/adapted-ui.js. Principer: docs/ANPASSAT-LAGE.md. */
+
+:root[data-adapted='on'] {
+  --ad-calm: #f5f3ee;
+  --ad-line: #d9d4c8;
+  --ad-ok: #2f9e6e;
+  --ad-ok-bg: #e8f6ef;
+  --ad-model: #3f7fd8;
+  --ad-model-bg: #eaf2fd;
+  --ad-warn: #c98a1b;
+  --ad-warn-bg: #fdf4e3;
+}
+:root[data-adapted='on'][data-ostheme='night'] {
+  --ad-calm: #20253f;
+  --ad-line: #3a4166;
+  --ad-ok-bg: #1d3a32;
+  --ad-model-bg: #1f2c4d;
+  --ad-warn-bg: #3d3420;
+}
+
+/* ---------- Dämpade färger (valbart) och färre rörelser ---------- */
+:root[data-adapted='on'][data-adapted-calm='on'] .os::before {
+  filter: saturate(0.55) brightness(1.02);
+}
+:root[data-adapted='on'][data-adapted-calm='on'][data-ostheme='night'] .os::before {
+  filter: saturate(0.5) brightness(0.5);
+}
+/* Ingen "dagar i rad"-flamma: en bruten svit ska inte kännas som ett misslyckande. */
+:root[data-adapted='on'][data-adapted-streak='hide'] [title='Dagar i rad'] {
+  display: none !important;
+}
+:root[data-adapted='on'] .os *,
+:root[data-adapted='on'] .os *::before,
+:root[data-adapted='on'] .os *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  animation-delay: 0s !important;
+}
+:root[data-adapted='on'] .window {
+  transition-duration: 0.15s, 0.15s, 0s;
+}
+:root[data-adapted='on'][data-adapted-calm='on'] .win-content {
+  background: var(--ad-calm);
+}
+:root[data-adapted='on'] .wrong-shake,
+:root[data-adapted='on'] .hit-wrong {
+  animation: none !important;
+}
+:root[data-adapted='on'] .confetti,
+:root[data-adapted='on'] .fly-star {
+  display: none !important;
+}
+
+/* ---------- Frågemotorn ---------- */
+:root[data-adapted-calm='on'] .quiz.adapted {
+  --app: color-mix(in srgb, var(--app) 55%, #8b97a8);
+}
+.quiz.adapted {
+  position: relative;
+  gap: 14px;
+}
+.quiz.adapted .q-progress {
+  display: none; /* progressen visas i först–sen-remsan */
+}
+.quiz.adapted .choices {
+  gap: 18px;
+}
+.quiz.adapted .choice {
+  min-height: 132px;
+  border: 3px solid var(--ad-line);
+  box-shadow: none;
+  background: var(--card);
+}
+.quiz.adapted .choice:active {
+  transform: none;
+  box-shadow: none;
+  border-color: var(--ad-model);
+}
+.quiz.adapted .choice-label {
+  font-size: clamp(30px, 5.4vw, 46px);
+}
+.quiz.adapted .pic {
+  font-size: clamp(72px, 13vw, 108px);
+}
+.quiz.adapted .pic.sm {
+  font-size: clamp(52px, 9vw, 74px);
+}
+.quiz.adapted .choice img,
+.quiz.adapted .q-visual img {
+  max-height: min(38vh, 320px);
+  width: auto;
+}
+.quiz.adapted .q-visual svg {
+  min-width: min(100%, 360px);
+}
+.quiz.adapted .choice.right {
+  background: var(--ad-ok-bg);
+  border-color: var(--ad-ok);
+  box-shadow: 0 0 0 3px var(--ad-ok);
+  animation: none;
+}
+.quiz.adapted .choice:disabled:not(.right) {
+  opacity: 0.3;
+}
+.quiz.adapted .q-prompt {
+  box-shadow: none;
+  border: 2px solid var(--ad-line);
+}
+.quiz.adapted .fb {
+  box-shadow: none;
+  border: 3px solid var(--ad-line);
+}
+.quiz.adapted .fb-ok {
+  background: var(--ad-ok-bg);
+  border-color: var(--ad-ok);
+}
+.quiz.adapted .fb-model,
+.quiz.adapted .fb-learn {
+  background: var(--ad-model-bg);
+  border-color: var(--ad-model);
+}
+.quiz.adapted .fb-icon {
+  font-size: 48px;
+}
+.quiz.adapted .fb-text b {
+  font-family: var(--font-display);
+  font-size: 30px;
+}
+.ad-explain {
+  display: block;
+  font-size: 16px;
+  color: var(--ink-soft);
+  margin-top: 4px;
+}
+.quiz.adapted .btn-next {
+  min-height: 76px;
+  font-size: 26px;
+}
+
+/* Felfri inlärning: mjuk markering på rätt svar vid omgörning (prompt). */
+.ad-prompt {
+  outline: 4px dashed var(--ad-model);
+  outline-offset: 4px;
+}
+svg .ad-prompt,
+.q-visual .ad-prompt {
+  outline: none;
+  filter: drop-shadow(0 0 6px var(--ad-model));
+}
+
+/* ---------- Fokus-hjälp: en sak i taget, dimma resten ---------- */
+:root[data-adapted='on'][data-adapted-focus='on'] .win-head .level-chip {
+  display: none;
+}
+:root[data-adapted='on'][data-adapted-focus='on'] .os.app-open .statusbar,
+:root[data-adapted='on'][data-adapted-focus='on'] .win-head {
+  opacity: 0.55;
+}
+:root[data-adapted='on'][data-adapted-focus='on'] .quiz.adapted .q-stage.done .q-top {
+  opacity: 0.4;
+}
+:root[data-adapted='on'][data-adapted-focus='on'] .quiz.adapted .q-stage.done .choice:not(.right) {
+  opacity: 0.15;
+}
+:root[data-adapted='on'][data-adapted-focus='on'] .quiz.adapted .q-stage.done .q-answers > :not(.choices) {
+  opacity: 0.5;
+}
+:root[data-adapted='on'][data-adapted-focus='on'] .quiz.adapted .q-stage.modeling .q-top {
+  opacity: 1; /* vid "titta – det här är rätt" ska frågan synas */
+}
+
+/* ---------- Visuellt schema + pollett-tavla + "kvar"-klocka ---------- */
+.ad-strip {
+  display: grid;
+  gap: 8px;
+  background: var(--card);
+  border: 2px solid var(--ad-line);
+  border-radius: var(--r-lg);
+  padding: 10px;
+}
+.ad-sched {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.ad-step {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px 4px 4px;
+  border-radius: 999px;
+  color: var(--ink-soft);
+  font-weight: 700;
+  font-size: 15px;
+}
+.ad-step-arrow {
+  color: var(--ad-line);
+  font-size: 18px;
+  margin-right: 4px;
+}
+.ad-step-icon {
+  font-size: 22px;
+  line-height: 1;
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--ad-calm);
+}
+.ad-step.now {
+  color: var(--ink);
+  background: var(--ad-model-bg);
+  box-shadow: inset 0 0 0 2px var(--ad-model);
+}
+.ad-step.done {
+  opacity: 0.55;
+}
+.ad-step.done .ad-step-icon::after {
+  content: '✓';
+  position: absolute;
+  font-size: 13px;
+  color: var(--ad-ok);
+  transform: translate(13px, 11px);
+}
+.ad-step.done .ad-step-icon {
+  position: relative;
+}
+.ad-now {
+  display: flex;
+  align-items: stretch;
+  gap: 10px;
+}
+.ad-first,
+.ad-then {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-radius: var(--r);
+  padding: 8px 12px;
+  background: var(--ad-calm);
+  min-height: 64px;
+}
+.ad-first {
+  flex: 1;
+  min-width: 0;
+}
+.ad-ft-label {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 18px;
+  color: var(--ink-soft);
+}
+.ad-strip .q-dots {
+  flex: 1;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.ad-strip .q-dot {
+  width: 38px;
+  height: 38px;
+  border: 3px dashed var(--ad-line);
+  background: var(--card);
+  display: grid;
+  place-items: center;
+}
+.ad-strip .q-dot.ok,
+.ad-strip .q-dot.meh {
+  /* Båda räknas som klara – varje gjord uppgift ger en pollett, inga "sämre" prickar. */
+  border: 3px solid var(--ad-ok);
+  background: var(--ad-ok-bg);
+  transform: none;
+}
+.ad-strip .q-dot.ok::after,
+.ad-strip .q-dot.meh::after {
+  content: var(--ad-token, '★');
+  font-size: 22px;
+  line-height: 1;
+}
+/* "Kvar"-klocka: en skiva som krymper för varje gjord uppgift (som en Time Timer). */
+.ad-left {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px 6px 6px;
+  border-radius: var(--r);
+  background: var(--ad-calm);
+  border: 3px solid transparent;
+}
+.ad-left-pie {
+  --left: 1;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  border: 3px solid var(--ad-line);
+  background: conic-gradient(var(--ad-model) calc(var(--left) * 360deg), var(--card) 0);
+  transition: background 0.4s ease;
+}
+.ad-left-text {
+  font-family: var(--font-display);
+  font-size: 20px;
+  min-width: 3.6em;
+}
+.ad-left.warn {
+  border-color: var(--ad-warn);
+  background: var(--ad-warn-bg);
+}
+.ad-left.warn .ad-left-pie {
+  background: conic-gradient(var(--ad-warn) calc(var(--left) * 360deg), var(--card) 0);
+}
+.ad-pause {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 84px;
+  min-height: 64px;
+  border-radius: var(--r);
+  border: 3px solid var(--ad-line);
+  background: var(--card);
+  color: var(--ink);
+  font: 700 16px var(--font-body);
+  cursor: pointer;
+}
+.ad-pause-icon {
+  font-size: 30px;
+  line-height: 1;
+}
+@media (max-width: 560px) {
+  .ad-now {
+    flex-wrap: wrap;
+  }
+  .ad-first {
+    flex: 1 1 100%;
+  }
+  .ad-left {
+    flex: 1;
+  }
+  .ad-step-label {
+    display: none;
+  }
+  .ad-step.now .ad-step-label {
+    display: inline;
+  }
+  .ad-strip .q-dot {
+    width: 30px;
+    height: 30px;
+  }
+}
+
+/* ---------- "Hur mår du?" ---------- */
+.ad-checkin {
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+  text-align: center;
+  padding: 12px 8px 20px;
+}
+.ad-checkin-title {
+  font-size: clamp(30px, 5vw, 42px);
+  margin: 4px 0 0;
+}
+.ad-checkin .muted {
+  margin: 0;
+  font-size: 18px;
+}
+.ad-feelings {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 12px;
+  width: min(100%, 680px);
+  margin-top: 6px;
+}
+.ad-feeling {
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+  padding: 14px 6px;
+  min-height: 120px;
+  border-radius: var(--r-lg);
+  border: 3px solid var(--ad-line);
+  background: var(--card);
+  color: var(--ink);
+  font: 700 18px var(--font-body);
+  cursor: pointer;
+}
+.ad-feeling-icon {
+  font-size: clamp(44px, 8vw, 60px);
+  line-height: 1.1;
+}
+.ad-feeling.on {
+  border-color: var(--ad-model);
+  background: var(--ad-model-bg);
+}
+.ad-checkin-answer {
+  min-height: 1.5em;
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+}
+.ad-checkin-say {
+  font-size: 22px;
+  font-weight: 700;
+  margin: 6px 0 0;
+}
+.ad-checkin-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+}
+.ad-checkin-skip {
+  margin-top: 6px;
+}
+@media (max-width: 560px) {
+  .ad-feelings {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* Mjukt "prova en gång till" (inget fel-ljud, ingen röd färg). */
+.quiz.adapted .fb.ad-soft {
+  background: var(--ad-model-bg);
+  border-color: var(--ad-model);
+}
+
+/* ---------- Paus ---------- */
+.ad-pause-screen {
+  position: absolute;
+  inset: 0;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: color-mix(in srgb, var(--ad-calm) 94%, transparent);
+  border-radius: var(--r-lg);
+  padding: 16px;
+}
+.ad-pause-card {
+  text-align: center;
+  background: var(--card);
+  border: 2px solid var(--ad-line);
+  border-radius: var(--r-lg);
+  padding: 28px 24px;
+  max-width: 440px;
+  width: 100%;
+}
+.ad-pause-card h2 {
+  font-size: 40px;
+  margin: 6px 0;
+}
+.ad-pause-card p {
+  font-size: 20px;
+  margin: 6px 0;
+}
+/* Andningscirkel: växer vid inandning (4 s) och krymper vid utandning (6 s). Styrs av --s från JS. */
+.ad-breath-ring {
+  --s: 0.55;
+  width: 200px;
+  height: 200px;
+  margin: 10px auto 4px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: radial-gradient(circle, var(--ad-ok-bg) 0 58%, transparent 60%);
+  border: 3px dashed var(--ad-line);
+}
+.ad-breath-dot {
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 56px;
+  background: color-mix(in srgb, var(--ad-ok) 22%, var(--card));
+  border: 4px solid var(--ad-ok);
+  transform: scale(var(--s));
+  transition: transform 0.12s linear;
+}
+:root[data-adapted-motion='off'] .ad-breath-dot {
+  transition: none;
+}
+.ad-breath-text {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 28px !important;
+  min-height: 1.3em;
+}
+.ad-pause-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 14px;
+}
+
+/* ---------- Avslutning och belöning ---------- */
+.ad-summary {
+  box-shadow: none;
+  border: 2px solid var(--ad-line);
+}
+.ad-done {
+  font-size: 22px;
+  margin: 4px 0 12px;
+}
+.ad-tokens-done {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  font-size: 34px;
+}
+.ad-tokens-done span {
+  width: 54px;
+  height: 54px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--ad-ok-bg);
+  border: 3px solid var(--ad-ok);
+}
+.ad-trophy {
+  color: var(--ink-soft);
+  margin: 0 0 10px;
+}
+.ad-reward {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+.ad-reward-msg {
+  min-height: 1.4em;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 24px;
+  margin: 0;
+}
+.ad-reward-pick {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin: 12px 0 4px;
+}
+.ad-pick-label {
+  color: var(--ink-soft);
+  font-weight: 700;
+}
+.ad-pick {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  border: 3px solid var(--ad-line);
+  background: var(--card);
+  font-size: 30px;
+  cursor: pointer;
+}
+.ad-pick.on {
+  border-color: var(--ad-ok);
+  background: var(--ad-ok-bg);
+}
+
+/* Bubblor */
+.ad-bubbles {
+  position: relative;
+  width: 100%;
+  height: clamp(240px, 38vh, 340px);
+  border-radius: var(--r-lg);
+  background: linear-gradient(180deg, #e6f3fb, #f3f8f1);
+  overflow: hidden;
+}
+:root[data-ostheme='night'] .ad-bubbles {
+  background: linear-gradient(180deg, #1d2c45, #1f2d33);
+}
+.ad-bubble {
+  position: absolute;
+  width: 84px;
+  height: 84px;
+  margin: -42px 0 0 -42px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.9);
+  background: radial-gradient(circle at 32% 30%, rgba(255, 255, 255, 0.95) 0 10%, rgba(180, 220, 255, 0.55) 40%, rgba(160, 200, 240, 0.35) 70%);
+  box-shadow: inset 0 0 12px rgba(120, 170, 220, 0.5);
+  font-size: 38px;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: transform 0.25s ease, opacity 0.25s ease;
+}
+.ad-bubble.popped {
+  transform: scale(1.35);
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Stjärnhimmel */
+.ad-sky {
+  position: relative;
+  width: 100%;
+  height: clamp(240px, 38vh, 340px);
+  border-radius: var(--r-lg);
+  background: linear-gradient(180deg, #1c2350, #2d2a62);
+  cursor: pointer;
+  overflow: hidden;
+}
+.ad-star {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  font-size: 34px;
+  pointer-events: none;
+}
+
+/* Favoriter */
+.ad-friend {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  width: min(100%, 300px);
+  padding: 20px;
+  border-radius: var(--r-lg);
+  border: 3px solid var(--ad-line);
+  background: var(--card);
+  color: var(--ink);
+  cursor: pointer;
+}
+.ad-friend-emoji {
+  font-size: clamp(96px, 20vw, 150px);
+  line-height: 1.1;
+}
+.ad-friend-name {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 30px;
+}
+
+/* Mjuka, långsamma och förutsägbara rörelser – bara om enheten tillåter rörelse. */
+@media (prefers-reduced-motion: no-preference) {
+  :root[data-adapted='on']:not([data-adapted-motion='off']) .ad-reward .ad-bubble:not(.popped) {
+    animation: ad-float 5s ease-in-out infinite !important;
+    animation-duration: 5s !important;
+    animation-iteration-count: infinite !important;
+    animation-delay: calc(var(--k, 0) * -0.6s) !important;
+  }
+  :root[data-adapted='on']:not([data-adapted-motion='off']) .ad-reward .ad-friend.hop {
+    animation: ad-hop 0.5s ease-out !important;
+    animation-duration: 0.5s !important;
+  }
+  :root[data-adapted='on']:not([data-adapted-motion='off']) .quiz.adapted .ad-prompt {
+    animation: ad-glow 2.4s ease-in-out infinite !important;
+    animation-duration: 2.4s !important;
+    animation-iteration-count: infinite !important;
+  }
+}
+@keyframes ad-float {
+  0%, 100% { translate: 0 0; }
+  50% { translate: 0 -10px; }
+}
+@keyframes ad-hop {
+  0% { transform: translateY(0); }
+  40% { transform: translateY(-14px); }
+  100% { transform: translateY(0); }
+}
+@keyframes ad-glow {
+  0%, 100% { outline-color: var(--ad-model); }
+  50% { outline-color: color-mix(in srgb, var(--ad-model) 35%, transparent); }
+}
+
+/* ---------- Profilguiden och föräldradelen ---------- */
+.adapted-choice {
+  display: grid;
+  gap: 12px;
+  margin: 14px 0 6px;
+  padding: 16px;
+  border: 2px solid var(--line);
+  border-radius: 22px;
+  background: var(--card);
+}
+.adapted-choice.on {
+  border-color: var(--good);
+}
+.adapted-choice-head {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 12px;
+}
+.adapted-choice-head b {
+  display: block;
+  font-size: 17px;
+}
+.adapted-choice-head small,
+.adapted-choice-more small {
+  display: block;
+  color: var(--ink-soft);
+  line-height: 1.45;
+  margin-top: 3px;
+}
+.adapted-choice-icon {
+  font-size: 34px;
+}
+.adapted-choice-more > span {
+  font-weight: 700;
+}
+.adapted-interests {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 8px 0 4px;
+}
+.adapted-interests .pick.adapted-interest {
+  width: auto;
+  height: auto;
+  min-height: 52px;
+  padding: 8px 14px;
+  font-size: 17px;
+  border-radius: 16px;
+}
+.adapted-sub {
+  margin: 18px 0 4px;
+  font-size: 15px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--ink-soft);
+}
+.adapted-note {
+  margin: -2px 0 8px;
+  font-size: 14px;
+  line-height: 1.45;
+}
+.adapted-what {
+  margin: 4px 0 10px;
+}
+.adapted-what summary {
+  cursor: pointer;
+  font-weight: 700;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+}
+.adapted-what ul {
+  margin: 6px 0 0;
+  padding-left: 22px;
+  line-height: 1.55;
+}
+@media (max-width: 480px) {
+  .adapted-choice-head {
+    grid-template-columns: auto 1fr;
+  }
+  .adapted-choice-head .toggle {
+    grid-column: 1 / -1;
+    justify-self: start;
+  }
+}
+
+/* Animationer avstängda (föräldraval): inga övergångar alls i uppgifterna och belöningen. */
+:root[data-adapted='on'][data-adapted-motion='off'] .quiz.adapted *,
+:root[data-adapted='on'][data-adapted-motion='off'] .quiz.adapted *::before,
+:root[data-adapted='on'][data-adapted-motion='off'] .quiz.adapted *::after {
+  transition: none !important;
+  animation: none !important;
+}
+.quiz.adapted .fb.ad-soft {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+/* =====================================================================================
+   Runda 2: visuell timer, dagens plan, förvarning/avslutning, rörelsepaus och "Känslor & jag".
+   Delarna i Känslor & jag gäller alla barn (inte bara med data-adapted). Logik: adapted-home.js,
+   calm-kit.js, views/feelings.js.
+   ===================================================================================== */
+
+/* ---------- Krympande cirkel (Time Timer) ---------- */
+.tt-ring {
+  --tt-size: 56px;
+  --tt-color: #e8604c;
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  width: var(--tt-size);
+  height: var(--tt-size);
+  flex: none;
+  border-radius: 50%;
+  background: var(--card, #fff);
+  box-shadow: inset 0 0 0 2px var(--ad-line, #d9d4c8);
+}
+.tt-disc {
+  position: absolute;
+  inset: 3px;
+  border-radius: 50%;
+  background: conic-gradient(var(--tt-color) calc(var(--tt-frac, 1) * 360deg), transparent 0);
+  transform: scaleX(-1); /* krymper medurs, som en Time Timer */
+  transition: background 0.4s linear;
+}
+.tt-ring.warn {
+  --tt-color: #e0a12b;
+}
+.tt-label {
+  position: relative;
+  font: 800 calc(var(--tt-size) * 0.3) / 1 var(--font-display);
+  color: var(--ink);
+  background: color-mix(in srgb, var(--card, #fff) 85%, transparent);
+  border-radius: 999px;
+  padding: 0.1em 0.3em;
+}
+.tt-ring.tt-big {
+  --tt-color: #5aa47c;
+}
+.sb-chip.ad-time {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.sb-chip.ad-time.warn {
+  background: var(--ad-warn-bg, #fdf4e3);
+}
+
+/* ---------- Dagens plan (hemskärmen) ---------- */
+.dp {
+  background: var(--glass);
+  border: 2px solid var(--glass-line);
+  border-radius: var(--r-lg);
+  padding: 14px 16px;
+  margin: 4px 0 14px;
+  color: var(--home-ink);
+}
+.dp-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.dp-head h2 {
+  margin: 0;
+  font: 800 22px/1.1 var(--font-display);
+}
+.dp-now {
+  font-weight: 700;
+  background: var(--card);
+  border-radius: 999px;
+  padding: 4px 12px;
+  border: 2px solid var(--ad-model, #3f7fd8);
+}
+.dp-now.done {
+  border-color: var(--ad-ok, #2f9e6e);
+}
+.dp-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 10px;
+}
+.dp-steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  gap: 8px;
+  flex: 1;
+  overflow-x: auto;
+}
+.dp-steps li {
+  flex: 1 1 0;
+  min-width: 92px;
+}
+.dp-step {
+  width: 100%;
+  min-height: 108px;
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  gap: 4px;
+  padding: 8px 6px;
+  border-radius: var(--r);
+  border: 3px solid var(--ad-line, #d9d4c8);
+  background: var(--card);
+  color: var(--ink);
+  font: inherit;
+  position: relative;
+}
+.dp-icon {
+  font-size: 34px;
+  line-height: 1;
+}
+.dp-icon .pic {
+  font-size: 34px;
+}
+.dp-icon .photo-pic img,
+.dp-icon img {
+  width: 44px;
+  height: 44px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+.dp-label {
+  font-weight: 700;
+  font-size: 14px;
+  text-align: center;
+  line-height: 1.15;
+}
+.dp-state {
+  font: 800 13px/1 var(--font-display);
+  color: var(--ink-soft);
+}
+.dp-step.now {
+  border-color: var(--ad-model, #3f7fd8);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--ad-model, #3f7fd8) 35%, transparent);
+}
+.dp-step.now .dp-state {
+  color: var(--ad-model, #3f7fd8);
+}
+.dp-step.done {
+  opacity: 0.6;
+  background: var(--ad-ok-bg, #e8f6ef);
+}
+.dp-step.done .dp-state {
+  color: var(--ad-ok, #2f9e6e);
+  font-size: 18px;
+}
+.dp-after {
+  border-style: dashed;
+  background: color-mix(in srgb, var(--card) 70%, transparent);
+}
+.dp-timer {
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+  text-align: center;
+  flex: none;
+  max-width: 96px;
+}
+.dp-timer small {
+  font-weight: 700;
+  line-height: 1.1;
+}
+.dp-check {
+  margin-top: 10px;
+}
+
+/* ---------- Förvarning och avslutning ---------- */
+.ad-warn-banner {
+  position: absolute;
+  left: 50%;
+  top: calc(var(--sb-h, 44px) + 10px);
+  transform: translateX(-50%);
+  z-index: 80;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: min(92vw, 560px);
+  padding: 12px 16px;
+  border-radius: var(--r-lg);
+  background: var(--card);
+  color: var(--ink);
+  border: 3px solid var(--ad-warn, #c98a1b);
+  box-shadow: var(--shadow);
+}
+.ad-warn-text {
+  display: grid;
+  gap: 2px;
+  flex: 1;
+  font-size: 17px;
+}
+.ad-warn-text b {
+  font: 800 20px/1.1 var(--font-display);
+}
+.ad-warn-text .pic.sm,
+.ad-plan-next .pic.sm {
+  font-size: 1.2em;
+}
+.ad-warn-text img,
+.ad-plan-next img,
+.ae-step img,
+.ae-choice img {
+  width: 1.6em;
+  height: 1.6em;
+  object-fit: cover;
+  border-radius: 6px;
+  vertical-align: middle;
+}
+.limit-screen.ad-ending {
+  background: linear-gradient(180deg, #2a3557, #3d4f73);
+}
+.ae-card {
+  width: min(94vw, 620px);
+  display: grid;
+  gap: 16px;
+  justify-items: center;
+}
+.ae-title {
+  margin: 0;
+  font: 800 clamp(26px, 4.6vw, 38px) / 1.15 var(--font-display);
+}
+.ae-steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+  width: 100%;
+}
+.ae-step {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 16px;
+  border-radius: var(--r);
+  background: rgba(255, 255, 255, 0.08);
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  font-size: 19px;
+  text-align: left;
+  opacity: 0.55;
+}
+.ae-step.now {
+  opacity: 1;
+  border-color: #ffd36b;
+  background: rgba(255, 255, 255, 0.16);
+}
+.ae-step.done {
+  opacity: 0.9;
+}
+.ae-step.done .ae-icon::after {
+  content: ' ✓';
+  color: #8ee0b5;
+}
+.ae-icon {
+  font-size: 28px;
+  min-width: 2.2em;
+}
+.ae-next {
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+}
+.ae-next-pic .pic {
+  font-size: 96px;
+}
+.ae-next-pic img {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 24px;
+  border: 4px solid #fff;
+}
+.ae-next-label {
+  font: 800 26px/1.2 var(--font-display);
+  margin: 0;
+}
+.ae-choices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+}
+.ae-choice {
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+  min-width: 96px;
+  min-height: 88px;
+  padding: 8px;
+  border-radius: var(--r);
+  border: 2px solid rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  font: inherit;
+}
+.ae-choice.on {
+  border-color: #ffd36b;
+}
+.ae-choice .pic {
+  font-size: 34px;
+}
+.ae-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+/* ---------- Efter passet: rörelsepaus och nästa i planen ---------- */
+.ad-after {
+  display: grid;
+  gap: 10px;
+  justify-items: center;
+  margin: 6px 0;
+}
+.ad-break-slot:empty {
+  display: none;
+}
+.ad-break-slot {
+  width: 100%;
+}
+.ad-plan-next.done {
+  margin: 0;
+  font-weight: 700;
+}
+
+/* ---------- Rörelsepaus, tyst minut, hjälpkort ---------- */
+.mvb {
+  display: grid;
+  align-content: start;
+  gap: 14px;
+  justify-items: center;
+  text-align: center;
+  padding: 10px 4px 20px;
+}
+.mvb-title {
+  margin: 0;
+  font: 800 clamp(24px, 4vw, 32px) / 1.15 var(--font-display);
+}
+.mvb-choices {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+  width: min(100%, 620px);
+}
+.mvb-choice {
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  min-height: 150px;
+  padding: 14px 10px;
+  border-radius: var(--r-lg);
+  border: 3px solid var(--line);
+  background: var(--card);
+  color: var(--ink);
+  font: inherit;
+  font-size: 18px;
+}
+.mvb-choice small {
+  color: var(--ink-soft);
+}
+.mvb-icon {
+  font-size: 54px;
+  line-height: 1;
+}
+.mvb-big {
+  font-size: clamp(80px, 16vw, 120px);
+  line-height: 1;
+}
+.mvb-say {
+  max-width: 34em;
+  font-size: 20px;
+  margin: 0;
+}
+.mvb-dots {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.mvb-dot {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 3px solid var(--ad-line, #d9d4c8);
+  background: var(--card);
+}
+.mvb-dot.on {
+  background: var(--ad-ok, #2f9e6e);
+  border-color: var(--ad-ok, #2f9e6e);
+}
+.mvb-count {
+  font: 800 clamp(48px, 10vw, 72px) / 1 var(--font-display);
+  min-height: 1em;
+}
+.mvb-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.help-card {
+  display: grid;
+  align-content: start;
+  justify-items: center;
+  gap: 12px;
+  padding: 24px;
+  text-align: center;
+}
+.help-icon {
+  font-size: 110px;
+  line-height: 1;
+}
+.help-text {
+  font: 800 clamp(40px, 8vw, 64px) / 1.1 var(--font-display);
+  margin: 0;
+}
+
+/* ---------- Sociala berättelser ---------- */
+.ss-intro {
+  margin: 0 0 12px;
+}
+.ss-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+  gap: 12px;
+}
+.ss-card {
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  padding: 14px 10px;
+  min-height: 150px;
+  border-radius: var(--r-lg);
+  border: 2px solid var(--line);
+  background: var(--card);
+  color: var(--ink);
+  font: inherit;
+  text-align: center;
+}
+.ss-card-pic .pic {
+  font-size: 48px;
+}
+.ss-card-pic img {
+  width: 64px;
+  height: 64px;
+  object-fit: cover;
+  border-radius: 14px;
+}
+.ss-card-title {
+  font: 800 18px/1.15 var(--font-display);
+}
+.ss-card small {
+  color: var(--ink-soft);
+}
+.ss-page,
+.ss-done {
+  display: grid;
+  align-content: start;
+  gap: 14px;
+  max-width: 720px;
+  margin: 0 auto;
+}
+.ss-done {
+  justify-items: center;
+  text-align: center;
+}
+.ss-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.ss-title {
+  margin: 0;
+  flex: 1;
+  font: 800 clamp(22px, 3.8vw, 30px) / 1.15 var(--font-display);
+}
+.ss-dots {
+  display: flex;
+  gap: 6px;
+}
+.ss-dots span {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--line);
+}
+.ss-dots .past {
+  background: color-mix(in srgb, var(--app) 45%, var(--line));
+}
+.ss-dots .on {
+  background: var(--app);
+  transform: scale(1.25);
+}
+.ss-pic {
+  display: grid;
+  place-items: center;
+  min-height: 170px;
+  background: color-mix(in srgb, var(--app) 10%, var(--card));
+  border-radius: var(--r-lg);
+}
+.ss-pic .pic {
+  font-size: clamp(96px, 18vw, 140px);
+}
+.ss-pic img {
+  max-height: 220px;
+  max-width: 100%;
+  border-radius: var(--r);
+  object-fit: cover;
+}
+.ss-text {
+  display: grid;
+  gap: 10px;
+}
+.ss-line {
+  margin: 0;
+  font-size: clamp(21px, 3.2vw, 26px);
+  line-height: 1.45;
+}
+.ss-line.coach {
+  font-weight: 700;
+  border-left: 6px solid var(--app);
+  padding-left: 12px;
+}
+.ss-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+.ss-next {
+  margin-left: auto;
+}
+
+/* ---------- Läsa ansikten ---------- */
+.fe-face {
+  display: grid;
+  place-items: center;
+}
+.face-svg {
+  display: block;
+  width: min(46vw, 230px);
+  height: auto;
+}
+.face-svg.face-s {
+  width: min(28vw, 150px);
+}
+.face-photo img {
+  width: min(56vw, 300px);
+  height: min(56vw, 300px);
+  object-fit: cover;
+  border-radius: var(--r-lg);
+}
+.face-photo.face-s img {
+  width: min(28vw, 150px);
+  height: min(28vw, 150px);
+}
+.fe-opt {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: clamp(22px, 3.6vw, 30px);
+}
+.fe-emoji {
+  font-size: 1.3em;
+}
+
+/* ---------- Var känns det? ---------- */
+.bm {
+  display: grid;
+  align-content: start;
+  gap: 14px;
+  justify-items: center;
+  text-align: center;
+}
+.bm-title {
+  margin: 0;
+  font: 800 clamp(24px, 4vw, 32px) / 1.15 var(--font-display);
+}
+.bm-feelings {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px;
+  width: min(100%, 680px);
+}
+.bm-feeling {
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+  padding: 10px;
+  border-radius: var(--r-lg);
+  border: 2px solid var(--line);
+  background: var(--card);
+  color: var(--ink);
+  font: inherit;
+  font-size: 20px;
+}
+.bm-feeling .face-svg {
+  width: 96px;
+}
+.bm-figure {
+  position: relative;
+  width: min(70vw, 340px);
+  aspect-ratio: 1;
+}
+.bm-body {
+  width: 100%;
+  height: 100%;
+  fill: color-mix(in srgb, var(--app) 22%, var(--card));
+  stroke: color-mix(in srgb, var(--app) 22%, var(--card));
+}
+.bm-spot {
+  position: absolute;
+  width: 56px;
+  height: 56px;
+  margin: -28px 0 0 -28px;
+  border-radius: 50%;
+  border: 3px dashed color-mix(in srgb, var(--app) 60%, var(--ink-soft));
+  background: color-mix(in srgb, var(--card) 70%, transparent);
+}
+.bm-spot.on {
+  border-style: solid;
+  background: color-mix(in srgb, #e8604c 70%, transparent);
+  border-color: #c2452f;
+}
+.bm-face .face-svg {
+  width: 150px;
+}
+.bm-sentence {
+  font: 800 clamp(22px, 3.6vw, 28px) / 1.3 var(--font-display);
+  margin: 0;
+  max-width: 26em;
+}
+
+/* ---------- Min verktygslåda ---------- */
+.ct-root {
+  position: relative;
+  min-height: 100%;
+}
+.ct-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 12px;
+}
+.ct-card {
+  position: relative;
+}
+.ct-open {
+  width: 100%;
+  min-height: 150px;
+  display: grid;
+  justify-items: center;
+  align-content: start;
+  gap: 6px;
+  padding: 14px 12px;
+  border-radius: var(--r-lg);
+  border: 2px solid var(--line);
+  background: var(--card);
+  color: var(--ink);
+  font: inherit;
+  text-align: center;
+}
+.ct-card.fav .ct-open {
+  border-color: #e0a12b;
+}
+.ct-open b {
+  font: 800 19px/1.15 var(--font-display);
+}
+.ct-open small {
+  color: var(--ink-soft);
+  line-height: 1.3;
+}
+.ct-icon {
+  font-size: 46px;
+  line-height: 1;
+}
+.ct-star {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 0;
+  background: transparent;
+  font-size: 26px;
+  color: #d49a1c;
+}
+
+/* ---------- Föräldradelen: plan och logg ---------- */
+.ap-plan {
+  list-style: none;
+  margin: 6px 0;
+  padding: 0;
+  display: grid;
+  gap: 6px;
+}
+.ap-plan-step {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border-radius: 12px;
+  background: var(--card);
+  border: 1px solid var(--line);
+}
+.ap-plan-n {
+  font-weight: 800;
+  width: 1.6em;
+  text-align: center;
+}
+.ap-plan-label {
+  flex: 1;
+}
+.ap-plan-add {
+  display: grid;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+.ap-plan-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.ap-chip {
+  min-height: 40px;
+  padding: 4px 10px;
+  font-size: 14px;
+}
+.ap-log-wrap {
+  overflow-x: auto;
+}
+.ap-log {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+.ap-log th,
+.ap-log td {
+  padding: 6px 8px;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+}
+.ap-moods {
+  font-size: 18px;
+}
+.ap-patterns {
+  margin: 8px 0;
+  padding-left: 1.2em;
+}
+
+@media (max-width: 560px) {
+  .dp-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .dp-timer {
+    max-width: none;
+    grid-auto-flow: column;
+    justify-content: start;
+    align-items: center;
+  }
+}

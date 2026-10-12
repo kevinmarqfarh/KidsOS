@@ -8,6 +8,7 @@ import { moduleStat } from '../core/model.js';
 import { runQuiz, effectiveLevel } from './quiz.js';
 import { VIEWS } from './views/index.js';
 import { SYSTEM_APPS } from './system.js';
+import { autoPhotoize } from './img.js';
 import { mountActivitySupport } from './activity-support.js';
 
 /**
@@ -94,6 +95,8 @@ export function mountApp(host, appId, moduleId = null, opts = {}) {
       levelAppId: mod.gen || ['robot', 'trace', 'stories'].includes(mod.view) ? app.id : null,
     });
     const exit = () => (single ? host.close() : showHub());
+    // Konkreta emoji i frågor, svar, sorteringsobjekt och vyer visas som riktiga foton (src/ui/img.js).
+    const stopPhotos = app.id === 'draw' ? () => {} : autoPhotoize(host.content);
     if (mod.gen) cleanup = runQuiz(host.content, { app, module: mod, onExit: exit });
     else if (mod.view && VIEWS[mod.view]) {
       const support = mountActivitySupport(host.content, { kos, module: mod, onExit: exit });
@@ -101,6 +104,11 @@ export function mountApp(host, appId, moduleId = null, opts = {}) {
       cleanup = () => { viewCleanup?.(); support.content.remove(); support.destroy(); };
     }
     else host.content.append(h('p', 'Kommer snart!'));
+    const inner = cleanup;
+    cleanup = () => {
+      stopPhotos();
+      if (inner) inner();
+    };
   }
 
   function navigate(mid, mopts) {

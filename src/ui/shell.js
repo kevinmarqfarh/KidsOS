@@ -14,6 +14,11 @@ import { mountApp, appMeta } from './apphost.js';
 import { shellApi } from './system.js';
 import { createDesktop } from './desktop.js';
 import { layoutFor } from '../core/model.js';
+import { tickerSpan } from './fx.js';
+import { INTERESTS, adaptedPrefs as readAdaptedPrefs, presetFor as adaptedPreset } from '../core/adapted.js';
+import { installAdapted, adaptedHomeSection, adaptedTimeChip, adaptedLimit } from './adapted-home.js';
+/** Autismstöd: det som ändras när föräldern anger om barnet också har IF (svarsalternativ och felhantering). */
+const adaptedIfPatch = (support, intellectual) => { const pr = adaptedPreset(support, intellectual); return { intellectual: pr.intellectual, options: pr.options, errorMode: pr.errorMode }; };
 
 let osEl;
 let screenEl;
@@ -35,6 +40,7 @@ export function mountShell(root) {
   clear(root).appendChild(osEl);
   Object.assign(shellApi, { parentGate, profileWizard, showLock, goHome, modal, confirmSwitch });
   desktop = createDesktop(deskEl, { osEl, confirmSwitch, showLock, modal });
+  installAdapted({ goHome, openApp, closeWindow, showLock, parentGate }); // Autismstöd: dagens plan, förvarning, avslutning
   const subscriptions = [
     kos.on('stars', renderStatus),
     kos.on('tick', renderStatus),
@@ -76,9 +82,9 @@ function renderStatus() {
     h('span.sb-time', time),
     h(
       'span.sb-right',
-      Number.isFinite(left) ? h('span.sb-chip.sb-timeleft', { title: 'Tid kvar i dag' }, `⏳ ${Math.ceil(left)} min`) : null,
+      kos.adapted ? adaptedTimeChip(p) : Number.isFinite(left) ? h('span.sb-chip.sb-timeleft', { title: 'Tid kvar i dag' }, `⏳ ${Math.ceil(left)} min`) : null,
       p.streak?.count > 1 ? h('span.sb-chip', { title: 'Dagar i rad' }, `🔥 ${p.streak.count}`) : null,
-      h('span.sb-chip.sb-stars', { title: 'Stjärnor' }, `⭐ ${p.stars}`),
+      h('span.sb-chip.sb-stars', { title: 'Stjärnor' }, '⭐ ', tickerSpan(`sb-stars:${p.id}`, p.stars)),
     ),
   );
 }
@@ -165,6 +171,8 @@ function confirmSwitch() {
 export function profileWizard({ first = false, edit = null, onDone } = {}) {
   const initialBand = ageBandFor(edit || { age: 7 });
   const data = { name: edit?.name || '', ageBand: initialBand.id, avatar: edit?.avatar || '🦊', color: edit?.color || PROFILE_COLORS[5], wallpaper: edit?.wallpaper || 'sky' };
+  // Anpassat läge väljs av föräldern (bakom föräldraspärren), se core/adapted.js.
+  const adaptedData = { on: edit?.settings?.adapted === true, interest: readAdaptedPrefs(edit).interest, intellectual: readAdaptedPrefs(edit).intellectual };
   let approved = false;
   let submitted = false;
   let step = 0;
@@ -187,8 +195,20 @@ export function profileWizard({ first = false, edit = null, onDone } = {}) {
     back.hidden = true;
     next.textContent = 'Godkänn och låt barnet fortsätta →';
     const cards = h('div.age-band-grid', AGE_BANDS.map(item => onTap(h('button.age-band-card', { type: 'button', class: data.ageBand === item.id ? 'on' : '', 'aria-pressed': String(data.ageBand === item.id), dataset: { band: item.id } }, h('span.age-band-icon', item.icon), h('b', item.label), h('strong', item.title), h('p', item.support), h('small', item.content)), () => { data.ageBand = item.id; renderParent(); })));
-    clear(stage).append(cards, h('p.wizard-parent-note', 'Svårigheten växer när barnet övar. Uppläsning och nivåer kan justeras i inställningarna.'));
+    clear(stage).append(cards, adaptedChoice(), h('p.wizard-parent-note', 'Svårigheten växer när barnet övar. Uppläsning och nivåer kan justeras i inställningarna.'));
     if (edit) stage.append(h('p.wizard-parent-note', 'Om du ändrar åldersintervall ställs övningarnas nivåer om till intervallets startnivå. Stjärnor, samlingar och tidigare resultat sparas. Egna nivåval återställs då.'));
+  }
+  /** Växlare för anpassat läge + val av favoritintresse (används som belöning och tema). */
+  function adaptedChoice() {
+    const sw = onTap(h('button.toggle', { type: 'button', role: 'switch', id: 'adapted-toggle', 'aria-checked': String(adaptedData.on), 'aria-labelledby': 'adapted-title', class: adaptedData.on ? 'on' : '' }, h('i')), () => { adaptedData.on = !adaptedData.on; renderParent(); });
+    return h(
+      'div.adapted-choice',
+      { class: adaptedData.on ? 'on' : '' },
+      h('div.adapted-choice-head', h('span.adapted-choice-icon', { 'aria-hidden': 'true' }, '🧩'), h('div', h('b#adapted-title', 'Autismstöd'), h('small', 'Visuellt schema, förvarning före övergångar, pollett-tavla med barnets intresse, ”Hur mår du?”, paus med andningscirkel och lugnare sinnesintryck. Svårigheten följer ålder som vanligt.')), sw),
+      adaptedData.on
+        ? h('div.adapted-choice-more', h('span', 'Barnets favoritintresse:'), h('div.adapted-interests', INTERESTS.map((it) => pickButton('button.pick.adapted-interest', `${it.icon} ${it.label}`, adaptedData.interest === it.id, () => { adaptedData.interest = it.id; renderParent(); }))), h('span', 'Har barnet också en intellektuell funktionsnedsättning?'), h('div.adapted-interests', [['no', 'Nej'], ['yes', 'Ja']].map(([v, label]) => pickButton('button.pick.adapted-interest', label, adaptedData.intellectual === (v === 'yes'), () => { adaptedData.intellectual = v === 'yes'; renderParent(); }))), h('small', 'Stödnivå (standard nivå 2), ljud, animationer och färger ställs in under Inställningar → Föräldrar. Läget ersätter inte råd från habiliteringen.'))
+        : null,
+    );
   }
   function pickButton(tag, text, selected, fn, attrs = {}) {
     return onTap(h(tag, { type: 'button', class: selected ? 'on' : '', 'aria-pressed': String(selected), ...attrs }, text), fn);
@@ -215,9 +235,12 @@ export function profileWizard({ first = false, edit = null, onDone } = {}) {
       const profile = kos.state.profiles.find(item => item.id === edit.id);
       if (!profile.ageBand || data.ageBand !== initialBand.id) applyAgeBand(profile, data.ageBand);
       Object.assign(profile, { name: data.name.trim().slice(0, 16), avatar: data.avatar, color: data.color, wallpaper: data.wallpaper });
+      profile.settings.adapted = adaptedData.on;
+      const prevPrefs = readAdaptedPrefs(profile);
+      profile.settings.adaptedPrefs = { ...prevPrefs, interest: adaptedData.interest, ...(prevPrefs.intellectual !== adaptedData.intellectual ? adaptedIfPatch(prevPrefs.support, adaptedData.intellectual) : {}) };
       kos.saveNow();
       kos.applySettings();
-    } else kos.createProfile({ ...data, age: band().age, name: data.name.trim() });
+    } else kos.createProfile({ ...data, age: band().age, name: data.name.trim(), adapted: adaptedData.on, adaptedPrefs: { v: 2, interest: adaptedData.interest, ...adaptedIfPatch(2, adaptedData.intellectual) } });
     kos.sfx('fanfare');
     sheet.close();
     if (onDone) onDone(); else showLock();
@@ -311,9 +334,10 @@ export function goHome() {
       h(
         'div.home-head',
         h('div.home-hello', h('h1', `${greet} ${p.name}!`), h('p', 'Vad vill du upptäcka i dag?')),
-        h('button.wallet-chip', { type: 'button', onClick: () => openApp('play') }, h('span', '🪙'), h('b', String(p.coins || 0)), h('small', 'mynt')),
+        h('button.wallet-chip', { type: 'button', onClick: () => openApp('play') }, h('span', '🪙'), h('b', tickerSpan(`home-coins:${p.id}`, p.coins || 0)), h('small', 'mynt')),
         h('div.rank', h('span.rank-emoji', rank.emoji), h('div.rank-text', h('b', rank.title), h('span.rank-bar', h('i', { style: { width: `${Math.round(rank.progress * 100)}%` } })), h('small', rank.next ? `${rank.toNext} ⭐ till ${rank.next.title}` : 'Högsta titeln!'))),
       ),
+      kos.adapted ? adaptedHomeSection() : null,
       h('div.home-cards', wonderCard, trophyCard),
       grid,
       dock,
@@ -499,7 +523,7 @@ export function parentGate(onOk) {
   }
   const display = h('div.pin-display', { 'aria-hidden': 'true' });
   const code = h('input.text-input', { type: pin ? 'password' : 'text', inputmode: 'numeric', maxlength: '4', autocomplete: 'off', 'aria-label': pin ? 'Föräldrakod' : 'Svar på frågan' });
-  const error = h('p', { role: 'alert' });
+  const error = h('div.gate-error', { role: 'alert' });
   code.addEventListener('input', () => {
     entry = code.value.replace(/\D/g, '').slice(0, 4);
     code.value = entry; code.removeAttribute('aria-invalid'); error.textContent = ''; render();
@@ -568,6 +592,7 @@ function showLimitWarning({ minutes }) {
 }
 
 function showLimit() {
+  if (kos.adapted) return adaptedLimit(); // Autismstöd: gör klart passet, sen lugn avslutning (adapted-home.js)
   if (document.querySelector('.limit-screen')) return;
   document.querySelectorAll('.time-warning').forEach(node => node.remove());
   kos.paused = true;

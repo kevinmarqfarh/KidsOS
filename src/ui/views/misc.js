@@ -2,12 +2,13 @@
 import { h, clear, onTap, interactiveGraphic, wait } from '../dom.js';
 import { bodySvg, BODY_PARTS, ORGANS } from '../../apps/biology.js';
 import { STORIES } from '../../apps/svenska.js';
-import { WONDERS, eligibleWonders, wonderAnswer } from '../../apps/wonder.js';
+import { WONDERS, WONDER_CATS, randomFact, eligibleWonders, wonderAnswer } from '../../apps/wonder.js';
 import { DRAW_PROMPTS, DRAW_COLORS, DRAW_STAMPS } from '../../apps/draw.js';
 import { hasInSet } from '../../core/model.js';
 import { loadDrawings, saveDrawing, deleteDrawing, loadJSON } from '../../core/storage.js';
 import { createRng } from '../../core/rng.js';
 import { photo, creditLine } from '../img.js';
+import { flipCard, speakAlong, shimmer } from '../fx.js';
 
 /* ---------- Utforska kroppen ---------- */
 export function bodyView(el, { kos, app, level }) {
@@ -110,7 +111,8 @@ export function storiesView(el, { kos, app, level }) {
         if (!reading || !alive) break;
         ln.classList.add('reading');
         ln.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
-        await kos.read(ln.textContent);
+        // fx: ord-för-ord-markering medan raden läses (koppling ljud–skrift).
+        await speakAlong(ln, (t, o) => kos.read(t, o));
         ln.classList.remove('reading');
         await wait(250);
       }
@@ -193,56 +195,86 @@ export function storiesView(el, { kos, app, level }) {
 }
 
 /* ---------- Undra ---------- */
+const CAT_ICON = { Natur: '🌿', Kroppen: '🫀', Djur: '🐾', Rymden: '🪐', Vetenskap: '🔬', Teknik: '⚙️', Historia: '🏛️', Mat: '🍎', Språk: '💬', Känslor: '💛' };
+
 export function wonderView(el, { kos, app, opts, level }) {
   const p = kos.profile;
+  const rng = createRng(Date.now());
   let cat = 'Alla';
   const available = eligibleWonders(level, p.settings.showAllModules);
-  const cats = ['Alla', ...new Set(available.map((w) => w.cat))];
+  const cats = ['Alla', ...WONDER_CATS.filter((c) => available.some((w) => w.cat === c))];
+  const pickNew = (pool) => {
+    const unseen = pool.filter((w) => !hasInSet(p, 'wonders', w.id));
+    return rng.pick(unseen.length ? unseen : pool);
+  };
+  function factCard() {
+    const f = randomFact(rng);
+    const text = h('span.wf-text', f.text);
+    const card = h('div.wonder-fact', h('span.wf-e', f.e), h('div.wf-body', h('b', '💡 Visste du?'), text));
+    onTap(card, () => {
+      const w = available.find((x) => x.id === f.id);
+      if (w) open(w);
+    });
+    return card;
+  }
   function list() {
     clear(el);
-    const chips = h('div.chip-row', cats.map((c) => onTap(h('button.chip-btn', { type: 'button', class: c === cat ? 'on' : '' }, c), () => {
+    const chips = h('div.chip-row', cats.map((c) => onTap(h('button.chip-btn', { type: 'button', class: c === cat ? 'on' : '' }, c === 'Alla' ? c : `${CAT_ICON[c] || ''} ${c}`), () => {
       cat = c;
       list();
     })));
     const grid = h('div.wonder-grid');
-    available.filter((w) => cat === 'Alla' || w.cat === cat).forEach((w, i) => {
+    const pool = available.filter((w) => cat === 'Alla' || w.cat === cat);
+    pool.forEach((w, i) => {
       const seen = hasInSet(p, 'wonders', w.id);
       const ph = photo(`w-${w.id}`, { alt: '' });
-      grid.appendChild(onTap(h('button.wonder-tile', { type: 'button', class: `${seen ? 'seen' : ''} ${ph ? 'has-photo' : ''}`, style: { '--i': i } }, ph ? h('span.wt-photo', { html: ph }) : null, h('span.wt-e', w.e), h('span.wt-q', w.q), seen ? h('span.lv-ok', '✓') : null), () => open(w)));
+      grid.appendChild(onTap(h('button.wonder-tile', { type: 'button', class: `${seen ? 'seen' : ''} ${ph ? 'has-photo' : ''}`, style: { '--i': Math.min(i, 30) } }, ph ? h('span.wt-photo', { html: ph }) : null, h('span.wt-e', w.e), h('span.wt-q', w.q), seen ? h('span.lv-ok', '✓') : null), () => open(w)));
     });
     const n = available.filter((w) => hasInSet(p, 'wonders', w.id)).length;
-    el.append(h('div.wonder', h('p.muted', `Stora frågor om allt möjligt. Du har utforskat ${n} av ${available.length}.`), chips, grid));
+    const surprise = onTap(h('button.btn.btn-primary.wonder-surprise', { type: 'button' }, '🎲 Ge mig en ny fråga'), () => open(pickNew(pool)));
+    el.append(h('div.wonder', h('p.muted', `Stora frågor om allt möjligt. Du har utforskat ${n} av ${available.length}.`), h('div.wonder-top', factCard(), surprise), chips, grid));
   }
   function open(w) {
     clear(el);
     const answer = h('div.wonder-answer', { hidden: true }, h('p', wonderAnswer(w, level)), h('div.wonder-think', h('b', '🤔 Fundera vidare: '), w.think));
-    const reveal = h('button.btn.btn-primary.btn-xl', { type: 'button' }, '💡 Visa svaret');
+    const reveal = shimmer(h('button.btn.btn-primary.btn-xl', { type: 'button' }, '💡 Visa svaret'));
+    const speak = onTap(h('button.icon-btn', { type: 'button', 'aria-label': 'läs upp frågan' }, '🔊'), () => kos.say(answer.hidden ? `${w.q} Vad tror du?` : `${w.a} Fundera vidare: ${w.think}`));
+    const flip = flipCard(
+      h('span.wonder-guess', h('span.fx-q-mark', '?'), h('span', 'Vad tror du? Gissa först – säg det högt eller berätta för någon!'), h('small.fx-flip-hint', 'Tryck för att vända kortet')),
+      answer,
+      { label: 'Vänd kortet och se svaret', onFlip: (f) => f && doReveal() },
+    );
     el.append(
       h(
         'div.wonder-card-big',
         photo(`w-${w.id}`) ? h('figure.wcb-photo', h('span', { html: photo(`w-${w.id}`, { alt: w.q }) }), h('figcaption.credit', creditLine(`w-${w.id}`))) : h('span.wcb-e', w.e),
-        h('span.wcb-cat', w.cat),
-        h('h2', w.q),
-        h('p.wonder-guess', 'Vad tror du? Gissa först – säg det högt eller berätta för någon!'),
+        h('span.wcb-cat', `${CAT_ICON[w.cat] || ''} ${w.cat}`),
+        h('h2', w.q, ' ', speak),
+        // fx: Flip Card – gissa först (framsida), vänd för svaret (baksida).
+        flip,
         reveal,
-        answer,
         h('div.row-actions', onTap(h('button.btn.btn-ghost', { type: 'button' }, '☰ Alla frågor'), () => {
           kos.stopSpeaking();
           list();
-        }), onTap(h('button.btn.btn-ghost', { type: 'button' }, '🎲 Slumpa en fråga'), () => {
+        }), onTap(h('button.btn.btn-ghost', { type: 'button' }, '🎲 Ny fråga'), () => {
           kos.stopSpeaking();
-          open(available[Math.floor(Math.random() * available.length)]);
+          open(pickNew(available.filter((x) => x.id !== w.id)));
         })),
       ),
     );
     kos.autoSay(`${w.q} Vad tror du? Gissa först!`);
-    onTap(reveal, () => {
+    let revealed = false;
+    function doReveal() {
       reveal.hidden = true;
       answer.hidden = false;
+      flip.flip(true);
+      if (revealed) return;
+      revealed = true;
       const first = !hasInSet(p, 'wonders', w.id);
       kos.reward({ app: app.id, set: 'wonders', item: w.id, stars: first ? 1 : 0 });
       kos.say(`${wonderAnswer(w, level)} Fundera vidare: ${w.think}`);
-    });
+    }
+    onTap(reveal, doReveal);
   }
   const focus = opts?.focus && available.find((w) => w.id === opts.focus);
   if (focus) open(focus);
