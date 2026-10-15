@@ -144,7 +144,14 @@ export function robotView(el, { kos, app, level }) {
   // Barnets nivå (0–4) låser upp motsvarande steg direkt, så att en 9-åring slipper nöta de enklaste banorna.
   const openStage = Math.max(0, (level ?? 0) - 1);
 
+  let resizeBoard = () => {};
+  const onResize = () => { if (alive) resizeBoard(); };
+  window.addEventListener('resize', onResize);
+  const sizeObserver = typeof ResizeObserver === 'function' ? new ResizeObserver(onResize) : null;
+  sizeObserver?.observe(el);
+
   function showMenu() {
+    resizeBoard = () => {};
     clear(el);
     const done = setSize(p, 'robotLevels');
     const grid = h('div.level-grid');
@@ -182,7 +189,8 @@ export function robotView(el, { kos, app, level }) {
   function play(L) {
     clear(el);
     const parsed = parseLevel(L);
-    const cell = Math.floor(Math.min((el.clientWidth - 24) / parsed.w, (window.innerHeight * 0.4) / parsed.h, 92));
+    const cellSize = () => Math.max(1, Math.floor(Math.min(Math.max(1, el.clientWidth - 24) / parsed.w, (window.innerHeight * 0.4) / parsed.h, 92)));
+    let cell = cellSize();
     const board = h('div.robot-board', { style: { '--cols': parsed.w, '--rows': parsed.h, '--cell': `${cell}px` } });
     for (let y = 0; y < parsed.h; y++)
       for (let x = 0; x < parsed.w; x++) {
@@ -192,11 +200,19 @@ export function robotView(el, { kos, app, level }) {
       }
     const robot = h('div.rb-robot', h('span.rb-face', '🤖'), h('span.rb-dir', '▸'));
     board.appendChild(robot);
+    let position = { x: parsed.start.x, y: parsed.start.y, dir: parsed.dir };
     const place = (x, y, dir) => {
+      position = { x, y, dir };
       robot.style.transform = `translate(${x * cell}px, ${y * cell}px)`;
       robot.querySelector('.rb-dir').style.transform = `rotate(${{ E: 0, S: 90, W: 180, N: 270 }[dir]}deg)`;
     };
     place(parsed.start.x, parsed.start.y, parsed.dir);
+    resizeBoard = () => {
+      if (!board.isConnected || el.clientWidth <= 24) return;
+      cell = cellSize();
+      board.style.setProperty('--cell', `${cell}px`);
+      place(position.x, position.y, position.dir);
+    };
 
     const cmds = L.mode === 'rel' ? ['F', 'V', 'H'] : ['U', 'R', 'D', 'L'];
     const editor = programEditor({ cmds, loops: !!L.loops, maxBlocks: L.maxBlocks, cycle: !!L.bug });
@@ -300,6 +316,8 @@ export function robotView(el, { kos, app, level }) {
   showMenu();
   return () => {
     alive = false;
+    window.removeEventListener('resize', onResize);
+    sizeObserver?.disconnect();
   };
 }
 
@@ -338,8 +356,16 @@ export function turtleView(el, { kos, app }) {
       ctx.stroke();
     }
   }
-  function setupCanvas() {
-    size = Math.floor(Math.min(el.clientWidth - 24, window.innerHeight * 0.42, 460));
+  function setupCanvas(preserve = false) {
+    if (!alive || !el.isConnected || el.clientWidth <= 24) return;
+    const nextSize = Math.max(1, Math.floor(Math.min(el.clientWidth - 24, window.innerHeight * 0.42, 460)));
+    if (preserve && nextSize === size) return;
+    const previous = preserve && canvas.width ? document.createElement('canvas') : null;
+    if (previous) {
+      previous.width = canvas.width; previous.height = canvas.height;
+      previous.getContext('2d').drawImage(canvas, 0, 0);
+    }
+    size = nextSize;
     const dpr = Math.min(2, window.devicePixelRatio || 1);
     canvas.width = size * dpr;
     canvas.height = size * dpr;
@@ -348,7 +374,11 @@ export function turtleView(el, { kos, app }) {
     const ctx = canvas.getContext('2d');
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     drawBase(ctx);
-    drawTurtle(ctx, { x: 0, y: 0, dir: 'N' });
+    if (previous) ctx.drawImage(previous, 0, 0, size, size);
+    else drawTurtle(ctx, { x: 0, y: 0, dir: 'N' });
+    ctx.lineCap = 'round';
+    ctx.lineWidth = Math.max(4, size / GRID / 6);
+    ctx.strokeStyle = p.color;
   }
   const toPx = (v) => (Math.floor(GRID / 2) + v + 0.5) * (size / GRID);
   function drawTurtle(ctx, t) {
@@ -469,8 +499,15 @@ export function turtleView(el, { kos, app }) {
       kos.say('Inte riktigt. Jämför med målbilden.');
     }
   });
-  requestAnimationFrame(start);
+  const onResize = () => setupCanvas(true);
+  window.addEventListener('resize', onResize);
+  const sizeObserver = typeof ResizeObserver === 'function' ? new ResizeObserver(onResize) : null;
+  sizeObserver?.observe(el);
+  const startFrame = requestAnimationFrame(() => { if (alive) start(); });
   return () => {
     alive = false;
+    cancelAnimationFrame(startFrame);
+    window.removeEventListener('resize', onResize);
+    sizeObserver?.disconnect();
   };
 }

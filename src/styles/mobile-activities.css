@@ -1,0 +1,68 @@
+/* Activity reflow: keep reading, writing and answers inside narrow viewports.
+   Loaded after app.css rules so these mobile values also apply without container
+   query support (older iPhones). No activity is clipped to hide overflow. */
+@media (max-width: 600px) {
+  .quiz, .q-stage, .q-body, .q-prompt-text, .q-answers,
+  .workshop, .workshop-work, .workshop-tools > *, .workshop-field,
+  .literacy-passage, .literacy-evidence, .literacy-review,
+  .course-layout, .course-list, .course-lesson, .mod-tile,
+  .spell-mid { min-width: 0; max-width: 100%; }
+
+  .mod-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+  .mod-tile { padding: 14px 8px; }
+  .mod-name { font-size: 18px; overflow-wrap: anywhere; }
+  .mod-kind, .mod-lock, .workshop-head, .workshop-goal,
+  .workshop-status, .workshop-button, .literacy-review label,
+  .course-lesson, .course-stage h2 { overflow-wrap: anywhere; }
+
+  .workshop-tools { align-items: stretch; }
+  .workshop-tools > .workshop-field { flex: 1 1 100%; }
+  .workshop select, .workshop textarea { width: 100%; min-width: 0; font-size: 16px; }
+  .workshop-button { white-space: normal; }
+  .workshop-head h2 { font-size: 26px; }
+  .workshop-choice { min-width: 0; padding: 12px; }
+  .workshop-pieces { grid-template-columns: minmax(0, 1fr); padding: 12px; }
+  .story-scene { padding: 16px; font-size: 20px; }
+  .word-scene-slots { padding: 12px; }
+  .literacy-review { padding: 12px; }
+  .literacy-review .workshop-field { flex-wrap: nowrap; }
+  .literacy-review .workshop-field > span { min-width: 0; }
+
+  .journey-map { gap: 4px; }
+  .journey-map .workshop-button { min-height: 48px; padding: 2px; font-size: 18px; }
+
+  .q-prompt { padding: 12px; gap: 10px; }
+  .q-prompt-text { overflow-wrap: anywhere; }
+  .choices { gap: 12px; }
+  .choice { min-width: 0; padding: 10px 6px; }
+  .choice-html { max-width: 100%; min-width: 0; overflow-wrap: anywhere; }
+  .choice::after { inset: 0; }
+  .choices.n3, .choices.n5 { --cols: 2; }
+  .choices.long { --cols: 1; }
+  .np-display { min-width: 0; padding-inline: 12px; overflow-wrap: anywhere; }
+  .sort-bins { grid-template-columns: repeat(auto-fit, minmax(min(100%, 140px), 1fr)); }
+  .sort-item { max-width: 100%; overflow-wrap: anywhere; }
+  .spell-row { flex-wrap: wrap; gap: 12px; }
+  .spell-mid { align-items: center; }
+  .spell-slots { justify-content: center; }
+  .column-work { min-width: 0; }
+  .column-work th { padding: 4px 2px; font-size: 11px; }
+  .column-work td { min-width: 0; padding: 4px 2px; font-size: 30px; }
+  .column-work .column-note { width: 44px; min-height: 48px; }
+  .mp-column { font-size: 36px; }
+  .course-stage { padding: 16px; }
+  .ai-grid, .rocket-build { grid-template-columns: minmax(0, 1fr); }
+  .story-card, .wonder-tile, .story-title, .story-line { min-width: 0; overflow-wrap: anywhere; }
+  .story-text { padding: 14px 12px; }
+  .story-line { font-size: 22px; }
+  .course-stage .row-actions > .btn { flex: 1 1 100%; white-space: normal; }
+  .quiz-pause-dialog { max-height: calc(100dvh - 32px); overflow-y: auto; padding: 20px; }
+}
+
+@media (max-height: 500px) and (orientation: landscape) {
+  .workshop-head { padding: 12px; margin-bottom: 12px; }
+  .workshop-head h2 { margin-block: 8px; }
+  .q-visual > .pic-big { font-size: 72px; }
+  .learning-photo-card > img { max-height: 200px; }
+  .quiz-pause-dialog { max-height: calc(100dvh - 24px); overflow-y: auto; }
+}

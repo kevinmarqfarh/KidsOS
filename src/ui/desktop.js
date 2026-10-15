@@ -193,6 +193,7 @@ export function createDesktop(root, { osEl, confirmSwitch, showLock }) {
     });
     clear(startMenu).append(
       h('div.sm-head', h('span.who-avatar', { style: { background: p.color } }, p.avatar), h('div', h('b', p.name), h('div.rank.inline', h('span.rank-emoji', rank.emoji), h('div.rank-text', h('small', rank.title), h('span.rank-bar', h('i', { style: { width: `${Math.round(rank.progress * 100)}%` } })))))),
+      h('p.sm-balances', `${p.coins || 0} mynt · ${p.stars || 0} stjärnor`),
       h('small.sm-label', 'Appar'),
       h('div.sm-grid', APPS.filter((a) => !hidden.has(a.id)).map(appBtn)),
       h('small.sm-label', 'Verktyg'),

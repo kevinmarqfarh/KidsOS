@@ -94,6 +94,7 @@ export function showLock() {
   closeWindow(true);
   desktop?.hide();
   current = { screen: 'lock' };
+  screenEl.classList.remove('home-screen');
   osEl.className = 'os wp-sky lockmode';
   renderStatus();
   const now = new Date();
@@ -266,6 +267,7 @@ export function goHome() {
   desktop.hide();
   closeWindow();
   current = { screen: 'home' };
+  screenEl.classList.add('home-screen');
   setWallpaper();
   renderStatus();
   touchDay(p, dateKey(), 0);
@@ -312,7 +314,7 @@ export function goHome() {
   );
   onTap(trophyCard, () => openApp('trophies', null, trophyCard));
 
-  const dock = h('nav.dock');
+  const dock = h('nav.dock', { 'aria-label': 'Genvägar' });
   const dockItems = [
     ['🏡', 'Lekstaden', () => openApp('play', 'studio')],
     ['🏆', 'Troféer', () => openApp('trophies')],

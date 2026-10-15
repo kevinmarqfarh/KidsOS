@@ -16,7 +16,7 @@ async function bundle() {
   const imgs = generateImages();
   console.log(`✓ ${imgs.count} foton inbäddade (${imgs.kb} kB)`);
   const js = await build({ entryPoints: [join(root, 'src/main.js')], bundle: true, format: 'iife', minify: true, write: false, target: ['safari14', 'chrome90', 'firefox90'], legalComments: 'none' });
-  const css = await build({ entryPoints: [join(root, 'src/styles/app.css')], bundle: true, minify: true, write: false, loader: { '.css': 'css' }, target: ['safari14'] });
+  const css = await build({ entryPoints: [join(root, 'src/styles/index.css')], bundle: true, minify: true, write: false, loader: { '.css': 'css' }, target: ['safari14'] });
   const jsText = js.outputFiles[0].text.replace(/<\/script/gi, '<\\/script');
   const cssText = css.outputFiles[0].text;
   const body = `<title>KidsOS</title>

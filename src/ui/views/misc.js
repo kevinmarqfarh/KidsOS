@@ -303,13 +303,20 @@ export function drawView(el, { kos, app }) {
   let W = 600;
   let H = 400;
   let alive = true;
-  let resizeVersion = 0;
   function setup() {
     if (!alive || !el.isConnected || el.clientWidth <= 8) return;
-    const version = ++resizeVersion;
-    const prev = W > 0 && canvas.width ? canvas.toDataURL() : null;
-    W = Math.floor(Math.min(el.clientWidth - 8, 1100));
-    H = Math.floor(Math.max(260, Math.min(window.innerHeight * 0.55, W * 0.8)));
+    const nextW = Math.floor(Math.min(el.clientWidth - 8, 1100));
+    const nextH = Math.floor(Math.max(180, Math.min(window.innerHeight * 0.55, nextW * 0.8)));
+    if (nextW === W && nextH === H && canvas.style.width) return;
+    // Copy pixels synchronously before resizing: rapid rotations cannot capture an
+    // empty intermediate canvas while an Image is still decoding.
+    const prev = canvas.style.width && canvas.width ? document.createElement('canvas') : null;
+    if (prev) {
+      prev.width = canvas.width; prev.height = canvas.height;
+      prev.getContext('2d').drawImage(canvas, 0, 0);
+    }
+    W = nextW; H = nextH;
+    drawing = false;
     const dpr = Math.min(2, window.devicePixelRatio || 1);
     canvas.width = W * dpr;
     canvas.height = H * dpr;
@@ -319,11 +326,7 @@ export function drawView(el, { kos, app }) {
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     ctx.fillStyle = '#ffffff';
     ctx.fillRect(0, 0, W, H);
-    if (prev) {
-      const img = new Image();
-      img.onload = () => { if (alive && version === resizeVersion) ctx.drawImage(img, 0, 0, W, H); };
-      img.src = prev;
-    }
+    if (prev) ctx.drawImage(prev, 0, 0, W, H);
   }
   function snapshot() {
     try {
@@ -499,10 +502,12 @@ export function drawView(el, { kos, app }) {
   canvas.addEventListener('pointercancel', end);
   const onResize = () => setup();
   window.addEventListener('resize', onResize);
+  const sizeObserver = typeof ResizeObserver === 'function' ? new ResizeObserver(onResize) : null;
+  sizeObserver?.observe(el);
   renderColors();
   renderTools();
   renderStamps();
   newPrompt();
   requestAnimationFrame(setup);
-  return () => { alive = false; window.removeEventListener('resize', onResize); };
+  return () => { alive = false; window.removeEventListener('resize', onResize); sizeObserver?.disconnect(); };
 }

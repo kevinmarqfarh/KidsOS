@@ -245,7 +245,8 @@ export function traceView(el, { kos, app, module: mod, level }) {
     const t = itemText();
     layout = t.length === 1 && GLYPHS[t] ? { strokes: GLYPHS[t], width: 1 } : layoutWord(t);
     // clientWidth påverkas inte av fönstrets öppningsanimation (transform)
-    const maxW = Math.max(240, Math.min(el.clientWidth - 8, 900));
+    if (!alive || !el.isConnected || el.clientWidth <= 8) return;
+    const maxW = Math.max(1, Math.min(el.clientWidth - 8, 900));
     const maxH = Math.max(200, Math.min(window.innerHeight * (isSeries() || isSpell() ? 0.44 : 0.52), 540));
     unitPx = Math.floor(Math.min(maxH, maxW / layout.width));
     const W = Math.round(unitPx * layout.width);
@@ -626,6 +627,8 @@ export function traceView(el, { kos, app, module: mod, level }) {
 
   const onResize = () => setup();
   window.addEventListener('resize', onResize);
+  const sizeObserver = typeof ResizeObserver === 'function' ? new ResizeObserver(onResize) : null;
+  sizeObserver?.observe(el);
   renderStrip();
   const setupRaf = requestAnimationFrame(() => {
     if (!alive) return;
@@ -639,5 +642,6 @@ export function traceView(el, { kos, app, module: mod, level }) {
     timers.forEach(clearTimeout);
     cancelDemo();
     window.removeEventListener('resize', onResize);
+    sizeObserver?.disconnect();
   };
 }

@@ -1,10 +1,12 @@
 // KidsOS – startpunkt.
+import { installViewport } from './core/viewport.js';
 import { kos } from './ui/kos.js';
 import { mountShell, openApp, goHome } from './ui/shell.js';
 import { isOverDailyLimit } from './core/model.js';
 
 function boot() {
   const root = document.getElementById('kidsos');
+  installViewport(root);
   kos.init(root);
   mountShell(root);
   // Vyer kan be skalet öppna en annan app (t.ex. raketen → solsystemet).
