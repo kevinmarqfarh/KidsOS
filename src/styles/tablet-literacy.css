@@ -48,3 +48,11 @@
  .literacy-picture .learning-photo-card>img{max-height:200px}
  .literacy-picture .literacy-response textarea{font-size:17px}
 }
+/* Full-width tablet fallback for Safari versions without container queries. */
+@supports not (container-type: inline-size) {
+ @media(min-width:740px) and (max-width:959px){
+  .os:not(.desktop-mode) .literacy-picture{grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:18px}
+  .os:not(.desktop-mode) .literacy-picture>.literacy-source{position:sticky;top:8px;align-self:start}
+  .os:not(.desktop-mode) .literacy-picture .literacy-response textarea{font-size:17px}
+ }
+}
