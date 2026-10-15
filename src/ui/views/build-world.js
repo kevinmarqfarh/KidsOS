@@ -386,7 +386,7 @@ function buildWorldView(el, { kos }) {
     const introduction=h('details.bw-details.bw-about',h('summary','Så fungerar din värld'));
     if(description?.tagName==='P')introduction.append(description);
     const navigation=controls.querySelector('.bw-navigation');
-    controls.prepend(primary,navigation);
+    controls.prepend(primary,notice,navigation);
     controls.append(secondary,introduction);
     for (const d of controls.querySelectorAll("details")) if (openDetails.includes(d.querySelector("summary")?.textContent)) d.open = true;
     if (focused) {
@@ -395,7 +395,7 @@ function buildWorldView(el, { kos }) {
     }
     paint();
   }
-  root.append(canvas, controls, notice, storageNotice);
+  root.append(canvas, controls, storageNotice);
   el.append(root);
   if (profile.settings?.previewRounds) {
     const plan = h("div.bw-intro", h("h3", "Så går det till"), h("p", "Gå med pilarna eller tryck på ön. Välj Bygg och ett material, välj en ruta och tryck Placera här. Ångra hjälper dig att prova igen. Du kan börja gratis och pausa när du vill."), button("Börja bygga", () => {
