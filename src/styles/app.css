@@ -4112,6 +4112,8 @@ html[data-activity-paused="true"] *, html[data-activity-paused="true"] *::before
   outline-offset: 3px;
   box-shadow: 0 0 0 6px #fff;
 }
+/* Startsidan fokuserar rubriken för skärmläsare, men den är ingen kontroll. */
+.home h1[tabindex="-1"]:focus { outline: none; box-shadow: none; }
 svg [role="button"]:focus-visible { outline: 3px solid #152644; filter: drop-shadow(0 0 3px #fff); }
 textarea:focus-visible { outline: 3px solid #152644; outline-offset: 3px; }
 .btn-primary { background: #294e86; color: #fff; }
