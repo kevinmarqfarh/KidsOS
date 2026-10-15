@@ -197,6 +197,15 @@
   "licenseUrl": "http://creativecommons.org/licenses/by-sa/3.0/",
   "source": "https://commons.wikimedia.org/wiki/File:Solar_eclipse_1999_4.jpg"
  },
+ "eid": {
+  "author": "Viceskeeni2",
+  "credit": "File:Eid al-Fitr prayer, Suleymaniye Mosque, Istanbul - Aug 30, 2011.jpg File:Eid al-Fitr, Bandar Abbas - 2019 10.jpg File:Eid m.jpg File:Celebrating Eid at FOB",
+  "file": "File:Eid_al_fitr_photo.jpg",
+  "group": "world",
+  "license": "CC BY 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Eid_al_fitr_photo.jpg"
+ },
  "eiffel": {
   "author": "Benh LIEU SONG",
   "credit": "Own work",
@@ -223,6 +232,15 @@
   "license": "CC BY 2.0",
   "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
   "source": "https://commons.wikimedia.org/wiki/File:Squirrel_posing.jpg"
+ },
+ "elefant": {
+  "author": "Giles Laurent",
+  "credit": "Own work",
+  "file": "File:178_Male_African_bush_elephant_in_Etosha_National_Park_Photo_by_Giles_Laurent.jpg",
+  "group": "world",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:178_Male_African_bush_elephant_in_Etosha_National_Park_Photo_by_Giles_Laurent.jpg"
  },
  "everest": {
   "author": "Photo by Pavel Novak",
@@ -286,6 +304,15 @@
   "license": "CC BY-SA 3.0",
   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
   "source": "https://commons.wikimedia.org/wiki/File:M%C3%A4yr%C3%A4_%C3%84ht%C3%A4ri_4.jpg"
+ },
+ "hallristning": {
+  "author": "Boberger",
+  "credit": "Own work",
+  "file": "File:Rock carving Vitlycke Tanum.JPG",
+  "group": "world",
+  "license": "CC BY-SA 3.0",
+  "licenseUrl": "http://creativecommons.org/licenses/by-sa/3.0/",
+  "source": "https://commons.wikimedia.org/wiki/File:Rock_carving_Vitlycke_Tanum.JPG"
  },
  "hare": {
   "author": "Евгений Егорейченков",
@@ -485,6 +512,15 @@
   "licenseUrl": "http://creativecommons.org/licenses/by-sa/3.0/",
   "source": "https://commons.wikimedia.org/wiki/File:Taraxacum_officinalis_DSC02042.JPG"
  },
+ "menora": {
+  "author": "MathKnight and Dr. Zachi Evenor",
+  "credit": "Own work",
+  "file": "File:Hanukia.jpg",
+  "group": "world",
+  "license": "CC BY 2.5",
+  "licenseUrl": "https://creativecommons.org/licenses/by/2.5",
+  "source": "https://commons.wikimedia.org/wiki/File:Hanukia.jpg"
+ },
  "mercury": {
   "author": "NASA/Johns Hopkins University Applied Physics Laboratory/Arizona State University/Carnegie Institution of Washington",
   "credit": "",
@@ -610,6 +646,15 @@
   "license": "CC0",
   "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
   "source": "https://commons.wikimedia.org/wiki/File:Neptune_Voyager2_color_calibrated.png"
+ },
+ "nowruz": {
+  "author": "Katzenfee50",
+  "credit": "https://pixabay.com/photos/still-life-iranian-new-year-3205068/",
+  "file": "File:Haft-sin,_Nowruz,_Still-life-3205068.jpg",
+  "group": "world",
+  "license": "CC0",
+  "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+  "source": "https://commons.wikimedia.org/wiki/File:Haft-sin,_Nowruz,_Still-life-3205068.jpg"
  },
  "nyckelpiga": {
   "author": "Photographer: Dominik Stodulski   Graphic Processing: User:MathKnight",
@@ -2258,6 +2303,15 @@
   "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
   "source": "https://commons.wikimedia.org/wiki/File:Pizza-3007395.jpg"
  },
+ "obj-plaster": {
+  "author": "Foto: Jonn Leffmann",
+  "credit": "Own work",
+  "file": "File:Plåster - Adhesive bandage - 2025.jpg",
+  "group": "objects",
+  "license": "CC BY 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Pl%C3%A5ster_-_Adhesive_bandage_-_2025.jpg"
+ },
  "obj-police-car": {
   "author": "Raymond Wambsgans",
   "credit": "https://www.flickr.com/photos/cak757/53561576672/",
@@ -2473,6 +2527,15 @@
   "license": "CC BY-SA 4.0",
   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Sailing_boat_at_sunset,_Ionian_Sea,_Albania.jpg"
+ },
+ "obj-salad": {
+  "author": "Horacio Cambeiro",
+  "credit": "Own work",
+  "file": "File:Fresh salad with arugula, cabbage and tomato in a glass bowl.jpg",
+  "group": "objects",
+  "license": "CC BY-SA 3.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Fresh_salad_with_arugula,_cabbage_and_tomato_in_a_glass_bowl.jpg"
  },
  "obj-salt": {
   "author": "Paul Goyette",
@@ -3302,6 +3365,15 @@
   "licenseUrl": "http://creativecommons.org/licenses/by-sa/3.0/",
   "source": "https://commons.wikimedia.org/wiki/File:Cygnus_olor_2_(Marek_Szczepanek).jpg"
  },
+ "sydneyopera": {
+  "author": "Bernard Spragg. NZ from Christchurch, New Zealand",
+  "credit": "Sydney Australia.",
+  "file": "File:Sydney_Australia._(21339175489).jpg",
+  "group": "world",
+  "license": "CC0",
+  "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+  "source": "https://commons.wikimedia.org/wiki/File:Sydney_Australia._(21339175489).jpg"
+ },
  "tajmahal": {
   "author": "Yann; edited by Jim Carter",
   "credit": "Edited version of File:Taj Mahal, Agra, India.jpg",
@@ -3382,5 +3454,302 @@
   "license": "CC BY-SA 4.0",
   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Visby_ringmur_June_2026.jpg"
+ },
+ "w-aska": {
+  "author": "okänd",
+  "credit": "",
+  "file": "File:AtmosphericDischarges.jpg",
+  "group": "wonder",
+  "license": "CC BY-SA 3.0",
+  "licenseUrl": "http://creativecommons.org/licenses/by-sa/3.0/",
+  "source": "https://commons.wikimedia.org/wiki/File:AtmosphericDischarges.jpg"
+ },
+ "w-bin": {
+  "author": "John Severns (Severnjc)",
+  "credit": "Photo by John Severns.",
+  "file": "File:European_honey_bee_extracts_nectar.jpg",
+  "group": "wonder",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "source": "https://commons.wikimedia.org/wiki/File:European_honey_bee_extracts_nectar.jpg"
+ },
+ "w-brod": {
+  "author": "The original uploader was Klaus Höpfner at German Wikipedia. (Original text: Helge Höpfner)",
+  "credit": "Fotoarchiv Höpfner",
+  "file": "File:Assorted_bread.jpg",
+  "group": "wonder",
+  "license": "CC BY-SA 3.0",
+  "licenseUrl": "http://creativecommons.org/licenses/by-sa/3.0/",
+  "source": "https://commons.wikimedia.org/wiki/File:Assorted_bread.jpg"
+ },
+ "w-dinosaurier": {
+  "author": "ScottRobertAnselmo",
+  "credit": "Own work",
+  "file": "File:Tyrannosaurus_Rex_Holotype.jpg",
+  "group": "wonder",
+  "license": "CC BY-SA 3.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Tyrannosaurus_Rex_Holotype.jpg"
+ },
+ "w-drommar": {
+  "author": "Domenico Fetti",
+  "credit": "Web Gallery of Art: Image Info about artworkwga QS:P11807,\"f/feti/sleeping\"",
+  "file": "File:Domenico_Fetti_-_Sleeping_Girl_-_WGA7863.jpg",
+  "group": "wonder",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "source": "https://commons.wikimedia.org/wiki/File:Domenico_Fetti_-_Sleeping_Girl_-_WGA7863.jpg"
+ },
+ "w-ekar": {
+  "author": "Lennart Sikkema",
+  "credit": "Imported from 500px (archived version) by the Archive Team. (detail page)",
+  "file": "File:Canyon_River_Tree_(165872763).jpeg",
+  "group": "wonder",
+  "license": "CC BY 3.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Canyon_River_Tree_(165872763).jpeg"
+ },
+ "w-eld": {
+  "author": "Fir0002",
+  "credit": "Originally uploaded to the English Wikipedia here by the author",
+  "file": "File:Large_bonfire.jpg",
+  "group": "wonder",
+  "license": "CC BY-SA 3.0",
+  "licenseUrl": "http://creativecommons.org/licenses/by-sa/3.0/",
+  "source": "https://commons.wikimedia.org/wiki/File:Large_bonfire.jpg"
+ },
+ "w-fladdermus": {
+  "author": "okänd",
+  "credit": "the National Wildlife Service source",
+  "file": "File:California_leaf-nosed_bat.jpg",
+  "group": "wonder",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "source": "https://commons.wikimedia.org/wiki/File:California_leaf-nosed_bat.jpg"
+ },
+ "w-flamingo": {
+  "author": "Davidvraju",
+  "credit": "Own work",
+  "file": "File:Greater_flamingo_(2015)_3557.jpg",
+  "group": "wonder",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Greater_flamingo_(2015)_3557.jpg"
+ },
+ "w-flygplan": {
+  "author": "MarcelX42",
+  "credit": "Own work",
+  "file": "File:Berlin_Brandenburg_Airport_Scandinavian_Airlines_Connect_Airbus_A320-251N_EI-SIJ_(DSC03007).jpg",
+  "group": "wonder",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Berlin_Brandenburg_Airport_Scandinavian_Airlines_Connect_Airbus_A320-251N_EI-SIJ_(DSC03007).jpg"
+ },
+ "w-gashud": {
+  "author": "Tryonisos",
+  "credit": "Own work",
+  "file": "File:Chaire de poule.jpg",
+  "group": "wonder",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Chaire_de_poule.jpg"
+ },
+ "w-gaspa": {
+  "author": "National Media Museum",
+  "credit": "https://www.flickr.com/photos/nationalmediamuseum/3589381656/",
+  "file": "File:Yawning_koala_bear_(3589381656)_(cropped).jpg",
+  "group": "wonder",
+  "license": "No restrictions",
+  "licenseUrl": "https://www.flickr.com/commons/usage/",
+  "source": "https://commons.wikimedia.org/wiki/File:Yawning_koala_bear_(3589381656)_(cropped).jpg"
+ },
+ "w-hav-salt": {
+  "author": "Joao Carlos Medau from Campinas, Brazil",
+  "credit": "Mar de Siete Colores - West Uploaded by Dura-Ace",
+  "file": "File:Mar_de_Siete_Colores_-_West_(8331578284).jpg",
+  "group": "wonder",
+  "license": "CC BY 2.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Mar_de_Siete_Colores_-_West_(8331578284).jpg"
+ },
+ "w-hicka": {
+  "author": "Original uploader was Brbbl at nl.wikipedia (Original text : brbbl brbbl 23 dec 2007 16:53 (CET))",
+  "credit": "Transfered from nl.wikipedia (Original text : eigen werk)",
+  "file": "File:Diafragma ademhaling.gif",
+  "group": "wonder",
+  "license": "CC BY-SA 3.0",
+  "licenseUrl": "http://creativecommons.org/licenses/by-sa/3.0/",
+  "source": "https://commons.wikimedia.org/wiki/File:Diafragma_ademhaling.gif"
+ },
+ "w-himmel": {
+  "author": "P J Hansen",
+  "credit": "originally posted to Flickr as Arctic Sunset",
+  "file": "File:Arctic_Sunset.jpg",
+  "group": "wonder",
+  "license": "CC BY-SA 2.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Arctic_Sunset.jpg"
+ },
+ "w-internet": {
+  "author": "Charlie fong",
+  "credit": "Own work",
+  "file": "File:Data_Center_of_CNPC.jpg",
+  "group": "wonder",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Data_Center_of_CNPC.jpg"
+ },
+ "w-is-flyter": {
+  "author": "Kim Hansen",
+  "credit": "Self-photographed",
+  "file": "File:Iceberg_with_hole_near_Sandersons_Hope_2007-07-28_2.jpg",
+  "group": "wonder",
+  "license": "CC BY-SA 3.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Iceberg_with_hole_near_Sandersons_Hope_2007-07-28_2.jpg"
+ },
+ "w-katt": {
+  "author": "Derivative work: howcheng {chat}",
+  "credit": "Top left File:Tesla the cat 2.jpg by User:Ragesoss (Sage Ross) as CC-BY-SA Top middle File:Orange tabby cat sitting on fallen leaves-Hisashi-01A.jpg Hisashi at ",
+  "file": "File:Collage_of_Six_Cats-02.jpg",
+  "group": "wonder",
+  "license": "CC BY-SA 3.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Collage_of_Six_Cats-02.jpg"
+ },
+ "w-kittlas": {
+  "author": "Fritz Zuber-Buhler",
+  "credit": "[1]",
+  "file": "File:Zuber_Buhler_Fritz_Tickling_The_Baby.jpg",
+  "group": "wonder",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "source": "https://commons.wikimedia.org/wiki/File:Zuber_Buhler_Fritz_Tickling_The_Baby.jpg"
+ },
+ "w-lov": {
+  "author": "松岡明芳",
+  "credit": "松岡明芳",
+  "file": "File:Momiji_紅葉するヤマモミジ_B221212.JPG",
+  "group": "wonder",
+  "license": "CC BY 3.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Momiji_%E7%B4%85%E8%91%89%E3%81%99%E3%82%8B%E3%83%A4%E3%83%9E%E3%83%A2%E3%83%9F%E3%82%B8_B221212.JPG"
+ },
+ "w-magnet": {
+  "author": "Pieter Kuiper",
+  "credit": "Own work",
+  "file": "File:Feeling_magnetic_repulsion.JPG",
+  "group": "wonder",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "source": "https://commons.wikimedia.org/wiki/File:Feeling_magnetic_repulsion.JPG"
+ },
+ "w-manen": {
+  "author": "Andonee",
+  "credit": "Own work",
+  "file": "File:Moon_Phase_Diagram_for_Simple_English_Wikipedia.GIF",
+  "group": "wonder",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Moon_Phase_Diagram_for_Simple_English_Wikipedia.GIF"
+ },
+ "w-myror": {
+  "author": "Samantha Henneke from Seagrove, North Carolina, USA",
+  "credit": "Ant",
+  "file": "File:Red_Ant_-_March_2025.jpg",
+  "group": "wonder",
+  "license": "CC BY 2.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Red_Ant_-_March_2025.jpg"
+ },
+ "w-regn": {
+  "author": "Tomasz Sienicki [user: tsca, mail: tomasz.sienicki at gmail.com]",
+  "credit": "Own work",
+  "file": "File:22_Regen_ubt.jpeg",
+  "group": "wonder",
+  "license": "CC BY 3.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:22_Regen_ubt.jpeg"
+ },
+ "w-regnbage": {
+  "author": "Eric Rolph at English Wikipedia",
+  "credit": "English Wikipedia",
+  "file": "File:Double-alaskan-rainbow.jpg",
+  "group": "wonder",
+  "license": "CC BY-SA 2.5",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.5",
+  "source": "https://commons.wikimedia.org/wiki/File:Double-alaskan-rainbow.jpg"
+ },
+ "w-robot": {
+  "author": "KUKA Roboter GmbH, Bachmann",
+  "credit": "KUKA Roboter GmbH, Zugspitzstraße 140, D-86165 Augsburg, Germany, Dep. Marketing, Mr. Andreas Bauer, https://www.kuka-robotics.com",
+  "file": "File:Automation_of_foundry_with_robot.jpg",
+  "group": "wonder",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "source": "https://commons.wikimedia.org/wiki/File:Automation_of_foundry_with_robot.jpg"
+ },
+ "w-rymd-ljud": {
+  "author": "NASA, ESA, CSA, and STScI",
+  "credit": "https://webbtelescope.org/contents/media/images/2022/038/01G7JGTH21B5GN9VCYAHBXKSD1",
+  "file": "File:Webb's_First_Deep_Field.jpg",
+  "group": "wonder",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "source": "https://commons.wikimedia.org/wiki/File:Webb%27s_First_Deep_Field.jpg"
+ },
+ "w-sol-varm": {
+  "author": "NASA Goddard Space Flight Center from Greenbelt, MD, USA",
+  "credit": "X Class Solar Flare Sends ‘Shockwaves’ on The Sun",
+  "file": "File:X_Class_Solar_Flare_Sends_‘Shockwaves’_on_The_Sun_(6819094556).jpg",
+  "group": "wonder",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "source": "https://commons.wikimedia.org/wiki/File:X_Class_Solar_Flare_Sends_%E2%80%98Shockwaves%E2%80%99_on_The_Sun_(6819094556).jpg"
+ },
+ "w-stjarnor": {
+  "author": "ESO/Y. Beletsky",
+  "credit": "https://web.archive.org/web/20081121184421/http://www.eso.org/gallery/v/ESOPIA/Paranal/phot-33a-07.tif.html",
+  "file": "File:ESO-VLT-Laser-phot-33a-07.jpg",
+  "group": "space",
+  "license": "CC BY 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:ESO-VLT-Laser-phot-33a-07.jpg"
+ },
+ "w-varfor-sova": {
+  "author": "Domenico Fetti",
+  "credit": "Web Gallery of Art: Image Info about artworkwga QS:P11807,\"f/feti/sleeping\"",
+  "file": "File:Domenico_Fetti_-_Sleeping_Girl_-_WGA7863.jpg",
+  "group": "wonder",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "source": "https://commons.wikimedia.org/wiki/File:Domenico_Fetti_-_Sleeping_Girl_-_WGA7863.jpg"
+ },
+ "w-vikingar": {
+  "author": "Petter Ulleland",
+  "credit": "Own work",
+  "file": "File:Osebergskipet_2016.jpg",
+  "group": "wonder",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Osebergskipet_2016.jpg"
+ },
+ "w-zebra": {
+  "author": "Yathin S Krishnappa",
+  "credit": "Own work",
+  "file": "File:Equus_quagga_burchellii_-_Etosha,_2014.jpg",
+  "group": "wonder",
+  "license": "CC BY-SA 3.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Equus_quagga_burchellii_-_Etosha,_2014.jpg"
+ },
+ "worldmap": {
+  "author": "User:Cogito ergo sumo",
+  "credit": "File:BlankMap-World.png",
+  "file": "File:Continents vide couleurs.png",
+  "group": "world",
+  "license": "CC BY-SA 3.0",
+  "licenseUrl": "http://creativecommons.org/licenses/by-sa/3.0/",
+  "source": "https://commons.wikimedia.org/wiki/File:Continents_vide_couleurs.png"
  }
 }

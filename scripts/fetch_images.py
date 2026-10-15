@@ -23,7 +23,7 @@ SIZES = {'objects': (320, 65), 'lifecycle': (320, 65), 'moon': (400, 70)}
 THUMB_W = {'objects': 500, 'lifecycle': 500, 'moon': 1280}  # standardbredder hos Wikimedia (250/330/500/960 …)
 MIN_GAP = 1.2  # sekunder mellan anrop (Wikimedia delar gränser per IP)
 _last = [0.0]
-FREE = re.compile(r'public domain|^pd|cc0|cc[ -]by', re.I)
+FREE = re.compile(r'public domain|^pd|cc0|cc[ -]by|^no restrictions$|^attribution$', re.I)
 
 def get(url, binary=False, tries=8):
     """GET med User-Agent. Respekterar 429/Retry-After med backoff (Wikimedia delar IP-gränser)."""

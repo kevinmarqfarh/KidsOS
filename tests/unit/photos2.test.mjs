@@ -10,7 +10,7 @@ const root = new URL('../../', import.meta.url);
 const catalog = JSON.parse(readFileSync(new URL('assets/image-catalog.json', root), 'utf8'));
 const credits = JSON.parse(readFileSync(new URL('assets/credits.json', root), 'utf8'));
 const catalogKeys = new Set(Object.values(catalog).flatMap((g) => Object.keys(g)));
-const FREE = /public domain|^pd\b|cc0|cc[ -]by/i;
+const FREE = /public domain|^pd\b|cc0|cc[ -]by|^no restrictions$|^attribution$/i; // "No restrictions" = Flickr Commons utan kända upphovsrättsliga begränsningar
 
 test('varje mappat emoji pekar på en nyckel i bildkatalogen', () => {
   assert.ok(Object.keys(EMOJI_PHOTOS).length >= 150);

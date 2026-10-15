@@ -2,7 +2,7 @@
 
 <!-- GENERERAD av scripts/credits-doc.mjs från assets/credits.json – ändra inte för hand. -->
 
-KidsOS innehåller 375 bilder från Wikimedia Commons (inklusive NASA). Biblioteket innehåller fotografier och vissa äldre illustrationer. Alla har fria licenser: public domain, CC0, CC BY eller CC BY-SA.
+KidsOS innehåller 416 bilder från Wikimedia Commons (inklusive NASA). Biblioteket innehåller fotografier och vissa äldre illustrationer. Alla har fria licenser: public domain, CC0, CC BY eller CC BY-SA.
 Bilderna är förminskade och omkodade till WebP men i övrigt oförändrade. Följ länken för original, fullständig licens och upphov.
 
 ## feelings (4)
@@ -25,7 +25,7 @@ Bilderna är förminskade och omkodade till WebP men i övrigt oförändrade. F�
 | moon-waxing-crescent | [New Year's Even Waxing Crescent Moon. - Flickr - StephenGA.jpg](https://commons.wikimedia.org/wiki/File:New_Year%27s_Even_Waxing_Crescent_Moon._-_Flickr_-_StephenGA.jpg) | Stephen Rahn from Macon, GA, USA | [CC0](http://creativecommons.org/publicdomain/zero/1.0/deed.en) |
 | moon-waxing-gibbous | [Waxing Gibbous Moon on 4-6-17 (33757272721).jpg](https://commons.wikimedia.org/wiki/File:Waxing_Gibbous_Moon_on_4-6-17_(33757272721).jpg) | Stephen Rahn from Macon, GA, USA | [CC0](http://creativecommons.org/publicdomain/zero/1.0/deed.en) |
 
-## Rymden (20)
+## Rymden (21)
 
 | Nyckel | Fil | Upphov | Licens |
 |---|---|---|---|
@@ -49,6 +49,7 @@ Bilderna är förminskade och omkodade till WebP men i övrigt oförändrade. F�
 | sun | [The_Sun_in_white_light.jpg](https://commons.wikimedia.org/wiki/File:The_Sun_in_white_light.jpg) | Matúš Motlo | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) |
 | uranus | [Uranus_Voyager2_color_calibrated.png](https://commons.wikimedia.org/wiki/File:Uranus_Voyager2_color_calibrated.png) | Ardenau4 | [CC0](http://creativecommons.org/publicdomain/zero/1.0/deed.en) |
 | venus | [Venus_from_Mariner_10.jpg](https://commons.wikimedia.org/wiki/File:Venus_from_Mariner_10.jpg) | NASA/JPL-Caltech | Public domain |
+| w-stjarnor | [ESO-VLT-Laser-phot-33a-07.jpg](https://commons.wikimedia.org/wiki/File:ESO-VLT-Laser-phot-33a-07.jpg) | ESO/Y. Beletsky | [CC BY 4.0](https://creativecommons.org/licenses/by/4.0) |
 
 ## Arter (Biologi) (25)
 
@@ -80,7 +81,7 @@ Bilderna är förminskade och omkodade till WebP men i övrigt oförändrade. F�
 | uggla | [Strix_aluco_3_(Martin_Mecnarowski).jpg](https://commons.wikimedia.org/wiki/File:Strix_aluco_3_%28Martin_Mecnarowski%29.jpg) | Martin Mecnarowski (http://www.photomecan.eu/) | [CC BY-SA 3.0](http://creativecommons.org/licenses/by-sa/3.0/) |
 | varg | [Eurasian_wolf_2.jpg](https://commons.wikimedia.org/wiki/File:Eurasian_wolf_2.jpg) | User:Mas3cf | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) |
 
-## Världen (34)
+## Världen (41)
 
 | Nyckel | Fil | Upphov | Licens |
 |---|---|---|---|
@@ -88,10 +89,13 @@ Bilderna är förminskade och omkodade till WebP men i övrigt oförändrade. F�
 | bison | [American_bison_k5680-1.jpg](https://commons.wikimedia.org/wiki/File:American_bison_k5680-1.jpg) | Jack Dykinga | Public domain |
 | bronssvard | [Early_Bronze_Age_swords,_Central_Europe.jpg](https://commons.wikimedia.org/wiki/File:Early_Bronze_Age_swords,_Central_Europe.jpg) | Oscar Montellius | [CC0](http://creativecommons.org/publicdomain/zero/1.0/deed.en) |
 | colosseum | [Colosseo_2020.jpg](https://commons.wikimedia.org/wiki/File:Colosseo_2020.jpg) | FeaturedPics | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) |
+| eid | [Eid_al_fitr_photo.jpg](https://commons.wikimedia.org/wiki/File:Eid_al_fitr_photo.jpg) | Viceskeeni2 | [CC BY 4.0](https://creativecommons.org/licenses/by/4.0) |
 | eiffel | [Tour_Eiffel_Wikimedia_Commons.jpg](https://commons.wikimedia.org/wiki/File:Tour_Eiffel_Wikimedia_Commons.jpg) | Benh LIEU SONG | Public domain |
+| elefant | [178_Male_African_bush_elephant_in_Etosha_National_Park_Photo_by_Giles_Laurent.jpg](https://commons.wikimedia.org/wiki/File:178_Male_African_bush_elephant_in_Etosha_National_Park_Photo_by_Giles_Laurent.jpg) | Giles Laurent | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) |
 | everest | [Everest_kalapatthar_crop.jpg](https://commons.wikimedia.org/wiki/File:Everest_kalapatthar_crop.jpg) | Photo by Pavel Novak | [CC BY-SA 2.5](https://creativecommons.org/licenses/by-sa/2.5) |
 | flintyxa | [Handaxe_by_John_Frere.png](https://commons.wikimedia.org/wiki/File:Handaxe_by_John_Frere.png) | John Frere | Public domain |
 | frihetsgudinnan | [Usa_edcp_(+HI_+AK)_relief_location_map.svg](https://commons.wikimedia.org/wiki/File:Usa_edcp_(%2BHI_%2BAK)_relief_location_map.svg) | TUBS | [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0) |
+| hallristning | [Rock carving Vitlycke Tanum.JPG](https://commons.wikimedia.org/wiki/File:Rock_carving_Vitlycke_Tanum.JPG) | Boberger | [CC BY-SA 3.0](http://creativecommons.org/licenses/by-sa/3.0/) |
 | isbjorn | [Polar_Bear_-_Alaska_(cropped).jpg](https://commons.wikimedia.org/wiki/File:Polar_Bear_-_Alaska_(cropped).jpg) | Alan Wilson | [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0) |
 | jaguar | [Jaguar_at_Edinburgh_Zoo.jpg](https://commons.wikimedia.org/wiki/File:Jaguar_at_Edinburgh_Zoo.jpg) | Pascal Blachier from Savoie, France | [CC BY 2.0](https://creativecommons.org/licenses/by/2.0) |
 | julgran | [Juletræet.jpg](https://commons.wikimedia.org/wiki/File:Juletr%C3%A6et.jpg) | Malene Thyssen | [CC BY-SA 3.0](http://creativecommons.org/licenses/by-sa/3.0/) |
@@ -103,9 +107,11 @@ Bilderna är förminskade och omkodade till WebP men i övrigt oförändrade. F�
 | lejon | [Lion_waiting_in_Namibia.jpg](https://commons.wikimedia.org/wiki/File:Lion_waiting_in_Namibia.jpg) | Kevin Pluck | [CC BY 2.0](https://creativecommons.org/licenses/by/2.0) |
 | lucia | [Lucia_2017_D81_4616_(39002373982).jpg](https://commons.wikimedia.org/wiki/File:Lucia_2017_D81_4616_(39002373982).jpg) | Bengt Nyman from Vaxholm, Sweden | [CC BY 2.0](https://creativecommons.org/licenses/by/2.0) |
 | machupicchu | [Machu_Picchu,_Peru_(2018).jpg](https://commons.wikimedia.org/wiki/File:Machu_Picchu,_Peru_(2018).jpg) | Zielonamapa.pl | [CC BY-SA 2.0](https://creativecommons.org/licenses/by-sa/2.0) |
+| menora | [Hanukia.jpg](https://commons.wikimedia.org/wiki/File:Hanukia.jpg) | MathKnight and Dr. Zachi Evenor | [CC BY 2.5](https://creativecommons.org/licenses/by/2.5) |
 | midsommar | [Mittsommer-skansen.jpg](https://commons.wikimedia.org/wiki/File:Mittsommer-skansen.jpg) | okänd | [CC BY-SA 3.0](http://creativecommons.org/licenses/by-sa/3.0/) |
 | moai | [Moai_Rano_raraku.jpg](https://commons.wikimedia.org/wiki/File:Moai_Rano_raraku.jpg) | Aurbina | Public domain |
 | muren | [20090529_Great_Wall_8125.jpg](https://commons.wikimedia.org/wiki/File:20090529_Great_Wall_8125.jpg) | Jakub Hałun | [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0) |
+| nowruz | [Haft-sin,_Nowruz,_Still-life-3205068.jpg](https://commons.wikimedia.org/wiki/File:Haft-sin,_Nowruz,_Still-life-3205068.jpg) | Katzenfee50 | [CC0](http://creativecommons.org/publicdomain/zero/1.0/deed.en) |
 | panda | [Lightmatter_panda.jpg](https://commons.wikimedia.org/wiki/File:Lightmatter_panda.jpg) | Aaron Logan | [CC BY 1.0](https://creativecommons.org/licenses/by/1.0) |
 | pasagg | [Sorbische_Ostereier.jpg](https://commons.wikimedia.org/wiki/File:Sorbische_Ostereier.jpg) | okänd | [CC BY-SA 3.0](http://creativecommons.org/licenses/by-sa/3.0/) |
 | persepolis | [Gate_of_All_Nations,_Persepolis.jpg](https://commons.wikimedia.org/wiki/File:Gate_of_All_Nations,_Persepolis.jpg) | Alborzagros | [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0) |
@@ -113,13 +119,51 @@ Bilderna är förminskade och omkodade till WebP men i övrigt oförändrade. F�
 | ren | [20070818-0001-strolling_reindeer_cropped.jpg](https://commons.wikimedia.org/wiki/File:20070818-0001-strolling_reindeer_cropped.jpg) | 20070818-0001-strolling_reindeer.jpg: Nattfodd derivative work: Isthmus (talk) | [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0) |
 | runsten | [Rökstenen_1.JPG](https://commons.wikimedia.org/wiki/File:R%C3%B6kstenen_1.JPG) | Bengt Olof ÅRADSSON | [CC BY 1.0](https://creativecommons.org/licenses/by/1.0) |
 | sagrada | [SF_maig_2026.jpg](https://commons.wikimedia.org/wiki/File:SF_maig_2026.jpg) | Canaan | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) |
+| sydneyopera | [Sydney_Australia._(21339175489).jpg](https://commons.wikimedia.org/wiki/File:Sydney_Australia._(21339175489).jpg) | Bernard Spragg. NZ from Christchurch, New Zealand | [CC0](http://creativecommons.org/publicdomain/zero/1.0/deed.en) |
 | tajmahal | [Taj_Mahal_(Edited).jpeg](https://commons.wikimedia.org/wiki/File:Taj_Mahal_(Edited).jpeg) | Yann; edited by Jim Carter | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) |
 | tiger | [Sibirischer_tiger_de_edit02.jpg](https://commons.wikimedia.org/wiki/File:Sibirischer_tiger_de_edit02.jpg) | S. Taheri, edited by Fir0002 | [CC BY-SA 2.5](https://creativecommons.org/licenses/by-sa/2.5) |
 | vasa | [Djurgården,_Östermalm,_Stockholm,_Sweden_-_panoramio_(8).jpg](https://commons.wikimedia.org/wiki/File:Djurg%C3%A5rden,_%C3%96stermalm,_Stockholm,_Sweden_-_panoramio_(8).jpg) | L-BBE | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0) |
 | vikingaskepp | [Osebergskipet_2016.jpg](https://commons.wikimedia.org/wiki/File:Osebergskipet_2016.jpg) | Petter Ulleland | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) |
 | visby | [Visby_ringmur_June_2026.jpg](https://commons.wikimedia.org/wiki/File:Visby_ringmur_June_2026.jpg) | ArildV | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) |
+| worldmap | [Continents vide couleurs.png](https://commons.wikimedia.org/wiki/File:Continents_vide_couleurs.png) | User:Cogito ergo sumo | [CC BY-SA 3.0](http://creativecommons.org/licenses/by-sa/3.0/) |
 
-## Föremål, djur och mat (ersätter emoji) (277)
+## Undra (31)
+
+| Nyckel | Fil | Upphov | Licens |
+|---|---|---|---|
+| w-aska | [AtmosphericDischarges.jpg](https://commons.wikimedia.org/wiki/File:AtmosphericDischarges.jpg) | okänd | [CC BY-SA 3.0](http://creativecommons.org/licenses/by-sa/3.0/) |
+| w-bin | [European_honey_bee_extracts_nectar.jpg](https://commons.wikimedia.org/wiki/File:European_honey_bee_extracts_nectar.jpg) | John Severns (Severnjc) | Public domain |
+| w-brod | [Assorted_bread.jpg](https://commons.wikimedia.org/wiki/File:Assorted_bread.jpg) | The original uploader was Klaus Höpfner at German Wikipedia. (Original text: Helge Höpfner) | [CC BY-SA 3.0](http://creativecommons.org/licenses/by-sa/3.0/) |
+| w-dinosaurier | [Tyrannosaurus_Rex_Holotype.jpg](https://commons.wikimedia.org/wiki/File:Tyrannosaurus_Rex_Holotype.jpg) | ScottRobertAnselmo | [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0) |
+| w-drommar | [Domenico_Fetti_-_Sleeping_Girl_-_WGA7863.jpg](https://commons.wikimedia.org/wiki/File:Domenico_Fetti_-_Sleeping_Girl_-_WGA7863.jpg) | Domenico Fetti | Public domain |
+| w-ekar | [Canyon_River_Tree_(165872763).jpeg](https://commons.wikimedia.org/wiki/File:Canyon_River_Tree_(165872763).jpeg) | Lennart Sikkema | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0) |
+| w-eld | [Large_bonfire.jpg](https://commons.wikimedia.org/wiki/File:Large_bonfire.jpg) | Fir0002 | [CC BY-SA 3.0](http://creativecommons.org/licenses/by-sa/3.0/) |
+| w-fladdermus | [California_leaf-nosed_bat.jpg](https://commons.wikimedia.org/wiki/File:California_leaf-nosed_bat.jpg) | okänd | Public domain |
+| w-flamingo | [Greater_flamingo_(2015)_3557.jpg](https://commons.wikimedia.org/wiki/File:Greater_flamingo_(2015)_3557.jpg) | Davidvraju | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) |
+| w-flygplan | [Berlin_Brandenburg_Airport_Scandinavian_Airlines_Connect_Airbus_A320-251N_EI-SIJ_(DSC03007).jpg](https://commons.wikimedia.org/wiki/File:Berlin_Brandenburg_Airport_Scandinavian_Airlines_Connect_Airbus_A320-251N_EI-SIJ_(DSC03007).jpg) | MarcelX42 | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) |
+| w-gashud | [Chaire de poule.jpg](https://commons.wikimedia.org/wiki/File:Chaire_de_poule.jpg) | Tryonisos | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) |
+| w-gaspa | [Yawning_koala_bear_(3589381656)_(cropped).jpg](https://commons.wikimedia.org/wiki/File:Yawning_koala_bear_(3589381656)_(cropped).jpg) | National Media Museum | [No restrictions](https://www.flickr.com/commons/usage/) |
+| w-hav-salt | [Mar_de_Siete_Colores_-_West_(8331578284).jpg](https://commons.wikimedia.org/wiki/File:Mar_de_Siete_Colores_-_West_(8331578284).jpg) | Joao Carlos Medau from Campinas, Brazil | [CC BY 2.0](https://creativecommons.org/licenses/by/2.0) |
+| w-hicka | [Diafragma ademhaling.gif](https://commons.wikimedia.org/wiki/File:Diafragma_ademhaling.gif) | Original uploader was Brbbl at nl.wikipedia (Original text : brbbl brbbl 23 dec 2007 16:53 (CET)) | [CC BY-SA 3.0](http://creativecommons.org/licenses/by-sa/3.0/) |
+| w-himmel | [Arctic_Sunset.jpg](https://commons.wikimedia.org/wiki/File:Arctic_Sunset.jpg) | P J Hansen | [CC BY-SA 2.0](https://creativecommons.org/licenses/by-sa/2.0) |
+| w-internet | [Data_Center_of_CNPC.jpg](https://commons.wikimedia.org/wiki/File:Data_Center_of_CNPC.jpg) | Charlie fong | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) |
+| w-is-flyter | [Iceberg_with_hole_near_Sandersons_Hope_2007-07-28_2.jpg](https://commons.wikimedia.org/wiki/File:Iceberg_with_hole_near_Sandersons_Hope_2007-07-28_2.jpg) | Kim Hansen | [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0) |
+| w-katt | [Collage_of_Six_Cats-02.jpg](https://commons.wikimedia.org/wiki/File:Collage_of_Six_Cats-02.jpg) | Derivative work: howcheng {chat} | [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0) |
+| w-kittlas | [Zuber_Buhler_Fritz_Tickling_The_Baby.jpg](https://commons.wikimedia.org/wiki/File:Zuber_Buhler_Fritz_Tickling_The_Baby.jpg) | Fritz Zuber-Buhler | Public domain |
+| w-lov | [Momiji_紅葉するヤマモミジ_B221212.JPG](https://commons.wikimedia.org/wiki/File:Momiji_%E7%B4%85%E8%91%89%E3%81%99%E3%82%8B%E3%83%A4%E3%83%9E%E3%83%A2%E3%83%9F%E3%82%B8_B221212.JPG) | 松岡明芳 | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0) |
+| w-magnet | [Feeling_magnetic_repulsion.JPG](https://commons.wikimedia.org/wiki/File:Feeling_magnetic_repulsion.JPG) | Pieter Kuiper | Public domain |
+| w-manen | [Moon_Phase_Diagram_for_Simple_English_Wikipedia.GIF](https://commons.wikimedia.org/wiki/File:Moon_Phase_Diagram_for_Simple_English_Wikipedia.GIF) | Andonee | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) |
+| w-myror | [Red_Ant_-_March_2025.jpg](https://commons.wikimedia.org/wiki/File:Red_Ant_-_March_2025.jpg) | Samantha Henneke from Seagrove, North Carolina, USA | [CC BY 2.0](https://creativecommons.org/licenses/by/2.0) |
+| w-regn | [22_Regen_ubt.jpeg](https://commons.wikimedia.org/wiki/File:22_Regen_ubt.jpeg) | Tomasz Sienicki [user: tsca, mail: tomasz.sienicki at gmail.com] | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0) |
+| w-regnbage | [Double-alaskan-rainbow.jpg](https://commons.wikimedia.org/wiki/File:Double-alaskan-rainbow.jpg) | Eric Rolph at English Wikipedia | [CC BY-SA 2.5](https://creativecommons.org/licenses/by-sa/2.5) |
+| w-robot | [Automation_of_foundry_with_robot.jpg](https://commons.wikimedia.org/wiki/File:Automation_of_foundry_with_robot.jpg) | KUKA Roboter GmbH, Bachmann | Public domain |
+| w-rymd-ljud | [Webb's_First_Deep_Field.jpg](https://commons.wikimedia.org/wiki/File:Webb%27s_First_Deep_Field.jpg) | NASA, ESA, CSA, and STScI | Public domain |
+| w-sol-varm | [X_Class_Solar_Flare_Sends_‘Shockwaves’_on_The_Sun_(6819094556).jpg](https://commons.wikimedia.org/wiki/File:X_Class_Solar_Flare_Sends_%E2%80%98Shockwaves%E2%80%99_on_The_Sun_(6819094556).jpg) | NASA Goddard Space Flight Center from Greenbelt, MD, USA | Public domain |
+| w-varfor-sova | [Domenico_Fetti_-_Sleeping_Girl_-_WGA7863.jpg](https://commons.wikimedia.org/wiki/File:Domenico_Fetti_-_Sleeping_Girl_-_WGA7863.jpg) | Domenico Fetti | Public domain |
+| w-vikingar | [Osebergskipet_2016.jpg](https://commons.wikimedia.org/wiki/File:Osebergskipet_2016.jpg) | Petter Ulleland | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) |
+| w-zebra | [Equus_quagga_burchellii_-_Etosha,_2014.jpg](https://commons.wikimedia.org/wiki/File:Equus_quagga_burchellii_-_Etosha,_2014.jpg) | Yathin S Krishnappa | [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0) |
+
+## Föremål, djur och mat (ersätter emoji) (279)
 
 | Nyckel | Fil | Upphov | Licens |
 |---|---|---|---|
@@ -305,6 +349,7 @@ Bilderna är förminskade och omkodade till WebP men i övrigt oförändrade. F�
 | obj-pig | [Pig_farm_Vampula_1.jpg](https://commons.wikimedia.org/wiki/File:Pig_farm_Vampula_1.jpg) | kallerna | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) |
 | obj-pineapple | [കൈതച്ചക്ക.jpg](https://commons.wikimedia.org/wiki/File:%E0%B4%95%E0%B5%88%E0%B4%A4%E0%B4%9A%E0%B5%8D%E0%B4%9A%E0%B4%95%E0%B5%8D%E0%B4%95.jpg) | Suniltg at Malayalam Wikipedia | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0) |
 | obj-pizza | [Pizza-3007395.jpg](https://commons.wikimedia.org/wiki/File:Pizza-3007395.jpg) | igorovsyannykov | [CC0](http://creativecommons.org/publicdomain/zero/1.0/deed.en) |
+| obj-plaster | [Plåster - Adhesive bandage - 2025.jpg](https://commons.wikimedia.org/wiki/File:Pl%C3%A5ster_-_Adhesive_bandage_-_2025.jpg) | Foto: Jonn Leffmann | [CC BY 4.0](https://creativecommons.org/licenses/by/4.0) |
 | obj-police-car | [Washington_DC_Metropolitan_Police_Department_Dodge_Charger_No._1605.jpg](https://commons.wikimedia.org/wiki/File:Washington_DC_Metropolitan_Police_Department_Dodge_Charger_No._1605.jpg) | Raymond Wambsgans | [CC BY 2.0](https://creativecommons.org/licenses/by/2.0) |
 | obj-popcorn | [Popcorn in a bowl.jpg](https://commons.wikimedia.org/wiki/File:Popcorn_in_a_bowl.jpg) | Ziongarage | [CC0](http://creativecommons.org/publicdomain/zero/1.0/deed.en) |
 | obj-potato | [Patates.jpg](https://commons.wikimedia.org/wiki/File:Patates.jpg) | Scott Bauer, USDA ARS | Public domain |
@@ -329,6 +374,7 @@ Bilderna är förminskade och omkodade till WebP men i övrigt oförändrade. F�
 | obj-ruler | [20-cm-Holzlineal PGH Seiffener Volkskunst diagonal 2021.jpg](https://commons.wikimedia.org/wiki/File:20-cm-Holzlineal_PGH_Seiffener_Volkskunst_diagonal_2021.jpg) | VSchagow | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) |
 | obj-safety-pin | [Safety_Pin.jpg](https://commons.wikimedia.org/wiki/File:Safety_Pin.jpg) | Haragayato | [CC BY-SA 3.0](http://creativecommons.org/licenses/by-sa/3.0/) |
 | obj-sailboat | [Sailing boat at sunset, Ionian Sea, Albania.jpg](https://commons.wikimedia.org/wiki/File:Sailing_boat_at_sunset,_Ionian_Sea,_Albania.jpg) | Liridon | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) |
+| obj-salad | [Fresh salad with arugula, cabbage and tomato in a glass bowl.jpg](https://commons.wikimedia.org/wiki/File:Fresh_salad_with_arugula,_cabbage_and_tomato_in_a_glass_bowl.jpg) | Horacio Cambeiro | [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0) |
 | obj-salt | [Salt, sugar and pepper shakers.jpg](https://commons.wikimedia.org/wiki/File:Salt,_sugar_and_pepper_shakers.jpg) | Paul Goyette | [CC BY-SA 2.0](https://creativecommons.org/licenses/by-sa/2.0) |
 | obj-sandwich | [Sandwich on a cutting board.jpg](https://commons.wikimedia.org/wiki/File:Sandwich_on_a_cutting_board.jpg) | Revital Salomon | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) |
 | obj-satellite | [Two_3U_CubeSats.jpg](https://commons.wikimedia.org/wiki/File:Two_3U_CubeSats.jpg) | NASA | Public domain |
