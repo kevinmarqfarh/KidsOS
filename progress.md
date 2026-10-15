@@ -107,3 +107,11 @@ Hittat tvåfrågepooler i nyaste nivågruppen och urval med återläggning. Geme
 - Lagringsfel/tillfällig minneslagring visas separat. Hela världen kan läsas som text och vald cell har lagermaterial/rotation/avatartext.
 - Tre byggskisser använder enbart befintligt lager och ångras i ett steg. Förhandsplan respekteras och väntar på start.
 - 5 DOM-tester passerar. Canvasgeometri och fysisk touch återstår att verifiera visuellt via huvudagentens tillåtna Chrome-flöde.
+
+## 2026-10-15 Byggvärlden – public Chrome verification
+- Added an original isometric building sandbox after Lekstaden using the existing profile coin balance. Three agents handled model, view and primary-source research / independent judging.
+- Full unit suite passed 503/503 after the first mobile controls refinement; production build passed.
+- Public Chrome test on WCAG-test profile: built free Lilla huset (15 parts), removed and undid a roof, completed a real 6-question Plus & minus round, returned through the reward card, bought stone for 5 coins (23 → 18), placed it, saved and reloaded. All 16 parts and the 18-coin balance persisted. Keyboard movement, pause/resume and Lekstaden's direct world link worked; no captured warnings/errors.
+- Measured 320×568, 390×844, 430×932, 568×320 and 1280×800. Root scrollWidth equalled clientWidth in each. First visual judge requested closer controls; fixed with primary controls first and a sticky island. Further live landscape and short-window review found overlap / canvas aspect-ratio risks; another correction is in progress. Final screenshots and validation documented separately.
+- Physical Safari, touchpen, VoiceOver and child usability sessions have not been performed. Integration tests cover all 12 course IDs through the shared reward model, not 12 manually completed course UI journeys.
+- Final loop: 504/504 tests and build passed. Fixed short desktop canvas ratio, sticky action feedback and landscape two-column layout. Public Chrome rechecked six sizes including 1000×400; final captured logs empty. Two independent judges reported no remaining concrete blockers in inspected code/screenshots. See docs/BYGGVARLDEN-VERIFIERING-2026-10-15.md and research document for evidence and limits.

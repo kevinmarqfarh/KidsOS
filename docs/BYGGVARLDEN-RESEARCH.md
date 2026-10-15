@@ -51,4 +51,22 @@ Första kodvarvet hittade fyra brister: vikpaneler stängdes och tappade fokus v
 
 Andra rättningsvarvet är kodgranskat: separat lagringsvarning finns kvar, köp visar kvarvarande saldo och ett ökande köp-id stoppar gamla bekräftelseknappar även efter ett nytt likadant köpförslag. Öppna paneler bevaras och textlistan beskriver placeringarna. Ingen kvarvarande blockerare identifierades i denna kodgranskning.
 
-Oberoende körda kontroller hittills: modellens 9 tester och gränssnittets 3 DOM-tester passerar. De täcker bland annat fria startdelar, världens gränser, återföring av borttagna delar, korrupt data, uppdragens nåbarhet, köpflöde, gamla köpförslag, öppna paneler, paus och profilåterkomst. DOM-miljön verifierar inte canvasens utseende, faktisk touch, skärmläsarens uppläsning eller mobilens visuella layout. Webbläsarbilder och mätningar måste granskas separat.
+Aktuell riktad testsvit omfattar 11 modelltester, 9 DOM-tester och 2 integrationstester. Huvudagenten rapporterar 504 passerande tester i hela appen. Byggvärldstesterna täcker fria startdelar, gränser, återföring, korrupt data, atomiska byggskisser, uppdragens nåbarhet, gamla köpförslag, öppna paneler, paus, förhandsvisning, profilåterkomst, säkerhetskopia och profilradering. Modellsambandet mellan alla 12 kursappar och gemensamma köpmynt är testat; det motsvarar inte manuell provning av alla kursers gränssnitt.
+
+### Publicerad Chrome, faktisk användning
+
+Huvudagenten har verifierat Lekstaden → Byggvärlden, gratis hus med 15 delar och ytterligare en sten, borttagning/ångra, tangentbordsförflyttning, paus/fortsätt samt sparning/omladdning med 16 delar och 18 mynt bevarade. Ett faktiskt kursflöde provades: Plus & minus med sex frågor gav 13 mynt och 10 trofémynt, sammanlagt 23; ett steninköp för fem lämnade 18. Ingen varning eller felrad observerades i den kontrollerade webbläsarloggen.
+
+Fem format mättes: 320 × 568, 390 × 844, 430 × 932, 568 × 320 och 1280 × 800. Rapporten från huvudagenten visar inga sidöverflöden i dessa mätningar; rotinnehållets bredder var respektive 296, 366, 406, 544 och 1040 px. Canvas höll sig inom tillgänglig bredd. Enbart breddmätning kan inte upptäcka överlapp eller dolda kontroller.
+
+Oberoende bildgranskning av `built-390.jpg` och `start-390.jpg` fann en tydlig egen byggvärld, läsbart saldo och stora knappar, men styrningen hamnade långt nedanför byggytan. I nästa varvs `final-390.jpg` ligger Gå/Bygg och riktningsknappar direkt efter byggytan, vilket förbättrar åtkomsten. `final-build-controls-390.jpg` och `final-controls-320.jpg` visar att placera, ångra, rotera och ta bort ryms och nås under den kvarliggande byggytan.
+
+### Slutvarv på publicerad version `bc142a3`
+
+Huvudagenten rapporterar att hela testsviten med 504 tester och produktionsbygget passerar. Samma genomgångna bygg- och myntflöde är bevarat efter publiceringen.
+
+Oberoende bildgranskning av `release-landscape.jpg` visar byggyta och kontroller i separata kolumner i liggande mobilformat. `release-focus-320.jpg` visar att fokuserad Ångra-knapp är helt synlig nedanför canvas och status. `release-390.jpg` visar navigationspilar och begripligt hinderbesked nära byggytan. I `release-controls-430.jpg` syns placera, ångra, rotera och ta bort. `release-short-desktop.jpg` visar separerad byggyta och panel med rimliga proportioner. Huvudagentens mått för låg datorskärm är canvas 428,57 × 299,99 px, förhållande 1,4286, och rotbredd 976 av 976 tillgängliga px. Övriga rapporterade bredder är fortsatt 296, 366, 406, 544 och 1040 px inom respektive tillgänglig bredd.
+
+Inga nya blockerande visuella fynd identifierades i dessa bilder. Tidigare fynd om liggande överlapp, canvasproportioner och dold återkoppling bedöms rättade inom de observerade flödena. Efter en separat stabiliserad skärmfångst är även `release-desktop.jpg` oberoende bildgranskad vid 1280 × 800 px. Den visar byggyta till vänster och läsbara kontroller, status, saldo och paneler till höger utan synligt överlapp. Huvudagentens mått är rotbredd 1040 px och canvas 588 × 411,59 px. Bred dator har därmed både bild- och mätunderlag.
+
+Fysisk Safari/iPhone, verklig penna, skärmläsarens uppläsning och barnens begriplighet/skaparglädje är inte verifierade här. Slutsatsen gäller kontrollerad kod, tester, Chrome-flöden, mätningar och angivna bilder. Ingen universell 10/10-bedömning eller full tillgänglighetsförsäkran utfärdas.
