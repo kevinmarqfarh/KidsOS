@@ -148,6 +148,7 @@ const TOPICS = {
   play: ['Samarbeta & planera','🤝',['sv-ord','ma-rakna']],
 };
 export function practiceModules(appId) {
+  if (appId === 'build-world') return []; // Fri bygglek har egna uppdrag, inte rätt/fel-frågor.
   if (appId === 'write') return []; // Bokstavspar använder skrivytan i letters.js.
   if (appId === 'math') return [{id:'shopping-practice',name:'Min låtsasbutik',icon:'🛍️',minLevel:0,gen:genShopping,lgr:['ma-rakna','ma-metod']}];
   if (appId === 'svenska') return [{id:'spelling-practice',name:'Lyssna & stava',icon:'🔊',minLevel:0,gen:genSpelling,lgr:['sv-ljud','sv-skriva']}];

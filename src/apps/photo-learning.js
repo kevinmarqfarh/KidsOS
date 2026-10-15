@@ -150,3 +150,6 @@ const progressionPhotos={
  draw:[['obj-pencil','obj-paintbrush'],['obj-rainbow','obj-paintbrush'],['obj-house','obj-pencil'],['obj-flower','obj-paintbrush'],['obj-ball','obj-pencil'],['obj-camera','obj-pencil'],['obj-flower','obj-camera'],['course-oak','obj-paintbrush']],
 };
 for(const [app,pairs] of Object.entries(progressionPhotos))pairs.forEach((pair,i)=>{LESSON_PHOTOS[`${app}-progression-${i+1}`]=pair;});
+
+LESSON_PHOTOS['world-first-build']=['obj-brick','obj-house'];
+LESSON_PHOTOS['world-plan-build']=['obj-pencil','obj-ruler'];

@@ -8,7 +8,7 @@ import { AI_TRAINING, AI_TESTING, classifyAnimal } from '../../src/apps/ai-lab.j
 test('kurser har lektionssteg och giltiga övningar', () => {
   assert.equal(appById('code').name, 'Kodning');
   assert.equal(appById('ai').name, 'AI');
-  assert.equal(APPS.length, 13); // 12 + Känslor & jag (autismstödet, runda 2)
+  assert.equal(APPS.length, 14); // 12 + Känslor & jag (autismstödet, runda 2)
   for (const [appId, lessons] of [['ai', AI_LESSONS], ['code', CODING_LESSONS]]) {
     const app = appById(appId);
     assert.ok(lessons.length >= 6);

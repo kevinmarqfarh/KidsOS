@@ -7,7 +7,7 @@ import { newProfile, normalizeProfile } from '../../src/core/model.js';
 
 test('each app has new practice with age progression and distinct scenarios', () => {
   // Känslor & jag är ett stödprogram (autismstöd) utan skolämneslektioner.
-  for (const app of APPS.filter((a) => a.id !== 'feelings')) {
+  for (const app of APPS.filter((a) => !['feelings','build-world'].includes(a.id))) {
     const ids = ['letter-practice','shopping-practice','spelling-practice','loop-machine','drawing-missions','activity-practice'];
     assert.ok(app.modules.some(m => ids.includes(m.id)), app.id);
   }

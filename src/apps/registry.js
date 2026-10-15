@@ -1,3 +1,4 @@
+import { buildWorldApp } from './build-world-app.js';
 import { aiApp } from './ai.js';
 // Alla appar i den ordning de visas på hemskärmen.
 import { mathApp } from './math.js';
@@ -17,7 +18,7 @@ import { WORKSHOP_MODULES } from './workshops.js';
 import { practiceModules } from './practice-activities.js';
 import { PHOTO_LEARNING, PHOTO_CURRICULUM } from './photo-learning.js';
 
-export const APPS = [mathApp, svenskaApp, writeApp, scienceApp, biologyApp, spaceApp, worldApp, aiApp, codeApp, drawApp, wonderApp, playApp];
+export const APPS = [mathApp, svenskaApp, writeApp, scienceApp, biologyApp, spaceApp, worldApp, aiApp, codeApp, drawApp, wonderApp, playApp, buildWorldApp];
 for (const app of APPS) {
   if (PHOTO_LEARNING[app.id]) app.modules.push({ id: 'photo-explore', name: 'Fotospana', icon: '📷', minLevel: 0, view: 'photoExplore', lgr: PHOTO_CURRICULUM[app.id] });
   app.modules.push(...practiceModules(app.id), ...(WORKSHOP_MODULES[app.id] || []));

@@ -6,6 +6,7 @@ const HELP = {
   columnCoach: 'Räkna från höger: ental, tiotal och hundratal. Visa steget för hjälp med minnessiffror och växling. Välj en siffra och kontrollera kolumnen.',
   pictureStory: 'Titta på bilden. Beskriv vad du ser och hitta på början, händelse och slut. Du kan skriva, prata eller peka. Din berättelse får inget automatiskt betyg.',
   readingWorkshop: 'Texten ligger kvar. Läs eller lyssna och svara på en fråga i taget. Visa ledtråden om du vill. Byt till kort text eller svara med egna ord.',
+  buildWorld: 'Gå runt med pilarna. I byggläge väljer du en ruta och en byggdel och trycker Bygg. Ta bort återför delen till lagret. Ångra återställer ditt senaste byggsteg. Startdelarna är gratis. Fler delar kan köpas med samma spelmynt som du tjänar i kursapparna.',
   numberWorkshop: 'Lägg till ental och tiotal. Växla mellan dem med knapparna. Kontrollera när talet matchar målet.',
   fractionKitchen: 'Välj hur många lika stora delar portionen har. Tryck på delar för att välja dem och jämför med målet.',
   storyAtelier: 'Välj början, sedan och slutet. Välj idéer och skriv eller berätta med en vuxen. Din text sparas när du skriver.',

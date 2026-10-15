@@ -99,3 +99,11 @@ Hittat tvåfrågepooler i nyaste nivågruppen och urval med återläggning. Geme
 - Aktivitetsresponsivitet för quiz, läsning/skrivning, uppställningar, kursmenyer, skapande och landskap. Rotation bevarar ritinnehåll, robotbana och program.
 - Publicerad Chrome kontrollerad i 8 mobilformat + desktop; alla13appmenyer320, läsning6format, desktop5format, skrivutkast/spara, paus och helskärm. Inga error/warn fångade.
 - 480 tester och produktionsbygge passerar. Detaljer och faktiska begränsningar i docs/MOBILGRANSKNING-2026-10-15.md. Fysisk Safari/iPhone/penna inte verifierad.
+
+## Byggvärlden – vyagentens verifiering
+- Egen isometrisk canvasö, original geometriska träd/tak/bänk/lykta/damm/blommor och tydlig avatar.
+- Gå med tryck/BFS, Dpad och tangentbord; byggning med materialval, celltryck eller listval, rotation, borttagning och 30 stegs ångring. Köp nollställer ångringshistoriken så köpt lager bevaras.
+- Gemensamma kursmynt, uttryckligt köp med unik bekräftelsetoken, kvarvarande saldo och inget myntskapande i världen. Alla kursappar länkas från registret.
+- Lagringsfel/tillfällig minneslagring visas separat. Hela världen kan läsas som text och vald cell har lagermaterial/rotation/avatartext.
+- Tre byggskisser använder enbart befintligt lager och ångras i ett steg. Förhandsplan respekteras och väntar på start.
+- 5 DOM-tester passerar. Canvasgeometri och fysisk touch återstår att verifiera visuellt via huvudagentens tillåtna Chrome-flöde.

@@ -11,7 +11,8 @@ export function learningPlayReward(profile, result, correctFirst) {
   const card = h('div.learn-play-reward',
     h('span.learn-play-coin', { 'aria-hidden': 'true' }, '🪙'),
     h('div', h('b', `+${earned} spelmynt för svar och genomförd övning`), h('p', result.moduleCoins === 5 ? 'Första rundan i den här modulen gav fem extra mynt.' : 'Din genomförda övning gav extra mynt.'),
-      target ? h('p', ready ? `${target.name}: kursmålet är klart. Paketet eller rummet kostar ${target.price} mynt.` : `Ditt mål: ${target.name}. Fortsätt med övningen som hör till målet.`) : h('p', 'Använd mynten till rum och saker i din Skaparstudio.')),
-    onTap(h('button.btn.btn-ghost.learn-play-open', { type: 'button' }, '🏡 Till Skaparstudion'), () => card.dispatchEvent(new CustomEvent('kos-open', { bubbles: true, detail: { app: 'play', module: 'studio' } }))));
+      target ? h('p', ready ? `${target.name}: kursmålet är klart. Paketet eller rummet kostar ${target.price} mynt.` : `Ditt mål: ${target.name}. Fortsätt med övningen som hör till målet.`) : h('p', 'Använd samma mynt i Skaparstudion och Byggvärlden.')),
+    onTap(h('button.btn.btn-ghost.learn-play-open', { type: 'button' }, '🏡 Till Skaparstudion'), () => card.dispatchEvent(new CustomEvent('kos-open', { bubbles: true, detail: { app: 'play', module: 'studio' } }))),
+    onTap(h('button.btn.btn-ghost.learn-play-world', {type:'button'}, '🧱 Till Byggvärlden'),()=>card.dispatchEvent(new CustomEvent('kos-open',{bubbles:true,detail:{app:'build-world',module:'world'}}))));
   return card;
 }

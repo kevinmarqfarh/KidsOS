@@ -1,3 +1,4 @@
+import { BUILD_WORLD_LESSONS } from './build-world-app.js';
 import { PROGRESSION_LESSONS } from './progression-lessons.js';
 // Egna pedagogiska texter, förankrade i källorna i docs/COURSE-RESEARCH.md.
 // Nivåerna är appens progression, inte officiella kunskapskrav.
@@ -60,3 +61,5 @@ export const DISCOVERY_LESSONS = {
 };
 
 for(const [app,lessons] of Object.entries(PROGRESSION_LESSONS)) DISCOVERY_LESSONS[app].push(...lessons);
+
+DISCOVERY_LESSONS['build-world']=BUILD_WORLD_LESSONS;

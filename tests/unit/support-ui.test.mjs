@@ -192,7 +192,7 @@ test('föräldraspärren tar fysisk kodinmatning och godkänner bara en gång',a
 test('alla apphubbar och moduler kan öppnas och stängas i DOM-modellen',async()=>{
   const {APPS}=await import('../../src/apps/registry.js');
   const create=document.createElement.bind(document);
-  const context=new Proxy({}, {get(target,name){if(name==='measureText')return()=>({width:20});if(name==='getImageData')return()=>({data:new Uint8ClampedArray(4)});return target[name]||(()=>{});},set(target,name,value){target[name]=value;return true;}});
+  const context=new Proxy({}, {get(target,name){if(name==='createLinearGradient')return()=>({addColorStop(){}});if(name==='measureText')return()=>({width:20});if(name==='getImageData')return()=>({data:new Uint8ClampedArray(4)});return target[name]||(()=>{});},set(target,name,value){target[name]=value;return true;}});
   document.createElement=name=>{const node=create(name);if(name==='canvas'){node.getContext=()=>context;node.toDataURL=()=> 'data:image/png;base64,';}return node;};
   const oldImage=globalThis.Image;globalThis.Image=class {set src(value){this.onload?.();}};
   const oldObserver=globalThis.ResizeObserver;globalThis.ResizeObserver=class {observe(){}disconnect(){}};
@@ -426,4 +426,21 @@ test('svenska visar fördjupning först på högre nivå och avancerad text har 
   assert.ok(workshopControl('next-question'));assert.equal(workshopControl('text-length'),null);
   assert.match(el().querySelector('.workshop-work').textContent,/Fråga 1 av 4/);
   instance.destroy();
+});
+
+test('gemensam myntbetalning kontrollerar saldo, ogiltiga belopp och paus utan dubbel debitering',()=>{
+ kos.profile.coins=15;let updates=0;const stop=kos.on('coins',()=>updates++);
+ for(const amount of [-1,NaN,Infinity,'5',0.5,16]){assert.equal(kos.canAfford(amount),false);assert.equal(kos.spend(amount),false);}
+ assert.equal(kos.profile.coins,15);assert.equal(updates,0);
+ kos.paused=true;assert.equal(kos.spend(5),false);assert.equal(kos.profile.coins,15);kos.paused=false;
+ assert.equal(kos.spend(5),true);assert.equal(kos.profile.coins,10);assert.equal(updates,1);stop();
+});
+test('Lekstaden och genomförd kursrunda leder till Byggvärlden',async()=>{
+ let destination;el().addEventListener('kos-open',event=>destination=event.detail,{once:true});
+ const instance=mountApp(workshopHost(),'play');el().querySelector('[data-mod="build-world-link"]').click();
+ assert.deepEqual(destination,{app:'build-world',module:'world'});instance.destroy();el().replaceChildren();
+ const {learningPlayReward}=await import('../../src/ui/play-rewards.js');
+ const result=kos.roundDone('math','count',0,5);const card=learningPlayReward(kos.profile,result,0);el().append(card);
+ destination=null;el().addEventListener('kos-open',event=>destination=event.detail,{once:true});card.querySelector('.learn-play-world').click();
+ assert.deepEqual(destination,{app:'build-world',module:'world'});assert.ok(kos.profile.coins>=5);
 });

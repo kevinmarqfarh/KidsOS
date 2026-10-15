@@ -77,6 +77,7 @@ export function mountApp(host, appId, moduleId = null, opts = {}) {
       });
       return b;
     });
+    if(app.id==='play') tiles.push(onTap(h('button.mod-tile',{type:'button',dataset:{mod:'build-world-link'}},h('span.mod-icon','🧱'),h('span.mod-name','Byggvärlden'),h('span.mod-kind','▶ Bygg och utforska')),()=>host.content.dispatchEvent(new CustomEvent('kos-open',{bubbles:true,detail:{app:'build-world',module:'world'}}))));
     host.content.append(h('div.hub', h('p.hub-tag', app.tagline), h('div.mod-grid', tiles)));
     kos.autoSay(`${app.name}. ${app.tagline}. Vad vill du göra?`);
   }

@@ -2,7 +2,7 @@
 import { loadState, saveState } from '../core/storage.js';
 import {
   newProfile, recordAnswer, recordRound, addStars, bump, addToSet, touchDay, dateKey,
-  isOverDailyLimit, minutesLeftToday, currentLevel, appStat, addCoins, ageBand,
+  isOverDailyLimit, minutesLeftToday, currentLevel, appStat, addCoins, ageBand, spendCoins,
 } from '../core/model.js';
 import { awardTrophies } from '../core/trophies.js';
 import { rankFor } from '../core/progress.js';
@@ -191,6 +191,17 @@ export const kos = {
   },
   levelInfo(appId) {
     return LEVELS[this.level(appId)];
+  },
+
+  /** Samma profilmynt används i alla lekvärldar. Ingen riktig valuta. */
+  canAfford(price) {
+    return !!this.profile && Number.isInteger(price) && price >= 0 && Number.isFinite(this.profile.coins) && this.profile.coins >= price;
+  },
+  spend(price) {
+    if(this.paused || !this.profile || !spendCoins(this.profile,price))return false;
+    this.emit('coins',this.profile.coins);
+    this.saveNow();
+    return true;
   },
 
   /** Ett svar i en quiz. firstTry = rätt på första försöket. */
