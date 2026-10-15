@@ -8,6 +8,8 @@ import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import { chromium } from 'playwright-core';
 import { GLYPHS } from '../../src/apps/letters.js';
+import { APPS } from '../../src/apps/registry.js';
+const APP_COUNT = APPS.length;
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const APP_URL = `file://${join(root, 'dist', 'index.html')}`;
@@ -172,7 +174,7 @@ test('första start: föräldern skapar en profil med guiden', async () => {
   await page.getByRole('button', { name: 'Skapa ✨' }).click();
   await page.locator('.who-bubble', { hasText: 'Testbarn' }).click();
   await page.waitForSelector('.home');
-  assert.equal(await page.locator('.app-icon').count(), 13); // 12 + Känslor & jag (autismstödet)
+  assert.equal(await page.locator('.app-icon').count(), APP_COUNT); // alla appar i registret, inkl. Byggvärlden och Känslor & jag
   assert.match(await page.locator('.home-hello h1').innerText(), /Testbarn/);
   const s = await state(page);
   assert.equal(s.profiles[0].age, 7);

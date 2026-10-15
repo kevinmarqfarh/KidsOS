@@ -2,7 +2,7 @@
 
 <!-- GENERERAD av scripts/credits-doc.mjs från assets/credits.json – ändra inte för hand. -->
 
-KidsOS innehåller 374 bilder från Wikimedia Commons (inklusive NASA). Biblioteket innehåller fotografier och vissa äldre illustrationer. Alla har fria licenser: public domain, CC0, CC BY eller CC BY-SA.
+KidsOS innehåller 375 bilder från Wikimedia Commons (inklusive NASA). Biblioteket innehåller fotografier och vissa äldre illustrationer. Alla har fria licenser: public domain, CC0, CC BY eller CC BY-SA.
 Bilderna är förminskade och omkodade till WebP men i övrigt oförändrade. Följ länken för original, fullständig licens och upphov.
 
 ## feelings (4)
@@ -80,7 +80,7 @@ Bilderna är förminskade och omkodade till WebP men i övrigt oförändrade. F�
 | uggla | [Strix_aluco_3_(Martin_Mecnarowski).jpg](https://commons.wikimedia.org/wiki/File:Strix_aluco_3_%28Martin_Mecnarowski%29.jpg) | Martin Mecnarowski (http://www.photomecan.eu/) | [CC BY-SA 3.0](http://creativecommons.org/licenses/by-sa/3.0/) |
 | varg | [Eurasian_wolf_2.jpg](https://commons.wikimedia.org/wiki/File:Eurasian_wolf_2.jpg) | User:Mas3cf | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) |
 
-## Världen (33)
+## Världen (34)
 
 | Nyckel | Fil | Upphov | Licens |
 |---|---|---|---|
@@ -103,6 +103,7 @@ Bilderna är förminskade och omkodade till WebP men i övrigt oförändrade. F�
 | lejon | [Lion_waiting_in_Namibia.jpg](https://commons.wikimedia.org/wiki/File:Lion_waiting_in_Namibia.jpg) | Kevin Pluck | [CC BY 2.0](https://creativecommons.org/licenses/by/2.0) |
 | lucia | [Lucia_2017_D81_4616_(39002373982).jpg](https://commons.wikimedia.org/wiki/File:Lucia_2017_D81_4616_(39002373982).jpg) | Bengt Nyman from Vaxholm, Sweden | [CC BY 2.0](https://creativecommons.org/licenses/by/2.0) |
 | machupicchu | [Machu_Picchu,_Peru_(2018).jpg](https://commons.wikimedia.org/wiki/File:Machu_Picchu,_Peru_(2018).jpg) | Zielonamapa.pl | [CC BY-SA 2.0](https://creativecommons.org/licenses/by-sa/2.0) |
+| midsommar | [Mittsommer-skansen.jpg](https://commons.wikimedia.org/wiki/File:Mittsommer-skansen.jpg) | okänd | [CC BY-SA 3.0](http://creativecommons.org/licenses/by-sa/3.0/) |
 | moai | [Moai_Rano_raraku.jpg](https://commons.wikimedia.org/wiki/File:Moai_Rano_raraku.jpg) | Aurbina | Public domain |
 | muren | [20090529_Great_Wall_8125.jpg](https://commons.wikimedia.org/wiki/File:20090529_Great_Wall_8125.jpg) | Jakub Hałun | [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0) |
 | panda | [Lightmatter_panda.jpg](https://commons.wikimedia.org/wiki/File:Lightmatter_panda.jpg) | Aaron Logan | [CC BY 1.0](https://creativecommons.org/licenses/by/1.0) |

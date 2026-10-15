@@ -45,7 +45,7 @@ export function pic(emoji, { cls = '', alt } = {}) {
 }
 
 // Element vars text (ett ensamt emoji) byts mot foto. .eg-item = räknegrupper.
-export const PHOTOIZE_SELECTOR = '.pic, .pic-big, .sci-item-pic, .trace-pic, .reader-pic, .mp-story-pic, .wq-e, .rt-e, .eg-item';
+export const PHOTOIZE_SELECTOR = '.pic, .pic-big, .sci-item-pic, .tank-item, .magnet-item, .trace-pic, .reader-pic, .mp-story-pic, .wq-e, .rt-e, .eg-item';
 // Räknegrupper med fler än så här många bilder behåller emoji: många foton blir rörigt och tungt.
 export const MAX_PHOTO_GROUP = 10;
 const SKIP = '.no-photo, .flag, [data-nophoto], .photo-pic';
@@ -95,7 +95,13 @@ export function autoPhotoize(root) {
   if (!root || typeof MutationObserver === 'undefined') return () => {};
   photoize(root);
   const mo = new MutationObserver((list) => {
-    for (const m of list) for (const node of m.addedNodes) if (node.nodeType === 1) photoize(node);
+    for (const m of list) {
+      for (const node of m.addedNodes) {
+        if (node.nodeType === 1) photoize(node);
+        // innerHTML = '🍎' lägger bara till en textnod – fotografera då föräldern.
+        else if (node.nodeType === 3 && node.parentElement?.matches?.(PHOTOIZE_SELECTOR)) photoize(node.parentElement);
+      }
+    }
   });
   mo.observe(root, { childList: true, subtree: true });
   return () => mo.disconnect();

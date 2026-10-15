@@ -4240,3 +4240,11 @@ button, [role="button"], input, select, textarea { scroll-margin-block: 90px; }
 .literacy-review input{min-width:24px;min-height:24px;flex-shrink:0}
 .workshop-field textarea{width:100%;max-width:100%;box-sizing:border-box;font:inherit;line-height:1.6;resize:vertical}
 .workshop .learning-photo-card{max-width:680px;margin-inline:auto}
+
+/* Dockan ligger i .dock-host utanför den scrollande hemskärmen. Inuti en scrollyta ritar
+   iOS Safari en fast placerad glasruta (backdrop-filter) utan innehåll – en tom "låda". */
+.dock-host { position: relative; z-index: 5; }
+.os.desktop-mode .dock-host { display: none; }
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .dock { background: rgba(255, 255, 255, 0.92); }
+}

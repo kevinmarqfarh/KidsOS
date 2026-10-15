@@ -27,15 +27,17 @@ let statusEl;
 let tabletApp = null;
 let tabletFullscreen = null;
 let desktop = null;
+let dockHost = null; // dockan ligger utanför scrollytan (iOS Safari ritar annars en tom glaslåda)
 let current = { screen: 'lock' };
 
 export function mountShell(root) {
   statusEl = h('header.statusbar');
   screenEl = h('main.screen');
+  dockHost = h('div.dock-host');
   windowEl = h('section.window', { 'aria-hidden': 'true', inert: true });
   const overlays = h('div.overlays');
   const deskEl = h('div.desktop-root', { hidden: true });
-  osEl = h('div.os', statusEl, screenEl, windowEl, deskEl, overlays);
+  osEl = h('div.os', statusEl, screenEl, dockHost, windowEl, deskEl, overlays);
   kos.overlayRoot = overlays;
   clear(root).appendChild(osEl);
   Object.assign(shellApi, { parentGate, profileWizard, showLock, goHome, modal, confirmSwitch });
@@ -118,6 +120,7 @@ export function showLock() {
   const add = h('button.who-bubble.who-add', { type: 'button' }, h('span.who-avatar', '＋'), h('span.who-name', 'Ny profil'));
   onTap(add, () => parentGate(() => profileWizard()));
   const empty = !profiles.length;
+  clear(dockHost);
   clear(screenEl).append(
     h(
       'div.lock',
@@ -261,6 +264,7 @@ export function goHome() {
     closeWindow(true);
     current = { screen: 'desktop' };
     osEl.className = `os desktop-mode wp-${p.wallpaper || 'sky'}`;
+    clear(dockHost);
     desktop.show();
     return;
   }
@@ -342,9 +346,9 @@ export function goHome() {
       kos.adapted ? adaptedHomeSection() : null,
       h('div.home-cards', wonderCard, trophyCard),
       grid,
-      dock,
     ),
   );
+  clear(dockHost).append(dock);
   const homeHeading = screenEl.querySelector('.home h1');
   homeHeading?.setAttribute('tabindex', '-1');
   homeHeading?.focus({ preventScroll: true });
