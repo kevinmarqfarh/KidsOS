@@ -40,3 +40,11 @@
  .literacy-reading .literacy-source{max-height:none;overflow:visible;padding:0;scrollbar-gutter:auto}
  .literacy-source .learning-photo-card>img{max-height:200px}
 }
+
+/* Medium tablet: keep the picture in sight while the child starts writing. */
+@container (min-width:700px) and (max-width:959px){
+ .literacy-picture.literacy-layout{grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:18px}
+ .literacy-picture.literacy-layout>.literacy-source{position:sticky;top:12px;align-self:start}
+ .literacy-picture .learning-photo-card>img{max-height:200px}
+ .literacy-picture .literacy-response textarea{font-size:17px}
+}

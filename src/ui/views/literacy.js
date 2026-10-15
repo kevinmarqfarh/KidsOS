@@ -45,7 +45,7 @@ export function pictureStoryView(el,ctx) {
       btn('Läs berättelsefrågan','read-prompt',()=>ctx.kos.read(item.prompt)),
       h('details.literacy-guidance',h('summary','Om bilden och din fantasi'),h('p','Bilden ger ledtrådar. Du får hitta på vem som är med, vad någon känner och vad som händer. Det är din fantasi, inte fakta om bilden.')));
     const writing=h('section.literacy-response',{'aria-label':'Min berättelse'});
-    work.classList.add('literacy-layout');
+    work.classList.add('literacy-layout','literacy-picture');
     work.append(source,writing);
     const fields=ctx.level<=1?[
       ['observe','Vad ser jag?','Ett ord, en mening eller något du kan peka på.'],
