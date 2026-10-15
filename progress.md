@@ -93,3 +93,9 @@ Hittat tvåfrågepooler i nyaste nivågruppen och urval med återläggning. Geme
 - 12 längre svenska fördjupningstexter med 48 frågor. Läsbanken totalt 48 texter och 156 frågor, bildverkstaden totalt 24 uppdrag.
 - Läroplansreferenser för yngre/äldre åtskilda från originala sammanfattningar. Ingen automatisk betygsbedömning av kreativt skrivande eller fria svar.
 - 474 enhets/DOM-tester passerade före sista källtaggsjusteringen; den verifieras med riktade tester och produktionsbygge inför commit/push.
+
+## Mobilanpassning med agenter och domare (2026-10-15)
+- Två implementationsspår, oberoende granskare och ett separat domarvarv upptäckte och rättade docköverlapp, desktopikoner utanför telefonen, trång taskbar, safe-area och fullscreen/keyboardhöjd.
+- Aktivitetsresponsivitet för quiz, läsning/skrivning, uppställningar, kursmenyer, skapande och landskap. Rotation bevarar ritinnehåll, robotbana och program.
+- Publicerad Chrome kontrollerad i 8 mobilformat + desktop; alla13appmenyer320, läsning6format, desktop5format, skrivutkast/spara, paus och helskärm. Inga error/warn fångade.
+- 480 tester och produktionsbygge passerar. Detaljer och faktiska begränsningar i docs/MOBILGRANSKNING-2026-10-15.md. Fysisk Safari/iPhone/penna inte verifierad.

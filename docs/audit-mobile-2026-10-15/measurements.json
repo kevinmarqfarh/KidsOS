@@ -1,0 +1,382 @@
+{
+  "version": "cf325ac",
+  "home": [
+    {
+      "dockRight": 312,
+      "dockTop": 482,
+      "gridColumns": "92px 92px 92px",
+      "height": 568,
+      "pageWidth": 320,
+      "screenBottom": 474,
+      "screenRight": 320,
+      "smallButtons": [
+        {
+          "h": 44,
+          "name": "Byt användare",
+          "w": 40
+        }
+      ],
+      "width": 320
+    },
+    {
+      "dockRight": 367,
+      "dockTop": 581,
+      "gridColumns": "110.328px 110.336px 110.336px",
+      "height": 667,
+      "pageWidth": 375,
+      "screenBottom": 573,
+      "screenRight": 375,
+      "smallButtons": [
+        {
+          "h": 44,
+          "name": "Byt användare",
+          "w": 40
+        }
+      ],
+      "width": 375
+    },
+    {
+      "dockRight": 382,
+      "dockTop": 758,
+      "gridColumns": "115.328px 115.336px 115.336px",
+      "height": 844,
+      "pageWidth": 390,
+      "screenBottom": 750,
+      "screenRight": 390,
+      "smallButtons": [
+        {
+          "h": 44,
+          "name": "Byt användare",
+          "w": 40
+        }
+      ],
+      "width": 390
+    },
+    {
+      "dockRight": 422,
+      "dockTop": 846,
+      "gridColumns": "128.664px 128.664px 128.672px",
+      "height": 932,
+      "pageWidth": 430,
+      "screenBottom": 838,
+      "screenRight": 430,
+      "smallButtons": [
+        {
+          "h": 44,
+          "name": "Byt användare",
+          "w": 40
+        }
+      ],
+      "width": 430
+    },
+    {
+      "dockRight": 560,
+      "dockTop": 254,
+      "gridColumns": "100.797px 100.797px 100.805px 100.797px 100.805px",
+      "height": 320,
+      "pageWidth": 568,
+      "screenBottom": 246,
+      "screenRight": 568,
+      "smallButtons": [
+        {
+          "h": 40,
+          "name": "Byt användare",
+          "w": 133.46875
+        }
+      ],
+      "width": 568
+    },
+    {
+      "dockRight": 659,
+      "dockTop": 309,
+      "gridColumns": "120.594px 120.602px 120.602px 120.602px 120.594px",
+      "height": 375,
+      "pageWidth": 667,
+      "screenBottom": 301,
+      "screenRight": 667,
+      "smallButtons": [
+        {
+          "h": 40,
+          "name": "Byt användare",
+          "w": 133.46875
+        }
+      ],
+      "width": 667
+    },
+    {
+      "dockRight": 836,
+      "dockTop": 324,
+      "gridColumns": "156px 156px 156px 156px 156px",
+      "height": 390,
+      "pageWidth": 844,
+      "screenBottom": 316,
+      "screenRight": 844,
+      "smallButtons": [
+        {
+          "h": 40,
+          "name": "Byt användare",
+          "w": 133.46875
+        }
+      ],
+      "width": 844
+    },
+    {
+      "dockRight": 924,
+      "dockTop": 364,
+      "gridColumns": "173.594px 173.602px 173.602px 173.602px 173.602px",
+      "height": 430,
+      "pageWidth": 932,
+      "screenBottom": 356,
+      "screenRight": 932,
+      "smallButtons": [
+        {
+          "h": 40,
+          "name": "Byt användare",
+          "w": 133.46875
+        }
+      ],
+      "width": 932
+    },
+    {
+      "dockRight": 867.84765625,
+      "dockTop": 705.703125,
+      "gridColumns": "161.664px 161.664px 161.672px 161.664px 161.664px 161.672px",
+      "height": 800,
+      "pageWidth": 1280,
+      "screenBottom": 800,
+      "screenRight": 1280,
+      "smallButtons": [],
+      "width": 1280
+    }
+  ],
+  "reading": [
+    {
+      "contentHeight": 456,
+      "contentWidth": 320,
+      "h": 568,
+      "scrollWidth": 320,
+      "w": 320,
+      "wide": []
+    },
+    {
+      "contentHeight": 555,
+      "contentWidth": 375,
+      "h": 667,
+      "scrollWidth": 375,
+      "w": 375,
+      "wide": []
+    },
+    {
+      "contentHeight": 732,
+      "contentWidth": 390,
+      "h": 844,
+      "scrollWidth": 390,
+      "w": 390,
+      "wide": []
+    },
+    {
+      "contentHeight": 820,
+      "contentWidth": 430,
+      "h": 932,
+      "scrollWidth": 430,
+      "w": 430,
+      "wide": []
+    },
+    {
+      "contentHeight": 216,
+      "contentWidth": 568,
+      "h": 320,
+      "scrollWidth": 568,
+      "w": 568,
+      "wide": []
+    },
+    {
+      "contentHeight": 286,
+      "contentWidth": 844,
+      "h": 390,
+      "scrollWidth": 844,
+      "w": 844,
+      "wide": []
+    }
+  ],
+  "desktop": [
+    {
+      "h": 568,
+      "icons": {
+        "client": 296,
+        "cols": "90.6641px 90.6641px 90.6641px",
+        "height": 478,
+        "scroll": 296,
+        "scrollHeight": 696
+      },
+      "lastIcon": "⚙️Inställningar",
+      "taskbar": {
+        "scroll": 320,
+        "width": 320
+      },
+      "w": 320
+    },
+    {
+      "h": 844,
+      "icons": {
+        "client": 366,
+        "cols": "114px 114px 114px",
+        "height": 754,
+        "scroll": 366,
+        "scrollHeight": 754
+      },
+      "lastIcon": "⚙️Inställningar",
+      "taskbar": {
+        "scroll": 390,
+        "width": 390
+      },
+      "w": 390
+    },
+    {
+      "h": 320,
+      "icons": {
+        "client": 544,
+        "cols": "173.328px 173.336px 173.328px",
+        "height": 230,
+        "scroll": 544,
+        "scrollHeight": 696
+      },
+      "lastIcon": "⚙️Inställningar",
+      "taskbar": {
+        "scroll": 568,
+        "width": 568
+      },
+      "w": 568
+    },
+    {
+      "h": 390,
+      "icons": {
+        "client": 820,
+        "cols": "265.328px 265.336px 265.336px",
+        "height": 300,
+        "scroll": 820,
+        "scrollHeight": 696
+      },
+      "lastIcon": "⚙️Inställningar",
+      "taskbar": {
+        "scroll": 844,
+        "width": 844
+      },
+      "w": 844
+    },
+    {
+      "h": 800,
+      "icons": {
+        "client": 980,
+        "cols": "100px 100px 100px",
+        "height": 710,
+        "scroll": 980,
+        "scrollHeight": 710
+      },
+      "lastIcon": "⚙️Inställningar",
+      "taskbar": {
+        "scroll": 1280,
+        "width": 1280
+      },
+      "w": 1280
+    }
+  ],
+  "appMenus": [
+    {
+      "app": "Vetenskap",
+      "height": 452,
+      "scrollWidth": 320,
+      "width": 320
+    },
+    {
+      "app": "Biologi",
+      "height": 452,
+      "scrollWidth": 320,
+      "width": 320
+    },
+    {
+      "app": "Rymden",
+      "height": 452,
+      "scrollWidth": 320,
+      "width": 320
+    },
+    {
+      "app": "Världen",
+      "height": 452,
+      "scrollWidth": 320,
+      "width": 320
+    },
+    {
+      "app": "AI",
+      "height": 452,
+      "scrollWidth": 320,
+      "width": 320
+    },
+    {
+      "app": "Kodning",
+      "height": 452,
+      "scrollWidth": 320,
+      "width": 320
+    },
+    {
+      "app": "Rita",
+      "height": 452,
+      "scrollWidth": 320,
+      "width": 320
+    },
+    {
+      "app": "Undra",
+      "height": 452,
+      "scrollWidth": 320,
+      "width": 320
+    },
+    {
+      "app": "Lekstaden",
+      "height": 452,
+      "scrollWidth": 320,
+      "width": 320
+    },
+    {
+      "app": "Känslor & jag",
+      "height": 452,
+      "scrollWidth": 320,
+      "width": 320
+    },
+    {
+      "app": "Skriv ABC",
+      "height": 452,
+      "scrollWidth": 320,
+      "width": 320
+    }
+  ],
+  "robot": [
+    {
+      "board": 270,
+      "content": 320,
+      "h": 568,
+      "heading": "Bana 1: Första steget🔊💡Tryck på pilarna för att bygga ett program. T",
+      "w": 320
+    },
+    {
+      "board": 276,
+      "content": 568,
+      "h": 320,
+      "heading": "Bana 1: Första steget🔊💡Tryck på pilarna för att bygga ett program. T",
+      "w": 568
+    },
+    {
+      "board": 276,
+      "content": 390,
+      "h": 844,
+      "heading": "Bana 1: Första steget🔊💡Tryck på pilarna för att bygga ett program. T",
+      "w": 390
+    }
+  ],
+  "notes": [
+    "Skrivutkast bevarades vid 320x360 och Spara gav bekräftelse.",
+    "Pausdialog vid 568x320 hade top16/bottom304 och rullbart innehåll.",
+    "Svenska och Matte samtidigt: taskbar320/scroll320, tasks110px, fönsterinnehåll320.",
+    "Fullscreen vid 320x360: apphöjd360 och contentbredd320.",
+    "Inga error/warn i browserloggen."
+  ]
+}

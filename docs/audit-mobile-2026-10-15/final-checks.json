@@ -1,0 +1,47 @@
+{
+  "version": "c9cf477",
+  "home": [
+    {
+      "columns": "92px 92px 92px",
+      "dockTop": 394,
+      "h": 480,
+      "pageWidth": 320,
+      "profile": {
+        "h": 44,
+        "w": 44
+      },
+      "screenBottom": 386,
+      "w": 320
+    },
+    {
+      "columns": "100.797px 100.797px 100.805px 100.797px 100.805px",
+      "dockTop": 254,
+      "h": 320,
+      "pageWidth": 568,
+      "profile": {
+        "h": 44,
+        "w": 133.46875
+      },
+      "screenBottom": 246,
+      "w": 568
+    },
+    {
+      "columns": "115.328px 115.336px 115.336px",
+      "dockTop": 758,
+      "h": 844,
+      "pageWidth": 390,
+      "profile": {
+        "h": 44,
+        "w": 44
+      },
+      "screenBottom": 750,
+      "w": 390
+    }
+  ],
+  "reading": {
+    "width": 320,
+    "contentWidth": 320,
+    "introHeight": 211.453125
+  },
+  "testCount": 480
+}
