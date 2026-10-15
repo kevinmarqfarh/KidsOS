@@ -93,8 +93,9 @@ export function runQuiz(el, { app, module: mod, onExit, seed = Date.now(), count
     closePauseDialog = openDialog(pauseDialog, kos.overlayRoot || document.body);
   }
 
-  function next() {
+  function next(restorePosition = false) {
     if (!alive) return;
+    if (restorePosition) (el.closest('.win-content, .dwin-content') || el).scrollTop = 0;
     if (index >= total) return finish();
     const level = steadyLevel ?? effectiveLevel(app, mod);
     progress.textContent = `Nu: fråga ${index + 1} av ${total} · Sedan: ${index + 1 === total ? 'klar' : 'nästa fråga'}`;
@@ -118,11 +119,11 @@ export function runQuiz(el, { app, module: mod, onExit, seed = Date.now(), count
       setStripLeft(strip, index, total, ap);
     }
     if (window.kidsos) window.kidsos.q = q; // testkrok: aktuell fråga
-    renderQuestion(q);
+    renderQuestion(q, 0, restorePosition);
   }
 
   /** redo > 0: anpassat läge gör om frågan efter ett fel (felfri inlärning). */
-  function renderQuestion(q, redo = 0) {
+  function renderQuestion(q, redo = 0, restorePosition = false) {
     clear(stage);
     stage.classList.remove('done');
     let tries = redo;
@@ -134,7 +135,7 @@ export function runQuiz(el, { app, module: mod, onExit, seed = Date.now(), count
     if (along) wordReveal(promptText, q.prompt);
     const sayAlong = () => speakAlong(promptText, (t, o) => kos.read(t, o));
     onTap(speakBtn, () => (along ? sayAlong() : kos.read(q.say || q.prompt)));
-    const prompt = h('div.q-prompt', speakBtn, promptText);
+    const prompt = h('div.q-prompt', { tabindex: '-1', role: 'group', 'aria-label': q.prompt }, speakBtn, promptText);
     const visual = q.visual ? h('div.q-visual', { html: q.visual }) : null;
     const answers = h('div.q-answers');
     const feedback = h('div.q-feedback', { 'aria-live': 'polite' });
@@ -236,7 +237,7 @@ export function runQuiz(el, { app, module: mod, onExit, seed = Date.now(), count
       const again = h('button.btn.btn-primary.btn-next', { type: 'button' }, 'Gör igen ➜');
       onTap(again, () => {
         kos.stopSpeaking();
-        renderQuestion(q, redo + 1);
+        renderQuestion(q, redo + 1, true);
       });
       clear(feedback).append(h('div.fb.fb-model', h('span.fb-icon', '👉'), h('div.fb-text', h('b', 'Titta! '), 'Det här är rätt. Nu gör vi den igen.'), again));
       feedback.classList.add('show');
@@ -252,7 +253,7 @@ export function runQuiz(el, { app, module: mod, onExit, seed = Date.now(), count
       onTap(nextBtn, () => {
         kos.stopSpeaking();
         index++;
-        next();
+        next(true);
       });
       const title = ok ? (first ? ['Rätt!', '⭐'] : ['Bra kämpat!', '👍']) : ['Så här är det:', '🧠'];
       clear(feedback).append(
@@ -274,7 +275,7 @@ export function runQuiz(el, { app, module: mod, onExit, seed = Date.now(), count
       onTap(nextBtn, () => {
         kos.stopSpeaking();
         index++;
-        next();
+        next(true);
       });
       const word = ok ? praiseFor(index, ap) : 'Nu vet du!';
       const icon = ok ? interestFor(ap).icon : '👍';
@@ -287,6 +288,11 @@ export function runQuiz(el, { app, module: mod, onExit, seed = Date.now(), count
 
     const renderers = { choice, numpad, order, sort, build, tapcount, tap, clock };
     (renderers[q.type] || choice)(q, answers, api, visual, stage);
+    if (restorePosition) {
+      const scroller = el.closest('.win-content, .dwin-content') || el;
+      scroller.scrollTop = 0;
+      prompt.focus({ preventScroll: true });
+    }
     // Felfri inlärning: vid omgörningen pekar en mjuk markering ut rätt svar (prompt som sedan tonas bort).
     if (adapted && redo) {
       answers.querySelector(`.choice[data-id="${CSS.escape(String(q.answer))}"]`)?.classList.add('ad-prompt');

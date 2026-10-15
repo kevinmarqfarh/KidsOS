@@ -178,3 +178,17 @@
   border-radius: 16px;
   padding: 4px 10px;
 }
+
+/* Keep question, reveal and navigation together on tablet and phone. */
+.activity-content .wonder-card-big {
+  margin-inline: auto;
+  padding: clamp(16px, 2.4vw, 24px);
+  gap: 12px;
+}
+.activity-content .wonder-card-big h2 { margin: 0; font-size: clamp(25px, 3.2vw, 34px); line-height: 1.2; }
+.activity-content .wonder-card-big .wcb-e { font-size: 64px; }
+.activity-content .wonder-card-big .fx-flip { margin-block: 4px; }
+.activity-content .wonder-card-big .fx-q-mark { font-size: 44px; }
+.activity-content .wonder-card-big .fx-flip-face { min-height: 120px; padding: 14px 16px; }
+.activity-content .wonder-card-big .row-actions { margin-top: 4px; gap: 12px; flex-wrap: wrap; }
+.activity-content .wonder-card-big .wcb-photo .photo { max-height: 220px; object-fit: contain; }

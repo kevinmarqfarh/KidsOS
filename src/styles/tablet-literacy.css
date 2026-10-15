@@ -1,0 +1,42 @@
+/* Reading and writing share one quiet workspace; the source stays beside answers. */
+.literacy-activity .workshop-head{padding:14px 18px;margin-bottom:14px}
+.literacy-activity .workshop-head .workshop-kicker{display:none}
+.literacy-activity .workshop-head h2{font-size:26px;margin:0 0 6px}
+.literacy-activity .workshop-head p{margin:6px 0;font-size:17px;line-height:1.45}
+.literacy-activity .workshop-head .workshop-button{min-height:44px;padding:8px 12px;margin-top:4px}
+.literacy-layout{display:grid;gap:20px;align-items:start;min-width:0}
+.literacy-source,.literacy-response{display:grid;gap:12px;min-width:0;max-width:100%}
+.literacy-source>.workshop-field,.literacy-response>.workshop-field{min-width:0}
+.literacy-source select,.literacy-response textarea{width:100%;min-width:0;box-sizing:border-box;font-size:18px}
+.literacy-response textarea{line-height:1.5;resize:vertical}
+.literacy-source .learning-photo-card{margin:0;padding:10px}
+.literacy-source .learning-photo-card>img{width:100%;max-height:240px;object-fit:contain}
+.literacy-source .learning-photo-card figcaption{font-size:14px;gap:4px}
+.literacy-task{margin:0;font-size:18px;line-height:1.55}
+.literacy-guidance{font-size:16px;line-height:1.5}
+.literacy-guidance summary{min-height:44px;display:flex;align-items:center;cursor:pointer;font-weight:700}
+.literacy-guidance p{margin:4px 0}
+.literacy-completion{font-size:15px;line-height:1.5;margin:0}
+.literacy-source .literacy-passage{max-width:none;margin:0;padding:16px;font-size:18px;line-height:1.7}
+.literacy-response>.literacy-review{margin:0;padding:12px}
+.literacy-response>h3{margin:0}
+.literacy-response>p{margin:0;line-height:1.55}
+@media(min-width:960px){
+ .literacy-layout{grid-template-columns:minmax(0,.92fr) minmax(0,1.08fr);gap:24px}
+ .literacy-layout>.literacy-source{position:sticky;top:12px;align-self:start}
+ .literacy-source .learning-photo-card>img{max-height:min(30dvh,280px)}
+ .literacy-reading .literacy-source{max-height:max(140px,calc(var(--app-height,100dvh) - 220px));overflow-y:auto;overscroll-behavior:contain;scrollbar-gutter:stable;padding:4px;scroll-padding-block:8px}
+}
+@media(max-width:959px){
+ .literacy-activity .workshop{padding:8px}
+ .literacy-layout{gap:16px}
+ .literacy-source .learning-photo-card>img{max-height:200px}
+ .literacy-source .learning-photo-card small{font-size:11px}
+}
+/* Desktop windows reflow by their available content width as well. */
+@container (max-width:800px){
+ .literacy-layout{grid-template-columns:minmax(0,1fr);gap:16px}
+ .literacy-layout>.literacy-source{position:static}
+ .literacy-reading .literacy-source{max-height:none;overflow:visible;padding:0;scrollbar-gutter:auto}
+ .literacy-source .learning-photo-card>img{max-height:200px}
+}

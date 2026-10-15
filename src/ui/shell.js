@@ -68,6 +68,7 @@ function setWallpaper() {
 
 /* ---------------- Statusrad ---------------- */
 function renderStatus() {
+  const restoreProfileFocus = document.activeElement === statusEl?.querySelector('.sb-who');
   const p = kos.profile;
   const now = new Date();
   const time = now.toLocaleTimeString('sv-SE', { hour: '2-digit', minute: '2-digit' });
@@ -89,6 +90,7 @@ function renderStatus() {
       h('span.sb-chip.sb-stars', { title: 'Stjärnor' }, '⭐ ', tickerSpan(`sb-stars:${p.id}`, p.stars)),
     ),
   );
+  if (restoreProfileFocus) who.focus({ preventScroll: true });
 }
 
 /* ---------------- Låsskärm / välj profil ---------------- */
@@ -371,6 +373,8 @@ function animateOpen(fromEl) {
   }
   screenEl.setAttribute('inert', '');
   screenEl.setAttribute('aria-hidden', 'true');
+  dockHost?.setAttribute('inert', '');
+  dockHost?.setAttribute('aria-hidden', 'true');
   windowEl.removeAttribute('inert');
   windowEl.setAttribute('aria-hidden', 'false');
   windowEl.classList.add('open');
@@ -390,6 +394,8 @@ export function closeWindow(instant) {
   windowEl.setAttribute('inert', '');
   screenEl?.removeAttribute('inert');
   screenEl?.removeAttribute('aria-hidden');
+  dockHost?.removeAttribute('inert');
+  dockHost?.removeAttribute('aria-hidden');
   osEl?.classList.remove('app-open');
   if (instant) {
     windowEl.classList.remove('open', 'closing');
