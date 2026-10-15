@@ -29,11 +29,11 @@
  .os .tb-chip{max-width:100%;overflow-wrap:anywhere}
 }
 @media(max-height:500px) and (orientation:landscape){
- .os:not(.desktop-mode){--sb-h:36px}
+ .os:not(.desktop-mode){--sb-h:44px}
  .os .win-head{min-height:52px}
  .os .window{top:calc(var(--sb-h) + env(safe-area-inset-top,0px))}
  .os .sheet{align-items:center}
- .os .statusbar .sb-who{min-height:32px}
+ .os .statusbar .sb-who{min-height:44px}
 }
 /* Fullscreen is still constrained by the keyboard and display cut-outs. */
 .os:fullscreen,.window.app-fullscreen,.dwin.app-fullscreen{height:var(--app-height,100dvh)!important}
@@ -57,3 +57,5 @@
  .os .dwin-content{padding-left:max(12px,env(safe-area-inset-left,0px));padding-right:max(12px,env(safe-area-inset-right,0px));padding-bottom:max(20px,env(safe-area-inset-bottom,0px))}
  .os .quiz-pause-dialog{max-height:calc(var(--app-height,100dvh) - 32px)}
 }
+
+@media(max-width:600px),(max-height:500px) and (orientation:landscape){.os .statusbar .sb-who{min-width:44px;min-height:44px}}

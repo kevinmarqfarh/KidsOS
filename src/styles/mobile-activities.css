@@ -66,3 +66,10 @@
   .learning-photo-card > img { max-height: 200px; }
   .quiz-pause-dialog { max-height: calc(100dvh - 24px); overflow-y: auto; }
 }
+@media(max-width:600px){
+ .workshop-head{padding:12px;margin-bottom:12px}
+ .workshop-head h2{font-size:23px}
+ .workshop-head p{font-size:16px;line-height:1.45}
+ .workshop-head .workshop-kicker{font-size:11px}
+ .workshop-head .workshop-button{min-height:44px;padding:8px 12px}
+}
