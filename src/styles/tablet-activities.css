@@ -23,3 +23,7 @@
   .q-support-actions { flex-wrap: nowrap; gap: 8px; }
   .activity-support > .btn, .q-support-actions > .btn { padding-inline: 12px; }
 }
+/* In portrait, answers follow the question rather than the bottom of the screen. */
+@media (max-width: 899px) and (orientation: portrait) {
+  .os:not(.desktop-mode) .q-bottom { margin-top: 8px; }
+}

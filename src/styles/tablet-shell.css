@@ -55,3 +55,5 @@
   .os:not(.desktop-mode) .win-title { font-size: 18px; gap: 6px; }
   .os:not(.desktop-mode) .app-fullscreen .win-head { padding-top: max(6px, env(safe-area-inset-top, 0px)); }
 }
+/* Navigation must be immediately readable; long menus must not wait on staggered entrances. */
+.os:not(.desktop-mode) :is(.app-icon, .mod-tile) { animation: none; }
