@@ -3,3 +3,4 @@ node_modules/
 docs/fel*.png
 src/generated/
 .dbg/
+dist/legacy-sim.html

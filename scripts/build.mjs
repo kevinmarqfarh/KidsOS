@@ -3,6 +3,7 @@
 //   dist/artifact.html – samma innehåll utan <html>/<head>-skal (för publicering som Claude-artifact)
 import { build, context } from 'esbuild';
 import { generateImages } from './gen-images.mjs';
+import { colorMixFallbacks, simulateLegacy } from './css-compat.mjs';
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -18,7 +19,8 @@ async function bundle() {
   const js = await build({ entryPoints: [join(root, 'src/main.js')], bundle: true, format: 'iife', minify: true, write: false, target: ['safari14', 'chrome90', 'firefox90'], legalComments: 'none' });
   const css = await build({ entryPoints: [join(root, 'src/styles/index.css')], bundle: true, minify: true, write: false, loader: { '.css': 'css' }, target: ['safari14'] });
   const jsText = js.outputFiles[0].text.replace(/<\/script/gi, '<\\/script');
-  const cssText = css.outputFiles[0].text;
+  // Äldre Safari (iPadOS 15/16.1) saknar color-mix(): ge reservfärger, se scripts/css-compat.mjs.
+  const cssText = colorMixFallbacks(css.outputFiles[0].text);
   const body = `<title>KidsOS</title>
 <meta name="description" content="KidsOS – ett lärande operativsystem för barn 4–12 år.">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -45,6 +47,8 @@ ${body.split('<div id="kidsos"')[0]}</head>
   mkdirSync(join(root, 'dist'), { recursive: true });
   writeFileSync(join(root, 'dist/index.html'), full);
   writeFileSync(join(root, 'dist/artifact.html'), body + '\n');
+  // Testvariant som beter sig som en gammal iPad (ingen color-mix). Används av e2e och skärmbilder.
+  if (process.argv.includes('--legacy-sim') || process.env.KIDSOS_LEGACY_SIM) writeFileSync(join(root, 'dist/legacy-sim.html'), full.replace(cssText, simulateLegacy(cssText)));
   const kb = (s) => `${(Buffer.byteLength(s) / 1024).toFixed(0)} kB`;
   console.log(`✓ dist/index.html (${kb(full)})  ✓ dist/artifact.html (${kb(body)})`);
 }
