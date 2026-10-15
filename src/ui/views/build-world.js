@@ -375,6 +375,19 @@ function buildWorldView(el, { kos }) {
       save();
       el.dispatchEvent(new CustomEvent("kos-open", { bubbles: true, detail: { app: app.id } }));
     }, `course-${app.id}`)))));
+    // Keep movement and mode controls together immediately below the island.
+    const mainToolbar=controls.querySelector('.bw-toolbar');
+    const primary=h('div.bw-primary',{'aria-label':'Gå eller bygg'});
+    const walkButton=mainToolbar.querySelector('[data-bw-key="walk"]');
+    const buildButton=mainToolbar.querySelector('[data-bw-key="build"]');
+    primary.append(walkButton,buildButton);
+    const secondary=h('details.bw-details.bw-secondary',h('summary','Zoom, spara och hjälp'),mainToolbar);
+    const description=controls.querySelector('.bw-heading')?.nextElementSibling;
+    const introduction=h('details.bw-details.bw-about',h('summary','Så fungerar din värld'));
+    if(description?.tagName==='P')introduction.append(description);
+    const navigation=controls.querySelector('.bw-navigation');
+    controls.prepend(primary,navigation);
+    controls.append(secondary,introduction);
     for (const d of controls.querySelectorAll("details")) if (openDetails.includes(d.querySelector("summary")?.textContent)) d.open = true;
     if (focused) {
       const target = controls.querySelector(`[data-bw-key="${focused}"]`) || controls.querySelector(`[data-bw-key="shop-${chosen}"]`) || controls.querySelector('[data-bw-key="build"]');
