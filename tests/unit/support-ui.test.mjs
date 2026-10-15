@@ -184,7 +184,7 @@ test('anteckningsbyte under autosparning belönar rätt anteckning',async()=>{
 test('föräldraspärren tar fysisk kodinmatning och godkänner bara en gång',async()=>{
   const {parentGate}=await import('../../src/ui/shell.js');
   kos.state.settings.pin='1234';let approved=0;parentGate(()=>approved++);
-  const panel=overlays().querySelector('.sheet-panel');assert.equal(panel.getAttribute('aria-label'),'🔒 För vuxna');
+  const panel=overlays().querySelector('.sheet-panel');assert.equal(panel.closest('dialog').getAttribute('aria-label'),'🔒 För vuxna');
   for(const digit of '1234')key(panel,digit);
   assert.equal(approved,1);key(panel,'Enter');assert.equal(approved,1);
 });

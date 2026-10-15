@@ -9,6 +9,9 @@
   margin: 8px 0 12px;
 }
 .wonder-fact {
+  border: 0;
+  font: inherit;
+  text-align: left;
   flex: 1 1 280px;
   display: flex;
   gap: 12px;

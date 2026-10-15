@@ -2,7 +2,7 @@
 import { h, clear, onTap, interactiveGraphic, wait } from '../dom.js';
 import { bodySvg, BODY_PARTS, ORGANS } from '../../apps/biology.js';
 import { STORIES } from '../../apps/svenska.js';
-import { WONDERS, WONDER_CATS, randomFact, eligibleWonders, wonderAnswer } from '../../apps/wonder.js';
+import { WONDER_CATS, eligibleWonders, wonderAnswer } from '../../apps/wonder.js';
 import { DRAW_PROMPTS, DRAW_COLORS, DRAW_STAMPS } from '../../apps/draw.js';
 import { hasInSet } from '../../core/model.js';
 import { loadDrawings, saveDrawing, deleteDrawing, loadJSON } from '../../core/storage.js';
@@ -208,13 +208,10 @@ export function wonderView(el, { kos, app, opts, level }) {
     return rng.pick(unseen.length ? unseen : pool);
   };
   function factCard() {
-    const f = randomFact(rng);
-    const text = h('span.wf-text', f.text);
-    const card = h('div.wonder-fact', h('span.wf-e', f.e), h('div.wf-body', h('b', '💡 Visste du?'), text));
-    onTap(card, () => {
-      const w = available.find((x) => x.id === f.id);
-      if (w) open(w);
-    });
+    const f = rng.pick(available.filter((w) => w.tf?.[1]));
+    const text = h('span.wf-text', f.tf[0]);
+    const card = h('button.wonder-fact', { type: 'button', 'aria-label': `Visste du? ${f.tf[0]} Öppna frågan.` }, h('span.wf-e', f.e), h('span.wf-body', h('b', '💡 Visste du?'), text));
+    onTap(card, () => open(f));
     return card;
   }
   function list() {
@@ -238,7 +235,7 @@ export function wonderView(el, { kos, app, opts, level }) {
     clear(el);
     const answer = h('div.wonder-answer', { hidden: true }, h('p', wonderAnswer(w, level)), h('div.wonder-think', h('b', '🤔 Fundera vidare: '), w.think));
     const reveal = shimmer(h('button.btn.btn-primary.btn-xl', { type: 'button' }, '💡 Visa svaret'));
-    const speak = onTap(h('button.icon-btn', { type: 'button', 'aria-label': 'läs upp frågan' }, '🔊'), () => kos.say(answer.hidden ? `${w.q} Vad tror du?` : `${w.a} Fundera vidare: ${w.think}`));
+    const speak = onTap(h('button.icon-btn', { type: 'button', 'aria-label': 'läs upp frågan' }, '🔊'), () => kos.say(answer.hidden ? `${w.q} Vad tror du?` : `${wonderAnswer(w, level)} Fundera vidare: ${w.think}`));
     const flip = flipCard(
       h('span.wonder-guess', h('span.fx-q-mark', '?'), h('span', 'Vad tror du? Gissa först – säg det högt eller berätta för någon!'), h('small.fx-flip-hint', 'Tryck för att vända kortet')),
       answer,

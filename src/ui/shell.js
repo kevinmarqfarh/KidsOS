@@ -460,7 +460,7 @@ export function openApp(appId, moduleId, fromEl, opts = {}) {
 
 /* ---------------- Modal ---------------- */
 export function modal(body, actions = [], { wide = false, dismissable = true } = {}) {
-  const layer = document.querySelector('dialog.limit-screen[open]') || kos.overlayRoot;
+  const layer = [...document.querySelectorAll('dialog[open]')].filter(dialog => !dialog.closest('[inert]')).at(-1) || kos.overlayRoot;
   const previous = document.activeElement;
   let closed = false;
   const controls = () => [...panel.querySelectorAll('button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [href], [tabindex]:not([tabindex="-1"])')].filter(node => !node.closest('[hidden]'));
@@ -485,6 +485,7 @@ export function modal(body, actions = [], { wide = false, dismissable = true } =
     sheet.setAttribute('inert', '');
     restoreBackground();
     sheet.classList.remove('in');
+    if (typeof sheet.close === 'function' && sheet.open) sheet.close();
     if (previous?.isConnected) previous.focus?.({ preventScroll: true });
     setTimeout(() => sheet.remove(), 220);
   };
@@ -498,13 +499,20 @@ export function modal(body, actions = [], { wide = false, dismissable = true } =
       return b;
     }),
   );
-  const panel = h('div.sheet-panel', { class: wide ? 'wide' : '', role: 'dialog', 'aria-modal': 'true', tabindex: '-1' }, body, actions.length ? actionsRow : null);
-  const sheet = h('div.sheet', panel);
+  const panel = h('div.sheet-panel', { class: wide ? 'wide' : '', tabindex: '-1' }, body, actions.length ? actionsRow : null);
+  // Native modal dialogs stay above fixed app controls and fullscreen windows.
+  const sheet = h('dialog.sheet', { 'aria-label': 'Dialog', 'aria-modal': 'true' }, panel);
+  sheet.addEventListener('cancel', event => {
+    event.preventDefault();
+    if (dismissable && isTop()) close();
+  });
   if (dismissable) sheet.addEventListener('click', (e) => e.target === sheet && close());
   layer.appendChild(sheet);
   const restoreBackground = isolateModal(sheet);
+  if (typeof sheet.showModal === 'function') sheet.showModal();
+  else sheet.setAttribute('open', '');
   const heading = panel.querySelector('h1, h2, h3');
-  if (heading) panel.setAttribute('aria-label', heading.textContent);
+  if (heading) sheet.setAttribute('aria-label', heading.textContent);
   document.addEventListener('keydown', keydown, true);
   document.addEventListener('focusin', focusin);
   (controls()[0] || panel).focus();
