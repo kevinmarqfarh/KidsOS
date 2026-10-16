@@ -270,10 +270,31 @@ test('surfplattefönster isolerar hemskärmen och återställer den vid Hem',asy
   const {openApp,goHome}=await import('../../src/ui/shell.js');kos.profile.settings.layout='tablet';
   const cleanup=mountShell(el());
   try {
-    openApp('math');const screen=el().querySelector('.screen');const win=el().querySelector('.window');
+    openApp('math');const screen=el().querySelector('.screen');const win=el().querySelector('.window');const dock=el().querySelector('.dock-host');
     assert.equal(screen.hasAttribute('inert'),true);assert.equal(screen.getAttribute('aria-hidden'),'true');assert.equal(win.hasAttribute('inert'),false);
+    assert.equal(dock.hasAttribute('inert'),true);assert.equal(dock.getAttribute('aria-hidden'),'true');
     goHome();assert.equal(screen.hasAttribute('inert'),false);assert.equal(screen.hasAttribute('aria-hidden'),false);assert.equal(win.hasAttribute('inert'),true);
+    assert.equal(dock.hasAttribute('inert'),false);assert.equal(dock.hasAttribute('aria-hidden'),false);
   } finally {cleanup();}
+});
+
+test('statusuppdateringar bevarar profilknappens fokus utan att flytta aktivitetens fokus',()=>{
+  const cleanup=mountShell(el());
+  const oldFocus=HTMLElement.prototype.focus;
+  const focused=Object.getOwnPropertyDescriptor(document,'activeElement');
+  let active=null;
+  Object.defineProperty(document,'activeElement',{configurable:true,get:()=>active});
+  HTMLElement.prototype.focus=function(){active=this;};
+  try {
+    el().querySelector('.sb-who').focus();kos.emit('stars',kos.profile.stars);
+    assert.equal(active,el().querySelector('.sb-who'));
+    const activityButton=el().querySelector('.app-icon');activityButton.focus();kos.emit('stars',kos.profile.stars);
+    assert.equal(active,activityButton);
+  } finally {
+    HTMLElement.prototype.focus=oldFocus;
+    if(focused)Object.defineProperty(document,'activeElement',focused);else delete document.activeElement;
+    cleanup();
+  }
 });
 
 const workshopHost=()=>({content:el(),setHead(){},close(){}});
@@ -404,7 +425,11 @@ test('faktaläsning behåller text, visar stöd och sparar svar med egna ord',()
   assert.match(el().querySelector('.literacy-passage').textContent,/Biblioteket/);
   assert.equal(workshopControl('next-question').disabled,true);
   tapWorkshop('text-length');assert.equal(workshopControl('next-question').disabled,false);
+  const readingSource=el().querySelector('.literacy-source');
+  readingSource.scrollTop=120;readingSource.dispatchEvent(new Event('scroll'));
+  tapWorkshop('evidence');assert.equal(el().querySelector('.literacy-source').scrollTop,120);
   tapWorkshop('answer-1');tapWorkshop('check');assert.match(el().querySelector('.workshop-status').textContent,/Prova igen/);
+  assert.equal(el().querySelector('.literacy-source').scrollTop,120);
   tapWorkshop('answer-0');tapWorkshop('check');assert.match(el().querySelector('.workshop-status').textContent,/Det stämmer/);
   tapWorkshop('next-question');tapWorkshop('answer-mode');
   const answer=workshopControl('own-answer');answer.value='Fler barn ska kunna läsa böckerna.';answer.dispatchEvent(new Event('input'));
@@ -443,4 +468,53 @@ test('Lekstaden och genomförd kursrunda leder till Byggvärlden',async()=>{
  const result=kos.roundDone('math','count',0,5);const card=learningPlayReward(kos.profile,result,0);el().append(card);
  destination=null;el().addEventListener('kos-open',event=>destination=event.detail,{once:true});card.querySelector('.learn-play-world').click();
  assert.deepEqual(destination,{app:'build-world',module:'world'});assert.ok(kos.profile.coins>=5);
+});
+
+test('hubb visar öppna aktiviteter före låsta och låsta kort reagerar inte som felsvar',()=>{
+  const host={content:el(),setHead(){},close(){}};
+  const instance=mountApp(host,'math');
+  const tiles=[...el().querySelectorAll('.mod-tile')];
+  const firstLocked=tiles.findIndex(tile=>tile.classList.contains('locked'));
+  assert.ok(firstLocked>0);
+  assert.ok(tiles.slice(firstLocked).every(tile=>tile.classList.contains('locked')));
+  const locked=tiles[firstLocked];
+  assert.equal(locked.getAttribute('aria-disabled'),'true');
+  assert.ok(locked.querySelector('.mod-lock').textContent.includes('🔒'));
+  locked.click();assert.equal(el().querySelector('.quiz'),null);
+  assert.equal(locked.classList.contains('wrong-shake'),false);
+  instance.destroy();
+});
+
+test('nästa quizfråga återställer enbart aktivitetens scroll och fokuserar frågan',()=>{
+  const scroller=h('div.win-content');el().append(scroller);
+  // Simulate a scrollable host containing a second, unrelated scrolling region.
+  const unrelated=h('div');unrelated.scrollTop=71;el().append(unrelated);
+  const inner=h('div');scroller.append(inner);
+  let questionNumber=0;
+  const scrollingModule={...choiceModule,gen:()=>({...choiceModule.gen(),prompt:`Fråga ${++questionNumber}: vilken sak hör hit?`})};
+  const cleanup=runQuiz(inner,{app,module:scrollingModule});
+  scroller.scrollTop=450;
+  inner.querySelector('[data-id="a"]').click();
+  inner.querySelector('.btn-next').click();
+  assert.equal(scroller.scrollTop,0);assert.equal(unrelated.scrollTop,71);
+  assert.equal(inner.querySelector('.q-prompt').getAttribute('tabindex'),'-1');
+  assert.match(inner.querySelector('.q-status').textContent,/fråga 2/);
+  cleanup();
+});
+
+test('nästa quizfråga återställer även datorfönstrets scroll',()=>{
+  const scroller=h('div.dwin-content');el().append(scroller);
+  // Simulate a scrollable host containing a second, unrelated scrolling region.
+  const unrelated=h('div');unrelated.scrollTop=71;el().append(unrelated);
+  const inner=h('div');scroller.append(inner);
+  let questionNumber=0;
+  const scrollingModule={...choiceModule,gen:()=>({...choiceModule.gen(),prompt:`Fråga ${++questionNumber}: vilken sak hör hit?`})};
+  const cleanup=runQuiz(inner,{app,module:scrollingModule});
+  scroller.scrollTop=450;
+  inner.querySelector('[data-id="a"]').click();
+  inner.querySelector('.btn-next').click();
+  assert.equal(scroller.scrollTop,0);assert.equal(unrelated.scrollTop,71);
+  assert.equal(inner.querySelector('.q-prompt').getAttribute('tabindex'),'-1');
+  assert.match(inner.querySelector('.q-status').textContent,/fråga 2/);
+  cleanup();
 });

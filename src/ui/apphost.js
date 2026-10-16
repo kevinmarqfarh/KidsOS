@@ -50,14 +50,18 @@ export function mountApp(host, appId, moduleId = null, opts = {}) {
     const p = kos.profile;
     const level = kos.level(app.id);
     const showAll = p.settings.showAllModules;
-    const tiles = app.modules.map((m, i) => {
+    const modules = showAll ? app.modules : [
+      ...app.modules.filter(m => level >= (m.minLevel ?? 0)),
+      ...app.modules.filter(m => level < (m.minLevel ?? 0)),
+    ];
+    const tiles = modules.map((m, i) => {
       const locked = !showAll && level < (m.minLevel ?? 0);
       const st = moduleStat(p, app.id, m.id);
       const easy = m.maxLevel !== undefined && level > m.maxLevel + 1;
       const stars = h('span.mod-stars', [1, 2, 3].map((k) => h('i', { class: k <= st.best ? 'on' : '' }, '★')));
       const b = h(
         'button.mod-tile',
-        { type: 'button', class: [locked ? 'locked' : '', m.photo ? 'has-photo' : ''].join(' '), style: { '--i': i }, dataset: { mod: m.id } },
+        { type: 'button', 'aria-disabled': locked ? 'true' : null, class: [locked ? 'locked' : '', m.photo ? 'has-photo' : ''].join(' '), style: { '--i': i }, dataset: { mod: m.id } },
         m.photo ? h('span.mod-photo', { html: m.photo() }) : null,
         h('span.mod-icon', m.icon),
         h('span.mod-name', m.name),
@@ -65,13 +69,7 @@ export function mountApp(host, appId, moduleId = null, opts = {}) {
         easy && !locked ? h('span.mod-tag', 'Lätt') : null,
       );
       onTap(b, () => {
-        if (locked) {
-          kos.sfx('wrong');
-          kos.say(`${m.name} låses upp när du når ${LEVELS[m.minLevel].short}. Fortsätt öva så kommer du dit!`);
-          b.classList.add('wrong-shake');
-          setTimeout(() => b.classList.remove('wrong-shake'), 500);
-          return;
-        }
+        if (locked) return;
         kos.sfx('pop');
         showModule(m.id);
       });

@@ -1,0 +1,29 @@
+/* Secondary help stays easy to reach without competing with the task. */
+.activity-support {
+  padding: 0 0 12px;
+  justify-content: flex-end;
+  align-items: center;
+}
+.activity-support > .btn,
+.q-support-actions > .btn {
+  min-height: 44px;
+  padding: 8px 16px;
+  font-size: 17px;
+  border-radius: 14px;
+}
+.activity-help { margin: 0 0 16px; }
+.q-toolbar { margin-bottom: 4px; gap: 10px; }
+.q-status { font-size: 15px; line-height: 1.4; }
+/* A question receives programmatic focus after Next; it is not a control. */
+.q-prompt:focus { outline: none; box-shadow: var(--shadow); }
+@media (max-width: 600px) {
+  .q-toolbar { display: grid; grid-template-columns: minmax(0, 1fr) auto; }
+  .q-toolbar .q-progress { min-width: 0; }
+  .q-toolbar .q-status { grid-row: 2; grid-column: 1 / -1; }
+  .q-support-actions { flex-wrap: nowrap; gap: 8px; }
+  .activity-support > .btn, .q-support-actions > .btn { padding-inline: 12px; }
+}
+/* In portrait, answers follow the question rather than the bottom of the screen. */
+@media (max-width: 899px) and (orientation: portrait) {
+  .os:not(.desktop-mode) .q-bottom { margin-top: 8px; }
+}
