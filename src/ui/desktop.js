@@ -254,8 +254,10 @@ export function createDesktop(root, { osEl, confirmSwitch, showLock }) {
 
   function clampWin(w) {
     const d = deskRect();
-    w.rect.w = Math.min(w.rect.w, d.w);
-    w.rect.h = Math.min(w.rect.h, d.h);
+    // Utgå från fönstrets önskade storlek så att en tillfälligt smal skärm (vriden surfplatta)
+    // inte krymper fönstret för gott.
+    w.rect.w = Math.min(w.pref?.w ?? w.rect.w, d.w);
+    w.rect.h = Math.min(w.pref?.h ?? w.rect.h, d.h);
     w.rect.x = Math.max(-w.rect.w + 120, Math.min(d.w - 120, w.rect.x));
     w.rect.y = Math.max(0, Math.min(d.h - 56, w.rect.y));
     applyRect(w);
@@ -290,6 +292,7 @@ export function createDesktop(root, { osEl, confirmSwitch, showLock }) {
     const grip = h('div.dwin-grip', { 'aria-hidden': 'true' });
     const el = h('section.dwin', { style: { '--app': meta.color }, dataset: { app: appId }, role: 'dialog', 'aria-label': meta.name }, bar, content, grip);
     const w = { id: appId, meta, el, content, z: ++z, min: false, max: false, rect: defaultRect() };
+    w.pref = { w: w.rect.w, h: w.rect.h };
     if (appById(appId) && appId !== 'play') {
       w.fullscreen = createAppFullscreenControl(el, osEl);
       bar.querySelector('.dwin-ctrl').prepend(w.fullscreen.button);
@@ -392,6 +395,7 @@ export function createDesktop(root, { osEl, confirmSwitch, showLock }) {
       const d = deskRect();
       w.rect.w = Math.max(340, Math.min(d.w - w.rect.x, start.w + e.clientX - start.x));
       w.rect.h = Math.max(280, Math.min(d.h - w.rect.y, start.h + e.clientY - start.y));
+      w.pref = { w: w.rect.w, h: w.rect.h };
       applyRect(w);
     });
     const end = () => {

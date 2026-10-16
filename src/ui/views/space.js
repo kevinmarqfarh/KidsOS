@@ -56,16 +56,25 @@ export function solarView(el, { kos, app }) {
     holder.innerHTML = s;
     holder.querySelectorAll('.body').forEach((g) => interactiveGraphic(g, g.dataset.id === 'solen' ? 'Solen' : PLANETS.find(pl => pl.id === g.dataset.id)?.name || g.dataset.id, () => select(g.dataset.id)));
   }
+  // Prestanda (äldre iPad): planeterna hämtas en gång per uppbyggnad, inte varje bildruta, och
+  // står banan still (paus/reducerad rörelse) skrivs inget om förrän något ändras.
+  const STALE = {};
+  let gs = null;
+  let drawn = STALE;
   function animate() {
     if (!alive || !el.isConnected || mode !== 'orbit') return;
-    const gs = holder.querySelectorAll('.planet');
-    PLANETS.forEach((pl, i) => {
-      if (!kos.paused && !reducedMotion()) angles[i] += speeds[i] * 0.01;
-      const x = 300 + Math.cos(angles[i]) * radii[i];
-      const y = 300 + Math.sin(angles[i]) * radii[i];
-      gs[i]?.setAttribute('transform', `translate(${x} ${y})`);
-      gs[i]?.classList.toggle('sel', selected === pl.id);
-    });
+    if (!gs || !gs[0]?.isConnected) { gs = holder.querySelectorAll('.planet'); drawn = STALE; }
+    const moving = !kos.paused && !reducedMotion();
+    if (moving || drawn !== selected) {
+      PLANETS.forEach((pl, i) => {
+        if (moving) angles[i] += speeds[i] * 0.01;
+        const x = 300 + Math.cos(angles[i]) * radii[i];
+        const y = 300 + Math.sin(angles[i]) * radii[i];
+        gs[i]?.setAttribute('transform', `translate(${x} ${y})`);
+        gs[i]?.classList.toggle('sel', selected === pl.id);
+      });
+      drawn = selected;
+    }
     requestAnimationFrame(animate);
   }
   function buildSizes() {

@@ -36,6 +36,8 @@
   --glass: rgba(255, 255, 255, 0.72);
   --glass-line: rgba(255, 255, 255, 0.85);
   --home-ink: #1f2a44;
+  /* Lägg över appfärgen när vit, liten text står på den (valda chips, steg). */
+  --on-app-shade: linear-gradient(rgba(0, 0, 0, 0.36), rgba(0, 0, 0, 0.36));
   /* typsnitt */
   --font-display: 'Baloo 2', 'Arial Rounded MT Bold', 'Nunito', 'Trebuchet MS', system-ui, sans-serif;
   --font-body: 'Andika', 'Nunito', 'Segoe UI', 'Helvetica Neue', system-ui, sans-serif;
@@ -536,7 +538,7 @@ small {
   color: #1f2a44;
 }
 .wonder-card .hc-kicker {
-  color: #a3650b;
+  color: #8a5208;
 }
 
 .app-grid {
@@ -670,20 +672,27 @@ small {
   gap: 10px;
   padding: 10px max(var(--gutter), env(safe-area-inset-right, 0px)) 10px max(var(--gutter), env(safe-area-inset-left, 0px));
   background: var(--app);
-  background: linear-gradient(180deg, color-mix(in srgb, var(--app) 88%, white), var(--app));
+  /* Mörk slöja över appfärgen: vit titel blir läsbar även på gul/orange (Undra, Kodning, Lekstaden).
+     Ingen color-mix här – rubriken ska se likadan ut på äldre iPad. */
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.14), rgba(0, 0, 0, 0.3)), var(--app);
   color: #fff;
-  box-shadow: 0 4px 0 color-mix(in srgb, var(--app) 70%, black);
+  box-shadow: 0 4px 0 rgba(15, 20, 40, 0.28);
   position: relative;
   z-index: 2;
 }
+.win-head .win-title {
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.45);
+}
+/* Hem och Tillbaka: ljusa, fasta knappar med mörk symbol – syns på alla appfärger. */
 .win-home,
 .win-back {
   border: 0;
   min-width: 64px;
   min-height: 60px;
   border-radius: 18px;
-  background: rgba(255, 255, 255, 0.22);
-  color: #fff;
+  background: rgba(255, 255, 255, 0.94);
+  color: #1f2a44;
+  box-shadow: 0 3px 0 rgba(0, 0, 0, 0.22);
   font-family: var(--font-display);
   font-weight: 800;
   display: flex;
@@ -706,7 +715,9 @@ small {
 }
 .win-home:active,
 .win-back:active {
-  background: rgba(255, 255, 255, 0.38);
+  background: #fff;
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.22);
 }
 .win-title {
   flex: 1;
@@ -858,7 +869,10 @@ small {
 }
 .chip-btn.on {
   background: var(--app);
+  /* Mörk slöja: vit text läsbar även på gula/orangea appfärger (utan color-mix). */
+  background: var(--on-app-shade), var(--app);
   color: #fff;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.35);
   box-shadow: 0 3px 0 color-mix(in srgb, var(--app) 65%, black);
 }
 .chip-btn.done {
@@ -1153,7 +1167,7 @@ small {
   font-variant-numeric: tabular-nums;
 }
 .seq .sep {
-  opacity: 0.35;
+  opacity: 0.55;
 }
 .pattern span {
   font-size: clamp(34px, 6vw, 56px);
@@ -1163,7 +1177,7 @@ small {
   text-align: center;
 }
 .alpha-strip .dim {
-  opacity: 0.35;
+  opacity: 0.55;
 }
 .alpha-strip .cur {
   color: var(--app);
@@ -1178,7 +1192,6 @@ small {
 .big-letter small {
   font-size: 0.6em;
   margin-left: 0.1em;
-  opacity: 0.6;
 }
 .pic-big {
   font-size: clamp(90px, 18vw, 150px);
@@ -1497,7 +1510,7 @@ small {
   align-items: center;
 }
 .slot-n {
-  opacity: 0.35;
+  opacity: 0.6;
   font-size: 26px;
 }
 .order-join {
@@ -2014,9 +2027,11 @@ small {
 .gl-mid {
   stroke-dasharray: 2 2;
 }
+/* Bokstavsmallar i Skriv ABC. Tidigare 16 % / 35 % bläck med color-mix: knappt synligt (≈1,1:1)
+   och på äldre iPad helt osynligt. Fasta gråtoner syns i både dag- och nattläge. */
 .tmpl {
   fill: none;
-  stroke: color-mix(in srgb, var(--ink) 16%, transparent);
+  stroke: #9aa3b5;
   stroke-width: 7;
   stroke-linecap: round;
   stroke-linejoin: round;
@@ -2024,7 +2039,7 @@ small {
 .tmpl.dashed {
   stroke-width: 3;
   stroke-dasharray: 1 5;
-  stroke: color-mix(in srgb, var(--ink) 35%, transparent);
+  stroke: #7d879c;
 }
 .tmpl.ghost {
   stroke: transparent;
@@ -2460,6 +2475,7 @@ small {
 }
 .sci-step.on {
   background: var(--app);
+  background: var(--on-app-shade), var(--app);
   color: #fff;
 }
 .sci-step.past {
@@ -3120,6 +3136,8 @@ small {
   border-radius: 6px;
 }
 .word.said {
+  /* reserv för äldre iPad: gul överstrykning i stället för grå */
+  background: rgba(255, 201, 60, 0.45);
   background: color-mix(in srgb, var(--app) 25%, transparent);
 }
 
@@ -3967,7 +3985,9 @@ html[data-activity-paused="true"] *, html[data-activity-paused="true"] *::before
 .sort-item:focus-visible, .sort-bin:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; }
 .quiz-pause-dialog { max-width: min(440px, calc(100vw - 48px)); box-sizing: border-box; border: 2px solid var(--line); border-radius: 24px; padding: 28px; background: var(--card); color: var(--ink); }
 .quiz-pause-dialog::backdrop { background: #182238aa; }
-.dialog-fallback { position: fixed; inset: 0; margin: auto; height: fit-content; z-index: 1000; box-shadow: 0 0 0 100vmax #182238aa; }
+.dialog-fallback { position: fixed; inset: 0; margin: auto; height: -webkit-fit-content; height: fit-content; z-index: 1000; box-shadow: 0 0 0 100vmax #182238aa; }
+/* Safari < 15.5 saknar inert-attributet (se src/core/polyfills.js): spärra åtminstone tryck. */
+.no-inert [inert], .no-inert [inert] * { pointer-events: none !important; -webkit-user-select: none; user-select: none; }
 .support-settings { padding-inline: 0; }
 
 /* Verkliga referensbilder: hela motivet syns utan beskärning. */
@@ -4072,7 +4092,7 @@ html[data-activity-paused="true"] *, html[data-activity-paused="true"] *::before
 @media(min-width:900px) and (min-aspect-ratio:5/4){.q-body.has-visual .choices.n4:not(.long),.q-body.has-visual .choices.n5:not(.long){--cols:2}}
 
 .app-fullscreen-toggle{border:0;border-radius:12px;background:#ffffff30;color:inherit;min-width:44px;min-height:44px;font-size:28px;cursor:pointer;flex-shrink:0}
-.win-head .app-fullscreen-toggle{color:#fff}.app-fullscreen-toggle:focus-visible{outline:3px solid #fff;outline-offset:3px}
+.win-head .app-fullscreen-toggle,.dwin-bar .app-fullscreen-toggle{color:#1f2a44;background:rgba(255,255,255,.94);box-shadow:0 3px 0 rgba(0,0,0,.22)}.app-fullscreen-toggle:focus-visible{outline:3px solid #fff;outline-offset:3px}
 .os:fullscreen{width:100vw;height:100dvh}.os.app-focus-mode>.statusbar,.os.app-focus-mode .dock,.os.app-focus-mode .taskbar{visibility:hidden}
 .window.app-fullscreen,.dwin.app-fullscreen{position:fixed!important;inset:0!important;width:100vw!important;height:100dvh!important;max-width:none!important;max-height:none!important;transform:none!important;border-radius:0!important;z-index:50!important;background:var(--paper)}
 .dwin.app-fullscreen .dwin-grip{display:none}
@@ -4090,6 +4110,17 @@ html[data-activity-paused="true"] *, html[data-activity-paused="true"] *::before
 }
 @container (max-width: 620px) { .ai-grid { grid-template-columns: 1fr; } }
 @container (max-width: 380px) { .course-list { grid-template-columns: 1fr; } }
+/* Äldre Safari (före 16) saknar container queries; bygget översätter dem till skärmbredd, men ett
+   datorfönster på iPad är smalare än skärmen. Behandla därför icke-maximerade fönster som smala,
+   annars trycks svarsknapparna ihop bredvid bilden (Känslor & jag, AI, Kodning). */
+@supports not (container-type: inline-size) {
+  .dwin:not(.max):not(.app-fullscreen) .course-layout { grid-template-columns: 1fr; }
+  .dwin:not(.max):not(.app-fullscreen) .course-stage { grid-row: 1; }
+  .dwin:not(.max):not(.app-fullscreen) .course-list { grid-row: 2; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .dwin:not(.max):not(.app-fullscreen) .q-body.has-visual { display: flex; flex-direction: column; }
+  .dwin:not(.max):not(.app-fullscreen) .ai-grid { grid-template-columns: 1fr; }
+  .dwin:not(.max):not(.app-fullscreen) .rocket-build { grid-template-columns: 1fr; }
+}
 .sheet { overflow-y: auto; }
 .sheet-panel { flex-shrink: 0; }
 @media (max-width: 480px) { .dwin-bar { gap: 4px; padding-inline: 6px; } .dwin-bar .lvl-slot { display: none; } }
@@ -4123,6 +4154,10 @@ html[data-activity-paused="true"] *, html[data-activity-paused="true"] *::before
 }
 /* Startsidan fokuserar rubriken för skärmläsare, men den är ingen kontroll. */
 .home h1[tabindex="-1"]:focus { outline: none; box-shadow: none; }
+/* Samma för alla programmatiska fokusmål (apptiteln när ett fönster öppnas, dialogpaneler,
+   meddelanden): de är inga kontroller och ska aldrig få en fokusram. Vanlig :focus (inte bara
+   :focus-visible) så att även äldre Safari, som saknar :focus-visible, slipper sin blå ram. */
+[tabindex="-1"]:focus, .win-title:focus, .dwin-title:focus { outline: none; box-shadow: none; }
 svg [role="button"]:focus-visible { outline: 3px solid #152644; filter: drop-shadow(0 0 3px #fff); }
 textarea:focus-visible { outline: 3px solid #152644; outline-offset: 3px; }
 .btn-primary { background: #294e86; color: #fff; }
@@ -4203,6 +4238,7 @@ button, [role="button"], input, select, textarea { scroll-margin-block: 90px; }
 .learning-photo-card details { font-size: 13px; }
 .learning-photo-card summary { cursor: pointer; min-height: 44px; display: flex; align-items: center; text-decoration: underline; }
 .learning-photo-card details a, .learning-photo-card details > span { display: block; padding-block: 6px; color: inherit; }
+.learning-photo-card details a { min-height: 44px; box-sizing: border-box; padding-block: 12px; }
 .photo-explore { max-width: 1100px; margin: auto; padding: clamp(12px, 2vw, 24px); }
 .photo-explore-layout { display: grid; grid-template-columns: minmax(180px, .65fr) minmax(0, 1.35fr); gap: 22px; align-items: start; }
 .photo-explore-list { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 12px; }
@@ -4220,6 +4256,8 @@ button, [role="button"], input, select, textarea { scroll-margin-block: 90px; }
 .photo-comparison, .question-photo-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 12px; align-items: start; }
 .photo-comparison .learning-photo-card > img { height: 220px; }
 .question-photo-grid:has(> :only-child) { grid-template-columns: minmax(0,1fr); }
+/* Safari < 15.4 saknar :has(): ett ensamt foto spänner ändå över hela rutnätet. */
+.question-photo-grid > :only-child { grid-column: 1 / -1; }
 .question-photo-support .learning-photo-card.compact { margin-block: 0; }
 .question-photo-support .learning-photo-card > img { height: 160px; }
 .question-photo-support figcaption > b { font-size: 15px; }
@@ -4247,4 +4285,41 @@ button, [role="button"], input, select, textarea { scroll-margin-block: 90px; }
 .os.desktop-mode .dock-host { display: none; }
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
   .dock { background: rgba(255, 255, 255, 0.92); }
+}
+
+/* Lätt grafikläge (src/core/perf-mode.js): äldre iPads, "Minska genomskinlighet" eller ?fx=lite.
+   Ingen glasoskärpa på helbreddsytor; glaset läggs i två lager så att det blir nästan
+   ogenomskinligt (fungerar i både ljust och mörkt tema utan color-mix). */
+.kidsos-root.lite-fx .statusbar,
+.kidsos-root.lite-fx .rank,
+.kidsos-root.lite-fx .dock,
+.kidsos-root.lite-fx .widget,
+.kidsos-root.lite-fx .taskbar,
+.kidsos-root.lite-fx .start-menu {
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+.kidsos-root.lite-fx .statusbar,
+.kidsos-root.lite-fx .rank:not(.inline),
+.kidsos-root.lite-fx .dock,
+.kidsos-root.lite-fx .widget,
+.kidsos-root.lite-fx .taskbar,
+.kidsos-root.lite-fx .start-menu {
+  background-image: linear-gradient(var(--glass), var(--glass)), linear-gradient(var(--glass), var(--glass));
+}
+@media (prefers-reduced-transparency: reduce) {
+  .kidsos-root .statusbar, .kidsos-root .rank, .kidsos-root .dock, .kidsos-root .widget, .kidsos-root .taskbar, .kidsos-root .start-menu { -webkit-backdrop-filter: none; backdrop-filter: none; }
+}
+.kidsos-root.lite-fx .fx-blur-fade,
+.kidsos-root.lite-fx .fx-word-in { animation-name: fx-fade-lite; }
+@keyframes fx-fade-lite { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+/* Långa listor (troférum, samlingar, galleri, Utforskaren): rita bara det som syns.
+   Stöds av Chromium och Safari 18+; äldre Safari ignorerar det utan skada. */
+.tr-body > .medal-grid,
+.tr-body > .coll,
+.gallery-photos,
+.ex-grid {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 600px;
 }

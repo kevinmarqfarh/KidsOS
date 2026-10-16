@@ -111,6 +111,13 @@ export function deleteDrawingsFor(pid) {
   rawRemove(`kidsos.v1.story.${pid}`);
   rawRemove(`kidsos.v1.literacy.${pid}`);
   rawRemove(`kidsos.v1.buildWorld.${pid}`);
+  // Autismstödets föräldralogg (core/adapted-log.js) har en egen versionerad nyckel.
+  const s = store();
+  const logKey = new RegExp(`^kidsos\\.adaptedLog\\.v\\d+\\.${String(pid).replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`);
+  try {
+    const keys = s ? Array.from({ length: s.length }, (_, i) => s.key(i)) : [];
+    for (const key of [...keys, ...memory.keys()]) if (key && logKey.test(key)) rawRemove(key);
+  } catch {}
 }
 
 /** Per-profil-data (utöver teckningar) som följer med i säkerhetskopian: nyckelprefix → förväntad typ. */

@@ -523,7 +523,9 @@ function sort(q, el, api) {
   for (const b of q.bins) {
     const be = h('div.sort-bin', { dataset: { bin: b.id }, role: 'button', tabindex: '0', 'aria-label': b.label }, h('div.bin-head', h('span.bin-icon', { html: b.html }), h('span.bin-label', b.label)), h('div.bin-items'));
     onTap(be, e => {
-      if (!e.target.closest('.sort-item')) selected && drop(selected, b.id);
+      // Ett tryck på en sak som redan ligger i lådan räknas som ett tryck på lådan.
+      const hit = e.target.closest('.sort-item');
+      if (!hit || hit.classList.contains('placed')) selected && drop(selected, b.id);
     }, { guardMs: 0 });
     binEls.set(b.id, be);
     bins.appendChild(be);

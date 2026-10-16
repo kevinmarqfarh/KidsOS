@@ -480,8 +480,10 @@ export function renderSettings(el, { parentGate, profileWizard, showLock, goHome
           try {
             kos.state = importBackup(inp.value.trim());
             kos.saveNow();
+            kos.applySettings(); // tema, uppläsningstakt m.m. från kopian gäller direkt
             status.textContent = '✅ Återställt!';
-            setTimeout(showLock, 600);
+            // Kopian kan ha en annan aktiv profil: logga ut så att ingen skärmtid räknas på låsskärmen.
+            setTimeout(() => { kos.logout(); showLock(); }, 600);
           } catch (e) {
             status.textContent = `❌ ${e.message || 'Kunde inte läsa säkerhetskopian.'}`;
           }

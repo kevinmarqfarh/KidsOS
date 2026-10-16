@@ -58,7 +58,8 @@ test('closing replay round cancels delayed answer speech',async()=>{
  const {browser,page,errors}=await setup();
  try {
   await page.evaluate(()=>window.kidsos.openApp('ai','meaning'));
-  for(let i=0;i<5;i++) {
+  // Rundan kan bli kortare än fem frågor när nivåns frågebank är liten (inga dubbletter).
+  for(let i=0;i<8&&!(await page.locator('.summary').count());i++) {
    await page.evaluate(()=>{const q=window.kidsos.q;[...document.querySelectorAll('.choice')].find(button=>button.dataset.id===q.answer).click();});
    await page.locator('.btn-next').click();
   }

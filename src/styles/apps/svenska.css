@@ -67,7 +67,8 @@
   font-family: var(--font-display);
   font-weight: 700;
   font-size: 15px;
-  color: color-mix(in srgb, var(--ink) 45%, transparent);
+  /* Kommande repetitioner: dämpade men läsbara (var 45 % bläck ≈ 2,4:1). */
+  color: var(--ink-soft);
   transition: transform 0.2s;
 }
 .rep-dots.many .rep-dot {
@@ -77,7 +78,7 @@
 }
 .rep-dot.now {
   box-shadow: inset 0 0 0 3px var(--app);
-  color: var(--app);
+  color: var(--ink);
   transform: scale(1.12);
 }
 .rep-dot.done {
@@ -122,7 +123,8 @@
 
 /* Svag mall (sista gångerna i en serie) */
 .tmpl.faint {
-  stroke: color-mix(in srgb, var(--ink) 7%, transparent);
+  /* svag med flit (stödet trappas ner), men ska fortfarande gå att se: var 7 % bläck ≈ osynligt */
+  stroke: #c9cfda;
   stroke-width: 5;
 }
 .trace-hear {
@@ -186,7 +188,9 @@
   font-size: 32px;
 }
 .spell-slot.hint {
-  color: color-mix(in srgb, var(--ink) 28%, transparent);
+  /* Spökbokstav att skriva av: svag men tydligt synlig (var 28 % bläck ≈ 1,6:1 och syntes knappt).
+     Fast färg som fungerar på både ljust och mörkt kort, och utan color-mix för äldre iPad. */
+  color: #8a93a8;
 }
 .spell-slot.now {
   box-shadow: inset 0 0 0 3px var(--app);
@@ -214,6 +218,75 @@
     height: 46px;
     font-size: 26px;
   }
+}
+/* Sätt ihop ord: "🥛 mjölk + 🦷 tand = ?" – saknade egen stil och blev pytteliten. */
+.compound {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(28px, 5vw, 44px);
+  line-height: 1.1;
+}
+.compound > span:not(.blank) {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 10px 16px;
+  border-radius: 18px;
+  background: var(--card);
+  box-shadow: 0 3px 0 var(--line);
+}
+.compound small {
+  font-size: 0.6em;
+  font-weight: 800;
+  color: var(--ink);
+}
+.compound b {
+  color: var(--ink-soft);
+}
+.compound .blank {
+  min-width: 1.6em;
+  padding: 10px 14px;
+  border-radius: 18px;
+}
+/* Ordklasser: orden som ska sorteras är det barnet läser – större och fetare än vanlig text. */
+.wc-word {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 22px;
+  color: var(--ink);
+}
+/* Läs och förstå: texten barnet ska läsa – stor och tydlig, inte brödtext i 16 px. */
+.read-text {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  max-width: 640px;
+  padding: 16px 20px;
+  border-radius: 22px;
+  background: var(--card);
+  box-shadow: 0 3px 0 var(--line);
+}
+.read-text .rt-e {
+  font-size: clamp(44px, 8vw, 64px);
+  line-height: 1;
+  flex: none;
+}
+.read-text p {
+  margin: 0;
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: clamp(22px, 3.6vw, 30px);
+  line-height: 1.45;
+  color: var(--ink);
+}
+@media (max-width: 480px) {
+  .read-text { flex-direction: column; text-align: center; padding: 12px 14px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .rep-dot,

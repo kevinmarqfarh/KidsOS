@@ -3,7 +3,7 @@
 
 - Läser assets/image-catalog.json  (nyckel → "sv:Artikel", "en:Article" eller "File:Filnamn")
 - Tar artikelns huvudbild, kontrollerar att licensen är fri (public domain / CC0 / CC BY / CC BY-SA)
-- Sparar som WebP (max 480 px, gruppen "objects" max 320 px) i assets/img/<nyckel>.webp
+- Sparar som WebP (max 480 px q62, gruppen "objects" max 240 px q60) i assets/img/<nyckel>.webp
 - Skriver upphovsperson och licens till assets/credits.json
 
 Kör: python3 scripts/fetch_images.py [--force] [nyckel ...]
@@ -17,9 +17,9 @@ CATALOG = ROOT / 'assets' / 'image-catalog.json'
 OUT = ROOT / 'assets' / 'img'
 CREDITS = ROOT / 'assets' / 'credits.json'
 UA = 'KidsOS/1.0 (family learning app; contact: kevin.marqfarh@gmail.com)'
-MAX = 560  # motivbilder (mål: hela dist/index.html < 7 MB)
+MAX = 480  # motivbilder (prestanda: se docs/PRESTANDA.md och scripts/shrink_images.py)
 # Storlek och kvalitet per grupp: föremål och livscykelsteg visas som små miniatyrer.
-SIZES = {'objects': (320, 65), 'lifecycle': (320, 65), 'moon': (400, 70)}
+SIZES = {'objects': (240, 60), 'lifecycle': (240, 60), 'moon': (400, 70)}
 THUMB_W = {'objects': 500, 'lifecycle': 500, 'moon': 1280}  # standardbredder hos Wikimedia (250/330/500/960 …)
 MIN_GAP = 1.2  # sekunder mellan anrop (Wikimedia delar gränser per IP)
 _last = [0.0]
@@ -159,7 +159,7 @@ def save_image(key, group, file_title, info, credits, data=None):
             data = get(src_url, binary=True)
             if cp:
                 cp.write_bytes(data)
-    size, quality = SIZES.get(group, (MAX, 64))
+    size, quality = SIZES.get(group, (MAX, 62))
     im = Image.open(io.BytesIO(data))
     if im.mode in ('P', 'LA', 'RGBA', 'PA'):
         bg = Image.new('RGB', im.size, (255, 255, 255))

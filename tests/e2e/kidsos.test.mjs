@@ -764,12 +764,16 @@ test('Lekstaden: kursrundor ger mynt som låser upp köp, rum och sparade förem
   await page.screenshot({ path: join(SHOTS, 'mobil-skaparstudio.png') });
   await page.getByRole('button', { name: 'Upptäck', exact: true }).click();
   const room = page.locator('.studio-shop-card[data-kind="room"][data-asset="science"]');
-  await room.getByRole('button', { name: 'Öva för fler mynt', exact: true }).click();
-  await page.waitForSelector('.q-prompt');
-  await playRound(page);
-  await page.getByRole('button', { name: '🏡 Till Skaparstudion', exact: true }).click();
-  await page.getByRole('button', { name: 'Upptäck', exact: true }).click();
-  await page.locator('.studio-shop-card[data-kind="room"][data-asset="science"]').getByRole('button', { name: 'Köp', exact: true }).click();
+  // Modulens frågebank per åldersband är liten (två scenarier), så en övningsrunda kan bli
+  // två frågor och ge färre mynt än som saknas. Barnet övar då igen tills Köp dyker upp.
+  for (let round = 0; round < 4 && await room.getByRole('button', { name: 'Köp', exact: true }).count() === 0; round++) {
+    await room.getByRole('button', { name: 'Öva för fler mynt', exact: true }).click();
+    await page.waitForSelector('.q-prompt');
+    await playRound(page);
+    await page.getByRole('button', { name: '🏡 Till Skaparstudion', exact: true }).click();
+    await page.getByRole('button', { name: 'Upptäck', exact: true }).click();
+  }
+  await room.getByRole('button', { name: 'Köp', exact: true }).click();
   assert.equal(await page.getByRole('button', { name: 'Upptäckarlabbet', exact: true }).count(), 1);
   await page.getByRole('button', { name: 'Rum', exact: true }).click();
   await page.getByLabel('Rummets namn', { exact: true }).fill('Sagas labb');

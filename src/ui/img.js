@@ -2,7 +2,11 @@
 import { IMAGES, CREDITS } from '../generated/images.js';
 import { photoKeyForEmoji, PHOTO_ALT, emojiKey } from '../core/emoji-photos.js';
 
-export const hasPhoto = (key) => !!IMAGES[key];
+// Finns-kontrollen läser inte bilden: i webbläsaren är IMAGES lat (scripts/gen-images.mjs) och
+// varje uppslag av IMAGES[key] avkodar bilden ur HTML:ens datablock.
+const own = Object.prototype.hasOwnProperty;
+const has = (key) => typeof key === 'string' && own.call(IMAGES, key);
+export const hasPhoto = (key) => has(key);
 export const photoUrl = (key) => IMAGES[key] || '';
 export const photoCredit = (key) => CREDITS[key] || null;
 export const allCredits = () => CREDITS;
@@ -32,7 +36,7 @@ const escAttr = (s) => String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').
 /** Fotonyckel för ett emoji om fotot finns inbäddat, annars null. */
 export function emojiPhotoKey(emoji) {
   const key = photoKeyForEmoji(emoji);
-  return key && IMAGES[key] ? key : null;
+  return key && has(key) ? key : null;
 }
 
 /** `<span class="pic photo-pic">` med foto om emojit är mappat och fotot finns, annars `<span class="pic">emoji</span>`. */

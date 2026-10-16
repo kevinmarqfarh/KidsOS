@@ -559,9 +559,12 @@ function bankChoice(rng, item, level, extra = {}) {
   const many = level >= 3 ? 3 : 2;
   const wrong = rng.sample(item.w, many);
   const all = [item.a, ...wrong];
-  const options = all.map((x) => (Array.isArray(x) ? emojiOpt(x[0], x[1], x[0]) : { id: x, label: x }));
+  // Ett svar kan vara ['text', '🔥'] eller bara ['text'] – utan emoji blir det ett textalternativ
+  // (annars ritades "undefined" i en bred bildruta som gav sidledsscroll på iPad).
+  const withPic = (x) => Array.isArray(x) && !!x[1];
+  const options = all.map((x) => (withPic(x) ? emojiOpt(x[0], x[1], x[0]) : Array.isArray(x) ? { id: x[0], label: x[0] } : { id: x, label: x }));
   const answer = Array.isArray(item.a) ? item.a[0] : item.a;
-  return { type: 'choice', prompt: item.q, options: rng.shuffle(options), answer, explain: item.ex, wide: Array.isArray(item.a), ...extra };
+  return { type: 'choice', prompt: item.q, options: rng.shuffle(options), answer, explain: item.ex, wide: withPic(item.a), ...extra };
 }
 
 /* ---------- Djur i världen ---------- */

@@ -29,7 +29,8 @@ test('profile layout choices persist, lessons navigate to practice, columns fit 
     await page.locator('.who-bubble').filter({ hasText: 'Stor' }).click();
     for (const id of ['math','svenska','write','science','biology','space','world','ai','code','draw','wonder','play']) {
       await page.evaluate(id => window.kidsos.openApp(id, 'discover-course'), id);
-      assert.equal(await page.locator('.course-lesson').count(), 2);
+      // Kurserna har byggts ut (bd1ae7f): minst två lektioner per app, och alla visas i listan.
+      assert.ok(await page.locator('.course-lesson').count() >= 2);
       await page.locator('.course-next').click();
       await page.waitForTimeout(360);
       await page.locator('.course-next').click();

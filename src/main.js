@@ -1,5 +1,7 @@
 // KidsOS – startpunkt.
+import './core/polyfills.js'; // först: Safari 15 (äldre iPad) saknar t.ex. Array.prototype.at
 import { installViewport } from './core/viewport.js';
+import { installPerfMode } from './core/perf-mode.js';
 import { kos } from './ui/kos.js';
 import { mountShell, openApp, goHome } from './ui/shell.js';
 import { isOverDailyLimit } from './core/model.js';
@@ -7,6 +9,7 @@ import { isOverDailyLimit } from './core/model.js';
 function boot() {
   const root = document.getElementById('kidsos');
   installViewport(root);
+  installPerfMode(root); // lätt grafik (ingen glasoskärpa) på äldre iPads, se src/core/perf-mode.js
   kos.init(root);
   mountShell(root);
   // Vyer kan be skalet öppna en annan app (t.ex. raketen → solsystemet).

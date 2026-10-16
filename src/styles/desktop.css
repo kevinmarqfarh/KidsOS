@@ -210,7 +210,8 @@
   padding: 6px 8px 6px 12px;
   min-height: 58px;
   background: var(--app);
-  background: linear-gradient(180deg, color-mix(in srgb, var(--app) 85%, white), var(--app));
+  /* Samma mörka slöja som .win-head: vit titel läsbar på alla appfärger, även på äldre iPad. */
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.14), rgba(0, 0, 0, 0.3)), var(--app);
   color: #fff;
   touch-action: none;
   cursor: grab;
@@ -230,7 +231,7 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.15);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.45);
 }
 .dwin-name {
   overflow: hidden;
@@ -245,18 +246,21 @@
   width: 46px;
   height: 46px;
   border-radius: 14px;
-  background: rgba(255, 255, 255, 0.24);
-  color: #fff;
+  background: rgba(255, 255, 255, 0.94);
+  color: #1f2a44;
+  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.22);
   font-size: 22px;
   font-weight: 900;
   display: grid;
   place-items: center;
 }
 .dwin-btn:active {
-  background: rgba(255, 255, 255, 0.45);
+  background: #fff;
+  transform: translateY(1px);
 }
 .dwin-btn.close {
-  background: #ef4444;
+  background: #c62828;
+  color: #fff;
 }
 .dwin-btn.back {
   font-size: 34px;
@@ -333,7 +337,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  background: linear-gradient(180deg, #5aa2ff, #3d8bfd);
+  background: linear-gradient(180deg, #3d8bfd, #2563c9);
   color: #fff;
   font-family: var(--font-display);
   font-weight: 800;

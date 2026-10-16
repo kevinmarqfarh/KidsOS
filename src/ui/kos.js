@@ -53,6 +53,13 @@ export const kos = {
     };
     window.addEventListener('pointerdown', unlock, true);
     this.startClock();
+    // Följ enhetens ljust/mörkt-byte när föräldern valt "Som enheten".
+    try {
+      const mq = matchMedia('(prefers-color-scheme: dark)');
+      const follow = () => { if (this.state?.settings.theme === 'auto') this.applySettings(); };
+      if (mq.addEventListener) mq.addEventListener('change', follow);
+      else mq.addListener?.(follow); // Safari före 14
+    } catch {}
     document.addEventListener('visibilitychange', () => {
       lastTick = Date.now();
       if (document.hidden) this.saveNow();
@@ -69,7 +76,11 @@ export const kos = {
     const p = this.profile;
     setSoundEnabled(!this.paused && (p?.settings.sound ?? s.sound));
     setSpeechRate(s.speechRate);
-    document.documentElement.dataset.ostheme = s.theme || 'day';
+    // "Som enheten" löses upp till dag/natt så att alla nattregler i CSS (t.ex. nivåchipets mörka text)
+    // gäller även när enheten är i mörkt läge. Annars blev vit text kvar på ljus bakgrund.
+    const prefersDark = typeof matchMedia === 'function' && matchMedia('(prefers-color-scheme: dark)').matches;
+    document.documentElement.dataset.ostheme = s.theme === 'auto' ? (prefersDark ? 'night' : 'day') : s.theme || 'day';
+    document.documentElement.dataset.themeChoice = s.theme || 'day';
     document.documentElement.dataset.reducedMotion = String(!!p?.settings.reducedMotion);
     document.documentElement.dataset.celebrationEffects = String(p?.settings.celebrationEffects !== false);
     document.documentElement.dataset.activityPaused = String(this.paused);
@@ -140,6 +151,15 @@ export const kos = {
     this.applySettings();
     this.saveNow();
     this.emit('profile');
+    // Dagens skärmtid kan redan vara slut: visa gränsen direkt i stället för efter nästa tick (10 s).
+    setTimeout(() => { if (this.profile === p) this.checkLimit(); }, 0);
+  },
+  /** Visar gränsskärmen om den aktiva profilens skärmtid för i dag är slut. */
+  checkLimit() {
+    const p = this.profile;
+    if (!p || this.paused || !isOverDailyLimit(p)) return false;
+    this.emit('limit');
+    return true;
   },
   logout() {
     stopSpeaking();
@@ -380,6 +400,6 @@ export const kos = {
     this.emit('tick');
     const left = minutesLeftToday(p);
     if (left > 0 && left <= 2) this.emit('limit-warning', { minutes: Math.ceil(left) });
-    if (isOverDailyLimit(p)) this.emit('limit');
+    this.checkLimit();
   },
 };

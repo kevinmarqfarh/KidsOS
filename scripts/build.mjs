@@ -3,7 +3,7 @@
 //   dist/artifact.html – samma innehåll utan <html>/<head>-skal (för publicering som Claude-artifact)
 import { build, context } from 'esbuild';
 import { generateImages } from './gen-images.mjs';
-import { colorMixFallbacks, simulateLegacy } from './css-compat.mjs';
+import { legacySafariFallbacks, simulateLegacy } from './css-compat.mjs';
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -16,11 +16,18 @@ const ICON = `data:image/svg+xml,${encodeURIComponent('<svg xmlns="http://www.w3
 async function bundle() {
   const imgs = generateImages();
   console.log(`✓ ${imgs.count} foton inbäddade (${imgs.kb} kB)`);
-  const js = await build({ entryPoints: [join(root, 'src/main.js')], bundle: true, format: 'iife', minify: true, write: false, target: ['safari14', 'chrome90', 'firefox90'], legalComments: 'none' });
-  const css = await build({ entryPoints: [join(root, 'src/styles/index.css')], bundle: true, minify: true, write: false, loader: { '.css': 'css' }, target: ['safari14'] });
+  // Lägsta mål: Safari 15.0 (äldre iPad 9,7"). esbuild sänker syntax (static-block, ??= m.m.)
+  // och avbryter bygget om något inte går att sänka. API:er (Array.prototype.at …) täcks av
+  // src/core/polyfills.js; tests/unit/compat.test.mjs vaktar resten.
+  // Bilderna ska inte parsas som JS-strängar vid start: bundeln får den lata webbläsarvarianten
+  // (src/generated/images.browser.js) och själva bilddatan läggs i datablock i HTML:en (imgs.html).
+  const browserImages = { name: 'browser-images', setup(b) { b.onResolve({ filter: /generated\/images\.js$/ }, () => ({ path: join(root, 'src/generated/images.browser.js') })); } };
+  const js = await build({ entryPoints: [join(root, 'src/main.js')], bundle: true, format: 'iife', minify: true, write: false, target: ['safari15', 'chrome90', 'firefox90'], legalComments: 'none', logLevel: 'warning', plugins: [browserImages] });
+  const css = await build({ entryPoints: [join(root, 'src/styles/index.css')], bundle: true, minify: true, write: false, loader: { '.css': 'css' }, target: ['safari15'], logLevel: 'warning' });
   const jsText = js.outputFiles[0].text.replace(/<\/script/gi, '<\\/script');
-  // Äldre Safari (iPadOS 15/16.1) saknar color-mix(): ge reservfärger, se scripts/css-compat.mjs.
-  const cssText = colorMixFallbacks(css.outputFiles[0].text);
+  // Äldre Safari (iPadOS 15/16.1) saknar color-mix(), dvh, container queries m.m.:
+  // ge reservvärden, se scripts/css-compat.mjs.
+  const cssText = legacySafariFallbacks(css.outputFiles[0].text);
   const body = `<title>KidsOS</title>
 <meta name="description" content="KidsOS – ett lärande operativsystem för barn 4–12 år.">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -32,7 +39,8 @@ async function bundle() {
 <link rel="apple-touch-icon" href="${ICON}">
 <style>${cssText}</style>
 <div id="kidsos" class="kidsos-root"><noscript>KidsOS behöver JavaScript.</noscript></div>
-<script>${jsText}</script>`;
+<script>${jsText}</script>
+${imgs.html}`;
   const full = `<!doctype html>
 <html lang="sv">
 <head>

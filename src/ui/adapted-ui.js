@@ -136,6 +136,12 @@ export function showPause(host, { prefs, onResume } = {}) {
   let t0 = Date.now();
   let timer = null;
   const tick = () => {
+    // Vyn stängdes mitt i pausen (Hem, byt användare): stoppa andningsklockan.
+    if (timer && !screen.isConnected) {
+      clearInterval(timer);
+      timer = null;
+      return;
+    }
     const ph = breathPhase(Date.now() - t0);
     ring.style.setProperty('--s', String(0.55 + ph.size * 0.45));
     ring.dataset.phase = ph.phase;
